@@ -50,6 +50,14 @@ Windows rules are written against Sigma-native Sysmon names and translated by py
 
 The `.caseless` fields are not optional. Sysmon reports `C:\Windows\SYSTEM32\...` and `C:\Windows\System32\...` interchangeably, so case-sensitive matching produces silent false negatives. `config/winlogbeat.yml` copies and lowercases the two process paths before indexing.
 
+Because Elasticsearch normally treats a dot in a field name as an object path, `process.executable` and `process.executable.caseless` cannot both be leaf fields in the same mapping — the template would fail with `can't merge a non object mapping`. The lab template therefore declares `process` and `process.parent` with `"subobjects": false`, which makes those names literal. This is verified by `tests/test_compile.py` plus a live search in the quickstart.
+
+Real Winlogbeat templates already ship the `.caseless` fields; if you point the lab at real data, confirm them with:
+
+```powershell
+curl.exe "http://localhost:9200/logs-windows.sysmon_operational-*/_mapping" | Select-String "caseless"
+```
+
 ## Index routing
 
 `config/logsource_map.yml` maps a Sigma `logsource.product` to one or more index patterns. The synthetic lab writes `lab-windows`, `lab-linux`, and `lab-web`. Real deployments point the same entries at `logs-windows.*`, `logs-system.*`, and `logs-nginx.*` data streams — no rule changes required.

@@ -37,16 +37,24 @@ def require_elasticsearch(url: str) -> None:
         )
 
 
+def _raise_with_body(response: requests.Response, action: str) -> None:
+    if response.status_code >= 400:
+        raise SystemExit(f"{action} failed ({response.status_code}): {response.text[:800]}")
+
+
 def install_template(url: str) -> None:
     template = json.loads((CONFIG_DIR / "index-template.json").read_text(encoding="utf-8"))
     response = requests.put(f"{url}/_index_template/{TEMPLATE_NAME}", json=template, timeout=30)
-    response.raise_for_status()
+    _raise_with_body(response, "Installing index template")
 
 
 def reset_indices(url: str) -> None:
-    response = requests.delete(f"{url}/lab-*", timeout=30)
+    # ES 8 refuses wildcard deletes by default (action.destructive_requires_name),
+    # so name the lab indices explicitly.
+    names = ",".join(INDEX_BY_FILE.values())
+    response = requests.delete(f"{url}/{names}", params={"ignore_unavailable": "true"}, timeout=30)
     if response.status_code not in (200, 404):
-        response.raise_for_status()
+        _raise_with_body(response, "Resetting lab indices")
 
 
 def bulk_index(url: str, index: str, events: list[dict[str, Any]]) -> int:

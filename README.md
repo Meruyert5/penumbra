@@ -178,6 +178,15 @@ curl.exe "http://localhost:9200/logs-windows.sysmon_operational-*/_mapping" | Se
 
 ---
 
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| `PUT _index_template` → 400 `can't merge a non object mapping` | Elasticsearch reads dots in field names as object paths, so `process.executable` and `process.executable.caseless` collide | `"subobjects": false` on `process` / `process.parent` (already in `config/index-template.json`) |
+| `DELETE lab-*` → 400 `Wildcard expressions or all indices are not allowed` | ES 8 sets `action.destructive_requires_name` | delete named indices; `pipeline/ingest.py` does this |
+| Detections report `Unknown index [lab-windows]` | ingestion never created the index, so every EQL search fails | fix ingestion first, confirm with `GET _cat/indices/lab-*` |
+| `0 rule matches` but events are indexed | field mapping mismatch (most often a missing `.caseless` field) | `GET lab-*/_mapping` and compare with `docs/architecture.md` |
+
 ## Limitations
 
 * Single-node Elasticsearch with security disabled. This is a lab, not a production deployment.

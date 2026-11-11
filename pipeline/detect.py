@@ -64,9 +64,9 @@ def summarize(alerts: list[dict[str, Any]], correlations: list[dict[str, Any]], 
     lines: list[str] = []
     lines.append("# Detection Run Summary")
     lines.append("")
-    lines.append(f"Window: last {hours}h · generated {datetime.now(timezone.utc).isoformat(timespec='seconds')}")
+    lines.append(f"Window: last {hours}h | generated {datetime.now(timezone.utc).isoformat(timespec='seconds')}")
     lines.append("")
-    lines.append(f"**{len(alerts)} rule matches** · **{len(correlations)} correlation alerts**")
+    lines.append(f"**{len(alerts)} rule matches** | **{len(correlations)} correlation alerts**")
     lines.append("")
 
     by_level = Counter(alert["level"] for alert in alerts)
