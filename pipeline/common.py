@@ -1,4 +1,4 @@
-"""Shared paths, configuration and Sigma helpers for the detection lab."""
+"""Shared paths, configuration and Sigma helpers for Detection Forge."""
 
 from __future__ import annotations
 

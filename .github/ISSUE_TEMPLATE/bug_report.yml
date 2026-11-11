@@ -1,0 +1,60 @@
+name: Bug report
+description: Something in the pipeline, a rule, or the dashboard is broken.
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please do not include real logs, credentials, or personal data.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Include the command you ran and the exact error output.
+      placeholder: |
+        Command: python -m pipeline.detect --hours 24
+        Expected: 11 rule matches
+        Actual: 0 rule matches, no error
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. docker compose up -d
+        2. python -m pipeline.ingest --reset
+        3. python -m pipeline.detect
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Rule logic / Sigma compilation
+        - Ingestion / Elasticsearch mapping
+        - Correlation
+        - Dashboard / report
+        - CI / tests
+        - Documentation
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, Docker version, Elasticsearch version.
+      placeholder: Windows 11, Python 3.11.9, Docker 27.3, ES 8.15.3
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: This report contains no real telemetry, credentials, or personal data.
+          required: true

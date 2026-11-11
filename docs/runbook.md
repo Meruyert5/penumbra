@@ -88,3 +88,28 @@ Close as false positive only with a named cause: a change ticket, a known instal
 * Update `docs/tuning.md` if a rule produced a false positive.
 * Add a case report under `cases/` for anything escalated.
 * If a detection was wrong, change the rule — not the narrative.
+
+## 7. Regenerate the published artifacts
+
+The dashboard and coverage graphics are generated, committed, and checked by CI:
+
+```powershell
+.\.venv\Scripts\python.exe -m pipeline.detect --hours 24
+.\.venv\Scripts\python.exe -m pipeline.report      # docs/index.html
+.\.venv\Scripts\python.exe -m pipeline.coverage    # docs/attck-coverage.md
+.\.venv\Scripts\python.exe -m pipeline.heatmap     # docs/assets/attck-heatmap.svg
+```
+
+Refresh the README hero screenshot after a dashboard change. With the dashboard served locally:
+
+```powershell
+.\.venv\Scripts\python.exe -m http.server 8765 --bind 127.0.0.1 --directory docs
+
+& "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new `
+  --disable-gpu --hide-scrollbars --force-device-scale-factor=1 `
+  --user-data-dir="$env:TEMP\df-chrome" --window-size=1440,2100 `
+  --screenshot="$PWD\docs\assets\dashboard.png" "http://localhost:8765/index.html"
+```
+
+Commit the regenerated files together with the change that caused them.
+

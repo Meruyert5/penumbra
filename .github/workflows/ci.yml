@@ -34,6 +34,12 @@ jobs:
       - name: Verify coverage report is committed
         run: python -m pipeline.coverage --check
 
+      - name: Regenerate ATT&CK heatmap
+        run: python -m pipeline.heatmap
+
+      - name: Verify heatmap is committed
+        run: git diff --exit-code docs/assets/attck-heatmap.svg
+
       - name: Run tests
         run: python -m pytest
 

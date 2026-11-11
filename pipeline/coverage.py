@@ -23,26 +23,26 @@ from pipeline.common import (
 # Anything here that is not covered shows up as a documented gap, which is a
 # more honest (and more useful) artifact than claiming full coverage.
 PRIORITY_TECHNIQUES = {
-    "T1059.001": "PowerShell",
-    "T1059.003": "Windows Command Shell",
-    "T1059.004": "Unix Shell",
-    "T1003.001": "LSASS Memory",
-    "T1055": "Process Injection",
-    "T1053.005": "Scheduled Task",
-    "T1053.003": "Cron",
-    "T1543.003": "Windows Service",
-    "T1547.001": "Registry Run Keys",
-    "T1110.001": "Password Guessing",
-    "T1110.003": "Password Spraying",
-    "T1078": "Valid Accounts",
-    "T1071.001": "Web Protocols",
-    "T1105": "Ingress Tool Transfer",
-    "T1562.001": "Disable or Modify Tools",
-    "T1505.003": "Web Shell",
-    "T1136.001": "Local Account",
-    "T1021.004": "SSH",
-    "T1041": "Exfiltration Over C2 Channel",
-    "T1486": "Data Encrypted for Impact",
+    "T1059.001": ("PowerShell", "execution"),
+    "T1059.003": ("Windows Command Shell", "execution"),
+    "T1059.004": ("Unix Shell", "execution"),
+    "T1003.001": ("LSASS Memory", "credential_access"),
+    "T1055": ("Process Injection", "defense_evasion"),
+    "T1053.005": ("Scheduled Task", "persistence"),
+    "T1053.003": ("Cron", "persistence"),
+    "T1543.003": ("Windows Service", "persistence"),
+    "T1547.001": ("Registry Run Keys", "persistence"),
+    "T1110.001": ("Password Guessing", "credential_access"),
+    "T1110.003": ("Password Spraying", "credential_access"),
+    "T1078": ("Valid Accounts", "initial_access"),
+    "T1071.001": ("Web Protocols", "command_and_control"),
+    "T1105": ("Ingress Tool Transfer", "command_and_control"),
+    "T1562.001": ("Disable or Modify Tools", "defense_evasion"),
+    "T1505.003": ("Web Shell", "persistence"),
+    "T1136.001": ("Local Account", "persistence"),
+    "T1021.004": ("SSH", "lateral_movement"),
+    "T1041": ("Exfiltration Over C2 Channel", "exfiltration"),
+    "T1486": ("Data Encrypted for Impact", "impact"),
 }
 
 TACTIC_LABEL = {
@@ -122,7 +122,7 @@ def build_markdown(compiled: list[dict[str, Any]]) -> str:
         lines.append(f"| {technique} | {tactic} | {level} | {title} | {source} |")
     lines.append("")
 
-    gaps = [f"{technique} ({name})" for technique, name in PRIORITY_TECHNIQUES.items() if technique not in covered]
+    gaps = [f"{technique} ({name})" for technique, (name, _tactic) in PRIORITY_TECHNIQUES.items() if technique not in covered]
     lines.append("## Known gaps")
     lines.append("")
     if gaps:
@@ -135,6 +135,33 @@ def build_markdown(compiled: list[dict[str, Any]]) -> str:
     lines.append("")
 
     return "\n".join(lines)
+
+
+def technique_name(technique: str, fallback: str) -> str:
+    return PRIORITY_TECHNIQUES.get(technique, (fallback, None))[0]
+
+
+def coverage_tiles(compiled: list[dict[str, Any]]) -> tuple[dict[str, dict[str, dict[str, Any]]], set[str]]:
+    """tactic -> technique -> best tile (deduplicated), plus the covered technique set.
+
+    A technique can legitimately appear under more than one tactic; it must not
+    appear twice under the same tactic, which is what this dedupe prevents.
+    """
+    tiles: dict[str, dict[str, dict[str, Any]]] = {}
+    covered: set[str] = set()
+    for rule in compiled:
+        for technique in rule["techniques"]:
+            covered.add(technique)
+            name = technique_name(technique, rule["title"])
+            for tactic in rule["tactics"]:
+                bucket = tiles.setdefault(tactic, {})
+                current = bucket.get(technique)
+                if current is None or LEVEL_RANK[rule["level"]] > LEVEL_RANK[current["level"]]:
+                    bucket[technique] = {"level": rule["level"], "title": rule["title"], "name": name}
+    for technique, (name, tactic) in PRIORITY_TECHNIQUES.items():
+        if technique not in covered:
+            tiles.setdefault(tactic, {})[technique] = {"level": None, "title": "not covered", "name": name}
+    return tiles, covered
 
 
 def main() -> int:

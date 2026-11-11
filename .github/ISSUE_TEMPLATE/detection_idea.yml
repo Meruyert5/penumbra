@@ -1,0 +1,41 @@
+name: Detection idea
+description: Propose a new rule, correlation, or coverage gap to close.
+title: "[detection] "
+labels: ["detection"]
+body:
+  - type: input
+    id: technique
+    attributes:
+      label: ATT&CK technique
+      placeholder: T1055 — Process Injection
+    validations:
+      required: true
+  - type: textarea
+    id: behaviour
+    attributes:
+      label: Behaviour to detect
+      description: What should the rule observe, and in which telemetry source?
+      placeholder: |
+        A process writes to another process's memory and creates a remote thread.
+        Source: Sysmon EID 8 / EID 10, or Windows Security 4688 with command line.
+    validations:
+      required: true
+  - type: textarea
+    id: false-positives
+    attributes:
+      label: Expected false positives
+      description: Which legitimate tools or admin workflows would trigger this?
+    validations:
+      required: true
+  - type: textarea
+    id: test
+    attributes:
+      label: How it can be tested in the lab
+      description: A scenario for `pipeline/labgen.py`, or real telemetry that would prove it.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I checked `docs/attck-coverage.md` and this is not already covered.
+          required: true

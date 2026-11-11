@@ -107,6 +107,16 @@ def summarize(alerts: list[dict[str, Any]], correlations: list[dict[str, Any]], 
     return "\n".join(lines)
 
 
+def index_count(url: str) -> int | None:
+    try:
+        response = requests.get(f"{url}/lab-*/_count", params={"ignore_unavailable": "true"}, timeout=10)
+        if response.status_code == 200:
+            return response.json().get("count")
+    except requests.RequestException:
+        pass
+    return None
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run compiled detections against Elasticsearch")
     parser.add_argument("--hours", type=int, default=24)
@@ -127,6 +137,7 @@ def main() -> int:
 
     alerts: list[dict[str, Any]] = []
     errors: list[str] = []
+    rule_by_id = {rule["id"]: rule for rule in rules}
     for rule in rules:
         try:
             events = run_eql(args.url, rule["index"], rule["query"], args.hours)
@@ -144,6 +155,8 @@ def main() -> int:
                 "techniques": rule["techniques"],
                 "tactics": rule["tactics"],
                 "index": rule["index"],
+                "query": rule["query"],
+                "query_kql": rule["query_kql"],
                 "count": len(events),
                 "host": ", ".join(f"{name} ({count})" for name, count in hosts.most_common()),
                 "first_seen": min(event["@timestamp"] for event in events),
@@ -165,8 +178,15 @@ def main() -> int:
             errors.append(f"correlation fetch for {index} failed: {exc}")
 
     out_dir = ensure_dir(Path(args.out))
+    meta = {
+        "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "window_hours": args.hours,
+        "events_indexed": index_count(args.url),
+        "rules_evaluated": len(rules),
+        "errors": errors,
+    }
     (out_dir / "alerts.json").write_text(
-        json.dumps({"alerts": alerts, "correlations": correlations, "errors": errors}, indent=2) + "\n",
+        json.dumps({"meta": meta, "alerts": alerts, "correlations": correlations, "errors": errors}, indent=2) + "\n",
         encoding="utf-8",
     )
     summary = summarize(alerts, correlations, args.hours)
