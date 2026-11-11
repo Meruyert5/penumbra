@@ -1,0 +1,40 @@
+title: PowerShell Encoded Command Execution
+id: 4a1f7c2e-9b3d-4e58-8a71-2c6d5f0b9e11
+status: experimental
+description: >
+  Detects PowerShell or pwsh started with an encoded command switch. Adversaries
+  use base64-encoded commands to obfuscate payloads and evade string-based
+  command line detection.
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+  - https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_powershell_exe
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.execution
+  - attack.defense_evasion
+  - attack.t1059.001
+  - attack.t1027
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_image:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+  selection_flag:
+    CommandLine|contains:
+      - ' -enc '
+      - ' -encodedcommand '
+      - ' -ec '
+      - ' -e JAB'
+  filter_deployment:
+    ParentImage|endswith:
+      - '\ccmexec.exe'
+      - '\Microsoft.ConfigurationManagement.exe'
+  condition: selection_image and selection_flag and not filter_deployment
+falsepositives:
+  - Software deployment tools that wrap scripts in encoded commands (SCCM, Intune)
+  - Administrators running pre-built encoded onboarding scripts
+level: high

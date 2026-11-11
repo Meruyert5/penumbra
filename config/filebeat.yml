@@ -1,0 +1,50 @@
+# Filebeat: ships the synthetic lab telemetry into Elasticsearch.
+#
+# This file is mounted into the Filebeat container by docker-compose.yml.
+# The container reads NDJSON files that pipeline/labgen.py writes to ./lab/logs.
+filebeat.inputs:
+  - type: filestream
+    id: lab-windows
+    enabled: true
+    paths:
+      - /lab/logs/windows.ndjson
+    parsers:
+      - ndjson:
+          target: ""
+          add_error_key: true
+    index: lab-windows
+
+  - type: filestream
+    id: lab-linux
+    enabled: true
+    paths:
+      - /lab/logs/linux.ndjson
+    parsers:
+      - ndjson:
+          target: ""
+          add_error_key: true
+    index: lab-linux
+
+  - type: filestream
+    id: lab-web
+    enabled: true
+    paths:
+      - /lab/logs/web.ndjson
+    parsers:
+      - ndjson:
+          target: ""
+          add_error_key: true
+    index: lab-web
+
+processors:
+  - add_host_metadata: ~
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  allow_older_versions: false
+
+setup.ilm.enabled: false
+setup.template.enabled: false
+
+logging.level: info
+logging.to_stderr: true

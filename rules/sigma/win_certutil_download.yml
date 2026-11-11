@@ -1,0 +1,34 @@
+title: Certutil Used to Download or Decode a Payload
+id: 7d2e9a41-3c58-4b0f-9e62-8f1a4d7c2b35
+status: experimental
+description: >
+  Detects certutil.exe invoked with urlcache, verifyctl or decode switches.
+  Certutil is a signed Windows binary commonly abused to download or decode
+  attacker tooling while blending in with legitimate administration.
+references:
+  - https://attack.mitre.org/techniques/T1105/
+  - https://lolbas-project.github.io/lolbas/Binaries/Certutil/
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.command_and_control
+  - attack.defense_evasion
+  - attack.t1105
+  - attack.t1140
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_image:
+    Image|endswith: '\certutil.exe'
+  selection_switch:
+    CommandLine|contains:
+      - 'urlcache'
+      - 'verifyctl'
+      - '-decode'
+      - '-decodehex'
+  condition: selection_image and selection_switch
+falsepositives:
+  - PKI administration and certificate troubleshooting
+  - Some enterprise software installers
+level: high

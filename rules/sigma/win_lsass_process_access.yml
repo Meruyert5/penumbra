@@ -1,0 +1,39 @@
+title: Suspicious Process Access to LSASS
+id: 1b8c4f60-7a2d-4e93-b5c1-9d0e3f7a6c48
+status: experimental
+description: >
+  Detects a non-standard process opening LSASS with credential-dumping access
+  rights. Covers common tooling patterns (mimikatz, procdump, comsvcs.dll
+  minidump) while excluding known security products and Windows components.
+references:
+  - https://attack.mitre.org/techniques/T1003/001/
+  - https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.credential_access
+  - attack.t1003.001
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 10
+    TargetImage|endswith: '\lsass.exe'
+    GrantedAccess:
+      - '0x1010'
+      - '0x1410'
+      - '0x1438'
+      - '0x143a'
+      - '0x1fffff'
+  filter_known_good:
+    SourceImage|endswith:
+      - '\MsMpEng.exe'
+      - '\MpCmdRun.exe'
+      - '\svchost.exe'
+      - '\csrss.exe'
+  condition: selection and not filter_known_good
+falsepositives:
+  - Endpoint protection and EDR agents reading process memory
+  - Backup agents and diagnostics collectors
+level: critical

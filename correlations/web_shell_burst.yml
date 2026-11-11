@@ -1,0 +1,17 @@
+id: corr-web-shell-burst
+title: Repeated Web Shell Command Execution
+description: >
+  Five or more requests carrying a command parameter to the same path within
+  two minutes, which is typical of an operator driving an interactive web shell.
+level: high
+technique: T1505.003
+index: lab-web
+match:
+  url.query|contains: "cmd="
+group_by: source.ip
+window: 2m
+threshold: 5
+tags:
+  - attack.persistence
+  - attack.execution
+  - attack.t1505.003

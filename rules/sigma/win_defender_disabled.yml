@@ -1,0 +1,28 @@
+title: Windows Defender Real-Time Protection Disabled
+id: 38a1b7d4-2e69-4f0c-9a53-6c8e1d4b7f20
+status: experimental
+description: >
+  Detects Windows Defender events indicating real-time protection, behaviour
+  monitoring or tamper protection was disabled. Ransomware and commodity
+  loaders routinely disable Defender before payload execution.
+references:
+  - https://attack.mitre.org/techniques/T1562/001/
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.defense_evasion
+  - attack.t1562.001
+logsource:
+  product: windows
+  service: windefend
+detection:
+  selection:
+    EventID:
+      - 5001
+      - 5010
+      - 5012
+  condition: selection
+falsepositives:
+  - Endpoint management tools that temporarily disable protection during upgrades
+  - Security testing by authorised administrators
+level: high

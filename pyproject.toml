@@ -1,0 +1,17 @@
+[project]
+name = "detection-lab"
+version = "0.1.0"
+description = "Detection-as-code lab: Sigma rules compiled to Elasticsearch EQL, with synthetic telemetry and analyst case reports"
+requires-python = ">=3.11,<3.14"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]

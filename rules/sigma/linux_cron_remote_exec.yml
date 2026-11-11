@@ -1,0 +1,29 @@
+title: Cron Job Executing Remote Content
+id: 13f8c6a0-9d24-4b7e-8c15-2a6f0e9d4b83
+status: experimental
+description: >
+  Detects cron invoking a shell that pipes remote content into an interpreter.
+  This pattern is a common way to establish recurring access on Linux hosts.
+references:
+  - https://attack.mitre.org/techniques/T1053/003/
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.persistence
+  - attack.execution
+  - attack.t1053.003
+logsource:
+  product: linux
+  service: cron
+detection:
+  selection:
+    message|contains:
+      - 'CMD (curl'
+      - 'CMD (wget'
+      - 'CMD (bash -c'
+      - 'CMD (sh -c'
+  condition: selection
+falsepositives:
+  - Legitimate maintenance jobs that fetch installer scripts
+  - Container bootstrap scripts
+level: high

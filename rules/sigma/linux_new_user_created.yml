@@ -1,0 +1,24 @@
+title: New Local User Account Created
+id: 3d9e7b52-8c1a-4f64-9b03-6a2d8e5c7f19
+status: experimental
+description: >
+  Detects useradd creating a new local account, as recorded by the auth log.
+  Attackers create accounts to retain access after the initial vector is closed.
+references:
+  - https://attack.mitre.org/techniques/T1136/001/
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.persistence
+  - attack.t1136.001
+logsource:
+  product: linux
+  service: auth
+detection:
+  selection:
+    message|contains: 'new user:'
+  condition: selection
+falsepositives:
+  - Configuration management creating service accounts
+  - Legitimate administrator onboarding
+level: medium

@@ -1,0 +1,29 @@
+title: Scheduled Task Created via Schtasks
+id: 5f3b8d21-0e7c-4a96-b2d8-7c4e1a9f3d05
+status: experimental
+description: >
+  Detects schtasks.exe creating a new scheduled task from a non-system account.
+  Scheduled tasks are a durable, low-noise persistence and execution mechanism.
+references:
+  - https://attack.mitre.org/techniques/T1053/005/
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.persistence
+  - attack.execution
+  - attack.t1053.005
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_image:
+    Image|endswith: '\schtasks.exe'
+  selection_create:
+    CommandLine|contains: '/create'
+  filter_system_account:
+    User|endswith: '$'
+  condition: selection_image and selection_create and not filter_system_account
+falsepositives:
+  - Software installers and updaters that register scheduled tasks
+  - Legitimate administrative automation
+level: medium

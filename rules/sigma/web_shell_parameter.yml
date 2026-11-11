@@ -1,0 +1,34 @@
+title: Web Request to Common Web Shell Parameter
+id: 7c0e4b19-3f82-4a6d-9e57-1b8d5c2f0a46
+status: experimental
+description: >
+  Detects requests carrying command execution parameters frequently used by
+  PHP and JSP web shells (cmd=, exec=, shell=). Complements the upload rule by
+  catching interaction with a shell that was planted earlier.
+references:
+  - https://attack.mitre.org/techniques/T1505/003/
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.persistence
+  - attack.execution
+  - attack.t1505.003
+logsource:
+  category: webserver
+  product: nginx
+detection:
+  selection:
+    url.query|contains:
+      - 'cmd='
+      - 'exec='
+      - 'shell='
+      - 'command='
+  filter_benign:
+    url.path|endswith:
+      - '/health'
+      - '/status'
+  condition: selection and not filter_benign
+falsepositives:
+  - Administrative panels that legitimately use cmd or exec parameters
+  - Diagnostics endpoints
+level: medium

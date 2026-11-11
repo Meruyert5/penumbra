@@ -1,0 +1,40 @@
+title: Suspicious Service Installed From User-Writable Path
+id: 9e5d2b73-1f48-4c6a-8d92-3b7e0f5a1c26
+status: experimental
+description: >
+  Detects a new Windows service whose binary lives in a user-writable directory
+  or launches through a shell interpreter. This is a common persistence
+  mechanism after initial access.
+references:
+  - https://attack.mitre.org/techniques/T1543/003/
+  - https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-7045
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.persistence
+  - attack.privilege_escalation
+  - attack.t1543.003
+logsource:
+  product: windows
+  service: system
+detection:
+  selection:
+    EventID: 7045
+  suspicious_path:
+    ImagePath|contains:
+      - '\Users\Public\'
+      - '\AppData\'
+      - '\Temp\'
+      - '\ProgramData\'
+      - 'cmd.exe /c'
+      - 'powershell'
+  filter_known:
+    ServiceName:
+      - 'WaaSMedicSvc'
+      - 'BITS'
+      - 'WinDefend'
+  condition: selection and suspicious_path and not filter_known
+falsepositives:
+  - Legitimate software installers that stage files in ProgramData or Temp
+  - Updaters that run a service from a user profile
+level: high

@@ -1,0 +1,25 @@
+# Maps a Sigma logsource to the Elasticsearch index patterns a rule should run against.
+#
+# The defaults point at the synthetic lab indices written by pipeline/labgen.py.
+# When you wire up the real Windows VM (Winlogbeat) and Linux host (Filebeat),
+# switch these to the real data streams, e.g.:
+#   windows: ["logs-windows.sysmon_operational-*", "logs-windows.security-*", "logs-windows.system-*"]
+#   linux:   ["logs-system.auth-*", "logs-system.syslog-*"]
+#   nginx:   ["logs-nginx.access-*"]
+default:
+  index:
+    - "lab-*"
+
+products:
+  windows:
+    index:
+      - "lab-windows"
+  linux:
+    index:
+      - "lab-linux"
+  nginx:
+    index:
+      - "lab-web"
+  web:
+    index:
+      - "lab-web"

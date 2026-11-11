@@ -1,0 +1,35 @@
+title: PHP File Uploaded to Web Accessible Directory
+id: 6b1f9c83-4a7e-4d25-8c90-5e3a2b7f6d14
+status: experimental
+description: >
+  Detects an HTTP POST to a .php path inside a writable or upload directory.
+  A successful upload of executable PHP content is a strong indicator of web
+  shell deployment, the most common way attackers persist on a web server.
+references:
+  - https://attack.mitre.org/techniques/T1505/003/
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.persistence
+  - attack.initial_access
+  - attack.t1505.003
+logsource:
+  category: webserver
+  product: nginx
+detection:
+  selection_method:
+    http.request.method: POST
+  selection_path:
+    url.path|endswith: '.php'
+  suspicious_directory:
+    url.path|contains:
+      - '/upload'
+      - '/uploads/'
+      - '/images/'
+      - '/tmp/'
+      - '/files/'
+  condition: selection_method and selection_path and suspicious_directory
+falsepositives:
+  - Applications that legitimately accept PHP file uploads (rare, should be reviewed)
+  - Misconfigured file managers
+level: high

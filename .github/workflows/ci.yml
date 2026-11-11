@@ -1,0 +1,41 @@
+name: detection-ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint rule metadata
+        run: python -m pipeline.lint
+
+      - name: Compile Sigma to EQL/KQL
+        run: python -m pipeline.compile
+
+      - name: Verify compiled output is committed
+        run: python -m pipeline.compile --check
+
+      - name: Regenerate ATT&CK coverage
+        run: python -m pipeline.coverage
+
+      - name: Verify coverage report is committed
+        run: python -m pipeline.coverage --check
+
+      - name: Run tests
+        run: python -m pytest
+
+      - name: Generate telemetry (smoke test)
+        run: python -m pipeline.labgen --scenario all --out lab/logs

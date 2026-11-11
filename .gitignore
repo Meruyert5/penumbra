@@ -1,0 +1,25 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Lab runtime data
+lab/logs/*.ndjson
+lab/logs/*.log
+alerts/
+*.csv
+
+# Local overrides
+.env
+config/local.*.yml
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Compiled artifacts are generated, but committed on purpose for review:
+# rules/compiled/ and docs/attck-coverage.md stay in git.

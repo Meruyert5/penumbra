@@ -1,0 +1,17 @@
+id: corr-ssh-bruteforce
+title: SSH Brute Force Against a Single Host
+description: >
+  Eight or more failed SSH password attempts from one source address within
+  five minutes. Escalates the low-severity single-event rule into a high
+  severity alert that a Tier 1 analyst can action.
+level: high
+technique: T1110.001
+index: lab-linux
+match:
+  message|contains: "Failed password"
+group_by: source.ip
+window: 5m
+threshold: 8
+tags:
+  - attack.credential_access
+  - attack.t1110.001
