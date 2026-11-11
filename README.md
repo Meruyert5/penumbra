@@ -64,6 +64,11 @@ py -3.11 -m venv .venv
 # 2. Start Elasticsearch + Kibana
 docker compose up -d
 # Kibana: http://localhost:5601  (security is disabled: lab only)
+#
+# Filebeat is optional and only starts with the beats profile:
+#   docker compose --profile beats up -d
+# The default path below indexes telemetry directly with pipeline/ingest.py,
+# so the same events are not loaded twice.
 
 # 3. Generate synthetic telemetry and index it
 .\.venv\Scripts\python.exe -m pipeline.labgen --scenario all

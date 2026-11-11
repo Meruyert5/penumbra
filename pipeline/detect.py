@@ -154,12 +154,15 @@ def main() -> int:
 
     specs = load_specs()
     correlations: list[dict[str, Any]] = []
-    if specs:
+    specs_by_index: dict[str, list[Any]] = {}
+    for spec in specs:
+        specs_by_index.setdefault(spec.index, []).append(spec)
+    for index, index_specs in specs_by_index.items():
         try:
-            events = fetch_events(args.url, ["lab-*"], args.hours)
-            correlations = correlate(events, specs)
+            events = fetch_events(args.url, [index], args.hours)
+            correlations.extend(correlate(events, index_specs))
         except requests.RequestException as exc:
-            errors.append(f"correlation fetch failed: {exc}")
+            errors.append(f"correlation fetch for {index} failed: {exc}")
 
     out_dir = ensure_dir(Path(args.out))
     (out_dir / "alerts.json").write_text(

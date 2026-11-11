@@ -45,6 +45,10 @@ services:
   filebeat:
     image: docker.elastic.co/beats/filebeat:${STACK_VERSION:-8.15.3}
     container_name: dl-filebeat
+    # Optional: only starts with `docker compose --profile beats up -d`.
+    # The default quickstart indexes telemetry directly with pipeline/ingest.py,
+    # which avoids double-loading the same events.
+    profiles: ["beats"]
     user: root
     command: ["filebeat", "-e", "-strict.perms=false"]
     volumes:
