@@ -44,6 +44,7 @@ component library.
 | `--rust` | `#b23a24` | `#f07a60` |
 | `--forest` | `#126b59` | `#69d3b6` |
 | `--signal` | `#176f86` | `#6fd9e3` |
+| `--indigo` | `#454a9e` | `#9aa0ff` |
 | `--critical` | `#a62f22` | `#f06b55` |
 | `--high` | `#985a12` | `#e6a653` |
 | `--medium` | `#6c6110` | `#d6c263` |
@@ -59,12 +60,21 @@ component library.
 - **Forest teal (`--forest`)** marks coverage, verdicts, technology tags, and
   valid evidence.
 - **Ochre** is reserved for the high/medium severity family and paper accents.
+- **Indigo** carries integrity counts, including execution errors, so the paper
+  theme keeps a fifth accent without turning the stat row into a rainbow.
 - **Paper neutrals are warm.** Background, surface, rules, and muted text share a
   warm paper scale, so cards and coverage tiles sit on the page instead of
   reading grey-green.
-- **No multicolor rules.** Section rules, the cover stat strip, and the watch
-  floor status bar use one accent each. The old four-color gradient strips were
-  removed.
+- **One accent per rule.** Section rules and the cover stat strip use one accent
+  or a neutral line each. The watch floor has no rule above its status band; the
+  band itself is a tinted paper strip. The only four-color gradient left is the
+  band on the run ticket.
+- **Coverage tiles use the same surface as every other card.** Severity is
+  carried by the 3px left border, not by a tinted fill, so a low-priority tile
+  such as `T1595.002` never reads grey against the paper.
+- **The watch floor inspector is a panel.** It uses `--surface-2` and stretches
+  to the full height of the queue, so the right side never dissolves into the
+  page or leaves a blank gap before the host lanes.
 - **Night ticket paper** is `#eef1ea` with `#121b1c` ink. It is a physical
   receipt on the dark desk, not a dark panel.
 
@@ -79,6 +89,7 @@ is used on.
 | Paper signal on surface | 5.37:1 |
 | Paper rust on surface | 5.57:1 |
 | Paper forest on surface | 5.99:1 |
+| Paper indigo on surface | 7.19:1 |
 | Paper critical on surface | 6.43:1 |
 | Paper primary text | 14.72:1 |
 | Night muted on page | 7.77:1 |
@@ -111,8 +122,10 @@ still use a passing token; they are never the only carrier of meaning.
   letter-spacing. Body copy stays in natural case.
 - Inputs use 16px on mobile to prevent iOS zoom, and 44px minimum height.
 - Micro labels never drop below 9px. Paper texture is baked into the background
-  at low contrast, so small mono text keeps a crisp edge, and text-bearing
-  elements settle to `transform: none` instead of scale animations.
+  at low contrast — a broad mottle, a directional fiber layer, and fine grain,
+  plus a soft edge vignette. The night theme uses the same three layers with a
+  screen blend, so both themes share one material. Text-bearing elements settle
+  to `transform: none` instead of scale animations.
 - The line-height in `@font-face` and the UI is unitless. Type roles are fixed;
   avoid introducing one-off sizes.
 
