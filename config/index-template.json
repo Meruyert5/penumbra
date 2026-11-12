@@ -43,7 +43,13 @@
         "user": {
           "properties": {
             "name": { "type": "keyword" },
+            "id": { "type": "keyword" },
             "domain": { "type": "keyword" }
+          }
+        },
+        "service": {
+          "properties": {
+            "name": { "type": "keyword" }
           }
         },
         "process": {
@@ -71,7 +77,44 @@
         "file": {
           "properties": {
             "path": { "type": "keyword" },
-            "name": { "type": "keyword" }
+            "name": { "type": "keyword" },
+            "directory": { "type": "keyword" }
+          }
+        },
+        "registry": {
+          "properties": {
+            "path": { "type": "keyword" },
+            "value": { "type": "wildcard" },
+            "hive": { "type": "keyword" }
+          }
+        },
+        "dns": {
+          "properties": {
+            "question": {
+              "properties": {
+                "name": { "type": "keyword" },
+                "type": { "type": "keyword" }
+              }
+            }
+          }
+        },
+        "cloud": {
+          "properties": {
+            "provider": { "type": "keyword" },
+            "region": { "type": "keyword" },
+            "account": {
+              "properties": {
+                "id": { "type": "keyword" }
+              }
+            }
+          }
+        },
+        "network": {
+          "properties": {
+            "direction": { "type": "keyword" },
+            "transport": { "type": "keyword" },
+            "protocol": { "type": "keyword" },
+            "bytes": { "type": "long" }
           }
         },
         "source": {
@@ -101,9 +144,15 @@
             },
             "response": {
               "properties": {
-                "status_code": { "type": "long" }
+                "status_code": { "type": "long" },
+                "bytes": { "type": "long" }
               }
             }
+          }
+        },
+        "user_agent": {
+          "properties": {
+            "original": { "type": "keyword", "ignore_above": 1024 }
           }
         },
         "winlog": {

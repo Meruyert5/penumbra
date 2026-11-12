@@ -1,0 +1,30 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Web Scanner User Agent
+id: 5594c7be-00e6-4110-820f-1eca93b59071
+status: experimental
+description: Detects user agents associated with common vulnerability scanners. This is reconnaissance,
+  not exploitation, so the base rule stays low severity.
+references:
+- https://attack.mitre.org/techniques/T1595/002/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.reconnaissance
+- attack.t1595.002
+logsource:
+  product: nginx
+  category: web
+detection:
+  selection:
+    user_agent.original|contains:
+    - sqlmap
+    - nikto
+    - nmap
+    - masscan
+    - gobuster
+    - dirbuster
+  condition: selection
+falsepositives:
+- Authorized vulnerability scans
+- Security teams validating exposure
+level: low

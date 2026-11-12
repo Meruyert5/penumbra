@@ -1,0 +1,29 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Linux Reverse Shell Command
+id: 69c9802b-a89d-4d98-a699-a5602a40656a
+status: experimental
+description: Detects common reverse-shell one-liners that redirect a shell to a remote address. The pattern
+  is rare in normal server operations and should be treated as active intrusion.
+references:
+- https://attack.mitre.org/techniques/T1059/004/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.execution
+- attack.t1059.004
+logsource:
+  product: linux
+  category: process_creation
+detection:
+  selection:
+    process.command_line|contains:
+    - /dev/tcp/
+    - bash -i
+    - nc -e
+    - ncat -e
+    - socat exec
+  condition: selection
+falsepositives:
+- Authorized penetration tests
+- Debugging sessions by a platform engineer
+level: critical

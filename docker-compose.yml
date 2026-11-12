@@ -1,13 +1,13 @@
-# Detection Forge: single-node Elasticsearch + Kibana + Filebeat.
+# Signal Foundry: single-node Elasticsearch + Kibana + Filebeat.
 #
 # Security is DISABLED on purpose. This stack is for a local lab only.
 # Never expose port 9200 to a network you do not control.
-name: detection-forge
+name: signal-foundry
 
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION:-8.15.3}
-    container_name: df-elasticsearch
+    container_name: sf-elasticsearch
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -31,7 +31,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION:-8.15.3}
-    container_name: df-kibana
+    container_name: sf-kibana
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - XPACK_SECURITY_ENABLED=false
@@ -44,7 +44,7 @@ services:
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:${STACK_VERSION:-8.15.3}
-    container_name: df-filebeat
+    container_name: sf-filebeat
     # Optional: only starts with `docker compose --profile beats up -d`.
     # The default quickstart indexes telemetry directly with pipeline/ingest.py,
     # which avoids double-loading the same events.

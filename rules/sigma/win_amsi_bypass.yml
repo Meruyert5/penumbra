@@ -1,0 +1,28 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: AMSI Bypass via Reflection
+id: c0f89849-a795-47df-87a4-91f8d81e3f20
+status: experimental
+description: Detects PowerShell that tampers with the Antimalware Scan Interface through reflection. Attackers
+  use this to run known malicious scripts without content inspection.
+references:
+- https://attack.mitre.org/techniques/T1562/001/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.defense_evasion
+- attack.t1562.001
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    CommandLine|contains:
+    - amsiInitFailed
+    - AmsiUtils
+    - '[Ref].Assembly.GetType'
+    - SetValue($null
+  condition: selection
+falsepositives:
+- Security testing frameworks
+- Some legitimate PowerShell modules that probe AMSI state
+level: high

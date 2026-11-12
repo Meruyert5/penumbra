@@ -1,0 +1,32 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Host and Account Discovery Command
+id: 4375523f-da47-470c-b91f-6c78c3bad39b
+status: experimental
+description: Detects individual discovery commands that map the local host, domain, or user context. Volume
+  is escalated by the discovery correlation, so the base rule stays low noise.
+references:
+- https://attack.mitre.org/techniques/T1087/
+- https://attack.mitre.org/techniques/T1018/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.discovery
+- attack.t1087
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    CommandLine|contains:
+    - whoami
+    - net user
+    - net group
+    - net view
+    - nltest
+    - systeminfo
+    - ipconfig /all
+  condition: selection
+falsepositives:
+- IT inventory and onboarding scripts
+- Help-desk diagnostics
+level: low

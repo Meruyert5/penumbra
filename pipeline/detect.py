@@ -10,7 +10,7 @@ import argparse
 import json
 import sys
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -29,12 +29,28 @@ def require_elasticsearch(url: str) -> None:
         raise SystemExit(f"Cannot reach Elasticsearch at {url}. Start it with: docker compose up -d\n{exc}")
 
 
-def run_eql(url: str, index: list[str], query: str, hours: int) -> list[dict[str, Any]]:
+def _range(hours: int, end: datetime | None) -> dict[str, str]:
+    if end is None:
+        return {"gte": f"now-{hours}h"}
+    start = end - timedelta(hours=hours)
+    return {
+        "gte": start.astimezone(timezone.utc).isoformat(timespec="seconds"),
+        "lte": end.astimezone(timezone.utc).isoformat(timespec="seconds"),
+    }
+
+
+def run_eql(
+    url: str,
+    index: list[str],
+    query: str,
+    hours: int,
+    end: datetime | None = None,
+) -> list[dict[str, Any]]:
     body = {
         "query": query,
         "size": MAX_EVENTS_PER_RULE,
         "timestamp_field": "@timestamp",
-        "filter": {"range": {"@timestamp": {"gte": f"now-{hours}h"}}},
+        "filter": {"range": {"@timestamp": _range(hours, end)}},
     }
     response = requests.post(
         f"{url}/{','.join(index)}/_eql/search",
@@ -49,11 +65,17 @@ def run_eql(url: str, index: list[str], query: str, hours: int) -> list[dict[str
     return [event["_source"] for event in payload.get("hits", {}).get("events", [])]
 
 
-def fetch_events(url: str, index: list[str], hours: int, limit: int = 10000) -> list[dict[str, Any]]:
+def fetch_events(
+    url: str,
+    index: list[str],
+    hours: int,
+    limit: int = 10000,
+    end: datetime | None = None,
+) -> list[dict[str, Any]]:
     body = {
         "size": limit,
         "sort": [{"@timestamp": "asc"}],
-        "query": {"range": {"@timestamp": {"gte": f"now-{hours}h"}}},
+        "query": {"range": {"@timestamp": _range(hours, end)}},
     }
     response = requests.post(f"{url}/{','.join(index)}/_search", json=body, timeout=120)
     response.raise_for_status()
@@ -107,6 +129,39 @@ def summarize(alerts: list[dict[str, Any]], correlations: list[dict[str, Any]], 
     return "\n".join(lines)
 
 
+def build_timeline(matched: list[tuple[str, str, str, str]]) -> list[dict[str, Any]]:
+    """Hourly alert volume by severity, with the quiet edges kept in view.
+
+    The chart spans the alert activity plus a two hour shoulder on each side.
+    Filling the entire detection window would bury a short scenario burst in
+    twenty empty buckets and make the baseline look like missing data.
+    """
+    if not matched:
+        return []
+    buckets: dict[str, dict[str, int]] = {}
+    for timestamp, level, _host, _source in matched:
+        if len(timestamp) < 13:
+            continue
+        hour = timestamp[:13] + ":00:00Z"
+        bucket = buckets.setdefault(hour, {"total": 0, "critical": 0, "high": 0, "medium": 0, "low": 0})
+        bucket["total"] += 1
+        bucket[level] = bucket.get(level, 0) + 1
+
+    ordered = sorted(buckets)
+    first = datetime.fromisoformat(ordered[0].replace("Z", "+00:00"))
+    last = datetime.fromisoformat(ordered[-1].replace("Z", "+00:00"))
+    start = first - timedelta(hours=2)
+    end = last + timedelta(hours=2)
+    rows: list[dict[str, Any]] = []
+    current = start
+    while current <= end:
+        key = current.strftime("%Y-%m-%dT%H:00:00Z")
+        bucket = buckets.get(key, {"total": 0, "critical": 0, "high": 0, "medium": 0, "low": 0})
+        rows.append({"hour": key, **bucket})
+        current += timedelta(hours=1)
+    return rows
+
+
 def index_count(url: str) -> int | None:
     try:
         response = requests.get(f"{url}/lab-*/_count", params={"ignore_unavailable": "true"}, timeout=10)
@@ -120,10 +175,18 @@ def index_count(url: str) -> int | None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run compiled detections against Elasticsearch")
     parser.add_argument("--hours", type=int, default=24)
+    parser.add_argument("--end", help="ISO timestamp to anchor the window, for a reproducible snapshot (default: now)")
     parser.add_argument("--url", default=es_url())
     parser.add_argument("--out", default=str(ALERTS_DIR))
     parser.add_argument("--dry-run", action="store_true", help="print queries without running them")
     args = parser.parse_args()
+
+    end = None
+    if args.end:
+        try:
+            end = datetime.fromisoformat(args.end.replace("Z", "+00:00")).astimezone(timezone.utc)
+        except ValueError as exc:
+            raise SystemExit(f"Invalid --end timestamp: {args.end!r} ({exc})")
 
     rules = json.loads((COMPILED_DIR / "rules.json").read_text(encoding="utf-8"))
     if args.dry_run:
@@ -137,16 +200,25 @@ def main() -> int:
 
     alerts: list[dict[str, Any]] = []
     errors: list[str] = []
-    rule_by_id = {rule["id"]: rule for rule in rules}
+    matched: list[tuple[str, str, str, str]] = []
     for rule in rules:
         try:
-            events = run_eql(args.url, rule["index"], rule["query"], args.hours)
+            events = run_eql(args.url, rule["index"], rule["query"], args.hours, end)
         except RuntimeError as exc:
             errors.append(f"{rule['title']}: {exc}")
             continue
         if not events:
             continue
         hosts = Counter((event.get("host") or {}).get("name", "-") for event in events)
+        for event in events:
+            matched.append(
+                (
+                    str(event.get("@timestamp", "")),
+                    rule["level"],
+                    str((event.get("host") or {}).get("name", "-")),
+                    str((event.get("event") or {}).get("dataset", "unknown")),
+                )
+            )
         alerts.append(
             {
                 "rule_id": rule["id"],
@@ -159,9 +231,10 @@ def main() -> int:
                 "query_kql": rule["query_kql"],
                 "count": len(events),
                 "host": ", ".join(f"{name} ({count})" for name, count in hosts.most_common()),
+                "hosts": sorted(hosts),
                 "first_seen": min(event["@timestamp"] for event in events),
                 "last_seen": max(event["@timestamp"] for event in events),
-                "events": events,
+                "events": events[:3],
             }
         )
 
@@ -172,21 +245,39 @@ def main() -> int:
         specs_by_index.setdefault(spec.index, []).append(spec)
     for index, index_specs in specs_by_index.items():
         try:
-            events = fetch_events(args.url, [index], args.hours)
+            events = fetch_events(args.url, [index], args.hours, end=end)
             correlations.extend(correlate(events, index_specs))
         except requests.RequestException as exc:
             errors.append(f"correlation fetch for {index} failed: {exc}")
+
+    timeline = build_timeline(matched)
+    host_counts = Counter(item[2] for item in matched)
+    source_counts = Counter(item[3] for item in matched)
 
     out_dir = ensure_dir(Path(args.out))
     meta = {
         "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "window_hours": args.hours,
+        "window_end": (end or datetime.now(timezone.utc)).isoformat(timespec="seconds"),
         "events_indexed": index_count(args.url),
         "rules_evaluated": len(rules),
+        "correlations_evaluated": len(specs),
         "errors": errors,
     }
     (out_dir / "alerts.json").write_text(
-        json.dumps({"meta": meta, "alerts": alerts, "correlations": correlations, "errors": errors}, indent=2) + "\n",
+        json.dumps(
+            {
+                "meta": meta,
+                "alerts": alerts,
+                "correlations": correlations,
+                "timeline": timeline,
+                "hosts": [{"name": name, "count": count} for name, count in host_counts.most_common()],
+                "sources": [{"name": name, "count": count} for name, count in source_counts.most_common()],
+                "errors": errors,
+            },
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
     summary = summarize(alerts, correlations, args.hours)

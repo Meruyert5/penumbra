@@ -4,7 +4,7 @@ A detection is a hypothesis. This file records what each rule assumed, which ben
 
 ## Baseline noise inventory
 
-`python -m pipeline.labgen --scenario baseline` produces 90 benign events: Chrome and Notepad process creation, a legitimate administrative PowerShell command, successful SSH logins, normal web traffic, and three isolated failed logins from a known admin workstation (`198.51.100.9`).
+`python -m pipeline.labgen --scenario baseline` produces 1,954 benign events: Chrome and Notepad process creation, a legitimate administrative PowerShell command, successful SSH logins, normal web traffic, routine AWS API calls, ordinary network flows, and a handful of isolated failed logins from a known admin workstation (`198.51.100.9`).
 
 Every rule was run against that baseline. The table below is the result and the fix.
 
@@ -48,11 +48,21 @@ Precision = TP / (TP + FP). Anything below ~0.5 either needs a filter or should 
 
 The synthetic baseline is deliberately small, so these numbers are not production measurements. The point of the table is the method: every rule has an owner, a count, and a decision.
 
+## Second tuning pass
+
+The expanded telemetry exposed three more assumptions worth recording.
+
+| Detection | Problem in the lab | Change made | Trade-off accepted |
+|---|---|---|---|
+| Critical Service Stopped Before Impact | Watching only `VSS` missed the backup agent stop that followed it | Watch `VSS`, `BackupExecAgentBrowser`, `SQLSERVERAGENT`, and `WinDefend`, and raise to `high` | A planned maintenance stop needs an allowlist or a change ticket |
+| Ransomware File Burst (correlation) | Extension matching is the easiest signal for an operator to change | Keep the extension rule as context, and add a volume rule: 15 writes / 2 min / host | A legitimate bulk import can trip it; pair with a note or recovery-deletion alert |
+| Password Spray (correlation) | A single-account brute force satisfied a pure volume threshold | Add `distinct_by: user.name` with a minimum of 8 distinct accounts | A slow spray across fewer accounts per window needs a longer lookback |
+
 ## Known blind spots
 
-* **No memory or registry telemetry.** Registry Run-key persistence (T1547.001) is invisible to this pipeline.
-* **No network telemetry.** Beaconing and exfiltration (T1071.001, T1041) cannot be detected from the current sources.
-* **No logon-type analysis.** 4624/4625 are ingested but not yet used to detect lateral movement or password spraying (T1110.003).
+* **No memory or API telemetry.** Process injection (T1055) and in-memory credential theft beyond LSASS handle access are invisible.
+* **No proxy or TLS metadata.** Beaconing and web-protocol C2 (T1071.001) need flow timing and certificate data that the current sources do not carry.
+* **Limited logon analysis.** 4624 and 4625 are ingested, but lateral movement still lacks an internal-source baseline, so SSH and SMB movement remain documented gaps.
 * **No asset criticality.** A critical alert on a build agent and on a domain controller currently look identical. Real triage needs an asset inventory.
 
 These are listed in `docs/attck-coverage.md` as coverage gaps, not hidden.

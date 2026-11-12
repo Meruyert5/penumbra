@@ -1,0 +1,31 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Registry Run Key Persistence
+id: e0da490d-63f4-41da-aecb-f661b0601cd4
+status: experimental
+description: Detects writes to per-user or machine Run keys that point at user-writable paths or scripting
+  engines. Run keys survive reboot and need no service install.
+references:
+- https://attack.mitre.org/techniques/T1547/001/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.persistence
+- attack.t1547.001
+logsource:
+  product: windows
+  category: registry_event
+detection:
+  selection_path:
+    TargetObject|contains: \CurrentVersion\Run\
+  selection_payload:
+    Details|contains:
+    - \Users\Public\
+    - \AppData\Roaming\
+    - powershell
+    - cmd.exe
+    - mshta
+  condition: selection_path and selection_payload
+falsepositives:
+- Software installers that register a startup entry
+- Managed endpoint agents
+level: high

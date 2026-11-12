@@ -3,7 +3,7 @@
 ## Data flow
 
 ```
-labgen.py ──► lab/logs/{windows,linux,web}.ndjson
+labgen.py ──► lab/logs/{windows,linux,web,cloud,network}.ndjson
                     │
                     ▼
               Filebeat (filestream)          Winlogbeat (Windows VM, optional)
@@ -30,8 +30,9 @@ detect.py ──► EQL search per rule ──► alerts/alerts.json
 | `pipeline/lint.py` | Metadata quality gate (UUID, level, ATT&CK tag, description, FPs) | CI fails on error |
 | `pipeline/coverage.py` | ATT&CK matrix and gap list | CI fails if docs are stale |
 | `pipeline/ingest.py` | Index template + bulk load | Explicit message if Elasticsearch is down |
-| `pipeline/detect.py` | Run EQL, collect matches, write summary | Per-rule errors are captured, not swallowed |
-| `pipeline/correlate.py` | Sliding-window thresholds over events | Pure function, unit tested |
+| `pipeline/detect.py` | Run EQL, collect matches, write summary and timeline | Per-rule errors are captured, not swallowed |
+| `pipeline/correlate.py` | Sliding-window thresholds with optional distinct-value counts | Pure function, unit tested |
+| `pipeline/report.py` | Inline dashboard sources and one JSON payload into a single HTML file | Fails loudly if a placeholder is missing |
 
 ## Field mapping
 
@@ -60,7 +61,7 @@ curl.exe "http://localhost:9200/logs-windows.sysmon_operational-*/_mapping" | Se
 
 ## Index routing
 
-`config/logsource_map.yml` maps a Sigma `logsource.product` to one or more index patterns. The synthetic lab writes `lab-windows`, `lab-linux`, and `lab-web`. Real deployments point the same entries at `logs-windows.*`, `logs-system.*`, and `logs-nginx.*` data streams — no rule changes required.
+`config/logsource_map.yml` maps a Sigma `logsource.product` to one or more index patterns. The synthetic lab writes `lab-windows`, `lab-linux`, `lab-web`, `lab-cloud`, and `lab-network`. Real deployments point the same entries at `logs-windows.*`, `logs-system.*`, `logs-nginx.*`, and the AWS and network data streams. No rule changes required.
 
 ## Why EQL, and why also KQL
 

@@ -1,0 +1,30 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Command Injection Attempt in Web Request
+id: 210b7585-3f4d-4091-a0a2-0849e0183e75
+status: experimental
+description: Detects shell metacharacters and download commands in web parameters. These payloads attempt
+  to turn a web request into operating-system execution.
+references:
+- https://attack.mitre.org/techniques/T1059/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.execution
+- attack.t1059
+logsource:
+  product: nginx
+  category: web
+detection:
+  selection:
+    url.query|contains:
+    - ;wget
+    - '|bash'
+    - $(
+    - '`id`'
+    - '&& curl'
+    - ; curl
+  condition: selection
+falsepositives:
+- Application features that legitimately accept shell syntax
+- Security scanners
+level: high

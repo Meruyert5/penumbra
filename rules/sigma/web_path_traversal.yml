@@ -1,0 +1,30 @@
+title: Path Traversal Attempt in Web Request
+id: 0e3b7a52-6c91-4d48-9f21-8a7d5c1e4b63
+status: experimental
+description: Detects directory traversal sequences in the URL path or query. Successful traversal exposes files outside the web root.
+references:
+  - https://attack.mitre.org/techniques/T1190/
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.initial_access
+  - attack.t1190
+logsource:
+  product: nginx
+  category: web
+detection:
+  selection_path:
+    url.path|contains:
+      - '../'
+      - '..%2f'
+      - '%2e%2e'
+  selection_query:
+    url.query|contains:
+      - '../'
+      - '..%2f'
+      - '%2e%2e'
+  condition: 1 of selection_*
+falsepositives:
+  - Web crawlers with malformed links
+  - Security scanners
+level: medium

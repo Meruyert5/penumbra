@@ -20,6 +20,8 @@ INDEX_BY_FILE = {
     "windows": "lab-windows",
     "linux": "lab-linux",
     "web": "lab-web",
+    "cloud": "lab-cloud",
+    "network": "lab-network",
 }
 
 TEMPLATE_NAME = "lab-template"

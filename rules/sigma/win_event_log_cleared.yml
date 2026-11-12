@@ -1,0 +1,22 @@
+title: Windows Event Log Cleared
+id: 3c8f1d74-2a56-4b90-8e13-6f9d7c2b5a41
+status: experimental
+description: Detects clearing of the Security event log. This destroys the record an analyst needs most, and it is rare in normal operations.
+references:
+  - https://attack.mitre.org/techniques/T1070/001/
+author: Meruyert
+date: 2026/11/11
+tags:
+  - attack.defense_evasion
+  - attack.t1070.001
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 1102
+  condition: selection
+falsepositives:
+  - Audit log rotation performed by an administrator
+  - Host imaging or lab reset scripts
+level: high

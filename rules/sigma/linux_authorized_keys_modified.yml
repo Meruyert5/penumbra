@@ -1,0 +1,24 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: SSH Authorized Keys Modified
+id: f43a7758-c7bc-40a0-8557-ee78d2515c6b
+status: experimental
+description: Detects writes to SSH authorized_keys. A new public key gives an attacker persistent access
+  without knowing a password.
+references:
+- https://attack.mitre.org/techniques/T1098/004/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.persistence
+- attack.t1098.004
+logsource:
+  product: linux
+  category: file_event
+detection:
+  selection:
+    file.path|endswith: authorized_keys
+  condition: selection
+falsepositives:
+- Configuration management rotating access keys
+- Users adding their own key through an approved workflow
+level: high

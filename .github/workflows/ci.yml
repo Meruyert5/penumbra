@@ -1,4 +1,4 @@
-name: detection-ci
+name: signal-foundry-ci
 
 on:
   push:

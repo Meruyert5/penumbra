@@ -1,0 +1,26 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Sudoers File Modified
+id: 60a70527-1e2f-43e5-8a89-c08015502da9
+status: experimental
+description: Detects writes to sudoers files. An attacker with root can add a persistent privilege escalation
+  path that survives password changes.
+references:
+- https://attack.mitre.org/techniques/T1548/003/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.privilege_escalation
+- attack.t1548.003
+logsource:
+  product: linux
+  category: file_event
+detection:
+  selection:
+    file.path|contains:
+    - /etc/sudoers
+    - /etc/sudoers.d/
+  condition: selection
+falsepositives:
+- Configuration management applying sudo policy
+- Administrators editing sudo access
+level: high

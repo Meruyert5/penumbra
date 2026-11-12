@@ -1,0 +1,27 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Kerberoasting Service Ticket Request
+id: b86d6650-c739-4d0a-ad66-06d10e9e78a2
+status: experimental
+description: Detects service ticket requests with RC4 encryption, a common Kerberoasting pattern. Analysts
+  should check whether the requesting account normally asks for that service.
+references:
+- https://attack.mitre.org/techniques/T1558/003/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.credential_access
+- attack.t1558.003
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4769
+    TicketEncryptionType: '0x17'
+  filter_machine:
+    ServiceName|endswith: $
+  condition: selection and not filter_machine
+falsepositives:
+- Legacy applications that still require RC4 service tickets
+- Domain controllers under audit
+level: high

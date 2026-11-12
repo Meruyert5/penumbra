@@ -1,0 +1,27 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: DNS Query to Exfiltration Domain
+id: 4acbed78-70f2-4b6e-a239-9319be8540c7
+status: experimental
+description: Detects DNS queries for names under a domain used by the lab exfiltration scenario. The correlation
+  layer escalates repeated long queries into a tunnel alert.
+references:
+- https://attack.mitre.org/techniques/T1071/004/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.command_and_control
+- attack.t1071.004
+logsource:
+  product: windows
+  category: dns
+detection:
+  selection:
+    QueryName|contains:
+    - .exfil.
+    - tunnel.example
+    - dns-exfil
+  condition: selection
+falsepositives:
+- Security testing of DNS filtering
+- Internal domains with similar labels
+level: medium

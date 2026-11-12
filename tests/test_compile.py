@@ -21,20 +21,40 @@ def test_windows_rules_use_ecs_fields():
     import re
 
     native = re.compile(r"(?<![A-Za-z0-9_.])(Image|CommandLine|ParentImage|TargetFilename):")
+    ecs_namespaces = ("winlog.", "process.", "file.", "registry.", "service.", "dns.", "network.")
     for rule in compile_all():
         if rule["logsource"].get("product") != "windows":
             continue
         query = rule["query"]
         # Sigma-native names must have been translated by the ECS pipeline.
         assert not native.search(query), f"{rule['title']} still uses Sigma-native fields: {query}"
-        assert "winlog." in query or "process." in query
+        assert any(namespace in query for namespace in ecs_namespaces), (
+            f"{rule['title']} uses no ECS namespace: {query}"
+        )
 
 
 def test_index_routing():
+    expected_by_product = {
+        "windows": "lab-windows",
+        "linux": "lab-linux",
+        "nginx": "lab-web",
+        "web": "lab-web",
+        "aws": "lab-cloud",
+        "network": "lab-network",
+    }
     for rule in compile_all():
         product = rule["logsource"].get("product")
-        expected = {"windows": "lab-windows", "linux": "lab-linux", "nginx": "lab-web"}.get(product, "lab-*")
+        expected = expected_by_product.get(product, "lab-*")
         assert expected in rule["index"], rule["title"]
+
+
+def test_library_has_expected_size():
+    assert len(compile_all()) >= 40
+
+
+def test_all_five_lab_indices_are_reachable():
+    indices = {index for rule in compile_all() for index in rule["index"]}
+    assert {"lab-windows", "lab-linux", "lab-web", "lab-cloud", "lab-network"} <= indices
 
 
 def test_compiled_output_is_current():

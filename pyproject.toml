@@ -1,5 +1,5 @@
 [project]
-name = "detection-forge"
+name = "signal-foundry"
 version = "0.1.0"
 description = "Detection-as-code portfolio: Sigma rules compiled to Elasticsearch EQL, with synthetic telemetry, interactive triage dashboard, and analyst case reports"
 requires-python = ">=3.11,<3.14"

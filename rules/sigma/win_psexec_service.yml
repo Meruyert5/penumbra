@@ -1,0 +1,28 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: PsExec Service Creation
+id: f42eb029-3b7c-489f-aaa5-e310226851c2
+status: experimental
+description: Detects the PSEXESVC service that PsExec installs on a remote host. This is a reliable signal
+  of remote execution with stolen administrative credentials.
+references:
+- https://attack.mitre.org/techniques/T1569/002/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.lateral_movement
+- attack.t1569.002
+logsource:
+  product: windows
+  service: system
+detection:
+  selection:
+    EventID: 7045
+    ServiceName|contains: PSEXESVC
+  selection_path:
+    EventID: 7045
+    ImagePath|contains: PSEXESVC
+  condition: 1 of selection_*
+falsepositives:
+- Administrators using PsExec for legitimate remote support
+- Some backup and deployment tools embed PSEXESVC
+level: high

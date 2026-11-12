@@ -1,0 +1,17 @@
+id: corr-dns-tunnel
+title: Sustained DNS Queries to an External Domain
+description: >
+  Twelve DNS queries from one host inside two minutes. Paired with long labels
+  under the same parent domain, the volume indicates DNS tunneling rather than
+  ordinary name resolution.
+level: high
+technique: T1071.004
+index: lab-windows
+match:
+  event.action: dns_query
+group_by: host.name
+window: 2m
+threshold: 12
+tags:
+  - attack.command_and_control
+  - attack.t1071.004

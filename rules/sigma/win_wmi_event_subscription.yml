@@ -1,0 +1,31 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: WMI Event Subscription Persistence
+id: ef58d3ad-a338-419e-bcba-2f0ab6376890
+status: experimental
+description: Detects creation of WMI event filters and consumers, a fileless persistence method that survives
+  reboot and is invisible to Run key checks.
+references:
+- https://attack.mitre.org/techniques/T1546/003/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.persistence
+- attack.t1546.003
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_wmic:
+    CommandLine|contains|all:
+    - root\subscription
+    - CommandLineEventConsumer
+  selection_ps:
+    CommandLine|contains:
+    - Register-WmiEvent
+    - __EventFilter
+    - CommandLineEventConsumer
+  condition: 1 of selection_*
+falsepositives:
+- Monitoring agents that register WMI subscriptions
+- Legitimate management automation
+level: high

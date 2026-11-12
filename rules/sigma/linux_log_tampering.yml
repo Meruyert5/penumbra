@@ -1,0 +1,29 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Linux Log File Tampering
+id: de7c6ec7-2b58-4a2b-88e4-e5a65987b270
+status: experimental
+description: Detects deletion or truncation of system logs. Removing auth or syslog data is a deliberate
+  defense-evasion step.
+references:
+- https://attack.mitre.org/techniques/T1070/002/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.defense_evasion
+- attack.t1070.002
+logsource:
+  product: linux
+  category: process_creation
+detection:
+  selection:
+    process.command_line|contains:
+    - rm -rf /var/log
+    - rm -f /var/log
+    - truncate -s 0 /var/log
+    - '> /var/log/auth.log'
+    - '> /var/log/syslog'
+  condition: selection
+falsepositives:
+- Log rotation scripts that use truncate
+- Disk cleanup during troubleshooting
+level: high

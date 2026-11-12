@@ -1,0 +1,18 @@
+id: corr-port-scan
+title: Horizontal Port Scan from One Source
+description: >
+  Twenty inbound connection attempts from one address inside a minute. The
+  source is sweeping ports rather than using a service, which is the signature
+  of discovery before exploitation.
+level: medium
+technique: T1046
+index: lab-network
+match:
+  event.action: network_flow
+  network.direction: inbound
+group_by: source.ip
+window: 1m
+threshold: 20
+tags:
+  - attack.discovery
+  - attack.t1046

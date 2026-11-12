@@ -1,0 +1,26 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Large Outbound Network Transfer
+id: 555e497d-29ff-490b-ac62-ca3fb6815853
+status: experimental
+description: Detects a single outbound flow larger than 10 MB. The threshold is deliberately high so normal
+  browsing and updates do not dominate the queue.
+references:
+- https://attack.mitre.org/techniques/T1041/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.exfiltration
+- attack.t1041
+logsource:
+  product: network
+  category: network
+detection:
+  selection_direction:
+    network.direction: outbound
+  selection_size:
+    network.bytes|gte: 10000000
+  condition: selection_direction and selection_size
+falsepositives:
+- Cloud backup and file synchronization
+- Large software updates
+level: high

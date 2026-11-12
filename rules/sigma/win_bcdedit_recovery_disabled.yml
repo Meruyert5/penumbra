@@ -1,0 +1,32 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Boot Recovery Disabled via BCDEdit
+id: 34f0ef8d-a4da-44a6-8ab2-c4b5c2b41f63
+status: experimental
+description: Detects changes that disable Windows recovery or ignore boot failures, which attackers use
+  to keep a host from booting into repair mode after encryption.
+references:
+- https://attack.mitre.org/techniques/T1490/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.impact
+- attack.t1490
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_recovery:
+    Image|endswith: \bcdedit.exe
+    CommandLine|contains|all:
+    - recoveryenabled
+    - 'no'
+  selection_bootstatus:
+    Image|endswith: \bcdedit.exe
+    CommandLine|contains|all:
+    - bootstatuspolicy
+    - ignoreallfailures
+  condition: 1 of selection_*
+falsepositives:
+- Disk imaging and recovery maintenance
+- Legitimate boot configuration changes
+level: high

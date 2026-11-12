@@ -23,3 +23,9 @@ products:
   web:
     index:
       - "lab-web"
+  aws:
+    index:
+      - "lab-cloud"
+  network:
+    index:
+      - "lab-network"

@@ -1,0 +1,24 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Cloud Access Key Created
+id: 40833a8d-d956-4614-b6b0-22aad6a70042
+status: experimental
+description: Detects creation of a new cloud access key. Attackers create keys after taking over an identity
+  so they can return without the original password.
+references:
+- https://attack.mitre.org/techniques/T1098/001/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.persistence
+- attack.t1098.001
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    event.action: CreateAccessKey
+  condition: selection
+falsepositives:
+- Automated key rotation
+- Infrastructure provisioning
+level: high

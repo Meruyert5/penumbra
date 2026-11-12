@@ -1,0 +1,28 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Ransomware Note Dropped on Disk
+id: 7e6e7920-6d80-484e-80d2-4ecdce55b372
+status: experimental
+description: Detects common ransom note filenames written by encryptors. A note alone is not proof of
+  encryption, so analysts should pivot on file writes and recovery deletion.
+references:
+- https://attack.mitre.org/techniques/T1486/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.impact
+- attack.t1486
+logsource:
+  product: windows
+  category: file_event
+detection:
+  selection:
+    TargetFilename|endswith:
+    - \READ_ME.txt
+    - \DECRYPT_INSTRUCTIONS.txt
+    - \HOW_TO_DECRYPT.html
+    - \RESTORE_FILES.txt
+  condition: selection
+falsepositives:
+- User-created documentation with similar names
+- Security awareness simulations
+level: critical

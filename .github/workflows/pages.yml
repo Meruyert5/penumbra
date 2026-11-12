@@ -1,4 +1,4 @@
-name: detection-pages
+name: signal-foundry-pages
 
 on:
   push:

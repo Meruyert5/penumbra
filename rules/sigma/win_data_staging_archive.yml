@@ -1,0 +1,28 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Data Staged with Archive Utility
+id: 25748cd0-c5b7-4c80-9318-fbce57680f82
+status: experimental
+description: Detects command-line archiving into a user-writable path. Attackers collect documents into
+  one archive before exfiltration.
+references:
+- https://attack.mitre.org/techniques/T1560/001/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.collection
+- attack.t1560.001
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    CommandLine|contains:
+    - 'rar a '
+    - '7z a '
+    - Compress-Archive
+    - 'makecab '
+  condition: selection
+falsepositives:
+- Users creating archives for legitimate backup
+- Software packaging scripts
+level: medium

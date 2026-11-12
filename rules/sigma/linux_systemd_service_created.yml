@@ -1,0 +1,28 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Systemd Service Unit Created
+id: 278fb8c7-6c30-40a1-9525-85391c1f67f0
+status: experimental
+description: Detects a new systemd unit in a system directory. Attackers use services for persistence
+  and to restart payloads after reboot.
+references:
+- https://attack.mitre.org/techniques/T1543/002/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.persistence
+- attack.t1543.002
+logsource:
+  product: linux
+  category: file_event
+detection:
+  selection_path:
+    file.path|contains:
+    - /etc/systemd/system/
+    - /lib/systemd/system/
+  selection_ext:
+    file.path|endswith: .service
+  condition: selection_path and selection_ext
+falsepositives:
+- Package installation and configuration management
+- Administrators adding a legitimate daemon
+level: high

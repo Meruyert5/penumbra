@@ -1,0 +1,26 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: LSASS Memory Dumped via Comsvcs
+id: 7b9d13fd-9437-4e70-858e-ff32e932b588
+status: experimental
+description: Detects the comsvcs.dll MiniDump technique, which abuses a signed Windows binary to write
+  LSASS memory to disk without dropping a credential-dumping tool.
+references:
+- https://attack.mitre.org/techniques/T1003/001/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.credential_access
+- attack.t1003.001
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    CommandLine|contains|all:
+    - comsvcs.dll
+    - MiniDump
+  condition: selection
+falsepositives:
+- Diagnostic memory dumps created by support tools
+- Endpoint protection crash collection
+level: critical

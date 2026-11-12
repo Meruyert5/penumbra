@@ -1,0 +1,29 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: SQL Injection Attempt in Web Request
+id: b62c9d2d-7e71-478c-84e0-b77b21202c88
+status: experimental
+description: Detects common SQL injection payloads in query strings. A single request is a probe; repeated
+  attempts from one source are escalated by correlation.
+references:
+- https://attack.mitre.org/techniques/T1190/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.initial_access
+- attack.t1190
+logsource:
+  product: nginx
+  category: web
+detection:
+  selection:
+    url.query|contains:
+    - union select
+    - ''' or 1=1'
+    - sleep(
+    - benchmark(
+    - information_schema
+  condition: selection
+falsepositives:
+- Security scanners and application penetration tests
+- Legacy applications that send SQL-like text in parameters
+level: medium

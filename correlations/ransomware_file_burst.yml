@@ -1,0 +1,17 @@
+id: corr-ransomware-file-burst
+title: High-Volume File Writes Consistent with Encryption
+description: >
+  Fifteen file writes on one host inside two minutes. Encryption changes files
+  far faster than a person edits documents, so the volume carries the signal
+  even when the extension is unknown.
+level: critical
+technique: T1486
+index: lab-windows
+match:
+  event.action: file_write
+group_by: host.name
+window: 2m
+threshold: 15
+tags:
+  - attack.impact
+  - attack.t1486

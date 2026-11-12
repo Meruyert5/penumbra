@@ -1,0 +1,29 @@
+# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+title: Mshta Executing Remote or Script Content
+id: dc638b8c-245c-403a-a713-fb52a6160067
+status: experimental
+description: Detects mshta.exe loading a remote URL or inline script. Mshta is a signed binary that can
+  execute VBScript or JScript outside the browser sandbox.
+references:
+- https://attack.mitre.org/techniques/T1218/005/
+author: Meruyert
+date: 2026/11/11
+tags:
+- attack.defense_evasion
+- attack.t1218.005
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    Image|endswith: \mshta.exe
+    CommandLine|contains:
+    - http://
+    - https://
+    - 'javascript:'
+    - 'vbscript:'
+  condition: selection
+falsepositives:
+- Legacy line-of-business applications built on HTA
+- Internal administrative scripts
+level: high

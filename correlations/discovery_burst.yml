@@ -1,0 +1,18 @@
+id: corr-discovery-burst
+title: Account and Domain Discovery Burst
+description: >
+  Four or more account or domain enumeration commands on one host inside five
+  minutes. A single command is common in administration; a burst maps the
+  environment before lateral movement.
+level: medium
+technique: T1087
+index: lab-windows
+match:
+  event.action: process_start
+  process.command_line|contains: "net "
+group_by: host.name
+window: 5m
+threshold: 4
+tags:
+  - attack.discovery
+  - attack.t1087

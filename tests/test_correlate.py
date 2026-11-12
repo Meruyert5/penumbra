@@ -65,3 +65,62 @@ def test_match_operators():
     assert matches(event, {"message|contains": "failed PASSWORD"})
     assert matches(event, {"event.outcome": "failure"})
     assert not matches(event, {"event.outcome": "success"})
+
+
+def _spray_spec() -> CorrelationSpec:
+    return CorrelationSpec(
+        id="corr-spray",
+        title="Password spray",
+        level="high",
+        technique="T1110.003",
+        group_by="source.ip",
+        window_seconds=parse_window("10m"),
+        threshold=8,
+        match={"message|contains": "Failed password"},
+        distinct_by="user.name",
+        distinct_threshold=5,
+    )
+
+
+def _failed_login_for(user: str, offset_seconds: int, ip: str = "198.51.100.23") -> dict:
+    return {
+        "@timestamp": (BASE + timedelta(seconds=offset_seconds)).isoformat().replace("+00:00", "Z"),
+        "source": {"ip": ip},
+        "user": {"name": user},
+        "message": f"Failed password for invalid user {user} from {ip} port 50000 ssh2",
+    }
+
+
+def test_distinct_threshold_blocks_single_account_bruteforce():
+    events = [_failed_login_for("root", index * 20) for index in range(12)]
+    assert correlate(events, [_spray_spec()]) == []
+
+
+def test_distinct_threshold_allows_spray_across_accounts():
+    users = ["root", "admin", "deploy", "oracle", "postgres", "ubuntu"]
+    events = [_failed_login_for(users[index % len(users)], index * 20) for index in range(12)]
+    alerts = correlate(events, [_spray_spec()])
+    assert len(alerts) == 1
+    assert alerts[0]["distinct_count"] == len(users)
+    assert alerts[0]["distinct_threshold"] == 5
+
+
+def test_committed_correlations_load_and_fire():
+    from pipeline.correlate import load_specs
+    from pipeline.labgen import generate
+
+    specs = load_specs()
+    assert len(specs) >= 8
+    assert {spec.id for spec in specs} >= {
+        "corr-password-spray",
+        "corr-port-scan",
+        "corr-ransomware-file-burst",
+        "corr-dns-tunnel",
+    }
+    data = generate("all", seed=42, base_time=BASE)
+    fired = set()
+    for spec in specs:
+        events = data.get(spec.index.replace("lab-", ""), [])
+        for alert in correlate(events, [spec]):
+            fired.add(alert["correlation_id"])
+    assert len(fired) == len(specs), f"unfired correlations: {set(s.id for s in specs) - fired}"

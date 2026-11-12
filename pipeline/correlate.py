@@ -38,6 +38,8 @@ class CorrelationSpec:
     index: str = "lab-*"
     description: str = ""
     tags: list[str] = field(default_factory=list)
+    distinct_by: str | None = None
+    distinct_threshold: int = 0
 
 
 def parse_window(value: str | int) -> int:
@@ -116,8 +118,19 @@ def correlate(events: Iterable[dict[str, Any]], specs: Iterable[CorrelationSpec]
             for right in range(len(items)):
                 while items[right][0] - items[left][0] > timedelta(seconds=spec.window_seconds):
                     left += 1
-                count = right - left + 1
-                if count >= spec.threshold:
+                window = items[left : right + 1]
+                count = len(window)
+                distinct_count = 0
+                if spec.distinct_by:
+                    distinct_count = len(
+                        {
+                            str(get_field(item[1], spec.distinct_by))
+                            for item in window
+                            if get_field(item[1], spec.distinct_by) is not None
+                        }
+                    )
+                distinct_ok = not spec.distinct_by or distinct_count >= spec.distinct_threshold
+                if count >= spec.threshold and distinct_ok:
                     alerts.append(
                         {
                             "correlation_id": spec.id,
@@ -128,9 +141,12 @@ def correlate(events: Iterable[dict[str, Any]], specs: Iterable[CorrelationSpec]
                             "group_value": group_value,
                             "count": count,
                             "threshold": spec.threshold,
+                            "distinct_by": spec.distinct_by,
+                            "distinct_count": distinct_count,
+                            "distinct_threshold": spec.distinct_threshold,
                             "window_seconds": spec.window_seconds,
-                            "first_seen": items[left][0].isoformat().replace("+00:00", "Z"),
-                            "last_seen": items[right][0].isoformat().replace("+00:00", "Z"),
+                            "first_seen": window[0][0].isoformat().replace("+00:00", "Z"),
+                            "last_seen": window[-1][0].isoformat().replace("+00:00", "Z"),
                             "index": spec.index,
                         }
                     )
@@ -157,6 +173,8 @@ def load_specs(directory: Path | None = None) -> list[CorrelationSpec]:
                 index=data.get("index", "lab-*"),
                 description=" ".join(str(data.get("description", "")).split()),
                 tags=data.get("tags") or [],
+                distinct_by=data.get("distinct_by"),
+                distinct_threshold=int(data.get("distinct_threshold", 0)),
             )
         )
     return specs

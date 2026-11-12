@@ -1,0 +1,16 @@
+id: corr-web-scan
+title: Web Enumeration from One Source
+description: >
+  Twenty requests from one address inside a minute. That rate is a scanner
+  walking paths, not a browser loading a page and its assets.
+level: low
+technique: T1595.002
+index: lab-web
+match:
+  event.action: web_request
+group_by: source.ip
+window: 1m
+threshold: 20
+tags:
+  - attack.reconnaissance
+  - attack.t1595.002

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from pipeline.labgen import ATTACKER, generate
+from pipeline.labgen import ATTACKER, SCENARIOS, generate
 
 BASE = datetime(2026, 11, 11, 12, 0, tzinfo=timezone.utc)
 
@@ -56,3 +56,25 @@ def test_baseline_is_benign():
     # Isolated failed logins are realistic noise, but must not trip the threshold.
     assert correlate(data["linux"], load_specs()) == []
     assert all(event.get("event", {}).get("outcome") != "failure" for event in data["web"])
+
+
+def test_scenario_catalogue_is_large_and_unique():
+    assert len(SCENARIOS) >= 25
+    assert len(set(SCENARIOS)) == len(SCENARIOS)
+    assert "baseline" in SCENARIOS
+
+
+def test_all_run_produces_five_sources():
+    data = generate("all", seed=42, base_time=BASE)
+    assert set(data) == {"windows", "linux", "web", "cloud", "network"}
+    assert all(events for events in data.values())
+    total = sum(len(events) for events in data.values())
+    assert total >= 2000
+
+
+def test_every_event_has_dataset_and_action():
+    data = generate("all", seed=42, base_time=BASE)
+    for events in data.values():
+        for event in events:
+            assert event.get("event", {}).get("dataset"), event
+            assert event.get("event", {}).get("action"), event
