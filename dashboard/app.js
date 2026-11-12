@@ -140,32 +140,31 @@
   $("#railErrors").textContent = errors.length + " execution errors";
   $("#coverRunLine").textContent = "Run 001 / " + (meta.window_end ? meta.window_end.slice(0, 10) : "dated run");
   $("#ticketWindow").textContent = (meta.window_hours || 24) + " hour window";
-  $("#footerGenerated").textContent = "generated " + (meta.generated ? meta.generated.slice(0, 16).replace("T", " ") + "Z" : "");
   $("#railEvents").dataset.count = String(meta.events_indexed || 0);
   $("#railRules").dataset.count = String(meta.sigma_rules || 0);
   $("#railCorr").dataset.count = String(meta.correlation_specs || 0);
 
   const coverFacts = [
-    { value: number((DATA.alerts || []).length), label: "detections" },
-    { value: number((DATA.correlations || []).length), label: "correlations" },
-    { value: number(severity.critical || 0), label: "critical detections" },
-    { value: (meta.covered_priority || 0) + "/" + (meta.priority_techniques || 0), label: "priority coverage" },
-    { value: number(errors.length), label: "execution errors" }
+    { value: number((DATA.alerts || []).length), label: "detections", tone: "" },
+    { value: number((DATA.correlations || []).length), label: "correlations", tone: "signal" },
+    { value: number(severity.critical || 0), label: "critical detections", tone: "critical" },
+    { value: (meta.covered_priority || 0) + "/" + (meta.priority_techniques || 0), label: "priority coverage", tone: "forest" },
+    { value: number(errors.length), label: "execution errors", tone: "" }
   ];
   $("#coverFoot").innerHTML = coverFacts.map((fact) => (
-    '<div class="cf"><b>' + esc(fact.value) + "</b><span>" + esc(fact.label) + "</span></div>"
+    '<div class="cf"><b' + (fact.tone ? ' class="tone-' + fact.tone + '"' : "") + '>' + esc(fact.value) + "</b><span>" + esc(fact.label) + "</span></div>"
   )).join("");
 
   const timeline = (DATA.timeline || []).filter((row) => row && row.hour);
   const factLine = [
-    { value: number((DATA.alerts || []).length), label: "detections" },
-    { value: number((DATA.correlations || []).length), label: "correlations" },
-    { value: number(severity.critical || 0), label: "critical detections" },
-    { value: number(timeline.length), label: "hourly buckets" },
-    { value: number(errors.length), label: "execution errors" }
+    { value: number((DATA.alerts || []).length), label: "detections", tone: "" },
+    { value: number((DATA.correlations || []).length), label: "correlations", tone: "signal" },
+    { value: number(severity.critical || 0), label: "critical detections", tone: "critical" },
+    { value: number(timeline.length), label: "hourly buckets", tone: "" },
+    { value: number(errors.length), label: "execution errors", tone: "" }
   ];
   $("#factLine").innerHTML = factLine.map((fact) => (
-    '<div class="fact"><b>' + esc(fact.value) + "</b><span>" + esc(fact.label) + "</span></div>"
+    '<div class="fact"><b' + (fact.tone ? ' class="tone-' + fact.tone + '"' : "") + '>' + esc(fact.value) + "</b><span>" + esc(fact.label) + "</span></div>"
   )).join("");
 
   /* ------------------------------------------------------------- scope chart */
@@ -398,15 +397,32 @@
       });
     }
 
-    const sweep = svgNode("rect", {
-      class: "chart-sweep",
+    if (totals[peakIndex] > 0) {
+      const peakX = x(peakIndex).toFixed(1);
+      const peakY = y(totals[peakIndex]).toFixed(1);
+      chart.appendChild(svgNode("circle", {
+        class: "peak-halo",
+        cx: peakX,
+        cy: peakY,
+        r: "6"
+      }));
+      chart.appendChild(svgNode("circle", {
+        class: "peak-dot",
+        cx: peakX,
+        cy: peakY,
+        r: "2.6"
+      }));
+    }
+
+    const scan = svgNode("rect", {
+      class: "chart-scan",
       x: left,
       y: top,
-      width: "1",
+      width: "1.5",
       height: plotH
     });
-    sweep.style.setProperty("--sweep-w", plotW + "px");
-    chart.appendChild(sweep);
+    scan.style.setProperty("--sweep-w", plotW + "px");
+    chart.appendChild(scan);
 
     const labels = svgNode("g", { class: "chart-axis" });
     const showEvery = width < 560 ? 2 : 1;
@@ -531,13 +547,14 @@
     replayTimer = window.setTimeout(() => {
       replayChart();
       scheduleReplay();
-    }, 9000);
+    }, 8000);
   }
 
   if (!reduce && "IntersectionObserver" in window) {
     const chartObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         chartVisible = entry.isIntersecting;
+        chartPlate.classList.toggle("live", chartVisible);
         if (chartVisible) {
           if (!chartSeen) {
             chartSeen = true;
@@ -876,8 +893,8 @@
   $("#coverageCovered").textContent = "0";
   $("#coverageTotal").textContent = String(coverage.priority || 0);
   $("#coverageNote").textContent = (coverage.covered || 0) + " covered / " + (coverage.gaps || []).length + " gaps";
-  $("#coverageGauge").innerHTML = allTiles.map((tile) => (
-    '<span class="gauge-tick ' + (tile.level ? "on" : "gap") + '" title="' + esc(tile.technique + " " + tile.name + (tile.level ? " / covered" : " / gap")) + '"></span>'
+  $("#coverageGauge").innerHTML = allTiles.map((tile, index) => (
+    '<span class="gauge-tick ' + (tile.level ? "on" : "gap") + '" style="--i:' + index + '" title="' + esc(tile.technique + " " + tile.name + (tile.level ? " / covered" : " / gap")) + '"></span>'
   )).join("");
 
   function renderMatrix() {

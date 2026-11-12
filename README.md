@@ -124,6 +124,12 @@ Omit `--end` for a live run against current telemetry.
 
 The source is split for maintenance: [`dashboard/template.html`](dashboard/template.html), [`dashboard/styles.css`](dashboard/styles.css), [`dashboard/app.js`](dashboard/app.js), and [`dashboard/icon.svg`](dashboard/icon.svg), with locally embedded WOFF2 files in [`dashboard/fonts/`](dashboard/fonts). The report step inlines the source and the fonts into one HTML file.
 
+The night theme keeps the run ticket as a physical paper receipt, raises the card surfaces off the page, and uses signal cyan for live state.
+
+<p align="center">
+  <img src="docs/assets/dashboard-night.png" alt="Signal Foundry in the night theme, showing the detection ledger" width="820">
+</p>
+
 ---
 
 ## ATT&CK coverage
