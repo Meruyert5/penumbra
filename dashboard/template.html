@@ -22,7 +22,7 @@
 <style>/*FONTS*//*STYLES*/</style>
 </head>
 <body>
-<a class="skip" href="#ledger">Skip to the detection ledger</a>
+<a class="skip" href="#ledger">Skip to the watch floor</a>
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <aside class="rail" aria-label="Field guide contents">
@@ -38,7 +38,7 @@
       <a href="#cover" data-chapter="cover" class="active" aria-current="location"><span class="n">00</span><span class="t">Cover</span></a>
       <a href="#run" data-chapter="run"><span class="n">01</span><span class="t">The run</span></a>
       <a href="#method" data-chapter="method"><span class="n">02</span><span class="t">Method</span></a>
-      <a href="#ledger" data-chapter="ledger"><span class="n">03</span><span class="t">Ledger</span></a>
+      <a href="#ledger" data-chapter="ledger"><span class="n">03</span><span class="t">Watch floor</span></a>
       <a href="#coverage" data-chapter="coverage"><span class="n">04</span><span class="t">Coverage</span></a>
       <a href="#cases" data-chapter="cases"><span class="n">05</span><span class="t">Cases</span></a>
       <a href="#reproduce" data-chapter="reproduce"><span class="n">06</span><span class="t">Proof</span></a>
@@ -81,13 +81,13 @@
           <span class="line"><span>Keep the <em>evidence.</em></span></span>
         </h1>
         <p class="lede">
-          One deterministic run through a 44-rule Sigma library. Raw telemetry becomes
+          One deterministic run through a 50-rule Sigma library. Raw telemetry becomes
           Elasticsearch EQL matches, correlations, and three defensible case files.
           Every number on this page traces back to an event and the query that found it.
         </p>
         <div class="cover-actions">
           <a class="btn primary" href="#ledger">
-            Open the ledger
+            Open the watch floor
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
           <button class="btn" id="tourBtn" type="button">Guided reading</button>
@@ -120,11 +120,11 @@
       <span class="chapter-no" aria-hidden="true">01</span>
       <div class="chapter-intro">
         <p class="chapter-label">The run</p>
-        <h2>A quiet baseline, then one loud hour.</h2>
+        <h2>Quiet hours, then several loud ones.</h2>
         <p class="chapter-lede">
-          Eleven hourly buckets. Three isolated events sit in the quiet hours; 167 matched
-          events land in the 11:00 hour as the multi-stage scenario unfolds. The shape matters:
-          a rule that fires on everything cannot discriminate.
+          The run spans a full day. Matched events land in several hours as the scenario
+          set unfolds, with quiet stretches between the bursts. The shape matters: a rule
+          that fires on everything cannot discriminate.
         </p>
       </div>
     </header>
@@ -172,19 +172,28 @@
     <header class="chapter-head" data-reveal>
       <span class="chapter-no" aria-hidden="true">03</span>
       <div class="chapter-intro">
-        <p class="chapter-label">Ledger</p>
+        <p class="chapter-label">Watch floor</p>
         <h2>The queue, with the query attached.</h2>
         <p class="chapter-lede">
-          Every row carries its evidence. Filter by severity, host, or technique, open a row
-          for the matching events and the exact EQL, or switch to correlations to see what
-          single events miss.
+          Filter by severity, host, or technique. Select a transient to keep its events and
+          exact EQL beside the queue. Host lanes show where the hour landed, and the
+          coincidence strip shows what single events miss.
         </p>
       </div>
     </header>
 
-    <div class="ledger" id="ledgerPanel" data-reveal>
+    <div class="ledger watchfloor" id="ledgerPanel" data-reveal>
+      <div class="wf-status">
+        <span class="wf-live"><i aria-hidden="true"></i>Watch floor</span>
+        <span>24h window</span>
+        <span><b id="wfDetections">0</b> detections</span>
+        <span><b id="wfCorrelations">0</b> coincidences</span>
+        <span><b id="wfErrors">0</b> execution errors</span>
+        <span class="wf-clock" id="wfClock">window loading</span>
+      </div>
+
       <div class="ledger-bar">
-        <div class="ledger-tabs" role="tablist" aria-label="Detection type">
+        <div class="ledger-tabs" role="tablist" aria-label="Watch floor rows">
           <button class="ledger-tab active" id="tabDetections" type="button" role="tab" aria-selected="true" aria-controls="ledgerBody">
             Detections <span class="tab-n" id="tabDetectionsN">0</span>
           </button>
@@ -212,13 +221,30 @@
           <option value="time">sort: newest</option>
           <option value="count">sort: volume</option>
         </select>
-        <label class="sr-only" for="search">Search detections</label>
+        <label class="sr-only" for="search">Search the watch floor</label>
         <input class="field search" id="search" type="search" placeholder="search title, technique, host  ( / )" autocomplete="off">
       </div>
 
       <div class="active-filters" id="activeFilters"></div>
-      <div class="ledger-keys"><span><kbd>J</kbd><kbd>K</kbd> move</span><span><kbd>Enter</kbd> open</span><span><kbd>Esc</kbd> close</span></div>
-      <div class="ledger-body" id="ledgerBody"></div>
+      <div class="ledger-keys"><span><kbd>J</kbd><kbd>K</kbd> move</span><span><kbd>Enter</kbd> select</span><span><kbd>Esc</kbd> clear</span></div>
+
+      <div class="wf-grid">
+        <div class="wf-queue">
+          <div class="wf-queue-head"><span>Queue</span><span id="wfQueueHint">loading</span></div>
+          <div class="ledger-body" id="ledgerBody"></div>
+        </div>
+        <aside class="wf-inspector" id="wfInspector" aria-live="polite"></aside>
+      </div>
+
+      <div class="wf-lanes">
+        <div class="wf-section-head"><span>Host lanes / detection marks</span><span id="wfLaneHint">loading</span></div>
+        <div class="wf-lane-list" id="wfLaneList"></div>
+      </div>
+
+      <div class="wf-corr">
+        <div class="wf-section-head"><span>Coincidence strip / volume conditions</span><span id="wfCorrHint">loading</span></div>
+        <div class="wf-corr-grid" id="wfCorrGrid"></div>
+      </div>
     </div>
   </section>
 
@@ -227,10 +253,10 @@
       <span class="chapter-no" aria-hidden="true">04</span>
       <div class="chapter-intro">
         <p class="chapter-label">Coverage</p>
-        <h2>Coverage with the gaps left visible.</h2>
+        <h2>Every priority technique observed.</h2>
         <p class="chapter-lede">
-          Priority techniques only. Filled ticks name the rule that closes them. Hatched tiles
-          are the next rules to write, not omissions hidden inside a percentage.
+          All 45 priority techniques are covered. Filled ticks name the rule or correlation
+          that closes them; the gaps view stays available as a regression check.
         </p>
       </div>
     </header>
@@ -248,7 +274,7 @@
     </div>
 
     <div class="matrix" id="matrix" data-reveal></div>
-    <p class="matrix-note" id="matrixNote">Click a tile to filter the ledger by that technique.</p>
+    <p class="matrix-note" id="matrixNote">Click a tile to filter the watch floor by that technique.</p>
   </section>
 
   <section class="chapter" id="cases">
@@ -275,7 +301,7 @@
         <h2>Same seed. Same queue.</h2>
         <p class="chapter-lede">
           The lab needs Python 3.11 and Docker. Generation is deterministic, so the same
-          commands produce the same 2,182 events, the same 44 detections, and this same page.
+          commands produce the same event field, the same detections, and this same page.
         </p>
       </div>
     </header>
@@ -327,7 +353,7 @@
       <button class="mini" id="paletteClose" type="button">esc</button>
     </div>
     <label class="sr-only" for="paletteInput">Filter commands</label>
-    <input id="paletteInput" type="text" placeholder="Jump to a chapter, filter the ledger, open a case file" autocomplete="off" spellcheck="false">
+    <input id="paletteInput" type="text" placeholder="Jump to a chapter, filter the watch floor, open a case file" autocomplete="off" spellcheck="false">
     <div class="palette-list" id="paletteList" role="listbox" aria-label="Available commands"></div>
     <div class="palette-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>Enter</kbd> run</span><span><kbd>Esc</kbd> close</span></div>
   </div>
@@ -338,7 +364,7 @@
     <div class="modal-head"><h2 id="keysTitle">Keyboard</h2><button class="mini" id="keysClose" type="button">close</button></div>
     <p>The guide works without a mouse. The guided reading works without a keyboard.</p>
     <div class="shortcut-row"><span>Command palette</span><span><kbd class="cmd-key">Ctrl</kbd><kbd>K</kbd></span></div>
-    <div class="shortcut-row"><span>Search the ledger</span><span><kbd>/</kbd></span></div>
+    <div class="shortcut-row"><span>Search the watch floor</span><span><kbd>/</kbd></span></div>
     <div class="shortcut-row"><span>Move between rows</span><span><kbd>J</kbd><kbd>K</kbd></span></div>
     <div class="shortcut-row"><span>Open a row</span><span><kbd>Enter</kbd></span></div>
     <div class="shortcut-row"><span>Switch theme</span><span><kbd>T</kbd></span></div>
@@ -354,7 +380,7 @@
 
 <div class="tour-spot" id="tourSpot" aria-hidden="true"></div>
 <div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle" aria-hidden="true" tabindex="-1">
-  <div class="tour-kicker"><span id="tourStep">01 / 07</span><button class="mini" id="tourClose" type="button">close</button></div>
+  <div class="tour-kicker"><span id="tourStep">01 / 09</span><button class="mini" id="tourClose" type="button">close</button></div>
   <h3 id="tourTitle">Start here</h3>
   <p id="tourBody"></p>
   <div class="tour-dots" id="tourDots" aria-hidden="true"></div>

@@ -157,6 +157,23 @@ def test_html_inlines_every_source_and_has_no_placeholders(tmp_path):
     assert 'aria-pressed="true"' in html
 
 
+def test_html_embeds_watch_floor(tmp_path):
+    payload = build_payload(
+        _write_alerts(tmp_path),
+        RULES,
+        CASES,
+    )
+    source = load_dashboard_source()
+    html = build_html(payload, source)
+    assert "Watch floor" in html
+    assert 'id="wfInspector"' in html
+    assert 'id="wfLaneList"' in html
+    assert 'id="wfCorrGrid"' in html
+    assert "Host lanes / detection marks" in html
+    assert "Coincidence strip / volume conditions" in html
+    assert 'aria-controls="ledgerBody"' in html
+
+
 def test_case_reports_are_published(tmp_path):
     cases = load_cases(CASES)
     copied = copy_case_reports(cases, tmp_path)

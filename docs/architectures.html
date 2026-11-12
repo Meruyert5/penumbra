@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Three architectures / one detection run</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f2eee4;
+    --paper: #faf7ef;
+    --ink: #16130e;
+    --ink-2: #3e382e;
+    --muted: #736b5c;
+    --line: #cabfa9;
+    --line-soft: #ddd4c2;
+    --rust: #b6462f;
+    --rust-2: #8d3322;
+    --olive: #68704f;
+    --gold: #b68a34;
+    --sans: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --ui: "Bahnschrift", "Segoe UI", system-ui, sans-serif;
+    --mono: "Cascadia Mono", "Cascadia Code", Consolas, monospace;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1100px 700px at 88% -8%, rgba(182, 70, 47, 0.07), transparent 62%),
+      radial-gradient(900px 600px at -5% 110%, rgba(104, 112, 79, 0.07), transparent 60%),
+      var(--bg);
+    color: var(--ink);
+    font: 16px/1.6 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.22;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+  a { color: var(--rust); text-decoration: none; }
+  a:hover { color: var(--rust-2); }
+  :focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+  ::selection { background: var(--rust); color: var(--paper); }
+  .wrap { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 26px 24px 64px; }
+
+  .top { display: flex; align-items: center; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 9px; }
+  .brand svg { width: 28px; height: 28px; }
+  .brand b { font: 600 15px/1 var(--ui); letter-spacing: 0.11em; text-transform: uppercase; }
+  .brand span { color: var(--muted); font: 500 8.5px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
+  .grow { flex: 1; }
+  .top-meta { color: var(--muted); font: 500 8.5px/1.4 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+  .top-meta b { color: var(--ink-2); font-weight: 500; }
+
+  .intro { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr); gap: clamp(28px, 5vw, 72px); align-items: end; padding: clamp(44px, 7vw, 94px) 0 0; }
+  .kicker { display: flex; align-items: center; gap: 10px; margin: 0 0 18px; color: var(--rust); font: 500 9.5px/1.3 var(--mono); letter-spacing: 0.13em; text-transform: uppercase; }
+  .kicker i { width: 32px; height: 1px; background: var(--rust); }
+  h1 { margin: 0; max-width: 13ch; font: 400 clamp(54px, 8vw, 118px)/0.84 var(--sans); letter-spacing: -0.06em; text-wrap: balance; }
+  h1 em { color: var(--rust); font-style: italic; }
+  .intro p { max-width: 59ch; margin: 22px 0 0; color: var(--ink-2); font-size: clamp(16px, 1.4vw, 18.5px); line-height: 1.55; text-wrap: pretty; }
+  .intro-note { padding: 18px 18px 16px; border: 1px solid var(--ink); background: rgba(250,247,239,0.55); }
+  .intro-note h2 { margin: 0 0 9px; color: var(--muted); font: 500 8px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+  .intro-note p { margin: 0; color: var(--ink-2); font: 500 9px/1.7 var(--mono); letter-spacing: 0.02em; }
+  .intro-note b { color: var(--ink); font-weight: 500; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: clamp(34px, 5vw, 56px); }
+  .intro > *, .cards > *, .compare-grid > *, .note > *, .card, .visual { min-width: 0; }
+  .visual svg { max-width: 100%; }
+  .card { display: flex; flex-direction: column; border: 1px solid var(--line); background: var(--paper); color: var(--ink); transition: transform 0.25s var(--ease), box-shadow 0.25s ease, border-color 0.25s ease; }
+  .card:hover { transform: translateY(-4px); border-color: var(--ink-2); box-shadow: 0 24px 54px rgba(40, 32, 18, 0.13); color: var(--ink); }
+  .card:focus-visible { border-color: var(--rust); }
+  .visual { position: relative; height: 230px; overflow: hidden; border-bottom: 1px solid var(--line); background: #17130e; }
+  .visual .tag { position: absolute; top: 12px; left: 12px; z-index: 2; padding: 4px 7px; background: var(--paper); color: var(--ink); font: 500 7px/1 var(--mono); letter-spacing: 0.09em; text-transform: uppercase; }
+  .visual svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  .watch-visual { background: #0c0f0d; }
+  .watch-visual .grid { fill: none; stroke: #2a342d; stroke-width: 0.6; }
+  .watch-visual .bar { fill: #9ee7b0; opacity: 0.26; stroke: #9ee7b0; stroke-width: 0.7; }
+  .watch-visual .peak { fill: #e5b567; opacity: 0.3; stroke: #e5b567; stroke-width: 0.8; }
+  .watch-visual .row { fill: #9ee7b0; opacity: 0.35; }
+  .watch-visual .row.hot { fill: #e5b567; opacity: 0.7; }
+  .watch-visual .line { stroke: #72d3c8; stroke-width: 0.8; opacity: 0.6; }
+
+  .graph-visual { background: #0b0910; }
+  .graph-visual .edge { stroke: #e9c46a; stroke-width: 0.6; opacity: 0.35; }
+  .graph-visual .edge.tech { stroke: #a99be8; opacity: 0.26; }
+  .graph-visual .node { fill: #72d3c8; }
+  .graph-visual .node.case { fill: #e9c46a; }
+  .graph-visual .node.tech { fill: #a99be8; }
+  .graph-visual .ring { fill: none; stroke: #e9c46a; stroke-width: 0.6; opacity: 0.4; stroke-dasharray: 2 3; }
+
+  .brief-visual { background: #efe9dc; }
+  .brief-visual .sheet { fill: #f7f3e9; stroke: #c9bfab; stroke-width: 0.8; }
+  .brief-visual .sheet.back { fill: #e7dfcf; }
+  .brief-visual .ink { fill: #171410; }
+  .brief-visual .rust { fill: #b6462f; }
+  .brief-visual .rule { stroke: #c9bfab; stroke-width: 0.7; }
+  .brief-visual .small { fill: #746c5d; }
+
+  .card-body { display: flex; flex-direction: column; flex: 1; padding: 18px 18px 16px; }
+  .card-top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; color: var(--muted); font: 500 7.5px/1.3 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+  .card-top b { color: var(--rust); font-weight: 500; }
+  .card h2 { margin: 10px 0 7px; font: 400 clamp(28px, 2.8vw, 38px)/1 var(--sans); letter-spacing: -0.035em; }
+  .card p { flex: 1; margin: 0; color: var(--ink-2); font-size: 14px; line-height: 1.55; text-wrap: pretty; }
+  .card-foot { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-top: 16px; padding-top: 11px; border-top: 1px solid var(--line); color: var(--muted); font: 500 7.5px/1.4 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; }
+  .card-foot b { color: var(--rust); font-weight: 500; }
+
+  .compare { margin-top: clamp(48px, 7vw, 86px); }
+  .compare h2 { margin: 0 0 8px; font: 400 clamp(30px, 3.6vw, 46px)/1 var(--sans); letter-spacing: -0.04em; }
+  .compare > p { margin: 0 0 22px; max-width: 62ch; color: var(--muted); font-size: 14px; }
+  .compare-grid { display: grid; grid-template-columns: 150px repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .compare-grid > div { padding: 12px 13px; border-bottom: 1px solid var(--line-soft); color: var(--ink-2); font-size: 13px; line-height: 1.5; }
+  .compare-grid .head { background: rgba(250,247,239,0.5); color: var(--muted); font: 500 7.5px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .compare-grid .head.watch { color: #4f7f5c; }
+  .compare-grid .head.graph { color: #76579c; }
+  .compare-grid .head.brief { color: var(--rust); }
+  .compare-grid .label { color: var(--ink); font: 500 8.5px/1.5 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; background: rgba(250,247,239,0.4); }
+
+  .note { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(260px, 0.9fr); gap: 24px; margin-top: clamp(42px, 6vw, 70px); padding-top: 22px; border-top: 1px solid var(--line); }
+  .note h2 { margin: 0 0 8px; font: 400 clamp(26px, 3vw, 38px)/1.02 var(--sans); letter-spacing: -0.035em; }
+  .note p { margin: 0; max-width: 62ch; color: var(--ink-2); font-size: 14px; line-height: 1.6; }
+  .note-actions { display: flex; flex-wrap: wrap; gap: 8px; align-content: start; justify-content: flex-end; }
+  .note-actions a { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 12px; border: 1px solid var(--line); color: var(--ink-2); font: 500 8px/1 var(--mono); letter-spacing: 0.05em; text-transform: uppercase; }
+  .note-actions a:hover { border-color: var(--rust); color: var(--rust); }
+  .note-actions a.primary { border-color: var(--rust); background: var(--rust); color: var(--paper); }
+
+  .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; margin-top: clamp(44px, 6vw, 72px); padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font: 500 8.5px/1.7 var(--mono); letter-spacing: 0.03em; }
+  .foot a { color: var(--ink-2); }
+  .foot a:hover { color: var(--rust); }
+
+  @media (max-width: 1080px) {
+    .intro { grid-template-columns: 1fr; }
+    .intro-note { max-width: 520px; }
+    .cards { grid-template-columns: 1fr; }
+    .visual { height: 260px; }
+    .compare-grid { grid-template-columns: 120px repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 760px) {
+    html, body { overflow-x: hidden; }
+    .wrap { padding: 18px 14px 48px; }
+    .top-meta { display: none; }
+    h1 { font-size: clamp(38px, 11vw, 62px); overflow-wrap: anywhere; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .compare-grid .head:not(.label) { display: none; }
+    .compare-grid .label { border-bottom: 0; padding-bottom: 2px; }
+    .compare-grid .label::after { content: " / watch floor · intrusion graph · shift briefing"; color: var(--muted); }
+    .compare-grid .cell { border-left: 2px solid var(--line); }
+    .compare-grid .cell.watch { border-left-color: #9ee7b0; }
+    .compare-grid .cell.graph { border-left-color: #a99be8; }
+    .compare-grid .cell.brief { border-left-color: var(--rust); }
+    .compare-grid .cell::before { content: "— "; color: var(--muted); }
+    .note { grid-template-columns: 1fr; }
+    .note-actions { justify-content: flex-start; }
+    .foot { flex-direction: column; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 28 28" aria-hidden="true"><rect x="1" y="1" width="26" height="26" fill="none" stroke="#16130e" stroke-opacity=".5"/><path d="M5 18h4l2-7 3 12 2-8 2 4h5" fill="none" stroke="#b6462f" stroke-width="1.7"/><circle cx="23" cy="7" r="1.7" fill="#b68a34"/></svg>
+      <b>Transient</b><span>architecture studies</span>
+    </div>
+    <span class="grow"></span>
+    <span class="top-meta">Study snapshot / <b>2,182 events</b> / 11 Nov 2026</span>
+  </header>
+
+  <section class="intro">
+    <div>
+      <p class="kicker"><i></i>Three ways to read one run</p>
+      <h1>Same evidence.<br>Three <em>instruments.</em></h1>
+      <p>The decision is in: the Watch Floor is now embedded in Signal Foundry. These three pages remain as architecture studies: a console, a map, and a briefing. Each reads the same 44 detections, 9 correlations, 3 discoveries, and 39/45 coverage. Open one at a time; the point is the architecture.</p>
+    </div>
+    <aside class="intro-note">
+      <h2>What stays constant</h2>
+      <p><b>2,182</b> synthetic events<br><b>44</b> Sigma rules → 44 detections<br><b>9</b> correlation specs<br><b>3</b> true-positive discoveries<br><b>39/45</b> priority techniques covered<br><b>0</b> execution errors</p>
+    </aside>
+  </section>
+
+  <section class="cards" aria-label="Architecture demos">
+    <a class="card" href="arch-watch.html">
+      <div class="visual watch-visual">
+        <span class="tag">01 / Console</span>
+        <svg viewBox="0 0 420 230" aria-hidden="true" preserveAspectRatio="none">
+          <rect class="grid" x="12" y="12" width="396" height="206"></rect>
+          <rect class="grid" x="12" y="12" width="96" height="206"></rect>
+          <rect class="grid" x="312" y="12" width="96" height="206"></rect>
+          <rect class="line" x="120" y="48" width="180" height="1"></rect>
+          <rect class="bar" x="128" y="170" width="16" height="22"></rect>
+          <rect class="bar" x="172" y="166" width="16" height="26"></rect>
+          <rect class="bar" x="216" y="172" width="16" height="20"></rect>
+          <rect class="peak" x="258" y="58" width="20" height="134"></rect>
+          <rect class="line" x="120" y="194" width="182" height="1"></rect>
+          <rect class="row" x="24" y="42" width="66" height="3"></rect>
+          <rect class="row" x="24" y="56" width="52" height="3"></rect>
+          <rect class="row" x="24" y="70" width="72" height="3"></rect>
+          <rect class="row" x="24" y="84" width="44" height="3"></rect>
+          <rect class="row" x="24" y="98" width="60" height="3"></rect>
+          <rect class="row hot" x="24" y="118" width="70" height="3"></rect>
+          <rect class="row" x="24" y="132" width="50" height="3"></rect>
+          <rect class="row" x="24" y="146" width="64" height="3"></rect>
+          <rect class="row" x="24" y="160" width="40" height="3"></rect>
+          <rect class="line" x="324" y="42" width="72" height="1"></rect>
+          <rect class="row" x="324" y="56" width="58" height="3"></rect>
+          <rect class="row" x="324" y="72" width="66" height="3"></rect>
+          <rect class="row" x="324" y="88" width="46" height="3"></rect>
+          <rect class="row" x="324" y="104" width="60" height="3"></rect>
+          <rect class="row" x="324" y="120" width="40" height="3"></rect>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-top"><span>01 / Console</span><b>Watch floor</b></div>
+        <h2>Watch Floor</h2>
+        <p>A single-screen SOC console. The 24-hour timeline is the main surface, with a queue, host lanes, an event tape, a correlation strip, and a fixed inspector. No cover, no chapters, no scroll.</p>
+        <span class="card-foot"><span>Time-first / keyboard</span><b>Open demo →</b></span>
+      </div>
+    </a>
+
+    <a class="card" href="arch-graph.html">
+      <div class="visual graph-visual">
+        <span class="tag">02 / Map</span>
+        <svg viewBox="0 0 420 230" aria-hidden="true" preserveAspectRatio="none">
+          <line class="edge" x1="86" y1="72" x2="180" y2="112"></line>
+          <line class="edge" x1="86" y1="72" x2="132" y2="164"></line>
+          <line class="edge" x1="180" y1="112" x2="268" y2="64"></line>
+          <line class="edge" x1="180" y1="112" x2="246" y2="152"></line>
+          <line class="edge tech" x1="180" y1="112" x2="146" y2="86"></line>
+          <line class="edge tech" x1="180" y1="112" x2="218" y2="92"></line>
+          <line class="edge tech" x1="180" y1="112" x2="208" y2="132"></line>
+          <line class="edge tech" x1="246" y1="152" x2="306" y2="178"></line>
+          <circle class="ring" cx="86" cy="72" r="20"></circle>
+          <circle class="ring" cx="268" cy="64" r="17"></circle>
+          <circle class="ring" cx="246" cy="152" r="17"></circle>
+          <circle class="node case" cx="86" cy="72" r="6"></circle>
+          <circle class="node case" cx="268" cy="64" r="6"></circle>
+          <circle class="node case" cx="246" cy="152" r="6"></circle>
+          <circle class="node" cx="180" cy="112" r="9"></circle>
+          <circle class="node" cx="132" cy="164" r="6"></circle>
+          <circle class="node" cx="306" cy="178" r="5"></circle>
+          <circle class="node tech" cx="146" cy="86" r="3"></circle>
+          <circle class="node tech" cx="218" cy="92" r="3"></circle>
+          <circle class="node tech" cx="208" cy="132" r="3"></circle>
+          <circle class="node tech" cx="322" cy="44" r="3"></circle>
+          <circle class="node tech" cx="350" cy="120" r="3"></circle>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-top"><span>02 / Map</span><b>Intrusion graph</b></div>
+        <h2>Intrusion Graph</h2>
+        <p>A full-bleed host, technique, and discovery graph. Selecting a node keeps only its connections; selecting a case traces the chain across the field and opens a paper-style inspector.</p>
+        <span class="card-foot"><span>Exploratory / case-led</span><b>Open demo →</b></span>
+      </div>
+    </a>
+
+    <a class="card" href="arch-brief.html">
+      <div class="visual brief-visual">
+        <span class="tag">03 / Deck</span>
+        <svg viewBox="0 0 420 230" aria-hidden="true" preserveAspectRatio="none">
+          <rect class="sheet back" x="70" y="36" width="280" height="166" transform="rotate(2 210 119)"></rect>
+          <rect class="sheet" x="58" y="26" width="280" height="166"></rect>
+          <text class="small" x="76" y="48" font-family="Cascadia Mono, monospace" font-size="5" letter-spacing="1">SHIFT BRIEFING / RUN 001</text>
+          <text class="ink" x="76" y="88" font-family="Georgia, serif" font-size="30" letter-spacing="-2">One hour</text>
+          <text class="rust" x="76" y="117" font-family="Georgia, serif" font-size="30" font-style="italic" letter-spacing="-2">moved.</text>
+          <line class="rule" x1="76" y1="132" x2="320" y2="132"></line>
+          <line class="rule" x1="76" y1="160" x2="238" y2="160"></line>
+          <line class="rule" x1="76" y1="172" x2="266" y2="172"></line>
+          <text class="rust" x="300" y="96" font-family="Cascadia Mono, monospace" font-size="12">167</text>
+          <text class="small" x="300" y="106" font-family="Cascadia Mono, monospace" font-size="4">EVENTS AT 11:00</text>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-top"><span>03 / Deck</span><b>Shift briefing</b></div>
+        <h2>Shift Briefing</h2>
+        <p>A seven-slide narrative. One screen per idea: the shape, the queue, the six gaps, the three discoveries, and the reproducible pipeline. Arrow keys only; built to present, not to triage.</p>
+        <span class="card-foot"><span>Narrative / presentable</span><b>Open demo →</b></span>
+      </div>
+    </a>
+  </section>
+
+  <section class="compare">
+    <h2>What actually changes.</h2>
+    <p>The data does not move between the three. The first question, the primary surface, and the navigation do.</p>
+    <div class="compare-grid" role="table" aria-label="Comparison of the three architectures">
+      <div class="head label" role="columnheader">Dimension</div>
+      <div class="head watch" role="columnheader">Watch Floor</div>
+      <div class="head graph" role="columnheader">Intrusion Graph</div>
+      <div class="head brief" role="columnheader">Shift Briefing</div>
+
+      <div class="label" role="rowheader">First question</div>
+      <div class="cell watch" role="cell">What moved in the last 24 hours?</div>
+      <div class="cell graph" role="cell">What is connected to this host or case?</div>
+      <div class="cell brief" role="cell">What does the shift need to know?</div>
+
+      <div class="label" role="rowheader">Primary surface</div>
+      <div class="cell watch" role="cell">A 24-hour timeline with host lanes.</div>
+      <div class="cell graph" role="cell">A full-bleed node-link map.</div>
+      <div class="cell brief" role="cell">One full-screen slide at a time.</div>
+
+      <div class="label" role="rowheader">Navigation</div>
+      <div class="cell watch" role="cell">Filter and select; J/K, search, tabs.</div>
+      <div class="cell graph" role="cell">Click or focus a node; trace a case.</div>
+      <div class="cell brief" role="cell">Arrow keys, number keys, progress dots.</div>
+
+      <div class="label" role="rowheader">Evidence</div>
+      <div class="cell watch" role="cell">A fixed inspector and an event tape.</div>
+      <div class="cell graph" role="cell">A paper-style inspector and a case chain.</div>
+      <div class="cell brief" role="cell">A table, a coverage grid, and three cards.</div>
+
+      <div class="label" role="rowheader">Best for</div>
+      <div class="cell watch" role="cell">Hands-on triage and a SOC wall.</div>
+      <div class="cell graph" role="cell">Explaining relationships and case chains.</div>
+      <div class="cell brief" role="cell">A hiring manager or a shift handover.</div>
+
+      <div class="label" role="rowheader">Trade-off</div>
+      <div class="cell watch" role="cell">Dense; assumes an operator.</div>
+      <div class="cell graph" role="cell">A curated graph is not a full asset inventory.</div>
+      <div class="cell brief" role="cell">Less useful for open-ended investigation.</div>
+    </div>
+  </section>
+
+  <section class="note">
+    <div>
+      <h2>The chosen direction is live.</h2>
+      <p>Signal Foundry now uses the Watch Floor: fixed evidence inspector, host lanes, coincidence strip, and the same paper/night identity. These pages stay as studies; the Intrusion Graph and Shift Briefing are still here for comparison.</p>
+    </div>
+    <div class="note-actions">
+      <a class="primary" href="index.html#ledger">Signal Foundry / Watch Floor</a>
+      <a href="arch-graph.html">Intrusion Graph</a>
+      <a href="arch-brief.html">Shift Briefing</a>
+      <a href="demo.html">Current two, one at a time</a>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>All three prototypes read <b>docs/assets/arch-data.js</b>, generated from the same alerts, correlations, and cases as the main dashboards.</span>
+    <span><a href="index.html">Signal Foundry</a> &middot; <a href="transient.html">Transient</a> &middot; <a href="compare.html">Comparison</a></span>
+  </footer>
+</div>
+</body>
+</html>

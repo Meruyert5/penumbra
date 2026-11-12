@@ -1,0 +1,26 @@
+title: SMB Administrative Share Access
+id: 2a8e5c13-7f46-4b92-8d05-1c6e9a3b7f52
+status: experimental
+description: >
+  Detects access to a Windows administrative share over SMB. Admin-share
+  access is a common lateral-movement step after credential theft; the rule
+  keys on the share name and keeps normal user shares out of the queue.
+references:
+  - https://attack.mitre.org/techniques/T1021/002/
+author: Meruyert
+date: 2026/11/12
+tags:
+  - attack.lateral_movement
+  - attack.t1021.002
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 5140
+    ShareName|contains: 'ADMIN$'
+  condition: selection
+falsepositives:
+  - Backup software and inventory tools that use administrative shares
+  - Administrators mapping ADMIN$ for approved maintenance
+level: high

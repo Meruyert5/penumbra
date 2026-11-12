@@ -1,0 +1,26 @@
+title: Periodic Web Beacon to a Command Endpoint
+id: 3f7b1a62-58c4-4d90-b6e8-0a2d5c9e7f14
+status: experimental
+description: >
+  Detects repeated requests to the lab's command-and-control beacon endpoint.
+  The path is intentionally specific: a generic HTTP rule would drown the queue
+  in ordinary asset requests.
+references:
+  - https://attack.mitre.org/techniques/T1071/001/
+author: Meruyert
+date: 2026/11/12
+tags:
+  - attack.command_and_control
+  - attack.t1071.001
+logsource:
+  category: webserver
+  product: nginx
+detection:
+  selection:
+    event.action: web_request
+    url.path|contains: '/api/v2/beacon'
+  condition: selection
+falsepositives:
+  - Monitoring or health-check endpoints that share the beacon path
+  - Application telemetry with a periodic polling design
+level: high

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Detection lab / demo</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b0e0d;
+    --bar: #111614;
+    --line: #2a3430;
+    --ink: #f1eee4;
+    --muted: #8a948e;
+    --sf: #f0d9a8;
+    --tr: #e6a94a;
+    --mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    display: grid;
+    grid-template-rows: 48px minmax(0, 1fr);
+    background: var(--bg);
+    color: var(--ink);
+    font: 500 10px/1 var(--mono);
+    letter-spacing: 0.03em;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--tr); outline-offset: 2px; }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bar);
+    min-width: 0;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; white-space: nowrap; color: var(--muted); }
+  .brand i { width: 7px; height: 7px; border-radius: 50%; background: linear-gradient(90deg, #d9604c 50%, var(--tr) 50%); }
+  .brand b { color: var(--ink); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .steps { display: flex; align-items: center; gap: 3px; }
+  .step {
+    display: inline-flex; align-items: center; gap: 7px;
+    min-height: 30px; padding: 0 10px;
+    border: 1px solid transparent; background: none;
+    color: var(--muted); white-space: nowrap;
+  }
+  .step .n { color: #5e6a64; }
+  .step:hover { color: var(--ink); }
+  .step.on { border-color: var(--line); background: #1a211e; color: var(--ink); }
+  .step.on .n { color: var(--tr); }
+  .step.on[data-view="sf"] .n { color: #d9604c; }
+  .grow { flex: 1; }
+  .tools { display: flex; align-items: center; gap: 4px; min-width: 0; }
+  .tool {
+    min-height: 28px; padding: 0 8px;
+    border: 1px solid var(--line); background: transparent;
+    color: var(--muted); white-space: nowrap;
+  }
+  .tool:hover { border-color: #5b6b63; color: var(--ink); }
+  .tool.link { display: inline-flex; align-items: center; text-decoration: none; }
+  .tool.on { border-color: var(--tr); background: var(--tr); color: #0b0e0d; }
+  .tool:disabled { opacity: 0.35; cursor: default; }
+  .hint { color: #66716b; white-space: nowrap; }
+  .frame-shell { min-height: 0; background: #070b14; }
+  iframe { display: block; width: 100%; height: 100%; border: 0; background: #070b14; }
+  .frame-shell.mobile { padding: 12px; background: #0b0e0d; }
+  .frame-shell.mobile iframe { max-width: 390px; margin: 0 auto; border: 1px solid var(--line); }
+  @media (max-width: 900px) {
+    .hint, .brand span, .tool.link { display: none; }
+    .bar { gap: 8px; padding: 0 9px; }
+    .step { padding: 0 8px; }
+    .step .t { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+  <header class="bar">
+    <span class="brand"><i></i><b>Detection lab</b><span>/ demo</span></span>
+    <nav class="steps" aria-label="Choose a dashboard">
+      <button type="button" class="step on" data-view="sf" aria-pressed="true"><span class="n">01</span><span class="t">Signal Foundry</span></button>
+      <button type="button" class="step" data-view="tr" aria-pressed="false"><span class="n">02</span><span class="t">Transient</span></button>
+    </nav>
+    <span class="grow"></span>
+    <div class="tools">
+      <a class="tool link" href="architectures.html">Three architectures</a>
+      <button class="tool" type="button" id="theme" disabled>Dawn</button>
+      <button class="tool" type="button" id="mobile">390</button>
+      <button class="tool" type="button" id="open">Open</button>
+      <span class="hint">&larr; &rarr; switch</span>
+    </div>
+  </header>
+
+  <main class="frame-shell" id="shell">
+    <iframe id="frame" src="index.html?theme=light&v=demo" title="Dashboard demo"></iframe>
+  </main>
+
+<script>
+  const frame = document.getElementById("frame");
+  const shell = document.getElementById("shell");
+  const themeButton = document.getElementById("theme");
+  const mobileButton = document.getElementById("mobile");
+  const openButton = document.getElementById("open");
+  const state = { view: "sf", theme: "dark", mobile: false };
+
+  function pageUrl() {
+    const page = state.view === "sf" ? "index.html" : "transient.html";
+    const theme = state.view === "sf" ? "light" : state.theme;
+    return page + "?theme=" + theme + "&v=" + Date.now();
+  }
+
+  function paint() {
+    document.querySelectorAll(".step").forEach((node) => {
+      const on = node.dataset.view === state.view;
+      node.classList.toggle("on", on);
+      node.setAttribute("aria-pressed", String(on));
+    });
+    themeButton.disabled = state.view === "sf";
+    themeButton.textContent = state.view === "sf" ? "Light" : (state.theme === "dark" ? "Dawn" : "Night");
+    mobileButton.textContent = state.mobile ? "Full" : "390";
+    mobileButton.classList.toggle("on", state.mobile);
+    shell.classList.toggle("mobile", state.mobile);
+    frame.title = state.view === "sf" ? "Signal Foundry dashboard" : "Transient dashboard";
+  }
+
+  function load() {
+    frame.src = pageUrl();
+    paint();
+  }
+
+  document.querySelector(".steps").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-view]");
+    if (!button) return;
+    state.view = button.dataset.view;
+    load();
+  });
+
+  themeButton.addEventListener("click", () => {
+    state.theme = state.theme === "dark" ? "light" : "dark";
+    if (state.view === "tr") load();
+    else paint();
+  });
+
+  mobileButton.addEventListener("click", () => {
+    state.mobile = !state.mobile;
+    paint();
+  });
+
+  openButton.addEventListener("click", () => {
+    window.open(pageUrl(), "_blank", "noopener");
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.target.closest("input, select, textarea")) return;
+    if (event.key === "ArrowRight") {
+      state.view = "tr";
+      load();
+    } else if (event.key === "ArrowLeft") {
+      state.view = "sf";
+      load();
+    } else if (event.key === "t" || event.key === "T") {
+      if (state.view === "tr") {
+        state.theme = state.theme === "dark" ? "light" : "dark";
+        load();
+      }
+    }
+  });
+
+  if (location.hash === "#transient") state.view = "tr";
+  if (state.view === "tr") load();
+  else paint();
+</script>
+</body>
+</html>

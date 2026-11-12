@@ -21,8 +21,10 @@
     pinnedHour: null,
     hoverHour: null,
     tour: -1,
-    path: 0
+    path: 0,
+    selected: null
   };
+  const desktopFloor = window.matchMedia("(min-width: 981px)");
 
   document.documentElement.classList.add("js");
 
@@ -183,11 +185,11 @@
   $("#railCorr").dataset.count = String(meta.correlation_specs || 0);
 
   const coverFacts = [
-    { value: number((DATA.alerts || []).length), label: "detections", tone: "" },
+    { value: number((DATA.alerts || []).length), label: "detections", tone: "rust" },
     { value: number((DATA.correlations || []).length), label: "correlations", tone: "signal" },
     { value: number(severity.critical || 0), label: "critical detections", tone: "critical" },
     { value: (meta.covered_priority || 0) + "/" + (meta.priority_techniques || 0), label: "priority coverage", tone: "forest" },
-    { value: number(errors.length), label: "execution errors", tone: "" }
+    { value: number(errors.length), label: "execution errors", tone: "indigo" }
   ];
   $("#coverFoot").innerHTML = coverFacts.map((fact) => (
     '<div class="cf"><b' + (fact.tone ? ' class="tone-' + fact.tone + '"' : "") + '>' + esc(fact.value) + "</b><span>" + esc(fact.label) + "</span></div>"
@@ -195,11 +197,11 @@
 
   const timeline = (DATA.timeline || []).filter((row) => row && row.hour);
   const factLine = [
-    { value: number((DATA.alerts || []).length), label: "detections", tone: "" },
+    { value: number((DATA.alerts || []).length), label: "detections", tone: "rust" },
     { value: number((DATA.correlations || []).length), label: "correlations", tone: "signal" },
     { value: number(severity.critical || 0), label: "critical detections", tone: "critical" },
-    { value: number(timeline.length), label: "hourly buckets", tone: "" },
-    { value: number(errors.length), label: "execution errors", tone: "" }
+    { value: number(timeline.length), label: "hourly buckets", tone: "indigo" },
+    { value: number(errors.length), label: "execution errors", tone: errors.length ? "critical" : "forest" }
   ];
   $("#factLine").innerHTML = factLine.map((fact) => (
     '<div class="fact"><b' + (fact.tone ? ' class="tone-' + fact.tone + '"' : "") + '>' + esc(fact.value) + "</b><span>" + esc(fact.label) + "</span></div>"
@@ -252,8 +254,8 @@
       '<div class="ro-sub">event severity</div>' +
       '<div class="ro-list">' + counts + "</div>" +
       '<div class="ro-active"><i class="live-dot" aria-hidden="true"></i><span><b>' + esc(activeLabel(row.hour)) + "</b> in the queue</span></div>" +
-      '<div class="ro-note">The chart counts matched events. The ledger groups them into detections.</div>' +
-      '<button class="mini ro-btn" type="button" data-hour="' + esc(row.hour) + '">Show detections active here</button>'
+      '<div class="ro-note">The chart counts matched events. The watch floor groups them into detections.</div>' +
+      '<button class="mini ro-btn" type="button" data-hour="' + esc(row.hour) + '">Open the watch floor at this hour</button>'
     );
   }
 
@@ -303,9 +305,9 @@
       '<div class="ro-sub">event severity</div>' +
       '<div class="ro-list">' + counts + "</div>" +
       '<div class="ro-active"><i class="live-dot" aria-hidden="true"></i><span><b>' + esc(activeLabel(row.hour)) + "</b> in the queue</span></div>" +
-      '<div class="ro-note">The chart counts matched events. The ledger groups them into detections.</div>' +
+      '<div class="ro-note">The chart counts matched events. The watch floor groups them into detections.</div>' +
       '<div class="ro-note">Hover or tap a column to inspect it. Click to pin the hour.</div>' +
-      '<button class="mini ro-btn" type="button" data-hour="' + esc(row.hour) + '">Show detections active here</button>';
+      '<button class="mini ro-btn" type="button" data-hour="' + esc(row.hour) + '">Open the watch floor at this hour</button>';
     $("#scopeHint").textContent = "peak " + number(row.total) + " events at " + row.hour.slice(11, 16) + "Z";
   }
 
@@ -337,7 +339,7 @@
     const desc = svgNode("desc", {});
     const peakIndex = totals.indexOf(Math.max(...totals));
     desc.textContent = "Hourly matched events. " + number(totals[peakIndex]) + " at " +
-      timeline[peakIndex].hour.slice(11, 16) + "Z, with isolated single events earlier in the window.";
+      timeline[peakIndex].hour.slice(11, 16) + "Z, with quiet hours between the bursts.";
     chart.appendChild(desc);
 
     const grid = svgNode("g", { class: "chart-axis" });
@@ -392,47 +394,36 @@
       chart.appendChild(stem);
     });
 
-    // The three one-event hours are the baseline. Make them visible instead of
-    // letting a linear axis flatten them into the floor.
-    const quiet = timeline
-      .map((row, index) => ({ row, index }))
-      .filter(({ row }) => Number(row.total) > 0 && Number(row.total) <= 3);
-    if (quiet.length) {
+    // The quiet stretches are the baseline. Label the longest one instead of
+    // bracketing every scattered low hour across a multi-burst window.
+    const quietRuns = [];
+    let quietRun = [];
+    timeline.forEach((row, index) => {
+      if (Number(row.total) <= 3) {
+        quietRun.push({ row, index });
+      } else if (quietRun.length) {
+        quietRuns.push(quietRun);
+        quietRun = [];
+      }
+    });
+    if (quietRun.length) quietRuns.push(quietRun);
+    const longestQuiet = quietRuns.sort((a, b) => b.length - a.length)[0];
+    if (longestQuiet && longestQuiet.length) {
       const bracket = svgNode("g", { class: "quiet-bracket-group" });
-      const first = quiet[0];
-      const last = quiet[quiet.length - 1];
-      const bx1 = x(first.index) - 12;
-      const bx2 = x(last.index) + 12;
+      const bx1 = x(longestQuiet[0].index) - 12;
+      const bx2 = x(longestQuiet[longestQuiet.length - 1].index) + 12;
       const by = top + 8;
       bracket.appendChild(svgNode("path", {
         class: "quiet-bracket",
         d: "M" + bx1.toFixed(1) + " " + (by + 6) + " V" + by + " H" + bx2.toFixed(1) + " V" + (by + 6)
       }));
       const label = svgNode("text", { class: "quiet-label", x: bx1.toFixed(1), y: by + 18 });
-      label.textContent = "QUIET BASELINE";
+      label.textContent = "QUIET HOURS";
       bracket.appendChild(label);
       const count = svgNode("text", { class: "quiet-label", x: bx1.toFixed(1), y: by + 28 });
-      count.textContent = quiet.length + " SINGLE EVENTS";
+      count.textContent = longestQuiet.length + " HOURS ≤ 3 EVENTS";
       bracket.appendChild(count);
       chart.appendChild(bracket);
-      quiet.forEach(({ row, index }, order) => {
-        const dot = svgNode("circle", {
-          class: "quiet-dot",
-          cx: x(index).toFixed(1),
-          cy: y(Number(row.total)).toFixed(1),
-          r: "3.2"
-        });
-        dot.style.animationDelay = (order * 0.28) + "s";
-        chart.appendChild(dot);
-        const labelNode = svgNode("text", {
-          class: "quiet-count",
-          x: x(index).toFixed(1),
-          y: (y(Number(row.total)) - 8).toFixed(1),
-          "text-anchor": "middle"
-        });
-        labelNode.textContent = number(row.total);
-        chart.appendChild(labelNode);
-      });
     }
 
     if (totals[peakIndex] > 0) {
@@ -463,7 +454,9 @@
     chart.appendChild(scan);
 
     const labels = svgNode("g", { class: "chart-axis" });
-    const showEvery = width < 560 ? 2 : 1;
+    const showEvery = timeline.length > 14
+      ? (width < 560 ? 4 : 3)
+      : (width < 560 ? 2 : 1);
     timeline.forEach((row, index) => {
       if (index % showEvery !== 0 && index !== timeline.length - 1) return;
       const label = svgNode("text", {
@@ -475,7 +468,11 @@
       labels.appendChild(label);
     });
     const axisNote = svgNode("text", { x: width - right, y: height - 2, "text-anchor": "end", "font-size": "8" });
-    axisNote.textContent = "hour / UTC";
+    const firstDay = timeline.length ? timeline[0].hour.slice(8, 10) : "";
+    const lastDay = timeline.length ? timeline[timeline.length - 1].hour.slice(8, 10) : "";
+    axisNote.textContent = firstDay && lastDay && firstDay !== lastDay
+      ? "hour / UTC / " + firstDay + "–" + lastDay + " Nov"
+      : "hour / UTC";
     labels.appendChild(axisNote);
     chart.appendChild(labels);
 
@@ -703,8 +700,15 @@
   }));
 
   const rowIndex = new Map();
-  detections.forEach((row) => rowIndex.set(row.kind + ":" + row.id, row));
-  correlations.forEach((row) => rowIndex.set(row.kind + ":" + row.id, row));
+  detections.forEach((row) => {
+    row.key = row.kind + ":" + row.id;
+    rowIndex.set(row.key, row);
+  });
+  correlations.forEach((row) => {
+    // Two specs can share a correlation_id; the group value is part of the identity.
+    row.key = row.kind + ":" + row.id + ":" + row.group_value;
+    rowIndex.set(row.key, row);
+  });
 
   const hostSet = new Set();
   detections.forEach((row) => (row.hosts || []).forEach((host) => hostSet.add(host)));
@@ -816,7 +820,7 @@
       row.index ? '<span><i>source</i><b>' + esc(row.index) + "</b></span>" : ""
     ].join("");
     return (
-      '<article class="row' + (reduce ? "" : " enter") + '" tabindex="0" aria-expanded="false" data-level="' + esc(row.level) + '" data-id="' + esc(row.id) + '" data-kind="' + esc(row.kind) + '"' + (reduce ? "" : ' style="animation-delay:' + Math.min(index, 12) * 22 + 'ms"') + ">" +
+      '<article class="row' + (reduce ? "" : " enter") + '" tabindex="0" aria-expanded="false" data-level="' + esc(row.level) + '" data-id="' + esc(row.id) + '" data-key="' + esc(row.key) + '" data-kind="' + esc(row.kind) + '"' + (reduce ? "" : ' style="animation-delay:' + Math.min(index, 12) * 22 + 'ms"') + ">" +
         '<span class="row-index">' + String(index + 1).padStart(2, "0") + "</span>" +
         '<div class="row-body">' +
           '<div class="row-top"><h3 class="row-title">' + esc(row.title) + '</h3><span class="sev ' + esc(row.level) + '">' + esc(row.level) + "</span></div>" +
@@ -842,17 +846,142 @@
     $("#activeFilters").innerHTML = items.join("");
   }
 
+  function inspectorDefault() {
+    return (
+      '<div class="wf-inspector-head"><span>Evidence</span><span>Awaiting selection</span></div>' +
+      '<div class="wf-inspector-empty"><b>Work the floor</b><p>Select a detection or correlation from the queue. Its events, EQL, and KQL stay here while you work the list. The host lanes below show where the hour landed.</p></div>'
+    );
+  }
+
+  function inspectorHead(row) {
+    const kind = row.kind === "correlation" ? "Coincidence" : "Detection";
+    const techs = (row.techniques || []).slice(0, 2).map((tech) => '<span class="tech">' + esc(tech) + "</span>").join("");
+    return (
+      '<div class="wf-inspector-head"><span>' + esc(kind) + " / " + esc(row.level) + "</span><span>" + esc(clock(row.last_seen)) + "Z</span></div>" +
+      '<h3 class="wf-inspector-title">' + esc(row.title) + "</h3>" +
+      '<div class="wf-inspector-meta"><span>' + esc(row.host || "unassigned") + "</span><span>" + number(row.count) + " events</span>" + (techs ? "<span>" + techs + "</span>" : "") + "</div>"
+    );
+  }
+
+  function renderInspector() {
+    const node = $("#wfInspector");
+    if (!node) return;
+    const data = state.selected ? rowIndex.get(state.selected) : null;
+    node.innerHTML = data ? inspectorHead(data) + evidenceMarkup(data) : inspectorDefault();
+  }
+
+  function selectRow(row) {
+    if (!row) return;
+    if (!desktopFloor.matches) {
+      toggleRow(row, true);
+      row.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
+      return;
+    }
+    state.selected = row.dataset.key;
+    $$("#ledgerBody .row").forEach((node) => {
+      const active = node === row;
+      node.classList.toggle("selected", active);
+      node.setAttribute("aria-expanded", String(active));
+    });
+    $$(".wf-pip").forEach((pip) => pip.classList.toggle("on", pip.dataset.key === state.selected));
+    $$(".wf-corr-item").forEach((item) => item.classList.toggle("on", item.dataset.key === state.selected));
+    renderInspector();
+  }
+
+  function selectKey(key) {
+    const data = rowIndex.get(key);
+    if (!data) return;
+    state.tab = data.kind === "correlation" ? "correlations" : "detections";
+    state.level = "all";
+    state.host = "all";
+    state.q = "";
+    state.hour = null;
+    $("#search").value = "";
+    $("#hostFilter").value = "all";
+    paintLevelChips();
+    switchTab(state.tab);
+    const row = $$("#ledgerBody .row").find((node) => node.dataset.key === key);
+    if (row) selectRow(row);
+    if (desktopFloor.matches) {
+      const target = $("#wfInspector");
+      if (target) target.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
+    }
+  }
+
+  function renderLanes() {
+    const laneList = $("#wfLaneList");
+    if (!laneList) return;
+    const hosts = DATA.hosts || [];
+    const startMs = timeline.length ? Date.parse(timeline[0].hour) : Date.now() - 10 * 3600 * 1000;
+    const endMs = timeline.length ? Date.parse(timeline[timeline.length - 1].hour) : Date.now();
+    const span = Math.max(1, endMs - startMs);
+    const dayLabel = (value) => {
+      const text = String(value || "");
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const day = Number(text.slice(8, 10));
+      const month = months[Number(text.slice(5, 7)) - 1] || "";
+      return day + " " + month + " " + text.slice(11, 16);
+    };
+    $("#wfLaneHint").textContent = hosts.length + " hosts / " + detections.length + " marks / " +
+      (timeline.length ? dayLabel(timeline[0].hour) + "–" + dayLabel(timeline[timeline.length - 1].hour) : "03:00–13:00") + " UTC";
+    laneList.innerHTML = hosts.map((host) => {
+      const rows = detections.filter((row) => (row.hosts || []).includes(host.name));
+      const marks = rows.map((row, index) => {
+        const time = row.last_seen || row.first_seen;
+        const timeMs = Date.parse(time);
+        const pct = Math.max(1, Math.min(99, ((Number.isFinite(timeMs) ? timeMs : startMs) - startMs) / span * 100));
+        return '<button type="button" class="wf-pip" data-level="' + esc(row.level) + '" data-key="' + esc(row.key) + '" style="left:' + pct.toFixed(2) + "%;top:" + (30 + (index % 3) * 18) + '%" title="' + esc(row.title + " / " + clock(time) + "Z") + '" aria-label="' + esc(row.title + " at " + clock(time) + "Z") + '"></button>';
+      }).join("");
+      return '<div class="wf-lane">' +
+        '<button type="button" class="wf-lane-name" data-host="' + esc(host.name) + '" title="Filter the watch floor to ' + esc(host.name) + '">' + esc(host.name) + "</button>" +
+        '<div class="wf-lane-track">' + marks + "</div>" +
+        '<span class="wf-lane-n">' + rows.length + "</span>" +
+      "</div>";
+    }).join("");
+  }
+
+  function renderCorrStrip() {
+    const grid = $("#wfCorrGrid");
+    if (!grid) return;
+    $("#wfCorrHint").textContent = correlations.length + " coincidences";
+    grid.innerHTML = correlations.map((row) => (
+      '<button type="button" class="wf-corr-item" data-key="' + esc(row.key) + '" title="' + esc(row.title + " / " + row.host) + '">' +
+        '<span class="wf-corr-dot ' + esc(row.level) + '"></span>' +
+        "<span>" + esc(row.title) + "</span>" +
+        "<b>" + number(row.count) + "</b>" +
+      "</button>"
+    )).join("");
+  }
+
+  function syncFloorStatus() {
+    $("#wfDetections").textContent = number(detections.length);
+    $("#wfCorrelations").textContent = number(correlations.length);
+    $("#wfErrors").textContent = number(errors.length);
+    const end = meta.window_end ? String(meta.window_end).slice(11, 16) + "Z" : "dated run";
+    $("#wfClock").textContent = "window end " + end;
+  }
+
   let ledgerRendered = false;
   function renderLedger() {
     ledgerRendered = true;
     const result = filteredRows();
     $("#ledgerCount").textContent = result.length + " of " + activeRows().length + " rows";
+    $("#wfQueueHint").textContent = result.length + " in queue";
     renderActiveFilters();
     if (!result.length) {
       $("#ledgerBody").innerHTML = '<div class="empty">No ' + esc(state.tab) + " match this filter. Clear the search, pick another host, or remove the active-hour filter.</div>";
+      $("#wfInspector").innerHTML = '<div class="wf-inspector-empty"><b>No match</b><p>Widen the filters to bring the queue back.</p></div>';
       return;
     }
     $("#ledgerBody").innerHTML = result.map(rowMarkup).join("");
+    if (desktopFloor.matches) {
+      const rows = $$("#ledgerBody .row");
+      const active = rows.find((row) => row.dataset.key === state.selected) || rows[0];
+      selectRow(active);
+    } else {
+      state.selected = null;
+      $("#wfInspector").innerHTML = inspectorDefault();
+    }
   }
 
   function ensureLedger() {
@@ -887,7 +1016,7 @@
     if (open) {
       const inner = $(".drawer-inner", row);
       if (inner && inner.dataset.evidencePending) {
-        const data = rowIndex.get(row.dataset.kind + ":" + row.dataset.id);
+        const data = rowIndex.get(row.dataset.key);
         if (data) {
           inner.innerHTML = evidenceMarkup(data);
           delete inner.dataset.evidencePending;
@@ -901,7 +1030,7 @@
   }
 
   function activateEvidenceTab(tab) {
-    const scope = tab.closest(".drawer-inner");
+    const scope = tab.closest(".drawer-inner, .wf-inspector");
     if (!scope) return;
     $$(".ev-tab", scope).forEach((node) => {
       const active = node === tab;
@@ -920,6 +1049,7 @@
     if (index < 0) index = 0;
     rows[index].focus({ preventScroll: true });
     rows[index].scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
+    if (desktopFloor.matches) selectRow(rows[index]);
   }
 
   $$(".chip[data-level]").forEach((chip) => {
@@ -945,7 +1075,8 @@
     const row = event.target.closest(".row");
     if (!row) return;
     if (event.target.closest(".drawer")) return;
-    toggleRow(row);
+    if (desktopFloor.matches) selectRow(row);
+    else toggleRow(row);
   });
 
   $("#ledgerBody").addEventListener("keydown", (event) => {
@@ -953,7 +1084,8 @@
     if (!row) return;
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      toggleRow(row);
+      if (desktopFloor.matches) selectRow(row);
+      else toggleRow(row);
     } else if (event.key === "ArrowDown") {
       event.preventDefault();
       focusRow("next");
@@ -963,6 +1095,31 @@
     }
   });
 
+  $("#wfInspector").addEventListener("click", (event) => {
+    const tab = event.target.closest(".ev-tab");
+    if (tab) activateEvidenceTab(tab);
+  });
+
+  $("#wfLaneList").addEventListener("click", (event) => {
+    const pip = event.target.closest(".wf-pip");
+    if (pip) { selectKey(pip.dataset.key); return; }
+    const label = event.target.closest(".wf-lane-name");
+    if (!label) return;
+    state.host = label.dataset.host;
+    $("#hostFilter").value = state.host;
+    renderLedger();
+  });
+
+  $("#wfCorrGrid").addEventListener("click", (event) => {
+    const item = event.target.closest("[data-key]");
+    if (item) selectKey(item.dataset.key);
+  });
+
+  desktopFloor.addEventListener("change", renderLedger);
+
+  syncFloorStatus();
+  renderLanes();
+  renderCorrStrip();
   renderLedger();
 
   /* --------------------------------------------------------------- coverage */
@@ -971,7 +1128,12 @@
   $("#coverageCovered").dataset.count = String(coverage.covered || 0);
   $("#coverageCovered").textContent = "0";
   $("#coverageTotal").textContent = String(coverage.priority || 0);
-  $("#coverageNote").textContent = (coverage.covered || 0) + " covered / " + (coverage.gaps || []).length + " gaps";
+  const gapCount = (coverage.gaps || []).length;
+  $("#coverageNote").textContent = (coverage.covered || 0) + " covered / " + gapCount + " gaps";
+  if (!gapCount) {
+    $("#gapsBtn").disabled = true;
+    $("#gapsBtn").textContent = "no gaps";
+  }
   $("#coverageGauge").innerHTML = allTiles.map((tile, index) => (
     '<span class="gauge-tick ' + (tile.level ? "on" : "gap") + '" style="--i:' + index + '" title="' + esc(tile.technique + " " + tile.name + (tile.level ? " / covered" : " / gap")) + '"></span>'
   )).join("");
@@ -1021,7 +1183,7 @@
     paintLevelChips();
     switchTab("detections");
     $("#ledgerPanel").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-    toast(technique + " filtered into the ledger");
+    toast(technique + " filtered into the watch floor");
   });
 
   if ("IntersectionObserver" in window && !reduce) {
@@ -1161,11 +1323,13 @@
 
   /* ------------------------------------------------------------------ tour */
   const steps = [
-    { target: "#cover .ticket", title: "A run you can inspect", body: "This is the output of one deterministic run: 2,182 events, a 44-rule Sigma library, and eight correlation specs. The ticket is the receipt." },
-    { target: "#scopePlate", title: "Read the signal", body: "Eleven hourly buckets. Three isolated events, then 167 matched events in the 11:00 hour. The quiet hours matter because a rule that fires on everything cannot discriminate." },
+    { target: "#cover .ticket", title: "A run you can inspect", body: "This is the output of one deterministic run: 9,223 events, a 50-rule Sigma library, and eight correlation specs. The ticket is the receipt." },
+    { target: "#scopePlate", title: "Read the signal", body: "The chart counts matched events across the full day. Several hours carry bursts; the quiet stretches between them are part of the shape. A rule that fires on everything cannot discriminate." },
     { target: "#pathStrip", title: "Follow the chain", body: "Sigma compiles to Elasticsearch EQL and KQL. Detection executes the queries, correlation adds volume logic, and triage turns matches into a queue with evidence." },
-    { target: "#ledgerPanel", title: "Work the queue", body: "Filter by severity, host, or technique. Open a row for the matching events and the exact query. J and K move between rows; Enter opens the drawer." },
-    { target: "#matrix", title: "Check the gaps", body: "Coverage only counts priority techniques, and every gap stays visible. A hatched tile is the next rule to write, not a number hidden inside a percentage." },
+    { target: "#ledger .chapter-head", title: "Enter the watch floor", body: "Chapter 03 is the working console. The queue, the evidence inspector, the host lanes, and the coincidence strip all read from the same detection run." },
+    { target: "#ledgerPanel", title: "Work the queue", body: "Filter by severity, host, or technique. Select a transient to keep its events and exact EQL beside the queue. J and K move; Enter selects." },
+    { target: "#wfLaneList", title: "Read the field", body: "Every mark is a detection against the 24-hour window, one lane per host. The coincidence strip below adds the volume conditions that a single event cannot carry." },
+    { target: "#matrix", title: "Check the gaps", body: "Coverage only counts priority techniques. All 45 are closed in this run; the gaps view stays available as a regression check." },
     { target: "#caseGrid", title: "Read the investigations", body: "Each case follows the same structure: summary, timeline, evidence, analysis, verdict, containment, and the detection improvement that came out of it." },
     { target: "#reproduce .terminal", title: "Reproduce it", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." }
   ];
@@ -1218,10 +1382,14 @@
     const room = window.innerHeight - base - cardH - 24;
     const rect = target.getBoundingClientRect();
     const offset = rect.height <= room ? base : base + cardH + 20;
-    window.scrollTo({
-      top: Math.max(0, rect.top + window.scrollY - offset),
-      behavior: reduce ? "auto" : "smooth"
-    });
+    // Guided reading should land on the step immediately. The page sets
+    // scroll-behavior: smooth for anchor links, which can swallow a programmatic
+    // scroll and leave the tour card describing something off screen.
+    const root = document.documentElement;
+    const previous = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    window.scrollTo({ top: Math.max(0, rect.top + window.scrollY - offset), behavior: "auto" });
+    root.style.scrollBehavior = previous;
   }
 
   function goStep(index) {
@@ -1236,7 +1404,11 @@
     $("#tourPrev").disabled = index === 0;
     $("#tourNext").textContent = index === steps.length - 1 ? "finish" : "next";
     const target = $(step.target);
-    if (target) scrollTarget(target);
+    if (target) {
+      const reveal = target.closest("[data-reveal]");
+      if (reveal) reveal.classList.add("in");
+      scrollTarget(target);
+    }
     window.setTimeout(updateSpot, reduce ? 30 : 420);
     spot.classList.add("on");
     tourCard.classList.add("on");
@@ -1302,7 +1474,7 @@
     { group: "Go", label: "Cover", hint: "00", run: () => goTo("#cover") },
     { group: "Go", label: "The run", hint: "01", run: () => goTo("#run") },
     { group: "Go", label: "Method", hint: "02", run: () => goTo("#method") },
-    { group: "Go", label: "Ledger", hint: "03", run: () => goTo("#ledger") },
+    { group: "Go", label: "Watch floor", hint: "03", run: () => goTo("#ledger") },
     { group: "Go", label: "Coverage", hint: "04", run: () => goTo("#coverage") },
     { group: "Go", label: "Cases", hint: "05", run: () => goTo("#cases") },
     { group: "Go", label: "Proof", hint: "06", run: () => goTo("#reproduce") },
@@ -1313,7 +1485,7 @@
     { group: "Filter", label: "Low detections", hint: number(severity.low || 0), run: () => { setLevel("low"); goTo("#ledger"); } },
     { group: "View", label: state.gaps ? "Show all techniques" : "Show gaps only", hint: "coverage", run: () => { toggleGaps(); goTo("#coverage"); } },
     { group: "View", label: "Switch theme", hint: "paper / night", run: toggleTheme },
-    { group: "Reading", label: "Start guided reading", hint: "7 steps", run: startTour },
+    { group: "Reading", label: "Start guided reading", hint: steps.length + " steps", run: startTour },
     { group: "Reading", label: "Keyboard shortcuts", hint: "?", run: openKeys }
   ];
   cases.forEach((item, index) => {

@@ -32,22 +32,23 @@ component library.
 
 | Token | Paper | Night |
 |---|---|---|
-| `--bg` | `#edf0e9` | `#070d10` |
-| `--surface` | `#f7f8f2` | `#0d191c` |
-| `--surface-2` | `#e3e8dc` | `#142629` |
-| `--surface-3` | `#d3dbcd` | `#1c3336` |
-| `--text` | `#121b1c` | `#edf3ec` |
-| `--text-2` | `#384640` | `#b9cbc1` |
-| `--muted` | `#5f7066` | `#93a8a0` |
-| `--line` | `#b6c1b3` | `#2c4a4d` |
-| `--line-soft` | `#d1d9cc` | `#1b3235` |
-| `--rust` | `#a83a2a` | `#f07a60` |
-| `--forest` | `#1d6b5c` | `#69d3b6` |
-| `--signal` | `#2a7485` | `#6fd9e3` |
-| `--critical` | `#a62f22` | `#f06b55` |
-| `--high` | `#985a12` | `#e6a653` |
-| `--medium` | `#6c6110` | `#d6c263` |
-| `--low` | `#1d6b5c` | `#69d3b6` |
+| `--bg` | `#eef1e9` | `#070d10` |
+| `--surface` | `#fafbf5` | `#0d191c` |
+| `--surface-2` | `#e4eadc` | `#142629` |
+| `--surface-3` | `#d1dbcb` | `#1c3336` |
+| `--text` | `#0f1a1b` | `#edf3ec` |
+| `--text-2` | `#33443e` | `#b9cbc1` |
+| `--muted` | `#586b61` | `#93a8a0` |
+| `--line` | `#aebbab` | `#2c4a4d` |
+| `--line-soft` | `#cbd6c7` | `#1b3235` |
+| `--rust` | `#c0361a` | `#f07a60` |
+| `--forest` | `#0a7358` | `#69d3b6` |
+| `--signal` | `#0a708c` | `#6fd9e3` |
+| `--indigo` | `#454a9e` | `#9aa0ff` |
+| `--critical` | `#b02a1c` | `#f06b55` |
+| `--high` | `#9c5906` | `#e6a653` |
+| `--medium` | `#776905` | `#d6c263` |
+| `--low` | `#0b725b` | `#69d3b6` |
 | `--rail` | `#0b1417` | `#040a0c` |
 
 ### Roles
@@ -59,6 +60,8 @@ component library.
 - **Forest teal (`--forest`)** marks coverage, verdicts, technology tags, and
   valid evidence.
 - **Ochre** is reserved for the high/medium severity family and paper accents.
+- **Indigo (`--indigo`)** carries integrity and execution-error counts, so the
+  paper theme has a fifth accent instead of falling back to grey.
 - **Night ticket paper** is `#eef1ea` with `#121b1c` ink. It is a physical
   receipt on the dark desk, not a dark panel.
 
@@ -69,12 +72,13 @@ is used on.
 
 | Pair | Ratio |
 |---|---:|
-| Paper muted on page | 4.56:1 |
-| Paper signal on surface | 5.00:1 |
-| Paper rust on surface | 5.95:1 |
-| Paper forest on surface | 5.94:1 |
-| Paper critical on surface | 6.44:1 |
-| Paper primary text | 6.05:1 |
+| Paper muted on page | 4.98:1 |
+| Paper signal on surface | 5.44:1 |
+| Paper rust on surface | 5.33:1 |
+| Paper forest on surface | 5.60:1 |
+| Paper critical on surface | 6.32:1 |
+| Paper indigo on surface | 7.40:1 |
+| Paper primary text | 15.54:1 |
 | Night muted on page | 7.77:1 |
 | Night signal on surface | 10.84:1 |
 | Night rust on surface | 6.53:1 |
@@ -104,6 +108,9 @@ still use a passing token; they are never the only carrier of meaning.
 - Buttons, badges, and data labels use uppercase mono with deliberate
   letter-spacing. Body copy stays in natural case.
 - Inputs use 16px on mobile to prevent iOS zoom, and 44px minimum height.
+- Micro labels never drop below 9px. The paper grain stays at `0.10` so small
+  mono text keeps a crisp edge, and text-bearing elements settle to
+  `transform: none` instead of scale animations.
 - The line-height in `@font-face` and the UI is unitless. Type roles are fixed;
   avoid introducing one-off sizes.
 
@@ -163,20 +170,39 @@ loops are removed. The page remains fully readable and operable.
 ## Data semantics
 
 - The chart counts **matched events** by hour.
-- The ledger groups those events into **detections** and **correlations**.
+- The watch floor groups those events into **detections** and **correlations**.
 - The cover and fact line report detections, correlations, critical detections,
   coverage, and execution errors. They never reuse the word "matches" for two
   different units.
 - The active-hour filter uses each detection's first/last seen span, so a quiet
   hour with one event still returns the detection that spans it.
-- Coverage counts priority techniques only. Gaps stay visible as hatched tiles.
+- Coverage counts priority techniques only. All 45 are now covered; the gaps view remains as a regression check.
+
+## Watch floor
+
+The queue is a split workspace above 980px: detections and correlations on the
+left, a fixed evidence inspector on the right. Selecting a row updates the
+inspector without opening a drawer, so the queue and the evidence stay in view
+together. Below 980px the inspector hides and rows fall back to the original
+inline drawers.
+
+Two additions sit under the workspace. **Host lanes** plot every detection against
+the same 03:00–13:00 window as the run chart, with severity-colored marks and one
+lane per host. The **coincidence strip** lists the correlation alerts with their
+counts; selecting one switches the queue to the correlation tab and opens its
+record. Both are built from the same payload as the chart, so the console cannot
+drift from the report.
+
+The watch floor status strip carries the window end, detection count, coincidence
+count, and execution errors. In the paper theme it is an ink bar; in the night
+theme it becomes the console's darkest surface.
 
 ## Accessibility
 
-- Skip link to the ledger.
+- Skip link to the watch floor.
 - One visible focus ring system, including on filled primary buttons.
 - SVG chart is focusable and supports arrow-key hour selection.
-- Ledger rows support `J`/`K` and `Enter`; `/` focuses search; `T` switches
+- Watch floor rows support `J`/`K` and `Enter`; `/` focuses search; `T` switches
   theme; `G` starts the tour; `?` opens the shortcut panel.
 - Command palette, keyboard panel, case file, and guided tour trap focus and
   return focus on close.

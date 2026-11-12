@@ -694,6 +694,42 @@
     "source_file": "rules/sigma/web_php_upload.yml"
   },
   {
+    "id": "3f7b1a62-58c4-4d90-b6e8-0a2d5c9e7f14",
+    "title": "Periodic Web Beacon to a Command Endpoint",
+    "status": "experimental",
+    "level": "high",
+    "description": "Detects repeated requests to the lab's command-and-control beacon endpoint. The path is intentionally specific: a generic HTTP rule would drown the queue in ordinary asset requests.",
+    "author": "Meruyert",
+    "date": "2026/11/12",
+    "references": [
+      "https://attack.mitre.org/techniques/T1071/001/"
+    ],
+    "falsepositives": [
+      "Monitoring or health-check endpoints that share the beacon path",
+      "Application telemetry with a periodic polling design"
+    ],
+    "tags": [
+      "attack.command_and_control",
+      "attack.t1071.001"
+    ],
+    "techniques": [
+      "T1071.001"
+    ],
+    "tactics": [
+      "command_and_control"
+    ],
+    "logsource": {
+      "category": "webserver",
+      "product": "nginx"
+    },
+    "index": [
+      "lab-web"
+    ],
+    "query": "any where event.action:\"web_request\" and url.path:\"*/api/v2/beacon*\"",
+    "query_kql": "event.action:web_request AND url.path:*\\/api\\/v2\\/beacon*",
+    "source_file": "rules/sigma/web_c2_beacon.yml"
+  },
+  {
     "id": "7eff5b83-661f-4041-a1b4-6ef9fd6d2083",
     "title": "PowerShell Download Cradle",
     "status": "experimental",
@@ -846,6 +882,79 @@
     "source_file": "rules/sigma/win_registry_run_key.yml"
   },
   {
+    "id": "4c2e8d71-9b5a-4f36-8e17-2a9d6c0b5f43",
+    "title": "Remote Thread Created by a User-Writable Binary",
+    "status": "experimental",
+    "level": "high",
+    "description": "Detects Sysmon CreateRemoteThread events where the source image sits in a user-writable directory. Remote thread creation from Public or Temp is a common process-injection pattern and is rare for signed system binaries.",
+    "author": "Meruyert",
+    "date": "2026/11/12",
+    "references": [
+      "https://attack.mitre.org/techniques/T1055/",
+      "https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon"
+    ],
+    "falsepositives": [
+      "Debuggers and instrumentation tooling installed under Temp",
+      "Legitimate application shims that inject into their own child process"
+    ],
+    "tags": [
+      "attack.defense_evasion",
+      "attack.t1055"
+    ],
+    "techniques": [
+      "T1055"
+    ],
+    "tactics": [
+      "defense_evasion"
+    ],
+    "logsource": {
+      "product": "windows",
+      "service": "sysmon"
+    },
+    "index": [
+      "lab-windows"
+    ],
+    "query": "any where winlog.channel:\"Microsoft-Windows-Sysmon/Operational\" and (event.code:\"8\" and (process.executable.caseless like~ (\"*\\\\Users\\\\Public\\\\*\", \"*\\\\AppData\\\\Local\\\\Temp\\\\*\")))",
+    "query_kql": "winlog.channel:Microsoft\\-Windows\\-Sysmon\\/Operational AND (winlog.channel:Microsoft\\-Windows\\-Sysmon\\/Operational AND (event.code:8 AND (process.executable.caseless:(*\\\\Users\\\\Public\\\\* OR *\\\\AppData\\\\Local\\\\Temp\\\\*))))",
+    "source_file": "rules/sigma/win_remote_thread.yml"
+  },
+  {
+    "id": "6b3d9f28-1c74-4a05-9e62-8d4b7a0c5e31",
+    "title": "Root SSH Login from an External Address",
+    "status": "experimental",
+    "level": "high",
+    "description": "Detects a successful root SSH login from an external address. Root SSH is disabled in most managed fleets; when it succeeds from outside the lab it is a credible lateral-movement or initial-access signal.",
+    "author": "Meruyert",
+    "date": "2026/11/12",
+    "references": [
+      "https://attack.mitre.org/techniques/T1021/004/"
+    ],
+    "falsepositives": [
+      "Break-glass administration from an approved jump host",
+      "Configuration management that still logs in as root"
+    ],
+    "tags": [
+      "attack.lateral_movement",
+      "attack.t1021.004"
+    ],
+    "techniques": [
+      "T1021.004"
+    ],
+    "tactics": [
+      "lateral_movement"
+    ],
+    "logsource": {
+      "product": "linux",
+      "service": "sshd"
+    },
+    "index": [
+      "lab-linux"
+    ],
+    "query": "any where (event.action:\"ssh_auth\" and event.outcome:\"success\" and user.name:\"root\") and (not source.ip==\"127.0.0.1\")",
+    "query_kql": "(event.action:ssh_auth AND event.outcome:success AND user.name:root) AND (NOT source.ip:127.0.0.1)",
+    "source_file": "rules/sigma/linux_ssh_lateral.yml"
+  },
+  {
     "id": "675424d0-3b84-4a33-bbf0-517041473d85",
     "title": "Rundll32 or Regsvr32 Remote Payload",
     "status": "experimental",
@@ -881,6 +990,42 @@
     "query": "any where (process.executable.caseless:\"*\\\\rundll32.exe\" and (process.command_line like~ (\"*javascript:*\", \"*http://*\", \"*https://*\"))) or (process.executable.caseless:\"*\\\\regsvr32.exe\" and (process.command_line:\"*/i:*\" and process.command_line:\"*http*\"))",
     "query_kql": "(process.executable.caseless:*\\\\rundll32.exe AND (process.command_line:(*javascript\\:* OR *http\\:\\/\\/* OR *https\\:\\/\\/*))) OR (process.executable.caseless:*\\\\regsvr32.exe AND (process.command_line:*\\/i\\:* AND process.command_line:*http*))",
     "source_file": "rules/sigma/win_lolbin_remote_payload.yml"
+  },
+  {
+    "id": "2a8e5c13-7f46-4b92-8d05-1c6e9a3b7f52",
+    "title": "SMB Administrative Share Access",
+    "status": "experimental",
+    "level": "high",
+    "description": "Detects access to a Windows administrative share over SMB. Admin-share access is a common lateral-movement step after credential theft; the rule keys on the share name and keeps normal user shares out of the queue.",
+    "author": "Meruyert",
+    "date": "2026/11/12",
+    "references": [
+      "https://attack.mitre.org/techniques/T1021/002/"
+    ],
+    "falsepositives": [
+      "Backup software and inventory tools that use administrative shares",
+      "Administrators mapping ADMIN$ for approved maintenance"
+    ],
+    "tags": [
+      "attack.lateral_movement",
+      "attack.t1021.002"
+    ],
+    "techniques": [
+      "T1021.002"
+    ],
+    "tactics": [
+      "lateral_movement"
+    ],
+    "logsource": {
+      "product": "windows",
+      "service": "security"
+    },
+    "index": [
+      "lab-windows"
+    ],
+    "query": "any where winlog.channel:\"Security\" and (event.code:\"5140\" and winlog.event_data.ShareName:\"*ADMIN$*\")",
+    "query_kql": "winlog.channel:Security AND (winlog.channel:Security AND (event.code:5140 AND winlog.event_data.ShareName:*ADMIN$*))",
+    "source_file": "rules/sigma/win_admin_share_access.yml"
   },
   {
     "id": "f43a7758-c7bc-40a0-8557-ee78d2515c6b",
@@ -1102,6 +1247,42 @@
     "source_file": "rules/sigma/win_uac_bypass.yml"
   },
   {
+    "id": "9e5a2c74-6d18-4b03-a7f2-3c8e1d5b6049",
+    "title": "Valid Service Account Login from an External Address",
+    "status": "experimental",
+    "level": "high",
+    "description": "Detects a successful SSH login for the backup service account from an address outside the lab. A valid account avoids failed-login volume rules, so the source and account pair is the signal.",
+    "author": "Meruyert",
+    "date": "2026/11/12",
+    "references": [
+      "https://attack.mitre.org/techniques/T1078/"
+    ],
+    "falsepositives": [
+      "Backup automation that connects from a known external jump host",
+      "A service account moved to a new management network"
+    ],
+    "tags": [
+      "attack.initial_access",
+      "attack.t1078"
+    ],
+    "techniques": [
+      "T1078"
+    ],
+    "tactics": [
+      "initial_access"
+    ],
+    "logsource": {
+      "product": "linux",
+      "service": "sshd"
+    },
+    "index": [
+      "lab-linux"
+    ],
+    "query": "any where event.action:\"ssh_auth\" and event.outcome:\"success\" and user.name:\"backup\"",
+    "query_kql": "event.action:ssh_auth AND event.outcome:success AND user.name:backup",
+    "source_file": "rules/sigma/linux_valid_account.yml"
+  },
+  {
     "id": "ef58d3ad-a338-419e-bcba-2f0ab6376890",
     "title": "WMI Event Subscription Persistence",
     "status": "experimental",
@@ -1136,6 +1317,42 @@
     "query": "any where (process.command_line:\"*root\\\\subscription*\" and process.command_line:\"*CommandLineEventConsumer*\") or (process.command_line like~ (\"*Register-WmiEvent*\", \"*__EventFilter*\", \"*CommandLineEventConsumer*\"))",
     "query_kql": "(process.command_line:*root\\\\subscription* AND process.command_line:*CommandLineEventConsumer*) OR (process.command_line:(*Register\\-WmiEvent* OR *__EventFilter* OR *CommandLineEventConsumer*))",
     "source_file": "rules/sigma/win_wmi_event_subscription.yml"
+  },
+  {
+    "id": "7a1d4b9e-2f63-4c08-9a51-6d3e8b7c1a20",
+    "title": "Windows Command Shell Spawning a Remote Payload",
+    "status": "experimental",
+    "level": "high",
+    "description": "Detects cmd.exe used as a launcher for PowerShell, certutil, or direct HTTP payload retrieval. The shell itself is common; pairing a command shell with a remote payload is the signal worth reviewing.",
+    "author": "Meruyert",
+    "date": "2026/11/12",
+    "references": [
+      "https://attack.mitre.org/techniques/T1059/003/"
+    ],
+    "falsepositives": [
+      "Administration scripts that intentionally chain cmd.exe and PowerShell",
+      "Software installers that retrieve payloads over HTTP"
+    ],
+    "tags": [
+      "attack.execution",
+      "attack.t1059.003"
+    ],
+    "techniques": [
+      "T1059.003"
+    ],
+    "tactics": [
+      "execution"
+    ],
+    "logsource": {
+      "category": "process_creation",
+      "product": "windows"
+    },
+    "index": [
+      "lab-windows"
+    ],
+    "query": "any where process.executable.caseless:\"*\\\\cmd.exe\" and (process.command_line like~ (\"*powershell*\", \"*certutil*\", \"*http://*\", \"*https://*\"))",
+    "query_kql": "process.executable.caseless:*\\\\cmd.exe AND (process.command_line:(*powershell* OR *certutil* OR *http\\:\\/\\/* OR *https\\:\\/\\/*))",
+    "source_file": "rules/sigma/win_windows_shell.yml"
   },
   {
     "id": "38a1b7d4-2e69-4f0c-9a53-6c8e1d4b7f20",

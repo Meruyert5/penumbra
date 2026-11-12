@@ -59,9 +59,45 @@ def test_baseline_is_benign():
 
 
 def test_scenario_catalogue_is_large_and_unique():
-    assert len(SCENARIOS) >= 25
+    assert len(SCENARIOS) >= 34
     assert len(set(SCENARIOS)) == len(SCENARIOS)
     assert "baseline" in SCENARIOS
+
+
+def test_gap_scenarios_produce_expected_events():
+    data = generate("all", seed=42, base_time=BASE)
+
+    assert any(event.get("url", {}).get("path") == "/api/v2/beacon" for event in data["web"])
+    assert any(event.get("event", {}).get("code") == "8" for event in data["windows"])
+    assert any(
+        event.get("user", {}).get("name") == "backup"
+        and event.get("event", {}).get("outcome") == "success"
+        for event in data["linux"]
+    )
+    assert any(
+        event.get("user", {}).get("name") == "root"
+        and event.get("event", {}).get("outcome") == "success"
+        for event in data["linux"]
+    )
+    assert any(
+        event.get("event", {}).get("code") == "5140"
+        and "ADMIN$" in str((event.get("winlog") or {}).get("event_data", {}).get("ShareName", ""))
+        for event in data["windows"]
+    )
+    assert any(
+        event.get("process", {}).get("name") == "cmd.exe"
+        and "powershell" in event.get("process", {}).get("command_line", "").lower()
+        for event in data["windows"]
+    )
+
+
+def test_all_run_spans_the_day():
+    data = generate("all", seed=42, base_time=BASE)
+    timestamps = [event["@timestamp"] for events in data.values() for event in events]
+    assert timestamps
+    assert min(timestamps)[:10] == "2026-11-10"
+    assert max(timestamps)[:10] == "2026-11-11"
+    assert len({timestamp[11:13] for timestamp in timestamps}) >= 20
 
 
 def test_all_run_produces_five_sources():
@@ -69,7 +105,7 @@ def test_all_run_produces_five_sources():
     assert set(data) == {"windows", "linux", "web", "cloud", "network"}
     assert all(events for events in data.values())
     total = sum(len(events) for events in data.values())
-    assert total >= 2000
+    assert total >= 8000
 
 
 def test_every_event_has_dataset_and_action():

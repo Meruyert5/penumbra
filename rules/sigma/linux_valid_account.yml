@@ -1,0 +1,27 @@
+title: Valid Service Account Login from an External Address
+id: 9e5a2c74-6d18-4b03-a7f2-3c8e1d5b6049
+status: experimental
+description: >
+  Detects a successful SSH login for the backup service account from an address
+  outside the lab. A valid account avoids failed-login volume rules, so the
+  source and account pair is the signal.
+references:
+  - https://attack.mitre.org/techniques/T1078/
+author: Meruyert
+date: 2026/11/12
+tags:
+  - attack.initial_access
+  - attack.t1078
+logsource:
+  product: linux
+  service: sshd
+detection:
+  selection:
+    event.action: ssh_auth
+    event.outcome: success
+    user.name: backup
+  condition: selection
+falsepositives:
+  - Backup automation that connects from a known external jump host
+  - A service account moved to a new management network
+level: high

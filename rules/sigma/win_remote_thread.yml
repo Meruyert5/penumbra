@@ -1,0 +1,29 @@
+title: Remote Thread Created by a User-Writable Binary
+id: 4c2e8d71-9b5a-4f36-8e17-2a9d6c0b5f43
+status: experimental
+description: >
+  Detects Sysmon CreateRemoteThread events where the source image sits in a
+  user-writable directory. Remote thread creation from Public or Temp is a
+  common process-injection pattern and is rare for signed system binaries.
+references:
+  - https://attack.mitre.org/techniques/T1055/
+  - https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
+author: Meruyert
+date: 2026/11/12
+tags:
+  - attack.defense_evasion
+  - attack.t1055
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 8
+    SourceImage|contains:
+      - '\Users\Public\'
+      - '\AppData\Local\Temp\'
+  condition: selection
+falsepositives:
+  - Debuggers and instrumentation tooling installed under Temp
+  - Legitimate application shims that inject into their own child process
+level: high

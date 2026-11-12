@@ -27,6 +27,11 @@ def test_priority_list_is_substantial():
     assert len(PRIORITY_TECHNIQUES) >= 40
 
 
+def test_priority_coverage_is_complete():
+    tiles, covered = coverage_tiles(compile_all(), load_specs())
+    assert set(PRIORITY_TECHNIQUES) <= covered
+
+
 def test_coverage_tiles_include_gaps_and_correlations():
     compiled = compile_all()
     specs = load_specs()

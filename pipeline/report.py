@@ -42,43 +42,62 @@ SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 # Local font files keep the report self-contained. Both families are SIL OFL 1.1.
 FONT_FILES = {
-    "Bricolage Grotesque": [("bricolage-grotesque-latin.woff2", "200 800")],
+    "Bricolage Grotesque": [
+        {"file": "bricolage-grotesque-latin.woff2", "weight": "200 800"}
+    ],
     "DM Mono": [
-        ("dm-mono-400-latin.woff2", "400"),
-        ("dm-mono-500-latin.woff2", "500"),
+        {"file": "dm-mono-400-latin.woff2", "weight": "400"},
+        {"file": "dm-mono-500-latin.woff2", "weight": "500"},
     ],
 }
 
 
-def load_font_css() -> str:
+def load_font_css(
+    dashboard_dir: Path = DASHBOARD_DIR,
+    font_files: dict[str, list[Any]] | None = None,
+) -> str:
+    entries_by_family = font_files or FONT_FILES
     rules: list[str] = []
-    for family, entries in FONT_FILES.items():
-        for filename, weight in entries:
-            path = DASHBOARD_DIR / "fonts" / filename
+    for family, entries in entries_by_family.items():
+        for entry in entries:
+            if isinstance(entry, dict):
+                filename = str(entry["file"])
+                weight = str(entry.get("weight", "400"))
+                style = str(entry.get("style", "normal"))
+                stretch = str(entry.get("stretch", "100%"))
+            else:
+                filename, weight = entry
+                style = "normal"
+                stretch = "100%"
+            path = dashboard_dir / "fonts" / filename
             if not path.exists():
                 raise SystemExit(f"Dashboard font missing: {path}")
             encoded = base64.b64encode(path.read_bytes()).decode("ascii")
             rules.append(
-                '@font-face{font-family:"' + family + '";font-style:normal;'
-                f'font-weight:{weight};font-stretch:100%;font-display:swap;'
+                '@font-face{font-family:"' + family + '";'
+                f"font-style:{style};font-weight:{weight};font-stretch:{stretch};"
+                "font-display:swap;"
                 f'src:url(data:font/woff2;base64,{encoded}) format("woff2");'
                 "}"
             )
     return "\n".join(rules)
 
 
-def load_dashboard_source() -> dict[str, str]:
+def load_dashboard_source(
+    dashboard_dir: Path = DASHBOARD_DIR,
+    font_files: dict[str, list[Any]] | None = None,
+) -> dict[str, str]:
     required = {
-        "template": DASHBOARD_DIR / "template.html",
-        "styles": DASHBOARD_DIR / "styles.css",
-        "script": DASHBOARD_DIR / "app.js",
-        "icon": DASHBOARD_DIR / "icon.svg",
+        "template": dashboard_dir / "template.html",
+        "styles": dashboard_dir / "styles.css",
+        "script": dashboard_dir / "app.js",
+        "icon": dashboard_dir / "icon.svg",
     }
     missing = [str(path) for path in required.values() if not path.exists()]
     if missing:
         raise SystemExit("Dashboard source missing: " + ", ".join(missing))
     source = {key: path.read_text(encoding="utf-8") for key, path in required.items()}
-    source["fonts"] = load_font_css()
+    source["fonts"] = load_font_css(dashboard_dir, font_files)
     return source
 
 
@@ -172,7 +191,7 @@ def pipeline_payload(
         {
             "label": "Generate",
             "title": "Seeded telemetry",
-            "detail": f"{len(SCENARIOS)} attack scenarios across Windows, Linux, web, cloud, and network sources.",
+            "detail": f"{len(SCENARIOS) - 1} attack scenarios plus a benign baseline across Windows, Linux, web, cloud, and network sources.",
             "count": f"{events:,}",
         },
         {

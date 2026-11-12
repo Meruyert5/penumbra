@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>One run, two instruments / Signal Foundry and Transient</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0c100f;
+    --panel: #121816;
+    --panel-2: #18211e;
+    --ink: #f2eee3;
+    --ink-2: #c6c3b8;
+    --muted: #8c958f;
+    --line: #2b3733;
+    --line-soft: #1d2723;
+    --sf: #f0d9a8;
+    --sf-accent: #d9604c;
+    --tr: #e6a94a;
+    --tr-accent: #6fd7e0;
+    --mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Newsreader", "Iowan Old Style", Georgia, serif;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(900px 620px at 12% -8%, rgba(217, 96, 76, 0.13), transparent 62%),
+      radial-gradient(900px 620px at 88% -4%, rgba(111, 215, 224, 0.1), transparent 62%),
+      var(--bg);
+    color: var(--ink);
+    font: 16px/1.62 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--tr-accent); text-decoration: none; }
+  a:hover { color: var(--tr); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--tr-accent); outline-offset: 3px; }
+  ::selection { background: var(--tr); color: #0c100f; }
+  .wrap { max-width: 1380px; margin: 0 auto; padding: 30px 22px 70px; }
+
+  .masthead { display: flex; justify-content: space-between; gap: 22px; align-items: baseline; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+  .masthead .mark { display: flex; align-items: center; gap: 10px; font: 500 9px/1.4 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .masthead .mark i { width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(90deg, var(--sf-accent) 50%, var(--tr-accent) 50%); }
+  .masthead nav { display: flex; flex-wrap: wrap; gap: 18px; font: 500 9px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .masthead nav a { color: var(--muted); }
+  .masthead nav a:hover { color: var(--ink); }
+
+  .archived-note { margin: 20px 0 0; padding: 10px 12px; border: 1px solid var(--line); color: var(--muted); font: 500 8.5px/1.6 var(--mono); letter-spacing: 0.03em; }
+  .hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr); gap: clamp(28px, 5vw, 70px); align-items: end; padding: clamp(44px, 7vw, 92px) 0 0; }
+  .kicker { display: flex; align-items: center; gap: 10px; margin: 0 0 20px; color: var(--tr); font: 500 10px/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+  .kicker i { width: 32px; height: 1px; background: var(--tr); }
+  h1 { margin: 0; font: 400 clamp(52px, 8vw, 118px)/0.86 var(--sans); letter-spacing: -0.055em; text-wrap: balance; }
+  h1 em { font-style: italic; color: var(--tr); }
+  .hero p { max-width: 58ch; margin: 24px 0 0; color: var(--ink-2); font-size: clamp(17px, 1.5vw, 19px); line-height: 1.55; text-wrap: pretty; }
+  .hero-card { border: 1px solid var(--line); background: var(--panel); padding: 18px 18px 16px; }
+  .hero-card h2 { margin: 0 0 12px; color: var(--muted); font: 500 8.5px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+  .hero-card dl { margin: 0; }
+  .hero-card dl > div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px dashed var(--line-soft); }
+  .hero-card dl > div:last-child { border-bottom: 0; }
+  .hero-card dt { color: var(--muted); font: 500 8.5px/1.4 var(--mono); letter-spacing: 0.04em; }
+  .hero-card dd { margin: 0; color: var(--ink); font: 500 11px/1.4 var(--mono); text-align: right; }
+
+  .specimens { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; }
+  .specimen { position: relative; display: block; border: 1px solid var(--line); background: var(--panel); overflow: hidden; transition: transform 0.25s var(--ease), border-color 0.25s ease; }
+  .specimen:hover { transform: translateY(-3px); border-color: var(--ink-2); }
+  .specimen img { display: block; width: 100%; height: 340px; object-fit: cover; object-position: top; }
+  .specimen.sf img { object-position: top; }
+  .specimen .tag { position: absolute; top: 12px; left: 12px; padding: 4px 7px; font: 500 7.5px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+  .specimen.sf .tag { background: var(--sf); color: #251612; }
+  .specimen.tr .tag { background: var(--tr); color: #0c100f; }
+  .specimen .body { display: flex; justify-content: space-between; gap: 14px; align-items: baseline; padding: 14px 16px; border-top: 1px solid var(--line); }
+  .specimen .body b { font: 400 24px/1.1 var(--sans); letter-spacing: -0.02em; }
+  .specimen .body span { color: var(--muted); font: 500 8px/1.4 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .viewer { margin-top: clamp(48px, 7vw, 84px); border-top: 1px solid var(--line); padding-top: 24px; }
+  .viewer-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px; align-items: flex-end; }
+  .viewer-head h2 { margin: 0; font: 400 clamp(32px, 4vw, 52px)/1 var(--sans); letter-spacing: -0.04em; }
+  .viewer-head p { max-width: 46ch; margin: 8px 0 0; color: var(--muted); font-size: 14.5px; }
+  .switch { display: inline-flex; border: 1px solid var(--line); background: var(--panel); padding: 3px; }
+  .switch button { min-height: 36px; padding: 0 13px; border: 0; background: transparent; color: var(--muted); font: 500 9px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; transition: background 0.16s ease, color 0.16s ease; }
+  .switch button.on { background: var(--ink); color: #0c100f; }
+  .switch button[data-view="tr"].on { background: var(--tr); }
+  .viewer-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 16px 0 12px; }
+  .tool { min-height: 32px; padding: 0 10px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font: 500 8.5px/1 var(--mono); letter-spacing: 0.05em; transition: border-color 0.16s ease, color 0.16s ease; }
+  .tool:hover { border-color: var(--tr-accent); color: var(--ink); }
+  .tool.primary { border-color: var(--tr); background: var(--tr); color: #0c100f; }
+  .viewer-meta { margin-left: auto; color: var(--muted); font: 500 8.5px/1.4 var(--mono); letter-spacing: 0.04em; }
+  .frame-shell { border: 1px solid var(--line); background: var(--panel-2); padding: 8px; box-shadow: 0 36px 90px rgba(0, 0, 0, 0.45); }
+  .frame-shell iframe { display: block; width: 100%; height: 780px; border: 0; background: #070b14; }
+  .frame-shell.mobile { max-width: 412px; margin: 0 auto; }
+  .frame-shell.mobile iframe { height: 844px; }
+
+  .difference { margin-top: clamp(52px, 8vw, 96px); }
+  .difference > h2 { margin: 0 0 6px; font: 400 clamp(32px, 4vw, 52px)/1 var(--sans); letter-spacing: -0.04em; }
+  .difference > p { margin: 0 0 26px; max-width: 64ch; color: var(--muted); }
+  .diff-grid { display: grid; grid-template-columns: 150px 1fr 1fr; border-top: 1px solid var(--line); }
+  .diff-grid > div { padding: 13px 14px; border-bottom: 1px solid var(--line-soft); font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+  .diff-grid .head { color: var(--muted); font: 500 8px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; background: var(--panel); }
+  .diff-grid .head.sf { color: var(--sf); }
+  .diff-grid .head.tr { color: var(--tr-accent); }
+  .diff-grid .label { color: var(--ink); font: 500 8.5px/1.5 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; background: color-mix(in srgb, var(--panel) 70%, transparent); }
+
+  .questions { margin-top: clamp(48px, 7vw, 84px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr); gap: 20px; align-items: start; }
+  .questions h2 { margin: 0 0 10px; font: 400 clamp(30px, 3.4vw, 44px)/1.02 var(--sans); letter-spacing: -0.035em; }
+  .questions p { margin: 0 0 14px; max-width: 58ch; color: var(--ink-2); font-size: 15px; }
+  .pick-list { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .pick-list li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line-soft); color: var(--ink-2); font-size: 14.5px; list-style: none; }
+  .pick-list li b { color: var(--tr); font: 500 8.5px/1.7 var(--mono); }
+  .pick-list { margin: 0; padding: 0; }
+  .picker { border: 1px solid var(--line); background: var(--panel); padding: 20px; }
+  .picker h3 { margin: 0 0 6px; color: var(--muted); font: 500 8.5px/1 var(--mono); letter-spacing: 0.09em; text-transform: uppercase; }
+  .picker p { margin: 0 0 14px; color: var(--muted); font-size: 13.5px; }
+  .pick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pick-actions button { min-height: 46px; border: 1px solid var(--line); background: transparent; color: var(--ink); font: 500 9px/1.3 var(--mono); letter-spacing: 0.05em; text-transform: uppercase; transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease; }
+  .pick-actions button:hover { border-color: var(--ink-2); }
+  .pick-actions button.sf.on { border-color: var(--sf); background: var(--sf); color: #251612; }
+  .pick-actions button.tr.on { border-color: var(--tr); background: var(--tr); color: #0c100f; }
+  .pick-result { margin: 14px 0 0; min-height: 20px; color: var(--tr-accent); font: 500 9px/1.5 var(--mono); letter-spacing: 0.03em; }
+  .picker .reset { margin-top: 10px; border: 0; background: none; padding: 0; color: var(--muted); font: 500 8.5px/1.4 var(--mono); text-decoration: underline; text-underline-offset: 3px; }
+
+  .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; margin-top: clamp(48px, 7vw, 80px); padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font: 500 9px/1.8 var(--mono); letter-spacing: 0.03em; }
+  .foot a { color: var(--ink-2); }
+  .foot a:hover { color: var(--tr); }
+
+  @media (max-width: 1000px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-card { max-width: 460px; }
+    .questions { grid-template-columns: 1fr; }
+    .specimens { grid-template-columns: 1fr; }
+    .specimen img { height: 300px; }
+  }
+  @media (max-width: 760px) {
+    .wrap { padding: 20px 14px 50px; }
+    .masthead nav { display: none; }
+    .diff-grid { grid-template-columns: 1fr; }
+    .diff-grid > div { padding: 10px 12px; }
+    .diff-grid .head:not(.label) { display: none; }
+    .diff-grid .label { border-bottom: 0; padding-bottom: 2px; background: none; color: var(--tr); }
+    .diff-grid .label::after { content: " / Signal Foundry"; color: var(--muted); }
+    .diff-grid .sf { border-left: 2px solid var(--sf-accent); }
+    .diff-grid .tr { border-left: 2px solid var(--tr-accent); }
+    .diff-grid .sf::before { content: "SF "; color: var(--muted); font: 500 8px var(--mono); }
+    .diff-grid .tr::before { content: "TR "; color: var(--muted); font: 500 8px var(--mono); }
+    .frame-shell iframe { height: 620px; }
+    .viewer-meta { margin-left: 0; width: 100%; }
+    .picker { padding: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <span class="mark"><i></i>Comparison / one deterministic run</span>
+    <nav aria-label="Page sections">
+      <a href="#specimens">Specimens</a>
+      <a href="#live">Live frames</a>
+      <a href="#difference">Differences</a>
+      <a href="#decide">Decide</a>
+    </nav>
+  </header>
+
+  <p class="archived-note">Archived comparison from the 44-rule run. Signal Foundry now runs 50 rules, 9,223 events, and 45/45 priority coverage; this page is kept as a design reference.</p>
+
+  <section class="hero">
+    <div>
+      <p class="kicker"><i></i>Same evidence, two readings</p>
+      <h1>One run.<br>Two <em>instruments.</em></h1>
+      <p>
+        Signal Foundry and Transient read the same 2,182 events, the same 44 Sigma rules,
+        and the same nine correlations. They disagree about how that evidence should feel.
+        Signal Foundry is a case file you can hand to a reviewer. Transient is a night sky
+        you scan until something moves.
+      </p>
+    </div>
+    <aside class="hero-card" aria-label="Shared run facts">
+      <h2>The run both pages read</h2>
+      <dl>
+        <div><dt>Events</dt><dd>2,182</dd></div>
+        <div><dt>Sigma rules</dt><dd>44</dd></div>
+        <div><dt>Correlations</dt><dd>9 executed</dd></div>
+        <div><dt>Cases</dt><dd>3</dd></div>
+        <div><dt>Coverage</dt><dd>39 / 45</dd></div>
+        <div><dt>Execution errors</dt><dd>0</dd></div>
+      </dl>
+    </aside>
+  </section>
+
+  <section class="specimens" id="specimens" aria-label="Both dashboard covers">
+    <a class="specimen sf" href="index.html">
+      <span class="tag">Signal Foundry</span>
+      <img src="assets/dashboard.png" alt="Signal Foundry cover: paper case file with a red stamp and teal accents">
+      <span class="body"><b>Signal Foundry</b><span>Field guide / light</span></span>
+    </a>
+    <a class="specimen tr" href="transient.html">
+      <span class="tag">Transient</span>
+      <img src="assets/transient.png" alt="Transient cover: a night sky, a light curve, and a field record">
+      <span class="body"><b>Transient</b><span>Observatory / night</span></span>
+    </a>
+  </section>
+
+  <section class="viewer" id="live">
+    <div class="viewer-head">
+      <div>
+        <h2>Open both, side by side in your head.</h2>
+        <p>The frame is live. Switch pages, flip Transient to Dawn, or squeeze it to 390. Both files work offline from disk.</p>
+      </div>
+      <div class="switch" role="group" aria-label="Choose a dashboard">
+        <button type="button" class="on" data-view="sf" aria-pressed="true">Signal Foundry</button>
+        <button type="button" data-view="tr" aria-pressed="false">Transient</button>
+      </div>
+    </div>
+
+    <div class="viewer-tools">
+      <button class="tool primary" type="button" id="openFrame">Open full page</button>
+      <button class="tool" type="button" id="toggleTheme">Transient theme: night</button>
+      <button class="tool" type="button" id="toggleMobile">Mobile 390</button>
+      <button class="tool" type="button" id="reloadFrame">Reload</button>
+      <span class="viewer-meta" id="frameMeta">Signal Foundry / light / desktop</span>
+    </div>
+
+    <div class="frame-shell" id="frameShell">
+      <iframe id="liveFrame" src="index.html?theme=light&v=compare" title="Live dashboard comparison frame"></iframe>
+    </div>
+  </section>
+
+  <section class="difference" id="difference">
+    <h2>What actually differs.</h2>
+    <p>The numbers do not move between pages. The model, hierarchy, and first question do.</p>
+    <div class="diff-grid" role="table" aria-label="Design differences between Signal Foundry and Transient">
+      <div class="head label" role="columnheader">Dimension</div>
+      <div class="head sf" role="columnheader">Signal Foundry</div>
+      <div class="head tr" role="columnheader">Transient</div>
+
+      <div class="label" role="rowheader">Thesis</div>
+      <div class="sf" role="cell">Read the signal. Keep the evidence. A detection field guide built as a case file.</div>
+      <div class="tr" role="cell">Find the transient. Keep the record. A night observatory for noisy telemetry.</div>
+
+      <div class="label" role="rowheader">Opening move</div>
+      <div class="sf" role="cell">A printed cover, a run ticket, and a case-file stamp. The page presents a finished dossier.</div>
+      <div class="tr" role="cell">A dark field, one line rising, and a field record. The page asks you to watch for change.</div>
+
+      <div class="label" role="rowheader">Chart</div>
+      <div class="sf" role="cell">Stacked bars by severity. Comparison at a glance, exact hourly counts in a readout.</div>
+      <div class="tr" role="cell">A light curve. Mostly flat, then one beam at 11:00. Quiet hours are part of the argument.</div>
+
+      <div class="label" role="rowheader">Queue</div>
+      <div class="sf" role="cell">A watch floor with a fixed evidence inspector, host lanes, and a coincidence strip.</div>
+      <div class="tr" role="cell">An observation log with a fixed evidence bench. The list and the spectrum stay in view together.</div>
+
+      <div class="label" role="rowheader">Coverage</div>
+      <div class="sf" role="cell">A 7-column matrix with filled and hatched tiles. Gaps look like work left on the desk.</div>
+      <div class="tr" role="cell">A sky survey with solid and hollow fields. Gaps look like unobserved sky.</div>
+
+      <div class="label" role="rowheader">Cases</div>
+      <div class="sf" role="cell">Three case files in a paper grid, opened in a dossier modal.</div>
+      <div class="tr" role="cell">Three discovery papers, one featured, opened as a finding with a constellation map.</div>
+
+      <div class="label" role="rowheader">Type</div>
+      <div class="sf" role="cell">Bricolage Grotesque display, DM Mono data, warm paper surfaces, teal and rust accents.</div>
+      <div class="tr" role="cell">Newsreader display and body, IBM Plex Mono data, deep navy surfaces, amber and cyan accents.</div>
+
+      <div class="label" role="rowheader">Theme</div>
+      <div class="sf" role="cell">Light by default. Night is the alternate reading.</div>
+      <div class="tr" role="cell">Night by default. Dawn is the alternate reading.</div>
+
+      <div class="label" role="rowheader">Best for</div>
+      <div class="sf" role="cell">A hiring manager or reviewer who wants the whole loop to read like a finished investigation.</div>
+      <div class="tr" role="cell">A SOC lead who wants the detection logic to feel like monitoring: quiet, then anomalous.</div>
+    </div>
+  </section>
+
+  <section class="questions" id="decide">
+    <div>
+      <h2>Which one would you actually work in?</h2>
+      <p>Design quality here is not a vote for the prettier page. It is a vote for the page that makes the detection work easier to trust.</p>
+      <ul class="pick-list">
+        <li><b>01</b><span>Which cover makes you want to scroll, and still tells you what the run contains?</span></li>
+        <li><b>02</b><span>Which queue would you rather triage for an hour: inline evidence or a fixed evidence bench?</span></li>
+        <li><b>03</b><span>Which coverage view tells you what to build next without opening a document?</span></li>
+        <li><b>04</b><span>Which page would you send to a security lead who has ninety seconds?</span></li>
+      </ul>
+    </div>
+    <aside class="picker" aria-label="Record your preference">
+      <h3>Your pick</h3>
+      <p>Stored in this browser only. No analytics, no network.</p>
+      <div class="pick-actions">
+        <button type="button" class="sf" data-pick="sf" aria-pressed="false">Signal Foundry</button>
+        <button type="button" class="tr" data-pick="tr" aria-pressed="false">Transient</button>
+      </div>
+      <p class="pick-result" id="pickResult" aria-live="polite">No pick recorded yet.</p>
+      <button class="reset" type="button" id="resetPick">clear pick</button>
+    </aside>
+  </section>
+
+  <footer class="foot">
+    <span>Both dashboards render from the same <code>alerts.json</code>, <code>rules.json</code>, and <code>cases.json</code>.</span>
+    <span><a href="index.html">Signal Foundry</a> &middot; <a href="transient.html">Transient</a> &middot; <a href="architectures.html">Three architecture demos</a> &middot; <a href="review.html">UI review</a></span>
+  </footer>
+</div>
+
+<script>
+  const frame = document.getElementById("liveFrame");
+  const shell = document.getElementById("frameShell");
+  const meta = document.getElementById("frameMeta");
+  const themeButton = document.getElementById("toggleTheme");
+  const mobileButton = document.getElementById("toggleMobile");
+  const openButton = document.getElementById("openFrame");
+
+  const state = { view: "sf", theme: "light", mobile: false };
+
+  function sync() {
+    const page = state.view === "sf" ? "index.html" : "transient.html";
+    const theme = state.view === "sf" ? "light" : state.theme;
+    frame.src = page + "?theme=" + theme + "&v=" + Date.now();
+    shell.classList.toggle("mobile", state.mobile);
+    themeButton.disabled = state.view === "sf";
+    themeButton.style.opacity = state.view === "sf" ? "0.4" : "1";
+    themeButton.textContent = "Transient theme: " + (state.theme === "dark" ? "night" : "dawn");
+    meta.textContent = (state.view === "sf" ? "Signal Foundry" : "Transient") + " / " +
+      (state.view === "sf" ? "light" : state.theme) + " / " + (state.mobile ? "390" : "desktop");
+    openButton.dataset.page = page + "?theme=" + theme;
+  }
+
+  document.querySelector(".switch").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-view]");
+    if (!button) return;
+    state.view = button.dataset.view;
+    document.querySelectorAll(".switch button").forEach((node) => {
+      const on = node === button;
+      node.classList.toggle("on", on);
+      node.setAttribute("aria-pressed", String(on));
+    });
+    sync();
+  });
+
+  themeButton.addEventListener("click", () => {
+    state.theme = state.theme === "dark" ? "light" : "dark";
+    sync();
+  });
+
+  mobileButton.addEventListener("click", () => {
+    state.mobile = !state.mobile;
+    mobileButton.classList.toggle("primary", state.mobile);
+    sync();
+  });
+
+  document.getElementById("reloadFrame").addEventListener("click", sync);
+  openButton.addEventListener("click", () => {
+    window.open(openButton.dataset.page || "index.html", "_blank", "noopener");
+  });
+
+  const picker = document.querySelector(".picker");
+  const result = document.getElementById("pickResult");
+  const picks = { sf: "Signal Foundry", tr: "Transient" };
+
+  function paintPick(value) {
+    picker.querySelectorAll("[data-pick]").forEach((node) => {
+      const on = node.dataset.pick === value;
+      node.classList.toggle("on", on);
+      node.setAttribute("aria-pressed", String(on));
+    });
+    result.textContent = value ? "Recorded: " + picks[value] + ". Tell the author why." : "No pick recorded yet.";
+  }
+
+  picker.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-pick]");
+    if (!button) return;
+    const value = button.dataset.pick;
+    try { localStorage.setItem("dashboard-pick", value); } catch (error) { /* file:// storage can be blocked */ }
+    paintPick(value);
+  });
+
+  document.getElementById("resetPick").addEventListener("click", () => {
+    try { localStorage.removeItem("dashboard-pick"); } catch (error) { /* ignore */ }
+    paintPick("");
+  });
+
+  try { paintPick(localStorage.getItem("dashboard-pick") || ""); } catch (error) { paintPick(""); }
+  sync();
+</script>
+</body>
+</html>

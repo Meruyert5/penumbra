@@ -1,0 +1,31 @@
+title: Windows Command Shell Spawning a Remote Payload
+id: 7a1d4b9e-2f63-4c08-9a51-6d3e8b7c1a20
+status: experimental
+description: >
+  Detects cmd.exe used as a launcher for PowerShell, certutil, or direct HTTP
+  payload retrieval. The shell itself is common; pairing a command shell with a
+  remote payload is the signal worth reviewing.
+references:
+  - https://attack.mitre.org/techniques/T1059/003/
+author: Meruyert
+date: 2026/11/12
+tags:
+  - attack.execution
+  - attack.t1059.003
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_shell:
+    Image|endswith: '\cmd.exe'
+  selection_payload:
+    CommandLine|contains:
+      - 'powershell'
+      - 'certutil'
+      - 'http://'
+      - 'https://'
+  condition: selection_shell and selection_payload
+falsepositives:
+  - Administration scripts that intentionally chain cmd.exe and PowerShell
+  - Software installers that retrieve payloads over HTTP
+level: high
