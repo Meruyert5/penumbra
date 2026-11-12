@@ -16,7 +16,7 @@ component library.
 
 1. **Evidence before decoration.** Every number traces to an event, a detection,
    or a coverage rule. Decorative marks never replace the reading.
-2. **Signal over noise.** One loud hour, one quiet baseline, one queue, three
+2. **Signal over noise.** Several loud hours, a quiet baseline, one queue, three
    cases. Sections that did not carry that story were removed.
 3. **Paper and console are one system.** The light theme is the case file; the
    night theme is the same file on a dark desk. The run ticket stays paper in
@@ -32,23 +32,22 @@ component library.
 
 | Token | Paper | Night |
 |---|---|---|
-| `--bg` | `#eef1e9` | `#070d10` |
-| `--surface` | `#fafbf5` | `#0d191c` |
-| `--surface-2` | `#e4eadc` | `#142629` |
-| `--surface-3` | `#d1dbcb` | `#1c3336` |
-| `--text` | `#0f1a1b` | `#edf3ec` |
-| `--text-2` | `#33443e` | `#b9cbc1` |
-| `--muted` | `#586b61` | `#93a8a0` |
-| `--line` | `#aebbab` | `#2c4a4d` |
-| `--line-soft` | `#cbd6c7` | `#1b3235` |
-| `--rust` | `#c0361a` | `#f07a60` |
-| `--forest` | `#0a7358` | `#69d3b6` |
-| `--signal` | `#0a708c` | `#6fd9e3` |
-| `--indigo` | `#454a9e` | `#9aa0ff` |
-| `--critical` | `#b02a1c` | `#f06b55` |
-| `--high` | `#9c5906` | `#e6a653` |
-| `--medium` | `#776905` | `#d6c263` |
-| `--low` | `#0b725b` | `#69d3b6` |
+| `--bg` | `#f4f0e6` | `#070d10` |
+| `--surface` | `#f7f8f2` | `#0d191c` |
+| `--surface-2` | `#e3e8dc` | `#142629` |
+| `--surface-3` | `#d3dbcd` | `#1c3336` |
+| `--text` | `#121b1c` | `#edf3ec` |
+| `--text-2` | `#384640` | `#b9cbc1` |
+| `--muted` | `#5f7066` | `#93a8a0` |
+| `--line` | `#b6c1b3` | `#2c4a4d` |
+| `--line-soft` | `#d1d9cc` | `#1b3235` |
+| `--rust` | `#b23a24` | `#f07a60` |
+| `--forest` | `#126b59` | `#69d3b6` |
+| `--signal` | `#176f86` | `#6fd9e3` |
+| `--critical` | `#a62f22` | `#f06b55` |
+| `--high` | `#985a12` | `#e6a653` |
+| `--medium` | `#6c6110` | `#d6c263` |
+| `--low` | `#1d6b5c` | `#69d3b6` |
 | `--rail` | `#0b1417` | `#040a0c` |
 
 ### Roles
@@ -60,8 +59,6 @@ component library.
 - **Forest teal (`--forest`)** marks coverage, verdicts, technology tags, and
   valid evidence.
 - **Ochre** is reserved for the high/medium severity family and paper accents.
-- **Indigo (`--indigo`)** carries integrity and execution-error counts, so the
-  paper theme has a fifth accent instead of falling back to grey.
 - **Night ticket paper** is `#eef1ea` with `#121b1c` ink. It is a physical
   receipt on the dark desk, not a dark panel.
 
@@ -72,13 +69,12 @@ is used on.
 
 | Pair | Ratio |
 |---|---:|
-| Paper muted on page | 4.98:1 |
-| Paper signal on surface | 5.44:1 |
-| Paper rust on surface | 5.33:1 |
-| Paper forest on surface | 5.60:1 |
-| Paper critical on surface | 6.32:1 |
-| Paper indigo on surface | 7.40:1 |
-| Paper primary text | 15.54:1 |
+| Paper muted on page | 4.62:1 |
+| Paper signal on surface | 5.38:1 |
+| Paper rust on surface | 5.58:1 |
+| Paper forest on surface | 6.01:1 |
+| Paper critical on surface | 6.44:1 |
+| Paper primary text | 15.39:1 |
 | Night muted on page | 7.77:1 |
 | Night signal on surface | 10.84:1 |
 | Night rust on surface | 6.53:1 |

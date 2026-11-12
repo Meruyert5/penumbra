@@ -1,27 +1,26 @@
 /* Signal Foundry: a forensic case file wired to a SOC console.
-   Cool paper, blue-black ink, case red, signal teal, evidence ochre. */
+   Warm paper, blue-black ink, case red, signal teal, evidence ochre. */
 :root {
   color-scheme: light;
-  --bg: #eef1e9;
-  --surface: #fafbf5;
-  --surface-2: #e4eadc;
-  --surface-3: #d1dbcb;
-  --text: #0f1a1b;
-  --text-2: #33443e;
-  --muted: #586b61;
-  --line: #aebbab;
-  --line-soft: #cbd6c7;
-  --rust: #c0361a;
-  --rust-2: #d9512f;
-  --forest: #0a7358;
-  --forest-2: #0a6e55;
-  --signal: #0a708c;
-  --ochre: #946508;
-  --indigo: #454a9e;
-  --critical: #b02a1c;
-  --high: #9c5906;
-  --medium: #776905;
-  --low: #0b725b;
+  --bg: #f4f0e6;
+  --surface: #f7f8f2;
+  --surface-2: #e3e8dc;
+  --surface-3: #d3dbcd;
+  --text: #121b1c;
+  --text-2: #384640;
+  --muted: #5f7066;
+  --line: #b6c1b3;
+  --line-soft: #d1d9cc;
+  --rust: #b23a24;
+  --rust-2: #d0553c;
+  --forest: #126b59;
+  --forest-2: #1b8a73;
+  --signal: #176f86;
+  --ochre: #9a6a12;
+  --critical: #a62f22;
+  --high: #985a12;
+  --medium: #6c6110;
+  --low: #1d6b5c;
   --rail: #0b1417;
   --rail-text: #e9efe7;
   --rail-muted: #8a9c93;
@@ -55,7 +54,6 @@
   --forest-2: #90e2ca;
   --signal: #6fd9e3;
   --ochre: #e0ad55;
-  --indigo: #9aa0ff;
   --critical: #f06b55;
   --high: #e6a653;
   --medium: #d6c263;
@@ -86,10 +84,9 @@ body {
 :root[data-theme="light"] body {
   -webkit-font-smoothing: subpixel-antialiased;
   background-image:
-    radial-gradient(780px 520px at 6% -8%, color-mix(in srgb, var(--signal) 18%, transparent), transparent 62%),
-    radial-gradient(820px 540px at 96% 2%, color-mix(in srgb, var(--ochre) 16%, transparent), transparent 60%),
-    radial-gradient(900px 620px at 38% 104%, color-mix(in srgb, var(--rust) 8%, transparent), transparent 60%),
-    radial-gradient(1000px 620px at 72% -10%, #f7f9f3 0%, transparent 58%);
+    radial-gradient(780px 520px at 6% -8%, color-mix(in srgb, var(--signal) 14%, transparent), transparent 62%),
+    radial-gradient(820px 540px at 96% 2%, color-mix(in srgb, var(--ochre) 12%, transparent), transparent 60%),
+    radial-gradient(1000px 620px at 72% -10%, #fbf8ef 0%, transparent 58%);
   background-attachment: fixed;
 }
 :root[data-theme="dark"] body {
@@ -493,8 +490,8 @@ button { cursor: pointer; }
   line-height: 1;
   animation: stamp-in 0.46s var(--ease) 1.05s both;
 }
-.ticket-stamp b { display: block; font: 600 10.5px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
-.ticket-stamp span { display: block; margin-top: 3px; font: 600 9.5px/1.1 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; }
+.ticket-stamp b { display: block; font: 500 10.5px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.ticket-stamp span { display: block; margin-top: 3px; font: 500 9.5px/1.1 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; }
 
 /* The night theme keeps the run ticket as a physical paper receipt. */
 :root[data-theme="dark"] .ticket {
@@ -572,11 +569,11 @@ button { cursor: pointer; }
   padding: 13px 16px 12px;
   border-right: 1px solid var(--line-soft);
 }
-.cf:nth-child(1) { border-top: 2px solid var(--rust); }
-.cf:nth-child(2) { border-top: 2px solid var(--signal); }
+.cf:nth-child(1) { border-top: 2px solid var(--signal); }
+.cf:nth-child(2) { border-top: 2px solid var(--ochre); }
 .cf:nth-child(3) { border-top: 2px solid var(--critical); }
 .cf:nth-child(4) { border-top: 2px solid var(--forest); }
-.cf:nth-child(5) { border-top: 2px solid var(--indigo); }
+.cf:nth-child(5) { border-top: 2px solid var(--muted); }
 .cf:last-child { border-right: 0; }
 .cf b { font: 500 22px/1 "Bricolage Grotesque", sans-serif; letter-spacing: -0.03em; }
 .cf span { font: 500 9px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
@@ -744,9 +741,6 @@ button { cursor: pointer; }
 .cf b.tone-critical, .fact b.tone-critical { color: var(--critical); }
 .cf b.tone-signal, .fact b.tone-signal { color: var(--signal); }
 .cf b.tone-forest, .fact b.tone-forest { color: var(--forest); }
-.cf b.tone-rust, .fact b.tone-rust { color: var(--rust); }
-.cf b.tone-ochre, .fact b.tone-ochre { color: var(--ochre); }
-.cf b.tone-indigo, .fact b.tone-indigo { color: var(--indigo); }
 
 /* --------------------------------------------------------------------- path */
 .path {
