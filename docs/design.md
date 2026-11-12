@@ -32,15 +32,15 @@ component library.
 
 | Token | Paper | Night |
 |---|---|---|
-| `--bg` | `#f4f0e6` | `#070d10` |
-| `--surface` | `#f7f8f2` | `#0d191c` |
-| `--surface-2` | `#e3e8dc` | `#142629` |
-| `--surface-3` | `#d3dbcd` | `#1c3336` |
+| `--bg` | `#f0ebdf` | `#070d10` |
+| `--surface` | `#faf7ef` | `#0d191c` |
+| `--surface-2` | `#e6dfd0` | `#142629` |
+| `--surface-3` | `#d8d0bf` | `#1c3336` |
 | `--text` | `#121b1c` | `#edf3ec` |
-| `--text-2` | `#384640` | `#b9cbc1` |
-| `--muted` | `#5f7066` | `#93a8a0` |
-| `--line` | `#b6c1b3` | `#2c4a4d` |
-| `--line-soft` | `#d1d9cc` | `#1b3235` |
+| `--text-2` | `#3c382f` | `#b9cbc1` |
+| `--muted` | `#6a6251` | `#93a8a0` |
+| `--line` | `#c9beaa` | `#2c4a4d` |
+| `--line-soft` | `#e0d7c6` | `#1b3235` |
 | `--rust` | `#b23a24` | `#f07a60` |
 | `--forest` | `#126b59` | `#69d3b6` |
 | `--signal` | `#176f86` | `#6fd9e3` |
@@ -59,6 +59,12 @@ component library.
 - **Forest teal (`--forest`)** marks coverage, verdicts, technology tags, and
   valid evidence.
 - **Ochre** is reserved for the high/medium severity family and paper accents.
+- **Paper neutrals are warm.** Background, surface, rules, and muted text share a
+  warm paper scale, so cards and coverage tiles sit on the page instead of
+  reading grey-green.
+- **No multicolor rules.** Section rules, the cover stat strip, and the watch
+  floor status bar use one accent each. The old four-color gradient strips were
+  removed.
 - **Night ticket paper** is `#eef1ea` with `#121b1c` ink. It is a physical
   receipt on the dark desk, not a dark panel.
 
@@ -69,12 +75,12 @@ is used on.
 
 | Pair | Ratio |
 |---|---:|
-| Paper muted on page | 4.62:1 |
-| Paper signal on surface | 5.38:1 |
-| Paper rust on surface | 5.58:1 |
-| Paper forest on surface | 6.01:1 |
-| Paper critical on surface | 6.44:1 |
-| Paper primary text | 15.39:1 |
+| Paper muted on page | 5.07:1 |
+| Paper signal on surface | 5.37:1 |
+| Paper rust on surface | 5.57:1 |
+| Paper forest on surface | 5.99:1 |
+| Paper critical on surface | 6.43:1 |
+| Paper primary text | 14.72:1 |
 | Night muted on page | 7.77:1 |
 | Night signal on surface | 10.84:1 |
 | Night rust on surface | 6.53:1 |
@@ -104,9 +110,9 @@ still use a passing token; they are never the only carrier of meaning.
 - Buttons, badges, and data labels use uppercase mono with deliberate
   letter-spacing. Body copy stays in natural case.
 - Inputs use 16px on mobile to prevent iOS zoom, and 44px minimum height.
-- Micro labels never drop below 9px. The paper grain stays at `0.10` so small
-  mono text keeps a crisp edge, and text-bearing elements settle to
-  `transform: none` instead of scale animations.
+- Micro labels never drop below 9px. Paper texture is baked into the background
+  at low contrast, so small mono text keeps a crisp edge, and text-bearing
+  elements settle to `transform: none` instead of scale animations.
 - The line-height in `@font-face` and the UI is unitless. Type roles are fixed;
   avoid introducing one-off sizes.
 

@@ -25,15 +25,15 @@
    Warm paper, blue-black ink, case red, signal teal, evidence ochre. */
 :root {
   color-scheme: light;
-  --bg: #f4f0e6;
-  --surface: #f7f8f2;
-  --surface-2: #e3e8dc;
-  --surface-3: #d3dbcd;
+  --bg: #f0ebdf;
+  --surface: #faf7ef;
+  --surface-2: #e6dfd0;
+  --surface-3: #d8d0bf;
   --text: #121b1c;
-  --text-2: #384640;
-  --muted: #5f7066;
-  --line: #b6c1b3;
-  --line-soft: #d1d9cc;
+  --text-2: #3c382f;
+  --muted: #6a6251;
+  --line: #c9beaa;
+  --line-soft: #e0d7c6;
   --rust: #b23a24;
   --rust-2: #d0553c;
   --forest: #126b59;
@@ -48,9 +48,9 @@
   --rail-text: #e9efe7;
   --rail-muted: #8a9c93;
   --rail-line: #223238;
-  --shadow: 0 2px 4px rgba(18, 32, 28, 0.06), 0 24px 60px rgba(18, 32, 28, 0.14);
-  --shadow-sm: 0 1px 2px rgba(18, 32, 28, 0.05), 0 10px 24px rgba(18, 32, 28, 0.09);
-  --grain: 0.1;
+  --shadow: 0 2px 4px rgba(46, 38, 24, 0.06), 0 24px 60px rgba(46, 38, 24, 0.14);
+  --shadow-sm: 0 1px 2px rgba(46, 38, 24, 0.05), 0 10px 24px rgba(46, 38, 24, 0.09);
+  --grain: 1;
   --r-xs: 4px;
   --r-sm: 8px;
   --r-md: 12px;
@@ -107,9 +107,9 @@ body {
 :root[data-theme="light"] body {
   -webkit-font-smoothing: subpixel-antialiased;
   background-image:
-    radial-gradient(780px 520px at 6% -8%, color-mix(in srgb, var(--signal) 14%, transparent), transparent 62%),
-    radial-gradient(820px 540px at 96% 2%, color-mix(in srgb, var(--ochre) 12%, transparent), transparent 60%),
-    radial-gradient(1000px 620px at 72% -10%, #fbf8ef 0%, transparent 58%);
+    radial-gradient(780px 520px at 6% -8%, color-mix(in srgb, var(--signal) 9%, transparent), transparent 62%),
+    radial-gradient(820px 540px at 96% 2%, color-mix(in srgb, var(--ochre) 8%, transparent), transparent 60%),
+    radial-gradient(1000px 620px at 72% -10%, #f7f1e4 0%, transparent 58%);
   background-attachment: fixed;
 }
 :root[data-theme="dark"] body {
@@ -130,9 +130,16 @@ body::before {
   pointer-events: none;
   opacity: var(--grain);
   mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.38 0 0 0 0 0.32 0 0 0 0 0.23 0.03 0.03 0.03 0 0'/%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23m)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.35 0 0 0 0 0.29 0 0 0 0 0.21 0.04 0.04 0.04 0 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 420px 420px, 180px 180px;
 }
-:root[data-theme="dark"] body::before { mix-blend-mode: screen; }
+:root[data-theme="dark"] body::before {
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
 a { color: var(--forest-2); text-decoration: none; }
 a:hover { color: var(--rust); }
 button, input, select { font: inherit; color: inherit; }
@@ -380,7 +387,7 @@ button { cursor: pointer; }
   bottom: -1px;
   width: min(220px, 36%);
   height: 2px;
-  background: linear-gradient(90deg, var(--rust) 0 30%, var(--ochre) 30% 55%, var(--forest) 55% 80%, var(--signal) 80% 100%);
+  background: var(--rust);
 }
 .cover-grid {
   display: grid;
@@ -491,7 +498,7 @@ button { cursor: pointer; }
   padding: 30px 20px 16px;
   border: 1px solid var(--line);
   background-color: var(--surface);
-  background-image: linear-gradient(90deg, var(--rust) 0 28%, var(--ochre) 28% 52%, var(--forest) 52% 78%, var(--signal) 78% 100%);
+  background-image: linear-gradient(var(--rust), var(--rust));
   background-repeat: no-repeat;
   background-size: 100% 3px;
   background-position: top left;
@@ -519,7 +526,7 @@ button { cursor: pointer; }
 /* The night theme keeps the run ticket as a physical paper receipt. */
 :root[data-theme="dark"] .ticket {
   background-color: #eef1ea;
-  background-image: linear-gradient(90deg, #b23a24 0 28%, #9a6a12 28% 52%, #126b59 52% 78%, #176f86 78% 100%);
+  background-image: linear-gradient(#b23a24, #b23a24);
   border-color: #b6c1b3;
   color: #121b1c;
   box-shadow: 0 26px 60px rgba(0, 0, 0, 0.48);
@@ -592,11 +599,11 @@ button { cursor: pointer; }
   padding: 13px 16px 12px;
   border-right: 1px solid var(--line-soft);
 }
-.cf:nth-child(1) { border-top: 2px solid var(--signal); }
-.cf:nth-child(2) { border-top: 2px solid var(--ochre); }
-.cf:nth-child(3) { border-top: 2px solid var(--critical); }
-.cf:nth-child(4) { border-top: 2px solid var(--forest); }
-.cf:nth-child(5) { border-top: 2px solid var(--muted); }
+.cf:nth-child(1) { border-top: 2px solid var(--line); }
+.cf:nth-child(2) { border-top: 2px solid var(--line); }
+.cf:nth-child(3) { border-top: 2px solid var(--line); }
+.cf:nth-child(4) { border-top: 2px solid var(--line); }
+.cf:nth-child(5) { border-top: 2px solid var(--line); }
 .cf:last-child { border-right: 0; }
 .cf b { font: 500 22px/1 "Bricolage Grotesque", sans-serif; letter-spacing: -0.03em; }
 .cf span { font: 500 9px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
@@ -1139,7 +1146,7 @@ button { cursor: pointer; }
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--rust) 0 24%, var(--ochre) 24% 48%, var(--forest) 48% 72%, var(--signal) 72% 100%);
+  background: var(--signal);
   pointer-events: none;
 }
 .wf-status {
@@ -1155,9 +1162,9 @@ button { cursor: pointer; }
   text-transform: uppercase;
 }
 .wf-status b { font-weight: 500; }
-#wfDetections { color: #f2c66d; }
+#wfDetections { color: #8adce8; }
 #wfCorrelations { color: #8adce8; }
-#wfErrors { color: #8fe0c6; }
+#wfErrors { color: #8adce8; }
 .wf-live { display: inline-flex; align-items: center; gap: 7px; color: #f3f8f4; }
 .wf-live i {
   width: 6px;
