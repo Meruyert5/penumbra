@@ -11,6 +11,7 @@ payload, so the published page has no external requests and no build step.
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import re
 import shutil
@@ -39,6 +40,32 @@ DASHBOARD_DIR = ROOT / "dashboard"
 CASES_DIR = ROOT / "cases"
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
+# Local font files keep the report self-contained. Both families are SIL OFL 1.1.
+FONT_FILES = {
+    "Bricolage Grotesque": [("bricolage-grotesque-latin.woff2", "200 800")],
+    "DM Mono": [
+        ("dm-mono-400-latin.woff2", "400"),
+        ("dm-mono-500-latin.woff2", "500"),
+    ],
+}
+
+
+def load_font_css() -> str:
+    rules: list[str] = []
+    for family, entries in FONT_FILES.items():
+        for filename, weight in entries:
+            path = DASHBOARD_DIR / "fonts" / filename
+            if not path.exists():
+                raise SystemExit(f"Dashboard font missing: {path}")
+            encoded = base64.b64encode(path.read_bytes()).decode("ascii")
+            rules.append(
+                '@font-face{font-family:"' + family + '";font-style:normal;'
+                f'font-weight:{weight};font-stretch:100%;font-display:swap;'
+                f'src:url(data:font/woff2;base64,{encoded}) format("woff2");'
+                "}"
+            )
+    return "\n".join(rules)
+
 
 def load_dashboard_source() -> dict[str, str]:
     required = {
@@ -50,7 +77,9 @@ def load_dashboard_source() -> dict[str, str]:
     missing = [str(path) for path in required.values() if not path.exists()]
     if missing:
         raise SystemExit("Dashboard source missing: " + ", ".join(missing))
-    return {key: path.read_text(encoding="utf-8") for key, path in required.items()}
+    source = {key: path.read_text(encoding="utf-8") for key, path in required.items()}
+    source["fonts"] = load_font_css()
+    return source
 
 
 def load_cases(path: Path) -> list[dict[str, Any]]:
@@ -250,6 +279,7 @@ def build_html(payload: dict[str, Any], source: dict[str, str]) -> str:
     favicon = "data:image/svg+xml," + quote(source["icon"], safe="")
 
     replacements = {
+        "/*FONTS*/": source["fonts"],
         "/*STYLES*/": source["styles"],
         "/*SCRIPT*/": source["script"],
         "__DATA_JSON__": data_json,

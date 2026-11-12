@@ -140,12 +140,16 @@ def test_html_inlines_every_source_and_has_no_placeholders(tmp_path):
     )
     source = load_dashboard_source()
     html = build_html(payload, source)
-    for token in ("/*STYLES*/", "/*SCRIPT*/", "__DATA_JSON__", "__FAVICON__", "__ICON_SVG__"):
+    for token in ("/*FONTS*/", "/*STYLES*/", "/*SCRIPT*/", "__DATA_JSON__", "__FAVICON__", "__ICON_SVG__"):
         assert token not in html
     assert source["styles"][:40] in html
+    assert source["fonts"][:20] in html
     assert source["icon"] in html
     assert "Signal Foundry" in html
     assert "data:image/svg+xml," in html
+    assert "@font-face" in html
+    assert "data:font/woff2;base64," in html
+    assert "fonts.googleapis.com" not in html
 
 
 def test_case_reports_are_published(tmp_path):

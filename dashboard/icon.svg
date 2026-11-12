@@ -1,20 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Signal Foundry mark">
-  <defs>
-    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#f0d39a"/>
-      <stop offset="0.55" stop-color="#d8a657"/>
-      <stop offset="1" stop-color="#9c6f2c"/>
-    </linearGradient>
-    <linearGradient id="teal" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#7fc9b8"/>
-      <stop offset="1" stop-color="#3d8579"/>
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="15" fill="#0b1a18"/>
-  <rect x="1" y="1" width="62" height="62" rx="14" fill="none" stroke="#22423d"/>
-  <circle cx="32" cy="33" r="20" fill="none" stroke="url(#brass)" stroke-width="2"/>
-  <circle cx="32" cy="33" r="20" fill="none" stroke="#d8a657" stroke-opacity="0.18" stroke-width="6"/>
-  <path d="M13 35h7l3.5-12 5.5 23 5-16 4 9h13" fill="none" stroke="url(#teal)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="51" cy="35" r="2.6" fill="#c4664a"/>
-  <path d="M24 14v5M32 12v7M40 14v5" stroke="url(#brass)" stroke-width="2" stroke-linecap="round"/>
+  <rect width="64" height="64" rx="12" fill="#0b1417"/>
+  <rect x="5.5" y="5.5" width="53" height="53" rx="8" fill="none" stroke="#2a3d40"/>
+  <path class="mark-grid" d="M18 15v34M32 13v38M46 15v34" stroke="#2a3d40" stroke-opacity="0.55" stroke-width="1"/>
+  <path class="mark-signal" d="M10 40h9l4-16 6 27 5-19 4 8h16" fill="none" stroke="#e2735b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle class="mark-dot" cx="54" cy="40" r="2.8" fill="#61c4aa"/>
+  <path class="mark-ticks" d="M14 15h8M14 19h5" stroke="#e9efe7" stroke-opacity="0.42" stroke-width="1.4" stroke-linecap="round"/>
+  <path class="mark-ticks" d="M50 49h-8M50 45h-5" stroke="#e9efe7" stroke-opacity="0.22" stroke-width="1.4" stroke-linecap="round"/>
 </svg>
