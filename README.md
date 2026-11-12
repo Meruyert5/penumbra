@@ -17,6 +17,8 @@
 <p align="center">
   <a href="https://YOUR-USERNAME.github.io/signal-foundry/"><b>Open the interactive dashboard</b></a>
   &nbsp;·&nbsp;
+  <a href="docs/review.html">See the UI review</a>
+  &nbsp;·&nbsp;
   <a href="cases/case-003-ransomware/report.md">Read case 003</a>
   &nbsp;·&nbsp;
   <a href="docs/attck-coverage.md">ATT&CK coverage</a>

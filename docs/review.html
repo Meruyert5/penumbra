@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Signal Foundry / UI review</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #070d10;
+    --panel: #0d191c;
+    --panel-2: #142629;
+    --text: #edf3ec;
+    --muted: #93a8a0;
+    --line: #2c4a4d;
+    --rust: #f07a60;
+    --signal: #6fd9e3;
+    --forest: #69d3b6;
+    --mono: "DM Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: radial-gradient(1100px 700px at 68% -10%, #153438 0%, transparent 58%), var(--bg);
+    color: var(--text);
+    font: 16px/1.6 var(--sans);
+  }
+  a { color: var(--signal); }
+  button { font: inherit; }
+  .wrap { max-width: 1420px; margin: 0 auto; padding: 28px 22px 60px; }
+  .top { display: flex; justify-content: space-between; gap: 20px; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 16px; }
+  .top h1 { margin: 0; font-size: clamp(28px, 4vw, 46px); line-height: 1; letter-spacing: -0.04em; }
+  .top p { margin: 0; color: var(--muted); font: 500 9px/1.5 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; text-align: right; }
+  .intro { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr); gap: 28px; margin: 26px 0 20px; align-items: start; }
+  .intro p { margin: 0; color: #b9cbc1; max-width: 70ch; }
+  .intro strong { color: var(--text); }
+  .note { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--panel); color: var(--muted); font: 500 11px/1.6 var(--mono); }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 7px; margin: 18px 0 12px; }
+  .toolbar button {
+    min-height: 34px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    color: var(--text);
+    font: 500 9px/1 var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.16s ease, background 0.16s ease, transform 0.16s var(--ease);
+  }
+  .toolbar button:hover { border-color: var(--signal); background: var(--panel-2); }
+  .toolbar button:active { transform: scale(0.96); }
+  .toolbar button.primary { border-color: var(--rust); background: var(--rust); color: #07100f; }
+  .stage {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel);
+    padding: 10px;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.45);
+    transition: max-width 0.35s var(--ease);
+  }
+  .stage.mobile { max-width: 412px; margin: 0 auto; }
+  .stage iframe {
+    display: block;
+    width: 100%;
+    height: 860px;
+    border: 0;
+    border-radius: 10px;
+    background: #edf0e9;
+  }
+  .stage.mobile iframe { height: 844px; }
+  .caption { display: flex; justify-content: space-between; gap: 12px; padding: 10px 4px 0; color: var(--muted); font: 500 8.5px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .caption b { color: var(--text-2); }
+  .checks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 18px 0 0; }
+  .check { padding: 14px 15px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+  .check h3 { margin: 0 0 6px; font-size: 16px; line-height: 1.2; }
+  .check p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+  .check code { color: var(--signal); font: 500 10px/1.4 var(--mono); }
+  .compare { margin-top: 42px; border-top: 1px solid var(--line); padding-top: 22px; }
+  .compare h2 { margin: 0 0 12px; font-size: clamp(24px, 3vw, 38px); letter-spacing: -0.03em; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .compare figure { margin: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); }
+  .compare img { display: block; width: 100%; height: auto; }
+  .compare figcaption { padding: 10px 14px; color: var(--muted); font: 500 8.5px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .compare figcaption b { color: var(--text-2); }
+  .foot { margin-top: 30px; color: var(--muted); font: 500 9px/1.7 var(--mono); }
+  .foot a { color: var(--signal); }
+  @media (max-width: 900px) {
+    .intro { grid-template-columns: 1fr; }
+    .checks { grid-template-columns: 1fr; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .top p { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Where to see it</h1>
+    <p>Signal Foundry / UI review<br>Design pass: c487788</p>
+  </header>
+
+  <div class="intro">
+    <p>The static cover keeps the same case-file identity on purpose. The last pass changed <strong>motion, night hierarchy, type rendering, interaction, accessibility, and load behavior</strong>, not the brand. Use the controls below to jump the live dashboard and trigger each change.</p>
+    <div class="note">The dashboard is the embedded frame. It is live and interactive. The buttons only drive the frame so you do not have to hunt for the changed sections.</div>
+  </div>
+
+  <div class="toolbar" aria-label="Dashboard review controls">
+    <button class="primary" type="button" data-action="replay">The run / replay chart</button>
+    <button type="button" data-action="ledger">Ledger / open a row</button>
+    <button type="button" data-action="coverage">Coverage / gauge</button>
+    <button type="button" data-action="case">Open a case file</button>
+    <button type="button" data-action="palette">Command palette</button>
+    <button type="button" data-action="theme">Toggle night theme</button>
+    <button type="button" data-action="tour">Guided tour</button>
+    <button type="button" data-action="mobile">Mobile 390</button>
+    <button type="button" data-action="reset">Reset frame</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <iframe id="demo" src="index.html?theme=light&v=review" title="Signal Foundry live dashboard"></iframe>
+    <div class="caption"><span><b>Live frame</b> / interactive</span><span>scroll inside the frame too</span></div>
+  </div>
+
+  <div class="checks">
+    <article class="check"><h3>Motion</h3><p>The chart scans continuously and replays its bars every 8 seconds. The coverage gauge waves, the pipeline dot travels, and the case tabs pulse. Scroll to The run, Coverage, Method, or Cases.</p></article>
+    <article class="check"><h3>Night theme</h3><p>Toggle the theme. The run ticket becomes a paper receipt on the dark desk. Signal cyan appears in the chart scan, crosshair, peak, live dots, and rail waveform. Night panels lift off the page.</p></article>
+    <article class="check"><h3>Type and touch</h3><p>DM Mono now uses only real 400/500 weights, so the ticket and labels are crisp. Numbers are tabular. Primary buttons are 48px. Mobile inputs are 16px and filters are 32px.</p></article>
+    <article class="check"><h3>Interaction</h3><p>Open a ledger row for lazily built evidence. Press <code>Ctrl K</code> for the palette. Open a case for the focus trap and scroll lock. The guided tour avoids the target it describes.</p></article>
+    <article class="check"><h3>Performance</h3><p>The chart builds when it is near the viewport. The ledger renders on idle or first reveal. Evidence drawers are built on first open. The initial DOM is much smaller.</p></article>
+    <article class="check"><h3>Measured quality</h3><p>Lighthouse: 100 accessibility, 100 best practices, 100 SEO, 88 performance. 40 pytest tests. CDP checks cover the lazy drawer, EQL tab, palette focus, case focus trap, theme, and gaps.</p></article>
+  </div>
+
+  <section class="compare">
+    <h2>Before the redesign, and now</h2>
+    <div class="compare-grid">
+      <figure><img src="assets/dashboard-original.png" alt="Original Signal Foundry dashboard, dark green with gold type"><figcaption><b>Before</b> / original portfolio, commit 2d8e290</figcaption></figure>
+      <figure><img src="assets/dashboard.png" alt="Current Signal Foundry dashboard, paper case file with red stamps and teal accents"><figcaption><b>Now</b> / case-file console, current commit</figcaption></figure>
+    </div>
+  </section>
+
+  <p class="foot">The design system is in <a href="design.md">docs/design.md</a>. The repo-scoped skills live in `.opencode/skills` in the repository. <a href="index.html">Open the dashboard directly</a>.</p>
+</div>
+
+<script>
+  const frame = document.getElementById("demo");
+  const stage = document.getElementById("stage");
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  function doc() { return frame.contentDocument; }
+  function win() { return frame.contentWindow; }
+  function go(selector, offset = 80) {
+    const d = doc();
+    const target = d.querySelector(selector);
+    if (!target) return;
+    const y = target.getBoundingClientRect().top + win().scrollY - offset;
+    win().scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+  }
+
+  async function run(action) {
+    if (action === "reset") {
+      frame.src = "index.html?theme=light&v=" + Date.now();
+      stage.classList.remove("mobile");
+      return;
+    }
+    if (action === "mobile") {
+      stage.classList.toggle("mobile");
+      return;
+    }
+    if (action === "theme") {
+      const btn = doc().querySelector("#themeBtn");
+      if (btn) btn.click();
+      return;
+    }
+    if (action === "palette") {
+      doc().dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true, bubbles: true }));
+      return;
+    }
+    if (action === "tour") {
+      const btn = doc().querySelector("#tourBtn");
+      if (btn) btn.click();
+      return;
+    }
+    if (action === "replay") {
+      go("#run", 20);
+      await wait(700);
+      const btn = doc().querySelector("#chartReplay");
+      if (btn) btn.click();
+      return;
+    }
+    if (action === "ledger") {
+      go("#ledger", 20);
+      await wait(450);
+      const row = doc().querySelector("#ledgerBody .row");
+      if (row) row.click();
+      return;
+    }
+    if (action === "coverage") {
+      go("#coverage", 20);
+      return;
+    }
+    if (action === "case") {
+      go("#cases", 20);
+      await wait(500);
+      const card = doc().querySelector(".case-card");
+      if (card) card.click();
+    }
+  }
+
+  document.querySelector(".toolbar").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-action]");
+    if (button) run(button.dataset.action);
+  });
+</script>
+</body>
+</html>
