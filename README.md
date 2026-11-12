@@ -40,6 +40,7 @@ Signal Foundry is that loop, made reproducible. Every alert, chart, and case in 
 | Detection tuning with recorded false positives | [`docs/tuning.md`](docs/tuning.md) |
 | Tests and CI that treat rules like software | [`tests/`](tests), [`.github/workflows/ci.yml`](.github/workflows/ci.yml) |
 | A dashboard a hiring manager can click through | [`docs/index.html`](docs/index.html) |
+| A measured interface quality bar | Lighthouse 100 accessibility, 100 best practices, 100 SEO, 88 performance |
 
 ---
 
@@ -123,6 +124,8 @@ The committed dashboard anchors the detection window so the published numbers do
 Omit `--end` for a live run against current telemetry.
 
 The source is split for maintenance: [`dashboard/template.html`](dashboard/template.html), [`dashboard/styles.css`](dashboard/styles.css), [`dashboard/app.js`](dashboard/app.js), and [`dashboard/icon.svg`](dashboard/icon.svg), with locally embedded WOFF2 files in [`dashboard/fonts/`](dashboard/fonts). The report step inlines the source and the fonts into one HTML file.
+
+The design system, motion rules, contrast evidence, and accessibility contract are documented in [`docs/design.md`](docs/design.md). The repo-scoped UI Skills set used for this pass lives in [`.opencode/skills/`](.opencode/skills/README.md) and covers all twelve UI Skills categories.
 
 The night theme keeps the run ticket as a physical paper receipt, raises the card surfaces off the page, and uses signal cyan for live state.
 

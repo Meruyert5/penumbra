@@ -4,7 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Signal Foundry: a detection field guide. One deterministic run from raw telemetry to Sigma rules, Elasticsearch EQL matches, correlations, ATT&CK coverage, and defensible case files.">
+<meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#edf0e9">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Signal Foundry">
+<meta property="og:title" content="Signal Foundry / Detection field guide">
+<meta property="og:description" content="One deterministic detection run: Sigma rules, EQL matches, correlation, ATT&CK coverage, and three defensible case files.">
+<meta property="og:image" content="assets/dashboard.png">
+<meta property="og:image:alt" content="Signal Foundry detection field guide cover">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Signal Foundry / Detection field guide">
+<meta name="twitter:description" content="One deterministic detection run: Sigma rules, EQL matches, correlation, ATT&CK coverage, and three defensible case files.">
+<meta name="twitter:image" content="assets/dashboard.png">
+<meta name="twitter:image:alt" content="Signal Foundry detection field guide cover">
 <title>Signal Foundry / Detection field guide</title>
 <link rel="icon" href="__FAVICON__">
 <style>/*FONTS*//*STYLES*/</style>
@@ -23,7 +35,7 @@
     <span class="rail-index-label">Contents</span>
     <div class="rail-track" aria-hidden="true"><i id="railFill"></i></div>
     <nav class="rail-nav" id="railNav" aria-label="Chapters">
-      <a href="#cover" data-chapter="cover"><span class="n">00</span><span class="t">Cover</span></a>
+      <a href="#cover" data-chapter="cover" class="active" aria-current="location"><span class="n">00</span><span class="t">Cover</span></a>
       <a href="#run" data-chapter="run"><span class="n">01</span><span class="t">The run</span></a>
       <a href="#method" data-chapter="method"><span class="n">02</span><span class="t">Method</span></a>
       <a href="#ledger" data-chapter="ledger"><span class="n">03</span><span class="t">Ledger</span></a>
@@ -173,10 +185,10 @@
     <div class="ledger" id="ledgerPanel" data-reveal>
       <div class="ledger-bar">
         <div class="ledger-tabs" role="tablist" aria-label="Detection type">
-          <button class="ledger-tab active" id="tabDetections" type="button" role="tab" aria-selected="true">
+          <button class="ledger-tab active" id="tabDetections" type="button" role="tab" aria-selected="true" aria-controls="ledgerBody">
             Detections <span class="tab-n" id="tabDetectionsN">0</span>
           </button>
-          <button class="ledger-tab" id="tabCorrelations" type="button" role="tab" aria-selected="false">
+          <button class="ledger-tab" id="tabCorrelations" type="button" role="tab" aria-selected="false" aria-controls="ledgerBody">
             Correlations <span class="tab-n" id="tabCorrelationsN">0</span>
           </button>
         </div>
@@ -185,11 +197,11 @@
 
       <div class="ledger-tools">
         <div class="level-chips" role="group" aria-label="Filter by severity">
-          <button class="chip active" data-level="all" type="button">All</button>
-          <button class="chip" data-level="critical" type="button">Critical</button>
-          <button class="chip" data-level="high" type="button">High</button>
-          <button class="chip" data-level="medium" type="button">Medium</button>
-          <button class="chip" data-level="low" type="button">Low</button>
+          <button class="chip active" data-level="all" type="button" aria-pressed="true">All</button>
+          <button class="chip" data-level="critical" type="button" aria-pressed="false">Critical</button>
+          <button class="chip" data-level="high" type="button" aria-pressed="false">High</button>
+          <button class="chip" data-level="medium" type="button" aria-pressed="false">Medium</button>
+          <button class="chip" data-level="low" type="button" aria-pressed="false">Low</button>
         </div>
         <span class="tools-grow"></span>
         <label class="sr-only" for="hostFilter">Filter by host</label>
@@ -230,7 +242,7 @@
       </div>
       <div class="gauge" id="coverageGauge" aria-hidden="true"></div>
       <div class="coverage-actions">
-        <button class="chip" id="gapsBtn" type="button">show gaps only</button>
+        <button class="chip" id="gapsBtn" type="button" aria-pressed="false">show gaps only</button>
         <span class="coverage-note" id="coverageNote">loading</span>
       </div>
     </div>
@@ -341,11 +353,11 @@
 </div>
 
 <div class="tour-spot" id="tourSpot" aria-hidden="true"></div>
-<div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle" tabindex="-1">
+<div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle" aria-hidden="true" tabindex="-1">
   <div class="tour-kicker"><span id="tourStep">01 / 07</span><button class="mini" id="tourClose" type="button">close</button></div>
   <h3 id="tourTitle">Start here</h3>
   <p id="tourBody"></p>
-  <div class="tour-dots" id="tourDots"></div>
+  <div class="tour-dots" id="tourDots" aria-hidden="true"></div>
   <div class="tour-actions">
     <div class="tour-left"><button class="mini" id="tourPrev" type="button">back</button><button class="mini" id="tourSkip" type="button">skip</button></div>
     <button class="mini next" id="tourNext" type="button">next</button>

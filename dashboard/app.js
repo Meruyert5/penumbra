@@ -57,20 +57,25 @@
   /* ------------------------------------------------------------------ theme */
   const themeLabel = $("#themeLabel");
   const themeButton = $("#themeBtn");
-  function setTheme(theme) {
-    document.documentElement.dataset.theme = theme;
+  function setTheme(theme, instant) {
+    const root = document.documentElement;
+    if (instant) root.classList.add("no-transition");
+    root.dataset.theme = theme;
     themeLabel.textContent = theme === "dark" ? "Paper theme" : "Night theme";
     themeButton.setAttribute("aria-label", theme === "dark" ? "Switch to paper theme" : "Switch to night theme");
     const meta = $('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", theme === "dark" ? "#080f11" : "#edf0e9");
     try { localStorage.setItem("sf-theme", theme); } catch (error) { /* file:// storage can be blocked */ }
+    if (instant) {
+      requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("no-transition")));
+    }
   }
   function toggleTheme() {
     const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     if (!reduce && document.startViewTransition) {
-      document.startViewTransition(() => setTheme(next));
+      document.startViewTransition(() => setTheme(next, true));
     } else {
-      setTheme(next);
+      setTheme(next, true);
     }
   }
   const requestedTheme = params.get("theme");
@@ -95,6 +100,39 @@
     node.classList.add("on");
     window.clearTimeout(toastTimer);
     toastTimer = window.setTimeout(() => node.classList.remove("on"), 1900);
+  }
+
+  /* Modal/palette behavior: keep the page still and the focus inside. */
+  function syncOverlayLock() {
+    const open = ["#palette", "#keysModal", "#caseModal"].some((selector) => {
+      const node = $(selector);
+      return node && node.classList.contains("on");
+    });
+    document.documentElement.classList.toggle("modal-open", open);
+    document.body.classList.toggle("modal-open", open);
+  }
+
+  function focusableIn(container) {
+    return $$('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])', container)
+      .filter((node) => node.getClientRects().length > 0);
+  }
+
+  function trapFocus(event, container) {
+    if (event.key !== "Tab") return;
+    const items = focusableIn(container);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (document.activeElement === container) {
+      event.preventDefault();
+      (event.shiftKey ? last : first).focus();
+    } else if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   /* --------------------------------------------------------------- counters */
@@ -505,17 +543,24 @@
     state.level = "all";
     state.q = "";
     $("#search").value = "";
-    $$(".chip[data-level]").forEach((chip) => chip.classList.toggle("active", chip.dataset.level === "all"));
+    paintLevelChips();
     switchTab("detections");
     renderLedger();
     $("#ledgerPanel").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     toast("Showing detections active at " + state.hour.slice(11, 16) + "Z");
   });
 
-  buildScope();
-  let scopeWidth = chart.getBoundingClientRect().width || 0;
+  let scopeWidth = 0;
+  let scopeBuilt = false;
+  function initScope() {
+    if (scopeBuilt) return;
+    scopeBuilt = true;
+    buildScope();
+    scopeWidth = (geometry && geometry.width) || 0;
+  }
   let scopeResize = 0;
   window.addEventListener("resize", () => {
+    if (!scopeBuilt) return;
     window.clearTimeout(scopeResize);
     scopeResize = window.setTimeout(() => {
       const next = chart.getBoundingClientRect().width || 0;
@@ -535,7 +580,7 @@
   let chartSeen = false;
 
   function replayChart() {
-    if (!timeline.length) return;
+    if (!scopeBuilt || !timeline.length) return;
     chart.classList.remove("draw");
     void chart.getBoundingClientRect();
     requestAnimationFrame(() => chart.classList.add("draw"));
@@ -556,6 +601,7 @@
         chartVisible = entry.isIntersecting;
         chartPlate.classList.toggle("live", chartVisible);
         if (chartVisible) {
+          if (!scopeBuilt) initScope();
           if (!chartSeen) {
             chartSeen = true;
             replayChart();
@@ -607,6 +653,11 @@
     const step = event.target.closest(".path-step");
     if (step) renderPathDetail(Number(step.dataset.index));
   });
+  const pathStrip = $("#pathStrip");
+  function updatePathSignalWidth() {
+    pathStrip.style.setProperty("--path-w", pathStrip.clientWidth + "px");
+  }
+  window.addEventListener("resize", updatePathSignalWidth);
 
   /* ----------------------------------------------------------------- ledger */
   const detections = (DATA.alerts || []).map((alert) => ({
@@ -650,6 +701,10 @@
     group_by: corr.group_by,
     group_value: corr.group_value
   }));
+
+  const rowIndex = new Map();
+  detections.forEach((row) => rowIndex.set(row.kind + ":" + row.id, row));
+  correlations.forEach((row) => rowIndex.set(row.kind + ":" + row.id, row));
 
   const hostSet = new Set();
   detections.forEach((row) => (row.hosts || []).forEach((host) => hostSet.add(host)));
@@ -771,7 +826,7 @@
         '<button class="row-open" type="button" aria-label="Open evidence">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
         "</button>" +
-        '<div class="drawer"><div class="drawer-inner">' + evidenceMarkup(row) + "</div></div>" +
+        '<div class="drawer"><div class="drawer-inner" data-evidence-pending="true"></div></div>' +
       "</article>"
     );
   }
@@ -787,7 +842,9 @@
     $("#activeFilters").innerHTML = items.join("");
   }
 
+  let ledgerRendered = false;
   function renderLedger() {
+    ledgerRendered = true;
     const result = filteredRows();
     $("#ledgerCount").textContent = result.length + " of " + activeRows().length + " rows";
     renderActiveFilters();
@@ -796,6 +853,10 @@
       return;
     }
     $("#ledgerBody").innerHTML = result.map(rowMarkup).join("");
+  }
+
+  function ensureLedger() {
+    if (!ledgerRendered) renderLedger();
   }
 
   function switchTab(tab) {
@@ -807,14 +868,32 @@
     renderLedger();
   }
 
+  function paintLevelChips() {
+    $$(".chip[data-level]").forEach((chip) => {
+      const active = chip.dataset.level === state.level;
+      chip.classList.toggle("active", active);
+      chip.setAttribute("aria-pressed", String(active));
+    });
+  }
+
   function setLevel(level) {
     state.level = level;
-    $$(".chip[data-level]").forEach((chip) => chip.classList.toggle("active", chip.dataset.level === level));
+    paintLevelChips();
     renderLedger();
   }
 
   function toggleRow(row, force) {
     const open = typeof force === "boolean" ? force : !row.classList.contains("open");
+    if (open) {
+      const inner = $(".drawer-inner", row);
+      if (inner && inner.dataset.evidencePending) {
+        const data = rowIndex.get(row.dataset.kind + ":" + row.dataset.id);
+        if (data) {
+          inner.innerHTML = evidenceMarkup(data);
+          delete inner.dataset.evidencePending;
+        }
+      }
+    }
     row.classList.toggle("open", open);
     row.setAttribute("aria-expanded", String(open));
     const button = $(".row-open", row);
@@ -912,7 +991,7 @@
       }).join("");
       return (
         '<div class="tactic">' +
-          '<div class="tactic-head"><h4>' + esc(tactic.label) + '</h4><span class="tactic-count">' + covered + "/" + tactic.tiles.length + "</span></div>" +
+          '<div class="tactic-head"><h3>' + esc(tactic.label) + '</h3><span class="tactic-count">' + covered + "/" + tactic.tiles.length + "</span></div>" +
           '<div class="tiles">' + tiles + "</div>" +
         "</div>"
       );
@@ -925,6 +1004,7 @@
   function toggleGaps() {
     state.gaps = !state.gaps;
     $("#gapsBtn").classList.toggle("active", state.gaps);
+    $("#gapsBtn").setAttribute("aria-pressed", String(state.gaps));
     $("#gapsBtn").textContent = state.gaps ? "show all techniques" : "show gaps only";
     renderMatrix();
   }
@@ -938,7 +1018,7 @@
     state.q = technique;
     state.hour = null;
     state.level = "all";
-    $$(".chip[data-level]").forEach((chip) => chip.classList.toggle("active", chip.dataset.level === "all"));
+    paintLevelChips();
     switchTab("detections");
     $("#ledgerPanel").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     toast(technique + " filtered into the ledger");
@@ -990,6 +1070,7 @@
     if (!modal.classList.contains("on")) return;
     modal.classList.remove("on");
     modal.setAttribute("aria-hidden", "true");
+    syncOverlayLock();
     if (caseReturnFocus && caseReturnFocus.focus) caseReturnFocus.focus({ preventScroll: true });
   }
   function openCase(index) {
@@ -1019,6 +1100,7 @@
       "</div>";
     $("#caseModal").classList.add("on");
     $("#caseModal").setAttribute("aria-hidden", "false");
+    syncOverlayLock();
     $(".file-close", $("#caseFile")).focus();
   }
   $("#caseGrid").addEventListener("click", (event) => {
@@ -1089,6 +1171,7 @@
   ];
   const spot = $("#tourSpot");
   const tourCard = $("#tourCard");
+  let tourReturnFocus = null;
 
   function updateSpot() {
     if (state.tour < 0) return;
@@ -1157,15 +1240,21 @@
     window.setTimeout(updateSpot, reduce ? 30 : 420);
     spot.classList.add("on");
     tourCard.classList.add("on");
+    tourCard.setAttribute("aria-hidden", "false");
     tourCard.focus({ preventScroll: true });
   }
-  function startTour() { goStep(0); }
+  function startTour() {
+    tourReturnFocus = document.activeElement;
+    goStep(0);
+  }
   function endTour() {
     state.tour = -1;
     spot.classList.remove("on");
     tourCard.classList.remove("on");
+    tourCard.setAttribute("aria-hidden", "true");
     tourCard.style.top = "";
     tourCard.style.bottom = "";
+    if (tourReturnFocus && tourReturnFocus.focus) tourReturnFocus.focus({ preventScroll: true });
   }
   $("#tourBtn").addEventListener("click", startTour);
   $("#tourNext").addEventListener("click", () => goStep(state.tour + 1));
@@ -1181,6 +1270,7 @@
     keysReturnFocus = document.activeElement;
     $("#keysModal").classList.add("on");
     $("#keysModal").setAttribute("aria-hidden", "false");
+    syncOverlayLock();
     $("#keysClose").focus();
   }
   function closeKeys() {
@@ -1188,6 +1278,7 @@
     if (!modal.classList.contains("on")) return;
     modal.classList.remove("on");
     modal.setAttribute("aria-hidden", "true");
+    syncOverlayLock();
     if (keysReturnFocus && keysReturnFocus.focus) keysReturnFocus.focus({ preventScroll: true });
   }
   $("#keysBtn").addEventListener("click", openKeys);
@@ -1271,12 +1362,14 @@
     palette.setAttribute("aria-hidden", "false");
     paletteInput.value = "";
     renderPalette("");
+    syncOverlayLock();
     paletteInput.focus();
   }
   function closePalette() {
     if (!palette.classList.contains("on")) return;
     palette.classList.remove("on");
     palette.setAttribute("aria-hidden", "true");
+    syncOverlayLock();
     if (paletteReturnFocus && paletteReturnFocus.focus) paletteReturnFocus.focus({ preventScroll: true });
   }
   $("#paletteBtn").addEventListener("click", openPalette);
@@ -1285,12 +1378,10 @@
   palette.addEventListener("click", (event) => { if (event.target === palette) closePalette(); });
   paletteInput.addEventListener("input", () => renderPalette(paletteInput.value));
   paletteInput.addEventListener("keydown", (event) => {
-    const items = paletteList._items || [];
     if (event.key === "ArrowDown") { event.preventDefault(); setPaletteActive(paletteActive + 1); }
     else if (event.key === "ArrowUp") { event.preventDefault(); setPaletteActive(paletteActive - 1); }
     else if (event.key === "Enter") { event.preventDefault(); runPalette(paletteActive); }
     else if (event.key === "Escape") { event.preventDefault(); closePalette(); }
-    else if (event.key === "Tab" && items.length) { event.preventDefault(); setPaletteActive((paletteActive + 1) % items.length); }
   });
   paletteList.addEventListener("click", (event) => {
     const item = event.target.closest(".palette-item");
@@ -1314,6 +1405,15 @@
       closeKeys();
       closeCase();
       endTour();
+      return;
+    }
+    const overlay = palette.classList.contains("on") ? palette
+      : $("#caseModal").classList.contains("on") ? $("#caseModal")
+      : $("#keysModal").classList.contains("on") ? $("#keysModal")
+      : tourCard.classList.contains("on") ? tourCard
+      : null;
+    if (overlay) {
+      trapFocus(event, overlay);
       return;
     }
     if (typing) return;
@@ -1340,6 +1440,10 @@
   const railNav = $("#railNav");
   function updateNavMask() {
     if (!railNav) return;
+    if (!window.matchMedia("(max-width: 1080px)").matches) {
+      railNav.classList.remove("has-left", "has-right");
+      return;
+    }
     const max = railNav.scrollWidth - railNav.clientWidth;
     railNav.classList.toggle("has-left", railNav.scrollLeft > 2);
     railNav.classList.toggle("has-right", railNav.scrollLeft < max - 2);
@@ -1350,7 +1454,10 @@
   }
 
   const chapterLinks = $$("#railNav a");
+  let activeChapterId = "cover";
   function setActiveChapter(id) {
+    if (id === activeChapterId) return;
+    activeChapterId = id;
     let activeLink = null;
     chapterLinks.forEach((link) => {
       const active = link.dataset.chapter === id;
@@ -1363,7 +1470,8 @@
       }
     });
     const nav = $("#railNav");
-    if (activeLink && nav && nav.scrollWidth > nav.clientWidth + 2) {
+    const horizontal = window.matchMedia("(max-width: 1080px)").matches;
+    if (horizontal && activeLink && nav && nav.scrollWidth > nav.clientWidth + 2) {
       const navRect = nav.getBoundingClientRect();
       const linkRect = activeLink.getBoundingClientRect();
       if (linkRect.left < navRect.left) nav.scrollLeft -= navRect.left - linkRect.left + 10;
@@ -1381,6 +1489,11 @@
     });
   }
   setActiveChapter("cover");
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(updateNavMask, { timeout: 700 });
+  } else {
+    window.setTimeout(updateNavMask, 0);
+  }
 
   /* --------------------------------------------------------------- entrances */
   const revealNodes = $$("[data-reveal]");
@@ -1389,18 +1502,28 @@
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
         entry.target.classList.add("in");
+        if (entry.target.id === "scopePlate") initScope();
+        if (entry.target.id === "pathStrip") updatePathSignalWidth();
+        if (entry.target.id === "ledgerPanel") ensureLedger();
         revealObserver.unobserve(entry.target);
       });
     }, { threshold: 0.08, rootMargin: "0px 0px -6% 0px" });
     revealNodes.forEach((node) => revealObserver.observe(node));
   } else {
     revealNodes.forEach((node) => node.classList.add("in"));
+    initScope();
+    updatePathSignalWidth();
+    ensureLedger();
   }
 
   /* -------------------------------------------------------------------- init */
   observeCounts();
   updateScroll();
-  renderLedger();
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(ensureLedger, { timeout: 900 });
+  } else {
+    window.setTimeout(ensureLedger, 0);
+  }
 
   if (errors.length) console.warn("Detection run reported errors:", errors);
 })();

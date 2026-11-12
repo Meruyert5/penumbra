@@ -150,6 +150,11 @@ def test_html_inlines_every_source_and_has_no_placeholders(tmp_path):
     assert "@font-face" in html
     assert "data:font/woff2;base64," in html
     assert "fonts.googleapis.com" not in html
+    assert 'id="footerGenerated"' not in html
+    assert 'property="og:title"' in html
+    assert 'name="twitter:card"' in html
+    assert 'aria-controls="ledgerBody"' in html
+    assert 'aria-pressed="true"' in html
 
 
 def test_case_reports_are_published(tmp_path):
