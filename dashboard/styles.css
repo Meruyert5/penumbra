@@ -2,22 +2,22 @@
    Warm paper, blue-black ink, case red, signal teal, evidence ochre. */
 :root {
   color-scheme: light;
-  --bg: #f0ebdf;
-  --surface: #faf7ef;
-  --surface-2: #e6dfd0;
-  --surface-3: #d8d0bf;
+  --bg: #f5f1e7;
+  --surface: #fcfaf4;
+  --surface-2: #ece5d7;
+  --surface-3: #ded5c3;
   --text: #121b1c;
   --text-2: #3c382f;
   --muted: #6a6251;
-  --line: #c9beaa;
-  --line-soft: #e0d7c6;
+  --line: #cec4b0;
+  --line-soft: #e5ddcc;
+  --tile: #f7f3ea;
   --rust: #b23a24;
   --rust-2: #d0553c;
   --forest: #126b59;
   --forest-2: #1b8a73;
   --signal: #176f86;
   --ochre: #9a6a12;
-  --indigo: #454a9e;
   --critical: #a62f22;
   --high: #985a12;
   --medium: #6c6110;
@@ -49,13 +49,13 @@
   --muted: #93a8a0;
   --line: #2c4a4d;
   --line-soft: #1b3235;
+  --tile: #0f1c1f;
   --rust: #f07a60;
   --rust-2: #f5a58f;
   --forest: #69d3b6;
   --forest-2: #90e2ca;
   --signal: #6fd9e3;
   --ochre: #e0ad55;
-  --indigo: #9aa0ff;
   --critical: #f06b55;
   --high: #e6a653;
   --medium: #d6c263;
@@ -87,11 +87,11 @@ body {
   -webkit-font-smoothing: subpixel-antialiased;
   background-color: var(--bg);
   background-image:
-    radial-gradient(760px 500px at 4% -6%, color-mix(in srgb, var(--signal) 8%, transparent), transparent 64%),
-    radial-gradient(800px 520px at 98% 0%, color-mix(in srgb, var(--ochre) 9%, transparent), transparent 62%),
-    radial-gradient(640px 440px at 86% 74%, color-mix(in srgb, var(--rust) 5%, transparent), transparent 68%),
-    radial-gradient(560px 400px at 10% 92%, color-mix(in srgb, var(--forest) 5%, transparent), transparent 68%),
-    linear-gradient(178deg, #f5f0e4 0%, #efe8d9 48%, #ece4d3 100%);
+    radial-gradient(760px 500px at 4% -6%, color-mix(in srgb, var(--signal) 7%, transparent), transparent 64%),
+    radial-gradient(800px 520px at 98% 0%, color-mix(in srgb, var(--ochre) 8%, transparent), transparent 62%),
+    radial-gradient(640px 440px at 86% 74%, color-mix(in srgb, var(--rust) 4%, transparent), transparent 68%),
+    radial-gradient(560px 400px at 10% 92%, color-mix(in srgb, var(--forest) 4%, transparent), transparent 68%),
+    linear-gradient(178deg, #faf5ea 0%, #f6f0e3 48%, #f2ebdc 100%);
   background-attachment: fixed;
 }
 :root[data-theme="dark"] body {
@@ -351,7 +351,27 @@ button { cursor: pointer; }
 }
 
 /* -------------------------------------------------------------------- sheet */
-.sheet { position: relative; z-index: 1; margin-left: 238px; padding: 0 clamp(24px, 4.5vw, 72px); }
+.sheet {
+  --fold: clamp(30px, 4.5vw, 72px);
+  position: relative;
+  z-index: 1;
+  margin-left: 238px;
+  padding: 0 clamp(24px, 4.5vw, 72px);
+}
+.sheet::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 4;
+  width: var(--fold);
+  height: var(--fold);
+  background: linear-gradient(225deg, color-mix(in srgb, var(--surface) 90%, #fff) 0%, color-mix(in srgb, var(--surface-2) 76%, #a3937a) 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  filter: drop-shadow(-3px 4px 4px rgba(74, 55, 30, 0.2));
+  pointer-events: none;
+}
+:root[data-theme="dark"] .sheet::before { display: none; }
 .cover, .chapter, .colophon { max-width: 1120px; margin: 0 auto; }
 .scroll-progress {
   position: fixed;
@@ -375,6 +395,7 @@ button { cursor: pointer; }
   gap: 16px;
   border-bottom: 1px solid var(--line);
   padding-bottom: 12px;
+  padding-right: var(--fold);
   font: 500 9px/1.3 var(--mono);
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -779,9 +800,6 @@ button { cursor: pointer; }
 .cf b.tone-critical, .fact b.tone-critical { color: var(--critical); }
 .cf b.tone-signal, .fact b.tone-signal { color: var(--signal); }
 .cf b.tone-forest, .fact b.tone-forest { color: var(--forest); }
-.cf b.tone-rust, .fact b.tone-rust { color: var(--rust); }
-.cf b.tone-ochre, .fact b.tone-ochre { color: var(--ochre); }
-.cf b.tone-indigo, .fact b.tone-indigo { color: var(--indigo); }
 
 /* --------------------------------------------------------------------- path */
 .path {
@@ -1231,7 +1249,7 @@ button { cursor: pointer; }
   overflow-y: auto;
   padding: 16px;
   border-left: 2px solid color-mix(in srgb, var(--signal) 38%, var(--line));
-  background: var(--surface-2);
+  background: color-mix(in srgb, var(--surface-2) 12%, var(--surface));
   scrollbar-width: thin;
   scrollbar-color: var(--line) transparent;
 }
@@ -1442,7 +1460,7 @@ button { cursor: pointer; }
 .tile .nm { display: block; overflow: hidden; font: 500 9px/1.25 var(--mono); white-space: nowrap; text-overflow: ellipsis; }
 .tile.covered {
   border-left: 3px solid var(--forest);
-  background: var(--surface);
+  background: var(--tile);
 }
 .tile.covered.critical { border-left-color: var(--critical); }
 .tile.covered.high { border-left-color: var(--high); }
@@ -2015,6 +2033,7 @@ kbd {
   body { background: #fff; color: #000; }
   body::before { display: none; }
   body::after { display: none; }
+  .sheet::before { display: none; }
   .plate, .ledger, .case-card, .terminal, .path-detail { background-image: none; box-shadow: none; }
   .ledger, .ledger-body { max-height: none; overflow: visible; }
   .row .drawer { grid-template-rows: 1fr; opacity: 1; visibility: visible; }

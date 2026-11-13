@@ -32,19 +32,19 @@ component library.
 
 | Token | Paper | Night |
 |---|---|---|
-| `--bg` | `#f0ebdf` | `#070d10` |
-| `--surface` | `#faf7ef` | `#0d191c` |
-| `--surface-2` | `#e6dfd0` | `#142629` |
-| `--surface-3` | `#d8d0bf` | `#1c3336` |
+| `--bg` | `#f5f1e7` | `#070d10` |
+| `--surface` | `#fcfaf4` | `#0d191c` |
+| `--surface-2` | `#ece5d7` | `#142629` |
+| `--surface-3` | `#ded5c3` | `#1c3336` |
 | `--text` | `#121b1c` | `#edf3ec` |
 | `--text-2` | `#3c382f` | `#b9cbc1` |
 | `--muted` | `#6a6251` | `#93a8a0` |
-| `--line` | `#c9beaa` | `#2c4a4d` |
-| `--line-soft` | `#e0d7c6` | `#1b3235` |
+| `--line` | `#cec4b0` | `#2c4a4d` |
+| `--line-soft` | `#e5ddcc` | `#1b3235` |
+| `--tile` | `#f7f3ea` | `#0f1c1f` |
 | `--rust` | `#b23a24` | `#f07a60` |
 | `--forest` | `#126b59` | `#69d3b6` |
 | `--signal` | `#176f86` | `#6fd9e3` |
-| `--indigo` | `#454a9e` | `#9aa0ff` |
 | `--critical` | `#a62f22` | `#f06b55` |
 | `--high` | `#985a12` | `#e6a653` |
 | `--medium` | `#6c6110` | `#d6c263` |
@@ -60,21 +60,25 @@ component library.
 - **Forest teal (`--forest`)** marks coverage, verdicts, technology tags, and
   valid evidence.
 - **Ochre** is reserved for the high/medium severity family and paper accents.
-- **Indigo** carries integrity counts, including execution errors, so the paper
-  theme keeps a fifth accent without turning the stat row into a rainbow.
-- **Paper neutrals are warm.** Background, surface, rules, and muted text share a
-  warm paper scale, so cards and coverage tiles sit on the page instead of
-  reading grey-green.
+- **Paper neutrals are warm and light.** Background, surface, rules, and muted
+  text share one paper scale, so cards and coverage tiles sit on the page
+  instead of reading grey-green.
+- **Stat numbers keep the original hierarchy.** Detections and execution errors
+  use the primary ink; correlations, critical detections, and priority coverage
+  keep their single accent. The row is not five separate colours.
 - **One accent per rule.** Section rules and the cover stat strip use one accent
   or a neutral line each. The watch floor has no rule above its status band; the
   band itself is a tinted paper strip. The only four-color gradient left is the
   band on the run ticket.
-- **Coverage tiles use the same surface as every other card.** Severity is
-  carried by the 3px left border, not by a tinted fill, so a low-priority tile
-  such as `T1595.002` never reads grey against the paper.
-- **The watch floor inspector is a panel.** It uses `--surface-2` and stretches
-  to the full height of the queue, so the right side never dissolves into the
-  page or leaves a blank gap before the host lanes.
+- **Coverage tiles use `--tile`, a toned-down white.** It is lighter than the
+  page but not a bright white, so a low-priority tile such as `T1595.002` reads
+  as paper rather than grey.
+- **The watch floor inspector is a near-surface panel.** It uses a light mix of
+  `--surface` and `--surface-2`, and stretches to the full height of the queue,
+  so the right side stays close to the queue without leaving a blank gap before
+  the host lanes.
+- **The sheet has a folded corner.** A small dog-ear sits at the top right of
+  the paper theme, with the run line inset so the fold never covers it.
 - **Night ticket paper** is `#eef1ea` with `#121b1c` ink. It is a physical
   receipt on the dark desk, not a dark panel.
 
@@ -85,13 +89,12 @@ is used on.
 
 | Pair | Ratio |
 |---|---:|
-| Paper muted on page | 5.07:1 |
-| Paper signal on surface | 5.37:1 |
-| Paper rust on surface | 5.57:1 |
-| Paper forest on surface | 5.99:1 |
-| Paper indigo on surface | 7.19:1 |
-| Paper critical on surface | 6.43:1 |
-| Paper primary text | 14.72:1 |
+| Paper muted on page | 5.35:1 |
+| Paper signal on surface | 5.51:1 |
+| Paper rust on surface | 5.71:1 |
+| Paper forest on surface | 6.15:1 |
+| Paper critical on surface | 6.59:1 |
+| Paper primary text | 16.78:1 |
 | Night muted on page | 7.77:1 |
 | Night signal on surface | 10.84:1 |
 | Night rust on surface | 6.53:1 |
