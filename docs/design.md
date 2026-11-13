@@ -63,13 +63,13 @@ component library.
 - **Paper neutrals are warm and light.** Background, surface, rules, and muted
   text share one paper scale, so cards and coverage tiles sit on the page
   instead of reading grey-green.
-- **Stat numbers keep the original hierarchy.** Detections and execution errors
-  use the primary ink; correlations, critical detections, and priority coverage
-  keep their single accent. The row is not five separate colours.
-- **One accent per rule.** Section rules and the cover stat strip use one accent
-  or a neutral line each. The watch floor has no rule above its status band; the
-  band itself is a tinted paper strip. The only four-color gradient left is the
-  band on the run ticket.
+- **Stat numbers keep the original hierarchy.** On the run stat line, detections
+  and execution errors use the primary ink; correlations, critical detections,
+  and priority coverage keep their single accent. The line is not five separate
+  colours, and it appears once: the cover does not repeat it.
+- **One accent per rule.** Section rules use one accent or a neutral line each.
+  The watch floor has no rule above its status band; the band itself is a tinted
+  paper strip. The only four-color gradient left is the band on the run ticket.
 - **Coverage tiles use `--tile`, a toned-down white.** It is lighter than the
   page but not a bright white, so a low-priority tile such as `T1595.002` reads
   as paper rather than grey.
@@ -77,8 +77,12 @@ component library.
   `--surface` and `--surface-2`, and stretches to the full height of the queue,
   so the right side stays close to the queue without leaving a blank gap before
   the host lanes.
-- **The sheet has a folded corner.** A small dog-ear sits at the top right of
-  the paper theme, with the run line inset so the fold never covers it.
+- **The sheet has a folded corner.** A dog-ear of `clamp(46px, 6.2vw, 104px)`
+  sits at the top right of the paper theme, with a lit paper-back gradient, a
+  crease shadow, and the run line inset so the fold never covers it. It folds in
+  on load: the flap scales and rotates out of the corner with a small overshoot,
+  while the crease shadow fades in. The animation is transform and opacity only,
+  and settles to its final state under reduced motion or static capture.
 - **Night ticket paper** is `#eef1ea` with `#121b1c` ink. It is a physical
   receipt on the dark desk, not a dark panel.
 

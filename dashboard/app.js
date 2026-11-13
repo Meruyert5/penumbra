@@ -184,17 +184,6 @@
   $("#railRules").dataset.count = String(meta.sigma_rules || 0);
   $("#railCorr").dataset.count = String(meta.correlation_specs || 0);
 
-  const coverFacts = [
-    { value: number((DATA.alerts || []).length), label: "detections", tone: "" },
-    { value: number((DATA.correlations || []).length), label: "correlations", tone: "signal" },
-    { value: number(severity.critical || 0), label: "critical detections", tone: "critical" },
-    { value: (meta.covered_priority || 0) + "/" + (meta.priority_techniques || 0), label: "priority coverage", tone: "forest" },
-    { value: number(errors.length), label: "execution errors", tone: "" }
-  ];
-  $("#coverFoot").innerHTML = coverFacts.map((fact) => (
-    '<div class="cf"><b' + (fact.tone ? ' class="tone-' + fact.tone + '"' : "") + '>' + esc(fact.value) + "</b><span>" + esc(fact.label) + "</span></div>"
-  )).join("");
-
   const timeline = (DATA.timeline || []).filter((row) => row && row.hour);
   const factLine = [
     { value: number((DATA.alerts || []).length), label: "detections", tone: "" },
