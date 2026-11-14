@@ -66,7 +66,8 @@
     themeLabel.textContent = theme === "dark" ? "Paper theme" : "Night theme";
     themeButton.setAttribute("aria-label", theme === "dark" ? "Switch to paper theme" : "Switch to night theme");
     const meta = $('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "dark" ? "#070d10" : "#f5f1e7");
+    if (meta) meta.setAttribute("content", theme === "dark" ? "#070d10" : "#f4efe4");
+    document.dispatchEvent(new CustomEvent("sf:theme", { detail: theme }));
     try { localStorage.setItem("sf-theme", theme); } catch (error) { /* file:// storage can be blocked */ }
     if (instant) {
       requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("no-transition")));
@@ -734,8 +735,16 @@
       ctx.clearRect(0, 0, width, height);
 
       const ink = getComputedStyle(document.documentElement);
-      const signal = ink.getPropertyValue("--scope-trace").trim() || "#6fd9e3";
-      const grid = ink.getPropertyValue("--scope-grid").trim() || "rgba(111,217,227,0.12)";
+      const readColor = (name, fallback) => ink.getPropertyValue(name).trim() || fallback;
+      const signal = readColor("--scope-trace", "#1f4a5c");
+      const grid = readColor("--scope-grid", "rgba(31,74,92,0.14)");
+      const fillTop = readColor("--scope-fill", "rgba(31,74,92,0.12)");
+      const echoColor = readColor("--scope-echo", "rgba(31,74,92,0.34)");
+      const beamColor = readColor("--scope-beam", "rgba(31,74,92,0.13)");
+      const pingColor = readColor("--scope-ping", "rgba(31,74,92,0.55)");
+      const peakColor = readColor("--scope-peak", "#9b2f2a");
+      const scanColor = readColor("--scope-scan", "rgba(31,74,92,0.45)");
+      const pointerColor = readColor("--scope-pointer", "rgba(31,74,92,0.35)");
 
       // Etched graticule.
       ctx.strokeStyle = grid;
@@ -760,8 +769,8 @@
         area.lineTo(visible[0][0], height - 22);
         area.closePath();
         const fill = ctx.createLinearGradient(0, 30, 0, height - 20);
-        fill.addColorStop(0, "rgba(111,217,227,0.20)");
-        fill.addColorStop(1, "rgba(111,217,227,0.01)");
+        fill.addColorStop(0, fillTop);
+        fill.addColorStop(1, "transparent");
         ctx.fillStyle = fill;
         ctx.fill(area);
       }
@@ -770,16 +779,18 @@
       if (!reduce) {
         [0.9, 1.6].forEach((amp, index) => {
           const echo = visible.map(([x, y], i) => [x, y + Math.sin(now / (900 + index * 260) + i * 0.6) * amp * 3]);
-          ctx.strokeStyle = "rgba(111,217,227," + (0.16 - index * 0.06) + ")";
+          ctx.strokeStyle = echoColor;
+          ctx.globalAlpha = 0.55 - index * 0.2;
           ctx.lineWidth = 1;
           ctx.stroke(smoothPath(echo));
         });
+        ctx.globalAlpha = 1;
       }
 
-      // Main trace with a restrained glow.
+      // Main trace with a restrained glow. Paper wants ink, not neon.
       ctx.save();
-      ctx.shadowColor = "rgba(111,217,227,0.55)";
-      ctx.shadowBlur = 12;
+      ctx.shadowColor = signal;
+      ctx.shadowBlur = document.documentElement.dataset.theme === "dark" ? 10 : 0;
       ctx.strokeStyle = signal;
       ctx.lineWidth = 1.8;
       ctx.lineJoin = "round";
@@ -800,7 +811,7 @@
       ctx.globalAlpha = 1;
       if (reveal >= 1 && points[peakIndex]) {
         const [px, py] = points[peakIndex];
-        ctx.strokeStyle = "rgba(240,122,96,0.85)";
+        ctx.strokeStyle = peakColor;
         ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.arc(px, py, 5.5, 0, Math.PI * 2);
@@ -811,11 +822,11 @@
       if (!reduce) {
         scanX = 14 + ((now - born) % 9000) / 9000 * (width - 28);
         const beam = ctx.createLinearGradient(scanX - 60, 0, scanX + 8, 0);
-        beam.addColorStop(0, "rgba(111,217,227,0)");
-        beam.addColorStop(1, "rgba(111,217,227,0.16)");
+        beam.addColorStop(0, "transparent");
+        beam.addColorStop(1, beamColor);
         ctx.fillStyle = beam;
         ctx.fillRect(scanX - 60, 30, 68, height - 52);
-        ctx.strokeStyle = "rgba(111,217,227,0.55)";
+        ctx.strokeStyle = scanColor;
         ctx.beginPath();
         ctx.moveTo(scanX, 30);
         ctx.lineTo(scanX, height - 22);
@@ -831,16 +842,18 @@
         for (let i = pings.length - 1; i >= 0; i--) {
           const age = (now - pings[i].start) / 1200;
           if (age >= 1) { pings.splice(i, 1); continue; }
-          ctx.strokeStyle = "rgba(111,217,227," + (0.5 * (1 - age)) + ")";
+          ctx.strokeStyle = pingColor;
+          ctx.globalAlpha = 0.9 * (1 - age);
           ctx.lineWidth = 1.2;
           ctx.beginPath();
           ctx.arc(pings[i].x, pings[i].y, 3 + age * 22, 0, Math.PI * 2);
           ctx.stroke();
         }
+        ctx.globalAlpha = 1;
       }
 
       if (pointer.active) {
-        ctx.strokeStyle = "rgba(237,243,236,0.35)";
+        ctx.strokeStyle = pointerColor;
         ctx.setLineDash([2, 4]);
         ctx.beginPath();
         ctx.moveTo(pointer.x, 30);
@@ -928,6 +941,9 @@
         });
       }, { threshold: 0.15 }).observe(fieldBox);
     }
+    document.addEventListener("sf:theme", () => {
+      if (!running) drawField(performance.now());
+    });
     resizeField();
     drawField(performance.now());
   }
