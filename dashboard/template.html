@@ -106,20 +106,21 @@
           <div><dt>Telemetry</dt><dd><b data-count id="railEvents">0</b> events</dd></div>
           <div><dt>Library</dt><dd><b data-count id="railRules">0</b> Sigma rules</dd></div>
           <div><dt>Correlation</dt><dd><b data-count id="railCorr">0</b> specs</dd></div>
+          <div><dt>Seed</dt><dd>1337</dd></div>
           <div><dt>Integrity</dt><dd id="railErrors">0 execution errors</dd></div>
         </dl>
         <div class="ticket-foot"><span id="ticketWindow">24 hour window</span><span>Synthetic telemetry</span></div>
       </aside>
     </div>
 
-    <div class="scope-field" id="scopeField" data-reveal>
+    <div class="scope-field" id="scopeField" data-reveal tabindex="0" role="button" aria-labelledby="scopeLabel fieldReadout scopeSignal fieldPeak">
       <canvas id="signalField" aria-hidden="true"></canvas>
       <div class="scope-field-top">
-        <span><i class="live-dot" aria-hidden="true"></i>Live scope / matched events</span>
+        <span id="scopeLabel"><i class="live-dot" aria-hidden="true"></i>Live scope / matched events</span>
         <span id="fieldReadout">24 hour window</span>
       </div>
       <div class="scope-field-bottom">
-        <span>signal / UTC</span>
+        <span id="scopeSignal">signal / UTC / click to pin</span>
         <span id="fieldPeak">peak pending</span>
       </div>
     </div>
@@ -199,6 +200,7 @@
         <span><b id="wfDetections">0</b> detections</span>
         <span><b id="wfCorrelations">0</b> coincidences</span>
         <span><b id="wfErrors">0</b> execution errors</span>
+        <span class="wf-mix" id="wfMix" role="img" aria-label="Severity mix"></span>
         <span class="wf-clock" id="wfClock">window loading</span>
       </div>
 
@@ -300,6 +302,26 @@
         </p>
       </div>
     </header>
+
+    <div class="casechain" id="caseChain" data-reveal>
+      <div class="cc-head">
+        <div class="cc-heading">
+          <p class="chapter-label">Chain view</p>
+          <h3 id="ccTitle">Case 002 / Multi-stage intrusion</h3>
+        </div>
+        <div class="cc-tabs" id="ccTabs" role="tablist" aria-label="Choose a case"></div>
+        <div class="cc-controls">
+          <button class="mini cc-step" id="ccPrev" type="button" aria-label="Previous step">prev</button>
+          <button class="mini cc-play" id="ccPlay" type="button">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            play chain
+          </button>
+          <button class="mini cc-step" id="ccNext" type="button" aria-label="Next step">next</button>
+        </div>
+      </div>
+      <div class="cc-stage" id="ccStage" aria-label="Case detection chain"></div>
+      <div class="cc-detail" id="ccDetail" aria-live="polite"></div>
+    </div>
 
     <div class="case-grid" id="caseGrid" data-reveal></div>
   </section>

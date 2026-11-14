@@ -246,6 +246,15 @@ def build_payload(
     errors = document.get("errors") or []
     meta = dict(document.get("meta") or {})
 
+    # Case reports name rules by file stem, not UUID. Annotate each match so the
+    # dashboard can join a case to the exact detection row that fired.
+    rule_names = {
+        str(rule.get("id")): Path(str(rule.get("source_file", ""))).stem
+        for rule in compiled
+    }
+    for alert in alerts:
+        alert["rule"] = rule_names.get(str(alert.get("rule_id")), "")
+
     severity = Counter(str(alert.get("level", "low")).lower() for alert in alerts)
     severity_counts = {level: severity.get(level, 0) for level in LEVELS}
 

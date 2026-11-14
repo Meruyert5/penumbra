@@ -211,6 +211,12 @@ loops are removed. The page remains fully readable and operable.
 - **Method plate.** Each stage shows an icon and the artifact it writes, such as
   `rules/compiled/rules.json`, so the chain of custody names real files.
 - **Syntax.** EQL and KQL use a small token pass, escaped before insertion.
+- **Case chain.** Each case plays its detections in time order on a linked
+  track. The playhead fills to the active step, the node keeps its severity
+  colour, and the detail panel shows the time, host, technique, and EQL. A
+  correlation uses its last event so the chain reads forward in time.
+- **Watch floor mix.** A four-segment bar in the status band shows the severity
+  distribution, with the exact counts in its accessible label.
 
 ## Watch floor
 
@@ -271,5 +277,6 @@ numbers and the paper ticket without waiting for the entrance to finish.
 The dashboard has no external requests. All CSS, JavaScript, fonts, and data are
 inlined in `docs/index.html`, so it opens from disk and loads the same way on
 Pages. To measure it, run Lighthouse in Chrome DevTools against the local file or
-the Pages URL. Scores depend on the Chrome version and the machine, so this repo
-does not publish a fixed number.
+the Pages URL. The verified Chrome Lighthouse run for this build reports 100
+accessibility, 100 best practices, and 100 SEO. Performance is not part of that
+audit, so no performance score is claimed here.

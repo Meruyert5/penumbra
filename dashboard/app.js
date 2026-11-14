@@ -886,6 +886,28 @@
       fieldReadout.textContent = timeline.length + " hourly buckets";
       if (!running) drawField(performance.now());
     });
+    function pinFieldHour(index) {
+      if (!timeline[index]) return;
+      state.pinnedHour = timeline[index].hour;
+      initScope();
+      paintHour(index, true);
+      $("#run").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      toast("Pinned " + timeline[index].hour.slice(11, 16) + "Z on the chart");
+    }
+    fieldBox.addEventListener("click", (event) => {
+      if (!points.length) return;
+      const rect = fieldBox.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const nearest = points.reduce((best, point, index) => (
+        Math.abs(point[0] - x) < Math.abs(points[best][0] - x) ? index : best
+      ), 0);
+      pinFieldHour(nearest);
+    });
+    fieldBox.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      pinFieldHour(peakIndex);
+    });
     window.addEventListener("resize", resizeField);
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) stopField();
@@ -957,6 +979,7 @@
   const detections = (DATA.alerts || []).map((alert) => ({
     kind: "detection",
     id: alert.rule_id,
+    name: alert.rule || "",
     title: alert.title,
     level: String(alert.level || "low").toLowerCase(),
     techniques: alert.techniques || [],
@@ -1006,6 +1029,12 @@
     row.key = row.kind + ":" + row.id + ":" + row.group_value;
     rowIndex.set(row.key, row);
   });
+  const rowsById = new Map();
+  detections.forEach((row) => {
+    rowsById.set(row.id, row);
+    if (row.name) rowsById.set(row.name, row);
+  });
+  correlations.forEach((row) => { if (!rowsById.has(row.id)) rowsById.set(row.id, row); });
 
   const hostSet = new Set();
   detections.forEach((row) => (row.hosts || []).forEach((host) => hostSet.add(host)));
@@ -1183,8 +1212,14 @@
         const left = Math.max(0, Math.min(100, ((first - startMs) / (endMs - startMs)) * 100));
         const right = Math.max(0, Math.min(100, ((last - startMs) / (endMs - startMs)) * 100));
         const widthPct = Math.max(1.2, right - left);
+        const dots = (row.events || []).map((ev) => {
+          const at = Date.parse(ev["@timestamp"] || "");
+          if (!Number.isFinite(at)) return "";
+          const pct = Math.max(0, Math.min(100, ((at - startMs) / (endMs - startMs)) * 100));
+          return '<b style="left:' + pct.toFixed(2) + '%"></b>';
+        }).join("");
         timing =
-          '<div class="wf-timing" aria-hidden="true"><i style="left:' + left.toFixed(2) + "%;width:" + widthPct.toFixed(2) + '%"></i></div>' +
+          '<div class="wf-timing" aria-hidden="true"><i style="left:' + left.toFixed(2) + "%;width:" + widthPct.toFixed(2) + '%"></i>' + dots + "</div>" +
           '<div class="wf-timing-labels"><span>first ' + esc(dayHour(row.first_seen || row.last_seen)) + 'Z</span><span>last ' + esc(dayHour(row.last_seen || row.first_seen)) + 'Z</span></div>';
       }
     }
@@ -1257,17 +1292,21 @@
     };
     $("#wfLaneHint").textContent = hosts.length + " hosts / " + detections.length + " marks / " +
       (timeline.length ? dayLabel(timeline[0].hour) + "–" + dayLabel(timeline[timeline.length - 1].hour) : "03:00–13:00") + " UTC";
-    laneList.innerHTML = hosts.map((host) => {
+    const axisTicks = [0, 25, 50, 75, 100].map((pct) => {
+      const iso = new Date(startMs + span * (pct / 100)).toISOString();
+      return '<span style="left:' + pct + '%">' + iso.slice(11, 16) + "</span>";
+    }).join("");
+    laneList.innerHTML = '<div class="wf-lane-axis"><span></span><div class="wf-lane-axis-track">' + axisTicks + "</div><span></span></div>" + hosts.map((host) => {
       const rows = detections.filter((row) => (row.hosts || []).includes(host.name));
       const marks = rows.map((row, index) => {
         const time = row.last_seen || row.first_seen;
         const timeMs = Date.parse(time);
         const pct = Math.max(1, Math.min(99, ((Number.isFinite(timeMs) ? timeMs : startMs) - startMs) / span * 100));
-        return '<button type="button" class="wf-pip" data-level="' + esc(row.level) + '" data-key="' + esc(row.key) + '" style="left:' + pct.toFixed(2) + "%;top:" + (30 + (index % 3) * 18) + '%" title="' + esc(row.title + " / " + clock(time) + "Z") + '" aria-label="' + esc(row.title + " at " + clock(time) + "Z") + '"></button>';
+        return '<span class="wf-pip" data-level="' + esc(row.level) + '" data-key="' + esc(row.key) + '" style="left:' + pct.toFixed(2) + "%;top:" + (30 + (index % 3) * 18) + '%" title="' + esc(row.title + " / " + clock(time) + "Z") + '" aria-hidden="true"></span>';
       }).join("");
       return '<div class="wf-lane">' +
         '<button type="button" class="wf-lane-name" data-host="' + esc(host.name) + '" title="Filter the watch floor to ' + esc(host.name) + '">' + esc(host.name) + "</button>" +
-        '<div class="wf-lane-track">' + marks + "</div>" +
+        '<button type="button" class="wf-lane-track" data-host="' + esc(host.name) + '" aria-label="Open a detection on the ' + esc(host.name) + ' lane">' + marks + "</button>" +
         '<span class="wf-lane-n">' + rows.length + "</span>" +
       "</div>";
     }).join("");
@@ -1290,6 +1329,15 @@
     $("#wfDetections").textContent = number(detections.length);
     $("#wfCorrelations").textContent = number(correlations.length);
     $("#wfErrors").textContent = number(errors.length);
+    const total = LEVELS.reduce((sum, level) => sum + Number(severity[level] || 0), 0);
+    const mix = $("#wfMix");
+    if (mix) {
+      mix.innerHTML = LEVELS.map((level) => (
+        '<i class="' + level + '" style="width:' + (total ? (Number(severity[level] || 0) / total) * 100 : 0).toFixed(1) + '%"></i>'
+      )).join("");
+      mix.title = LEVELS.map((level) => Number(severity[level] || 0) + " " + level).join(" / ");
+      mix.setAttribute("aria-label", "Severity mix: " + mix.title);
+    }
     const end = meta.window_end ? String(meta.window_end).slice(11, 16) + "Z" : "dated run";
     $("#wfClock").textContent = "window end " + end;
   }
@@ -1434,13 +1482,27 @@
   });
 
   $("#wfLaneList").addEventListener("click", (event) => {
-    const pip = event.target.closest(".wf-pip");
-    if (pip) { selectKey(pip.dataset.key); return; }
     const label = event.target.closest(".wf-lane-name");
-    if (!label) return;
-    state.host = label.dataset.host;
-    $("#hostFilter").value = state.host;
-    renderLedger();
+    if (label) {
+      state.host = label.dataset.host;
+      $("#hostFilter").value = state.host;
+      renderLedger();
+      return;
+    }
+    const track = event.target.closest(".wf-lane-track");
+    if (!track) return;
+    const pips = $$(".wf-pip", track);
+    if (!pips.length) return;
+    const rect = track.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    let best = pips[0];
+    let distance = Infinity;
+    pips.forEach((pip) => {
+      const pipRect = pip.getBoundingClientRect();
+      const delta = Math.abs(pipRect.left + pipRect.width / 2 - rect.left - x);
+      if (delta < distance) { distance = delta; best = pip; }
+    });
+    selectKey(best.dataset.key);
   });
 
   $("#wfCorrGrid").addEventListener("click", (event) => {
@@ -1573,6 +1635,151 @@
 
   /* ------------------------------------------------------------------ cases */
   const cases = DATA.cases || [];
+  const chainAt = (row) => String(row.kind === "correlation" ? (row.last_seen || row.first_seen) : (row.first_seen || row.last_seen) || "");
+  const caseChains = cases.map((item) => {
+    const seen = new Set();
+    const steps = (item.detections || [])
+      .map((id) => rowsById.get(id))
+      .filter((row) => row && !seen.has(row.key) && seen.add(row.key))
+      .sort((a, b) => chainAt(a).localeCompare(chainAt(b)));
+    return { item, steps };
+  });
+  const ccTabs = $("#ccTabs");
+  const ccStage = $("#ccStage");
+  const ccDetail = $("#ccDetail");
+  const ccTitle = $("#ccTitle");
+  const ccPlay = $("#ccPlay");
+  const ccPrev = $("#ccPrev");
+  const ccNext = $("#ccNext");
+  let ccCase = 0;
+  let ccStep = 0;
+  let ccTimer = 0;
+  let ccPlaying = false;
+
+  function stopChain() {
+    ccPlaying = false;
+    window.clearInterval(ccTimer);
+    if (ccPlay) ccPlay.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> play chain';
+  }
+
+  function chainDetail(step) {
+    const { item, steps } = caseChains[ccCase];
+    const row = steps[step];
+    if (!row) return;
+    const techs = (row.techniques || []).map((tech) => '<span class="tech">' + esc(tech) + "</span>").join("");
+    const query = row.query
+      ? '<code class="cc-query">' + highlightQuery(row.query) + "</code>"
+      : row.kind === "correlation"
+        ? '<code class="cc-query">' + esc(row.count + " events / " + row.window_seconds + "s / " + row.group_by + " = " + row.group_value) + "</code>"
+        : "";
+    ccDetail.innerHTML =
+      '<div class="cc-detail-main">' +
+        '<span class="cc-stepno">Step ' + String(step + 1).padStart(2, "0") + " / " + String(steps.length).padStart(2, "0") + "</span>" +
+        "<h4>" + esc(row.title) + "</h4>" +
+        '<div class="cc-detail-meta"><span class="sev ' + esc(row.level) + '">' + esc(row.level) + "</span>" +
+          "<span>" + esc(clock(chainAt(row))) + "Z</span><span>" + esc(row.host || "unassigned") + "</span><span>" + number(row.count) + " events</span>" + techs + "</div>" +
+        query +
+      "</div>" +
+      '<div class="cc-detail-actions">' +
+        '<button class="mini" type="button" data-cc-open="' + esc(row.key) + '">Open in watch floor</button>' +
+        '<button class="mini" type="button" data-cc-case="' + ccCase + '">Open case file</button>' +
+      "</div>";
+  }
+
+  function setCaseStep(step, scroll) {
+    const { steps } = caseChains[ccCase];
+    if (!steps.length) return;
+    ccStep = Math.max(0, Math.min(steps.length - 1, step));
+    $$("#ccStage .cc-node").forEach((node) => {
+      const index = Number(node.dataset.step);
+      node.classList.toggle("active", index === ccStep);
+      node.classList.toggle("seen", index < ccStep);
+      node.setAttribute("aria-current", index === ccStep ? "step" : "false");
+    });
+    const active = $("#ccStage .cc-node.active");
+    const progress = $("#ccProgress");
+    if (active && progress) progress.style.width = active.style.getPropertyValue("--x");
+    ccPrev.disabled = ccStep === 0;
+    ccNext.disabled = ccStep === steps.length - 1;
+    chainDetail(ccStep);
+    if (scroll && active) active.scrollIntoView({ block: "nearest", inline: "center", behavior: reduce ? "auto" : "smooth" });
+  }
+
+  function renderCaseChain(index) {
+    if (!caseChains.length) return;
+    ccCase = Math.max(0, Math.min(caseChains.length - 1, index));
+    const { item, steps } = caseChains[ccCase];
+    ccTitle.innerHTML = esc(item.id) + ' <span>/</span> ' + esc(item.title);
+    ccTabs.innerHTML = caseChains.map((chain, tab) => (
+      '<button class="cc-tab' + (tab === ccCase ? " active" : "") + '" type="button" role="tab" aria-selected="' + (tab === ccCase) + '" data-case="' + tab + '">' +
+        "<b>" + esc(chain.item.id.slice(-3)) + "</b><span>" + esc(chain.item.title.split(" ").slice(0, 3).join(" ")) + "</span>" +
+      "</button>"
+    )).join("");
+    if (!steps.length) {
+      ccStage.innerHTML = '<div class="empty">No matching detections in this run.</div>';
+      ccDetail.innerHTML = "";
+      return;
+    }
+    const nodes = steps.map((row, step) => {
+      const x = steps.length === 1 ? 50 : 6 + step * (88 / (steps.length - 1));
+      return '<button class="cc-node ' + esc(row.level) + '" type="button" data-step="' + step + '" style="--x:' + x.toFixed(2) + "%;--i:" + step + '" aria-current="' + (step === 0 ? "step" : "false") + '">' +
+        '<span class="sr-only">Step ' + (step + 1) + ": " + esc(row.title) + ' at ' + esc(clock(chainAt(row))) + 'Z, technique ' + esc((row.techniques || [])[0] || row.kind) + "</span>" +
+        '<span class="cc-time">' + esc(clock(chainAt(row))) + "Z</span>" +
+        '<span class="cc-dot" aria-hidden="true"></span>' +
+        '<span class="cc-tech">' + esc((row.techniques || [])[0] || row.kind) + "</span>" +
+      "</button>";
+    }).join("");
+    ccStage.innerHTML = '<div class="cc-scroll"><div class="cc-track"><i id="ccProgress"></i></div><div class="cc-nodes">' + nodes + "</div></div>";
+    setCaseStep(0);
+  }
+
+  function playChain() {
+    if (ccPlaying) { stopChain(); return; }
+    const total = caseChains[ccCase].steps.length;
+    if (!total) return;
+    if (ccStep >= total - 1) setCaseStep(0);
+    ccPlaying = true;
+    ccPlay.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg> pause';
+    ccTimer = window.setInterval(() => {
+      if (ccStep >= total - 1) { stopChain(); return; }
+      setCaseStep(ccStep + 1, true);
+    }, 1200);
+  }
+
+  if (ccTabs) {
+    const initialCase = caseChains.reduce((best, chain, index) => (
+      chain.steps.length > caseChains[best].steps.length ? index : best
+    ), 0);
+    renderCaseChain(initialCase);
+    ccTabs.addEventListener("click", (event) => {
+      const tab = event.target.closest(".cc-tab");
+      if (!tab) return;
+      stopChain();
+      renderCaseChain(Number(tab.dataset.case));
+    });
+    ccStage.addEventListener("click", (event) => {
+      const node = event.target.closest(".cc-node");
+      if (!node) return;
+      stopChain();
+      setCaseStep(Number(node.dataset.step));
+    });
+    ccDetail.addEventListener("click", (event) => {
+      const open = event.target.closest("[data-cc-open]");
+      if (open) {
+        stopChain();
+        selectKey(open.dataset.ccOpen);
+        $("#ledgerPanel").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+        return;
+      }
+      const caseButton = event.target.closest("[data-cc-case]");
+      if (caseButton) openCase(Number(caseButton.dataset.ccCase));
+    });
+    ccPlay.addEventListener("click", playChain);
+    ccPrev.addEventListener("click", () => { stopChain(); setCaseStep(ccStep - 1, true); });
+    ccNext.addEventListener("click", () => { stopChain(); setCaseStep(ccStep + 1, true); });
+  }
+
+
   $("#caseGrid").innerHTML = cases.map((item, index) => {
     const techs = (item.techniques || []).slice(0, 4).map((tech) => '<span class="tech">' + esc(tech) + "</span>").join("");
     const extra = (item.techniques || []).length > 4 ? '<span class="tech">+' + ((item.techniques || []).length - 4) + "</span>" : "";
