@@ -193,30 +193,35 @@ def pipeline_payload(
             "title": "Seeded telemetry",
             "detail": f"{len(SCENARIOS) - 1} attack scenarios plus a benign baseline across Windows, Linux, web, cloud, and network sources.",
             "count": f"{events:,}",
+            "artifact": "lab/logs/*.ndjson",
         },
         {
             "label": "Compile",
             "title": "Sigma to EQL",
             "detail": "Every rule is translated to Elasticsearch EQL and Kibana KQL with ECS field names.",
             "count": str(meta.get("sigma_rules", 0)),
+            "artifact": "rules/compiled/rules.json",
         },
         {
             "label": "Detect",
             "title": "Execute the library",
             "detail": "Queries run against live indices in one window. Errors surface instead of silently dropping.",
             "count": str(meta.get("rules_evaluated", 0)),
+            "artifact": "alerts/alerts.json",
         },
         {
             "label": "Correlate",
             "title": "Add the volume logic",
             "detail": "Threshold and distinct-value specs catch spraying, scanning, and file bursts that single events miss.",
             "count": str(len(correlations)),
+            "artifact": "alerts/correlations.json",
         },
         {
             "label": "Triage",
             "title": "Write the case",
             "detail": "Alerts become investigations with timeline, evidence, verdict, containment, and detection fixes.",
             "count": str(len(cases)),
+            "artifact": "cases/*/report.md",
         },
     ]
 

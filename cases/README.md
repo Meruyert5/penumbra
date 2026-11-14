@@ -4,13 +4,14 @@ Each folder is one investigation, written the way a SOC ticket is written: summa
 
 | Case | Scenario | Verdict |
 |---|---|---|
-| [001 — SSH brute force](case-001-ssh-bruteforce/report.md) | 14 failures then a success from one source | True positive — successful unauthorized access |
-| [002 — Multi-stage intrusion](case-002-multi-stage-intrusion/report.md) | Macro → encoded PowerShell → certutil → LSASS → persistence | True positive — credential theft and persistence |
+| [001: SSH brute force](case-001-ssh-bruteforce/report.md) | 14 failures, then a success from one source | True positive, successful unauthorized access |
+| [002: Multi-stage intrusion](case-002-multi-stage-intrusion/report.md) | Macro, encoded PowerShell, certutil, LSASS, persistence | True positive, credential theft and persistence |
+| [003: Ransomware sequence](case-003-ransomware/report.md) | Recovery deletion, service stops, notes, 24 encrypted files | True positive, contained before the share was lost |
 
 ## Report template
 
 ```markdown
-# Case NNN — <short title>
+# Case NNN: <short title>
 
 | Field | Value |
 |---|---|
@@ -38,7 +39,7 @@ What the evidence supports, and what it does not. Name the gaps.
 | Technique | Evidence |
 
 ## Verdict
-True positive / benign true positive / false positive — and the reason in one sentence.
+True positive, benign true positive, or false positive. Give the reason in one sentence.
 
 ## Containment and recommendations
 Ordered actions, most urgent first.

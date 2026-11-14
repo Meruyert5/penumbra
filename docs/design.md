@@ -16,8 +16,8 @@ component library.
 
 1. **Evidence before decoration.** Every number traces to an event, a detection,
    or a coverage rule. Decorative marks never replace the reading.
-2. **Signal over noise.** Several loud hours, a quiet baseline, one queue, three
-   cases. Sections that did not carry that story were removed.
+2. **Signal over noise.** The page carries several loud hours, a quiet baseline,
+   one queue, and three cases. Nothing else earns space.
 3. **Paper and console are one system.** The light theme is the case file; the
    night theme is the same file on a dark desk. The run ticket stays paper in
    both.
@@ -63,13 +63,13 @@ component library.
 - **Paper neutrals are warm and light.** Background, surface, rules, and muted
   text share one paper scale, so cards and coverage tiles sit on the page
   instead of reading grey-green.
-- **Stat numbers keep the original hierarchy.** On the run stat line, detections
-  and execution errors use the primary ink; correlations, critical detections,
-  and priority coverage keep their single accent. The line is not five separate
-  colours, and it appears once: the cover does not repeat it.
+- **Stat numbers share one hierarchy.** On the run stat line, detections and
+  execution errors use the primary ink. Correlations, critical detections, and
+  priority coverage each keep one accent. The line appears once, on the run
+  ticket, and the cover does not repeat it.
 - **One accent per rule.** Section rules use one accent or a neutral line each.
   The watch floor has no rule above its status band; the band itself is a tinted
-  paper strip. The only four-color gradient left is the band on the run ticket.
+  paper strip. The run ticket band is the only four-color gradient.
 - **Coverage tiles use `--tile`, a toned-down white.** It is lighter than the
   page but not a bright white, so a low-priority tile such as `T1595.002` reads
   as paper rather than grey.
@@ -78,11 +78,11 @@ component library.
   so the right side stays close to the queue without leaving a blank gap before
   the host lanes.
 - **The sheet has a folded corner.** A dog-ear of `clamp(46px, 6.2vw, 104px)`
-  sits at the top right of the paper theme, with a lit paper-back gradient, a
-  crease shadow, and the run line inset so the fold never covers it. It folds in
-  on load: the flap scales and rotates out of the corner with a small overshoot,
-  while the crease shadow fades in. The animation is transform and opacity only,
-  and settles to its final state under reduced motion or static capture.
+  sits at the top right of the paper theme. It uses a lit paper-back gradient, a
+  crease shadow, and an inset run line so the fold never covers the text. The
+  flap scales and rotates out of the corner with a small overshoot while the
+  crease shadow fades in. The animation uses transform and opacity only, and
+  settles to its final state under reduced motion or static capture.
 - **Night ticket paper** is `#eef1ea` with `#121b1c` ink. It is a physical
   receipt on the dark desk, not a dark panel.
 
@@ -129,10 +129,10 @@ still use a passing token; they are never the only carrier of meaning.
   letter-spacing. Body copy stays in natural case.
 - Inputs use 16px on mobile to prevent iOS zoom, and 44px minimum height.
 - Micro labels never drop below 9px. Paper texture is baked into the background
-  at low contrast — a broad mottle, a directional fiber layer, and fine grain,
-  plus a soft edge vignette. The night theme uses the same three layers with a
-  screen blend, so both themes share one material. Text-bearing elements settle
-  to `transform: none` instead of scale animations.
+  at low contrast: a broad mottle, a directional fiber layer, fine grain, and a
+  soft edge vignette. The night theme uses the same three layers with a screen
+  blend, so both themes share one material. Text-bearing elements settle to
+  `transform: none` instead of scale animations.
 - The line-height in `@font-face` and the UI is unitless. Type roles are fixed;
   avoid introducing one-off sizes.
 
@@ -198,17 +198,28 @@ loops are removed. The page remains fully readable and operable.
   different units.
 - The active-hour filter uses each detection's first/last seen span, so a quiet
   hour with one event still returns the detection that spans it.
-- Coverage counts priority techniques only. All 45 are now covered; the gaps view remains as a regression check.
+- Coverage counts priority techniques only. All 45 are covered. The gaps view remains as a regression check.
+
+## Instruments
+
+- **Live scope.** The cover carries a dark instrument plate, separate from the
+  paper sheet. It draws the hourly totals as a trace on a canvas, with a scan
+  slit that pings when a bucket crosses 35% of the peak. It runs only while on
+  screen, and under reduced motion or static capture it draws once.
+- **Envelope.** The chart's smoothed envelope is clamped to each segment, so it
+  never dips below the zero baseline. It draws once per replay.
+- **Method plate.** Each stage shows an icon and the artifact it writes, such as
+  `rules/compiled/rules.json`, so the chain of custody names real files.
+- **Syntax.** EQL and KQL use a small token pass, escaped before insertion.
 
 ## Watch floor
 
 The queue is a split workspace above 980px: detections and correlations on the
 left, a fixed evidence inspector on the right. Selecting a row updates the
 inspector without opening a drawer, so the queue and the evidence stay in view
-together. Below 980px the inspector hides and rows fall back to the original
-inline drawers.
+together. Below 980px the inspector hides and rows fall back to inline drawers.
 
-Two additions sit under the workspace. **Host lanes** plot every detection against
+Two panels sit under the workspace. **Host lanes** plot every detection against
 the same 03:00–13:00 window as the run chart, with severity-colored marks and one
 lane per host. The **coincidence strip** lists the correlation alerts with their
 counts; selecting one switches the queue to the correlation tab and opens its
@@ -216,8 +227,8 @@ record. Both are built from the same payload as the chart, so the console cannot
 drift from the report.
 
 The watch floor status strip carries the window end, detection count, coincidence
-count, and execution errors. In the paper theme it is an ink bar; in the night
-theme it becomes the console's darkest surface.
+count, and execution errors. In the paper theme it is a tinted paper strip. In
+the night theme it becomes the console's darkest surface.
 
 ## Accessibility
 
@@ -257,20 +268,8 @@ Reproducible screenshots:
 `static=1` disables animation and count-up, so documentation images show final
 numbers and the paper ticket without waiting for the entrance to finish.
 
-The current headless Lighthouse run scores **100 accessibility, 100 best
-practices, 100 SEO, and 88 performance**. The remaining performance diagnostics
-are the single-file unused CSS/JS and the embedded font payload. Those are the
-price of an offline dashboard with no external requests; the source stays
-readable instead of being shipped as a minified bundle.
-
-## Skills applied
-
-The repo-scoped set in [`.opencode/skills/`](../.opencode/skills/README.md)
-covers all twelve UI Skills categories: motion, color, frontend, interaction,
-visual, systems, testing, architecture, performance, video, 3D, and typography.
-
-The dashboard changes were informed most directly by `ui-animation-performance`
-(composite-only motion), `ui-better-ui` (press scale, focus rings, hover-only
-states), `ui-better-typography` (tabular numbers, measures, 16px inputs),
-`ui-better-interface` (evidence-led review), `ui-web-quality-audit` (Lighthouse
-checks and tap targets), and `ui-better-accessibility` (focus containment).
+The dashboard has no external requests. All CSS, JavaScript, fonts, and data are
+inlined in `docs/index.html`, so it opens from disk and loads the same way on
+Pages. To measure it, run Lighthouse in Chrome DevTools against the local file or
+the Pages URL. Scores depend on the Chrome version and the machine, so this repo
+does not publish a fixed number.

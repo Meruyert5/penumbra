@@ -1,4 +1,4 @@
-# Case 003 - Ransomware Pre-Encryption Sequence on a Workstation
+# Case 003: Ransomware Pre-Encryption Sequence on a Workstation
 
 | Field | Value |
 |---|---|
@@ -72,12 +72,12 @@ True positive. The ordered recovery deletion, service stops, notes, and file-wri
 
 ## Detection improvements
 
-The service-stop rule originally watched only `VSS`. Adding `BackupExecAgentBrowser`, `SQLSERVERAGENT`, and `WinDefend` caught the second stop that the first version missed. The file-write correlation also proved more durable than the extension match, because the extension is the easiest thing for an operator to change.
+The service-stop rule watches `VSS`, `BackupExecAgentBrowser`, `SQLSERVERAGENT`, and `WinDefend`. That list catches the backup agent stop that a VSS-only rule would miss. The file-write correlation is also more durable than the extension match, because an operator can change the extension.
 
 ## Reproduce
 
 ```powershell
-python -m pipeline.labgen --scenario ransomware --out lab/logs
-python -m pipeline.ingest --reset
-python -m pipeline.detect --hours 24
+.\.venv\Scripts\python.exe -m pipeline.labgen --scenario ransomware --out lab/logs
+.\.venv\Scripts\python.exe -m pipeline.ingest --reset
+.\.venv\Scripts\python.exe -m pipeline.detect --hours 24
 ```

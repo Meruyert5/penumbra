@@ -48,9 +48,9 @@ Precision = TP / (TP + FP). Anything below ~0.5 either needs a filter or should 
 
 The synthetic baseline is deliberately small, so these numbers are not production measurements. The point of the table is the method: every rule has an owner, a count, and a decision.
 
-## Second tuning pass
+## Additional tuning findings
 
-The expanded telemetry exposed three more assumptions worth recording.
+The lab telemetry exposed three more assumptions worth recording.
 
 | Detection | Problem in the lab | Change made | Trade-off accepted |
 |---|---|---|---|

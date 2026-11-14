@@ -38,7 +38,7 @@ Out of scope:
 
 * the intentional lab-only posture (disabled auth, localhost HTTP);
 * alerts produced from synthetic telemetry;
-* vulnerabilities in Elasticsearch, Kibana, or Filebeat themselves — report those upstream.
+* vulnerabilities in Elasticsearch, Kibana, or Filebeat themselves. Report those upstream.
 
 ## Handling data
 

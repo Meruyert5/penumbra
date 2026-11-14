@@ -1,6 +1,6 @@
 # Analyst Runbook
 
-How to work the queue this pipeline produces. Written as if the alerts are real, because that is the habit the repo is meant to demonstrate.
+How to work the queue this pipeline produces. Treat the alerts as real. That habit is the point.
 
 ## 1. Start the shift
 
@@ -87,7 +87,7 @@ Close as false positive only with a named cause: a change ticket, a known instal
 
 * Update `docs/tuning.md` if a rule produced a false positive.
 * Add a case report under `cases/` for anything escalated.
-* If a detection was wrong, change the rule — not the narrative.
+* If a detection was wrong, change the rule, not the narrative.
 
 ## 7. Regenerate the published artifacts
 

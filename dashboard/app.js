@@ -66,7 +66,7 @@
     themeLabel.textContent = theme === "dark" ? "Paper theme" : "Night theme";
     themeButton.setAttribute("aria-label", theme === "dark" ? "Switch to paper theme" : "Switch to night theme");
     const meta = $('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "dark" ? "#080f11" : "#edf0e9");
+    if (meta) meta.setAttribute("content", theme === "dark" ? "#070d10" : "#f5f1e7");
     try { localStorage.setItem("sf-theme", theme); } catch (error) { /* file:// storage can be blocked */ }
     if (instant) {
       requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("no-transition")));
@@ -208,6 +208,28 @@
     return node;
   }
 
+  /* Catmull-Rom to cubic Bezier: the envelope reads as a signal, not a stencil. */
+  function smoothSvg(list) {
+    if (!list.length) return "";
+    let d = "M" + list[0][0].toFixed(1) + " " + list[0][1].toFixed(1);
+    for (let i = 0; i < list.length - 1; i++) {
+      const p0 = list[i === 0 ? 0 : i - 1];
+      const p1 = list[i];
+      const p2 = list[i + 1];
+      const p3 = list[i + 2] || p2;
+      // Clamp control heights to the segment so the curve never overshoots a data point.
+      const lo = Math.min(p1[1], p2[1]);
+      const hi = Math.max(p1[1], p2[1]);
+      const c1y = Math.min(hi, Math.max(lo, p1[1] + (p2[1] - p0[1]) / 6));
+      const c2y = Math.min(hi, Math.max(lo, p2[1] - (p3[1] - p1[1]) / 6));
+      d += " C" +
+        (p1[0] + (p2[0] - p0[0]) / 6).toFixed(1) + " " + c1y.toFixed(1) + "," +
+        (p2[0] - (p3[0] - p1[0]) / 6).toFixed(1) + " " + c2y.toFixed(1) + "," +
+        p2[0].toFixed(1) + " " + p2[1].toFixed(1);
+    }
+    return d;
+  }
+
   function chartMax(value) {
     if (value <= 5) return 5;
     if (value <= 20) return Math.ceil(value / 4) * 4;
@@ -340,6 +362,24 @@
     });
     chart.appendChild(grid);
     chart.appendChild(svgNode("line", { class: "chart-base", x1: left, y1: height - bottom, x2: width - right, y2: height - bottom }));
+
+    // The envelope joins the hourly totals into one signal behind the stacked bars.
+    const envelopePoints = timeline.map((row, index) => [x(index), y(Number(row.total || 0))]);
+    const envelopeD = smoothSvg(envelopePoints);
+    const baseline = height - bottom;
+    chart.appendChild(svgNode("path", {
+      class: "chart-envelope-fill",
+      d: envelopeD + " L" + envelopePoints[envelopePoints.length - 1][0].toFixed(1) + " " + baseline +
+        " L" + envelopePoints[0][0].toFixed(1) + " " + baseline + " Z"
+    }));
+    chart.appendChild(svgNode("path", { class: "chart-envelope", d: envelopeD, pathLength: "1" }));
+    chart.appendChild(svgNode("line", {
+      class: "chart-quiet-line",
+      x1: left,
+      y1: y(Math.min(3, max)),
+      x2: width - right,
+      y2: y(Math.min(3, max))
+    }));
 
     const focus = svgNode("rect", { id: "chartFocus", class: "col-focus", y: top, height: plotH, x: left, width: step });
     chart.appendChild(focus);
@@ -612,14 +652,281 @@
     });
   }
 
+  /* -------------------------------------------------------------- live scope
+     The cover instrument reads the same hourly payload as Fig. 1, but draws it
+     as an oscilloscope: a trace, two quiet echoes, a scan slit, and pings where
+     the scan finds volume. It pauses offscreen and draws once in static mode. */
+  const fieldBox = $("#scopeField");
+  const fieldCanvas = $("#signalField");
+  if (fieldBox && fieldCanvas && timeline.length) {
+    const ctx = fieldCanvas.getContext("2d");
+    const totals = timeline.map((row) => Number(row.total || 0));
+    const peakTotal = Math.max(1, ...totals);
+    const peakIndex = totals.indexOf(Math.max(...totals));
+    const fieldReadout = $("#fieldReadout");
+    $("#fieldPeak").textContent = "peak " + number(totals[peakIndex]) + " events at " + timeline[peakIndex].hour.slice(11, 16) + "Z";
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let points = [];
+    let scanX = 0;
+    let lastFrame = 0;
+    let raf = 0;
+    let running = false;
+    let born = performance.now();
+    const pings = [];
+    const pinged = new Set();
+    const pointer = { x: -1, active: false };
+
+    function fieldPoints() {
+      const padX = 18;
+      const padTop = 42;
+      const padBottom = 30;
+      const usableW = Math.max(1, width - padX * 2);
+      const usableH = Math.max(1, height - padTop - padBottom);
+      const step = timeline.length > 1 ? usableW / (timeline.length - 1) : usableW;
+      return totals.map((total, index) => [
+        padX + index * step,
+        padTop + (1 - total / peakTotal) * usableH * 0.86
+      ]);
+    }
+
+    function smoothPath(list) {
+      const path = new Path2D();
+      if (!list.length) return path;
+      path.moveTo(list[0][0], list[0][1]);
+      for (let i = 0; i < list.length - 1; i++) {
+        const p0 = list[i === 0 ? 0 : i - 1];
+        const p1 = list[i];
+        const p2 = list[i + 1];
+        const p3 = list[i + 2] || p2;
+        path.bezierCurveTo(
+          p1[0] + (p2[0] - p0[0]) / 6,
+          p1[1] + (p2[1] - p0[1]) / 6,
+          p2[0] - (p3[0] - p1[0]) / 6,
+          p2[1] - (p3[1] - p1[1]) / 6,
+          p2[0],
+          p2[1]
+        );
+      }
+      return path;
+    }
+
+    function resizeField() {
+      const rect = fieldBox.getBoundingClientRect();
+      width = Math.max(280, Math.round(rect.width));
+      height = Math.max(140, Math.round(rect.height));
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      fieldCanvas.width = Math.round(width * dpr);
+      fieldCanvas.height = Math.round(height * dpr);
+      fieldCanvas.style.width = width + "px";
+      fieldCanvas.style.height = height + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      points = fieldPoints();
+      if (!running) drawField(performance.now());
+    }
+
+    function drawField(now) {
+      const elapsed = now - born;
+      const reveal = reduce ? 1 : Math.min(1, elapsed / 1500);
+      const count = Math.max(2, Math.round(points.length * reveal));
+      const visible = points.slice(0, count);
+      ctx.clearRect(0, 0, width, height);
+
+      const ink = getComputedStyle(document.documentElement);
+      const signal = ink.getPropertyValue("--scope-trace").trim() || "#6fd9e3";
+      const grid = ink.getPropertyValue("--scope-grid").trim() || "rgba(111,217,227,0.12)";
+
+      // Etched graticule.
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let i = 0; i < points.length; i += 2) {
+        ctx.moveTo(points[i][0], 34);
+        ctx.lineTo(points[i][0], height - 22);
+      }
+      [0.25, 0.5, 0.75].forEach((ratio) => {
+        const y = 42 + ratio * (height - 72);
+        ctx.moveTo(14, y);
+        ctx.lineTo(width - 14, y);
+      });
+      ctx.stroke();
+
+      // Area under the trace.
+      const trace = smoothPath(visible);
+      if (visible.length > 1) {
+        const area = smoothPath(visible);
+        area.lineTo(visible[visible.length - 1][0], height - 22);
+        area.lineTo(visible[0][0], height - 22);
+        area.closePath();
+        const fill = ctx.createLinearGradient(0, 30, 0, height - 20);
+        fill.addColorStop(0, "rgba(111,217,227,0.20)");
+        fill.addColorStop(1, "rgba(111,217,227,0.01)");
+        ctx.fillStyle = fill;
+        ctx.fill(area);
+      }
+
+      // Two quiet echoes: the instrument is live, the data is not moving.
+      if (!reduce) {
+        [0.9, 1.6].forEach((amp, index) => {
+          const echo = visible.map(([x, y], i) => [x, y + Math.sin(now / (900 + index * 260) + i * 0.6) * amp * 3]);
+          ctx.strokeStyle = "rgba(111,217,227," + (0.16 - index * 0.06) + ")";
+          ctx.lineWidth = 1;
+          ctx.stroke(smoothPath(echo));
+        });
+      }
+
+      // Main trace with a restrained glow.
+      ctx.save();
+      ctx.shadowColor = "rgba(111,217,227,0.55)";
+      ctx.shadowBlur = 12;
+      ctx.strokeStyle = signal;
+      ctx.lineWidth = 1.8;
+      ctx.lineJoin = "round";
+      ctx.stroke(trace);
+      ctx.restore();
+
+      // Hour points and the peak marker.
+      ctx.fillStyle = signal;
+      visible.forEach(([x, y], index) => {
+        const total = totals[index] || 0;
+        if (total <= 0) return;
+        const near = pointer.active && Math.abs(pointer.x - x) < 26;
+        ctx.globalAlpha = near ? 1 : 0.55;
+        ctx.beginPath();
+        ctx.arc(x, y, near ? 3.4 : 2.1, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      if (reveal >= 1 && points[peakIndex]) {
+        const [px, py] = points[peakIndex];
+        ctx.strokeStyle = "rgba(240,122,96,0.85)";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(px, py, 5.5, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Scan slit and the pings it triggers.
+      if (!reduce) {
+        scanX = 14 + ((now - born) % 9000) / 9000 * (width - 28);
+        const beam = ctx.createLinearGradient(scanX - 60, 0, scanX + 8, 0);
+        beam.addColorStop(0, "rgba(111,217,227,0)");
+        beam.addColorStop(1, "rgba(111,217,227,0.16)");
+        ctx.fillStyle = beam;
+        ctx.fillRect(scanX - 60, 30, 68, height - 52);
+        ctx.strokeStyle = "rgba(111,217,227,0.55)";
+        ctx.beginPath();
+        ctx.moveTo(scanX, 30);
+        ctx.lineTo(scanX, height - 22);
+        ctx.stroke();
+
+        points.forEach(([x, y], index) => {
+          if ((totals[index] || 0) < Math.max(4, peakTotal * 0.35)) return;
+          if (scanX >= x && !pinged.has(index)) {
+            pinged.add(index);
+            pings.push({ x, y, start: now });
+          }
+        });
+        for (let i = pings.length - 1; i >= 0; i--) {
+          const age = (now - pings[i].start) / 1200;
+          if (age >= 1) { pings.splice(i, 1); continue; }
+          ctx.strokeStyle = "rgba(111,217,227," + (0.5 * (1 - age)) + ")";
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.arc(pings[i].x, pings[i].y, 3 + age * 22, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+
+      if (pointer.active) {
+        ctx.strokeStyle = "rgba(237,243,236,0.35)";
+        ctx.setLineDash([2, 4]);
+        ctx.beginPath();
+        ctx.moveTo(pointer.x, 30);
+        ctx.lineTo(pointer.x, height - 22);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    function frame(now) {
+      if (!running) return;
+      if (now - lastFrame > 1000 / 40) {
+        drawField(now);
+        lastFrame = now;
+      }
+      raf = requestAnimationFrame(frame);
+    }
+
+    function startField() {
+      if (reduce || running || document.hidden) return;
+      running = true;
+      raf = requestAnimationFrame(frame);
+    }
+    function stopField() {
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+
+    fieldBox.addEventListener("pointermove", (event) => {
+      const rect = fieldBox.getBoundingClientRect();
+      pointer.x = event.clientX - rect.left;
+      pointer.active = true;
+      const nearest = points.reduce((best, point, index) => (
+        Math.abs(point[0] - pointer.x) < Math.abs(points[best][0] - pointer.x) ? index : best
+      ), 0);
+      if (timeline[nearest]) {
+        fieldReadout.textContent = timeline[nearest].hour.slice(11, 16) + "Z / " + unit(totals[nearest], "event", "events");
+      }
+      if (!running) drawField(performance.now());
+    });
+    fieldBox.addEventListener("pointerleave", () => {
+      pointer.active = false;
+      fieldReadout.textContent = timeline.length + " hourly buckets";
+      if (!running) drawField(performance.now());
+    });
+    window.addEventListener("resize", resizeField);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopField();
+      else if (fieldVisible) startField();
+    });
+    let fieldVisible = false;
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          fieldVisible = entry.isIntersecting;
+          if (fieldVisible) {
+            born = performance.now();
+            pinged.clear();
+            startField();
+          } else {
+            stopField();
+          }
+        });
+      }, { threshold: 0.15 }).observe(fieldBox);
+    }
+    resizeField();
+    drawField(performance.now());
+  }
+
   /* ------------------------------------------------------------------- path */
   const pipeline = DATA.pipeline || [];
+  const stageIcons = [
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m8 6-5 6 5 6M16 6l5 6-5 6M13 4l-2 16"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4M11 8v3l2 2"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 17V7m5 10V9m5 8V5m5 12v-6"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>'
+  ];
   $("#pathStrip").innerHTML = pipeline.map((step, index) => (
     '<button class="path-step' + (index === 0 ? " active" : "") + '" type="button" role="tab" aria-selected="' + (index === 0) + '" data-index="' + index + '">' +
-      '<span class="path-dot">' + String(index + 1).padStart(2, "0") + "</span>" +
+      '<span class="path-top"><span class="path-dot">' + String(index + 1).padStart(2, "0") + "</span>" +
+      '<span class="path-icon">' + (stageIcons[index] || stageIcons[0]) + "</span></span>" +
       '<span class="path-label">' + esc(step.label) + "</span>" +
       '<span class="path-title">' + esc(step.title) + "</span>" +
-      '<span class="path-count">' + esc(step.count) + "</span>" +
+      '<span class="path-bottom"><span class="path-count">' + esc(step.count) + "</span>" +
+      '<span class="path-artifact">' + esc(step.artifact || "") + "</span></span>" +
     "</button>"
   )).join("");
 
@@ -632,7 +939,8 @@
       node.classList.toggle("active", active);
       node.setAttribute("aria-selected", String(active));
     });
-    $("#pathDetail").innerHTML = '<span class="pd-label">' + esc(step.label) + "</span><p>" + esc(step.detail) + "</p>";
+    $("#pathDetail").innerHTML = '<span class="pd-label">' + esc(step.label) + "</span><p>" + esc(step.detail) + "</p>" +
+      (step.artifact ? '<code class="pd-artifact">' + esc(step.artifact) + "</code>" : "");
   }
   renderPathDetail(0);
   $("#pathStrip").addEventListener("click", (event) => {
@@ -702,6 +1010,7 @@
   const hostSet = new Set();
   detections.forEach((row) => (row.hosts || []).forEach((host) => hostSet.add(host)));
   correlations.forEach((row) => (row.hosts || []).forEach((host) => hostSet.add(host)));
+  const maxRowCount = Math.max(1, ...detections.map((row) => row.count), ...correlations.map((row) => row.count));
   $("#hostFilter").innerHTML = '<option value="all">all hosts</option>' +
     Array.from(hostSet).sort().map((host) => '<option value="' + esc(host) + '">' + esc(host) + "</option>").join("");
   $("#tabDetectionsN").textContent = String(detections.length);
@@ -733,6 +1042,23 @@
     return '<dl class="kv">' + pairs.filter(([, value]) => value != null && value !== "").map(([key, value]) => (
       "<div><dt>" + esc(key) + "</dt><dd>" + esc(value) + "</dd></div>"
     )).join("") + "</dl>";
+  }
+
+  /* Tokenise before escaping so query markup can never break out of the pre. */
+  function highlightQuery(text) {
+    const source = String(text || "not generated");
+    const pattern = /("(?:[^"\\]|\\.)*")|(\b(?:any|where|sequence|by|and|or|not|with|maxspan|runs|of|near|until|true|false)\b)|(\b(?:process|event|file|registry|network|user|host|source|destination|winlog|url|dns|agent|message)\.[a-zA-Z0-9_.]+)|(\b\d+(?:\.\d+)?\b)|([*?])/gi;
+    let out = "";
+    let last = 0;
+    source.replace(pattern, (match, str, keyword, field, num, wild, offset) => {
+      out += esc(source.slice(last, offset));
+      const cls = str ? "q-str" : keyword ? "q-kw" : field ? "q-field" : num ? "q-num" : "q-wild";
+      out += '<span class="' + cls + '">' + esc(match) + "</span>";
+      last = offset + match.length;
+      return match;
+    });
+    out += esc(source.slice(last));
+    return out;
   }
 
   function eventMarkup(event, index) {
@@ -794,14 +1120,15 @@
           '<button class="ev-tab" type="button" role="tab" aria-selected="false" data-tab="kql">KQL</button>' +
         "</div>" +
         '<div class="ev-panel" data-panel="events"><div class="ev-head"><h4>Matching events / first 3</h4><span class="ro-note">' + events.length + " shown</span></div>" + eventHtml + "</div>" +
-        '<div class="ev-panel" data-panel="eql" hidden><div class="ev-head"><h4>Compiled EQL</h4><button class="mini" type="button" data-copy="' + esc(row.query) + '">copy EQL</button></div><pre class="ev-pre">' + esc(row.query || "not generated") + "</pre></div>" +
-        '<div class="ev-panel" data-panel="kql" hidden><div class="ev-head"><h4>Kibana KQL</h4><button class="mini" type="button" data-copy="' + esc(row.query_kql) + '">copy KQL</button></div><pre class="ev-pre">' + esc(row.query_kql || "not generated") + "</pre></div>" +
+        '<div class="ev-panel" data-panel="eql" hidden><div class="ev-head"><h4>Compiled EQL</h4><button class="mini" type="button" data-copy="' + esc(row.query) + '">copy EQL</button></div><pre class="ev-pre"><code>' + highlightQuery(row.query) + "</code></pre></div>" +
+        '<div class="ev-panel" data-panel="kql" hidden><div class="ev-head"><h4>Kibana KQL</h4><button class="mini" type="button" data-copy="' + esc(row.query_kql) + '">copy KQL</button></div><pre class="ev-pre"><code>' + highlightQuery(row.query_kql) + "</code></pre></div>" +
       "</div>"
     );
   }
 
   function rowMarkup(row, index) {
     const techs = (row.techniques || []).map((tech) => '<span class="tech">' + esc(tech) + "</span>").join("");
+    const volume = Math.max(4, Math.round((row.count / maxRowCount) * 100));
     const meta = [
       '<span><i>host</i><b>' + esc(row.host || "unassigned") + "</b></span>",
       '<span><i>events</i><b>' + number(row.count) + "</b></span>",
@@ -815,6 +1142,7 @@
           '<div class="row-top"><h3 class="row-title">' + esc(row.title) + '</h3><span class="sev ' + esc(row.level) + '">' + esc(row.level) + "</span></div>" +
           '<div class="row-meta">' + meta + "</div>" +
           (techs ? '<div class="row-techs">' + techs + "</div>" : "") +
+          '<div class="row-volume" aria-hidden="true"><i style="--vol:' + volume + '%"></i></div>' +
         "</div>" +
         '<button class="row-open" type="button" aria-label="Open evidence">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
@@ -845,10 +1173,26 @@
   function inspectorHead(row) {
     const kind = row.kind === "correlation" ? "Coincidence" : "Detection";
     const techs = (row.techniques || []).slice(0, 2).map((tech) => '<span class="tech">' + esc(tech) + "</span>").join("");
+    let timing = "";
+    if (timeline.length > 1) {
+      const startMs = Date.parse(timeline[0].hour);
+      const endMs = Date.parse(timeline[timeline.length - 1].hour) + 3600 * 1000;
+      const first = Date.parse(row.first_seen || row.last_seen || "");
+      const last = Date.parse(row.last_seen || row.first_seen || "");
+      if (Number.isFinite(first) && Number.isFinite(last) && endMs > startMs) {
+        const left = Math.max(0, Math.min(100, ((first - startMs) / (endMs - startMs)) * 100));
+        const right = Math.max(0, Math.min(100, ((last - startMs) / (endMs - startMs)) * 100));
+        const widthPct = Math.max(1.2, right - left);
+        timing =
+          '<div class="wf-timing" aria-hidden="true"><i style="left:' + left.toFixed(2) + "%;width:" + widthPct.toFixed(2) + '%"></i></div>' +
+          '<div class="wf-timing-labels"><span>first ' + esc(dayHour(row.first_seen || row.last_seen)) + 'Z</span><span>last ' + esc(dayHour(row.last_seen || row.first_seen)) + 'Z</span></div>';
+      }
+    }
     return (
       '<div class="wf-inspector-head"><span>' + esc(kind) + " / " + esc(row.level) + "</span><span>" + esc(clock(row.last_seen)) + "Z</span></div>" +
       '<h3 class="wf-inspector-title">' + esc(row.title) + "</h3>" +
-      '<div class="wf-inspector-meta"><span>' + esc(row.host || "unassigned") + "</span><span>" + number(row.count) + " events</span>" + (techs ? "<span>" + techs + "</span>" : "") + "</div>"
+      '<div class="wf-inspector-meta"><span>' + esc(row.host || "unassigned") + "</span><span>" + number(row.count) + " events</span>" + (techs ? "<span>" + techs + "</span>" : "") + "</div>" +
+      timing
     );
   }
 
@@ -1135,14 +1479,18 @@
 
     $("#matrix").innerHTML = visible.length ? visible.map((tactic) => {
       const covered = tactic.tiles.filter((tile) => tile.level).length;
+      const ratio = tactic.tiles.length ? covered / tactic.tiles.length : 0;
       const tiles = tactic.tiles.map((tile, index) => {
         const label = tile.level ? tile.level : "gap";
-        return '<button class="tile ' + (tile.level ? "covered " + esc(tile.level) : "gap") + '" type="button" data-tech="' + esc(tile.technique) + '" style="animation-delay:' + Math.min(index, 12) * 16 + 'ms" title="' + esc(tile.technique + " / " + tile.name + " / " + label) + '">' +
+        return '<button class="tile ' + (tile.level ? "covered " + esc(tile.level) : "gap") + '" type="button" data-tech="' + esc(tile.technique) + '"' +
+          ' data-name="' + esc(tile.name) + '" data-tactic="' + esc(tactic.label) + '" data-detect="' + esc(tile.title || "not covered") + '" data-level="' + esc(label) + '"' +
+          ' style="animation-delay:' + Math.min(index, 12) * 16 + 'ms" title="' + esc(tile.technique + " / " + tile.name + " / " + label) + '">' +
           '<span class="id">' + esc(tile.technique) + '</span><span class="nm">' + esc(tile.name) + "</span></button>";
       }).join("");
       return (
         '<div class="tactic">' +
           '<div class="tactic-head"><h3>' + esc(tactic.label) + '</h3><span class="tactic-count">' + covered + "/" + tactic.tiles.length + "</span></div>" +
+          '<div class="tactic-meter" aria-hidden="true"><i style="width:' + (ratio * 100).toFixed(1) + '%"></i></div>' +
           '<div class="tiles">' + tiles + "</div>" +
         "</div>"
       );
@@ -1175,6 +1523,43 @@
     toast(technique + " filtered into the watch floor");
   });
 
+  const techTip = $("#techTip");
+  function showTechTip(tile) {
+    if (!techTip) return;
+    techTip.innerHTML =
+      '<span class="tt-tech">' + esc(tile.dataset.tech) + "</span>" +
+      "<b>" + esc(tile.dataset.name) + "</b>" +
+      '<span class="tt-meta">' + esc(tile.dataset.tactic) + " / " + esc(tile.dataset.level) + "</span>" +
+      "<p>" + esc(tile.dataset.detect) + "</p>";
+    techTip.hidden = false;
+    const rect = tile.getBoundingClientRect();
+    const tipRect = techTip.getBoundingClientRect();
+    const left = Math.min(window.innerWidth - tipRect.width - 12, Math.max(12, rect.left + rect.width / 2 - tipRect.width / 2));
+    let top = rect.top - tipRect.height - 10;
+    if (top < 12) top = rect.bottom + 10;
+    techTip.style.left = left + "px";
+    techTip.style.top = top + "px";
+  }
+  function hideTechTip() {
+    if (techTip) techTip.hidden = true;
+  }
+  if (techTip) {
+    $("#matrix").addEventListener("pointerover", (event) => {
+      const tile = event.target.closest(".tile");
+      if (tile) showTechTip(tile);
+    });
+    $("#matrix").addEventListener("pointerout", (event) => {
+      if (event.target.closest(".tile")) hideTechTip();
+    });
+    $("#matrix").addEventListener("focusin", (event) => {
+      const tile = event.target.closest(".tile");
+      if (tile) showTechTip(tile);
+    });
+    $("#matrix").addEventListener("focusout", hideTechTip);
+    $("#matrix").addEventListener("click", hideTechTip);
+    window.addEventListener("scroll", hideTechTip, { passive: true });
+  }
+
   if ("IntersectionObserver" in window && !reduce) {
     const matrixObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -1191,11 +1576,15 @@
   $("#caseGrid").innerHTML = cases.map((item, index) => {
     const techs = (item.techniques || []).slice(0, 4).map((tech) => '<span class="tech">' + esc(tech) + "</span>").join("");
     const extra = (item.techniques || []).length > 4 ? '<span class="tech">+' + ((item.techniques || []).length - 4) + "</span>" : "";
+    const chain = (item.detections || []).slice(0, 5).map((id, step) => (
+      '<span class="chain-node" title="' + esc(id) + '"><i>' + String(step + 1).padStart(2, "0") + "</i></span>"
+    )).join('<span class="chain-link" aria-hidden="true"></span>');
     return (
       '<article class="case-card" tabindex="0" role="button" data-case="' + index + '" aria-haspopup="dialog" style="animation-delay:' + index * 70 + 'ms">' +
         '<span class="case-top"><span class="case-id">' + esc(item.id) + '</span><span class="case-verdict">' + esc(item.verdict) + "</span></span>" +
         "<h3>" + esc(item.title) + "</h3>" +
         "<p>" + esc(item.summary) + "</p>" +
+        (chain ? '<div class="case-chain" aria-hidden="true">' + chain + "</div>" : "") +
         '<span class="case-techs">' + techs + extra + "</span>" +
         '<span class="case-foot"><span><b>' + esc(item.hosts.join(", ")) + "</b></span><span>open file</span></span>" +
       "</article>"
@@ -1299,11 +1688,11 @@
     }).catch(() => toast("copy failed"));
   });
   const reproduceCommands = [
-    "python -m pipeline.labgen --scenario all --out lab/logs",
+    "python -m pipeline.labgen --scenario all --base-time 2026-11-11T12:30:00Z",
     "python -m pipeline.compile",
     "docker compose up -d",
     "python -m pipeline.ingest --reset",
-    "python -m pipeline.detect --hours 24",
+    "python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z",
     "python -m pipeline.report"
   ].join("\n");
   $("#copyAll").addEventListener("click", () => {
@@ -1316,7 +1705,7 @@
     { target: "#scopePlate", title: "Read the signal", body: "The chart counts matched events across the full day. Several hours carry bursts; the quiet stretches between them are part of the shape. A rule that fires on everything cannot discriminate." },
     { target: "#pathStrip", title: "Follow the chain", body: "Sigma compiles to Elasticsearch EQL and KQL. Detection executes the queries, correlation adds volume logic, and triage turns matches into a queue with evidence." },
     { target: "#ledger .chapter-head", title: "Enter the watch floor", body: "Chapter 03 is the working console. The queue, the evidence inspector, the host lanes, and the coincidence strip all read from the same detection run." },
-    { target: "#ledgerPanel", title: "Work the queue", body: "Filter by severity, host, or technique. Select a transient to keep its events and exact EQL beside the queue. J and K move; Enter selects." },
+    { target: "#ledgerPanel", title: "Work the queue", body: "Filter by severity, host, or technique. Select a detection to keep its events and exact EQL beside the queue. J and K move; Enter selects." },
     { target: "#wfLaneList", title: "Read the field", body: "Every mark is a detection against the 24-hour window, one lane per host. The coincidence strip below adds the volume conditions that a single event cannot carry." },
     { target: "#matrix", title: "Check the gaps", body: "Coverage only counts priority techniques. All 45 are closed in this run; the gaps view stays available as a regression check." },
     { target: "#caseGrid", title: "Read the investigations", body: "Each case follows the same structure: summary, timeline, evidence, analysis, verdict, containment, and the detection improvement that came out of it." },
@@ -1466,7 +1855,7 @@
     { group: "Go", label: "Watch floor", hint: "03", run: () => goTo("#ledger") },
     { group: "Go", label: "Coverage", hint: "04", run: () => goTo("#coverage") },
     { group: "Go", label: "Cases", hint: "05", run: () => goTo("#cases") },
-    { group: "Go", label: "Proof", hint: "06", run: () => goTo("#reproduce") },
+    { group: "Go", label: "Reproduce", hint: "06", run: () => goTo("#reproduce") },
     { group: "Filter", label: "All detections", hint: "clear severity", run: () => { setLevel("all"); goTo("#ledger"); } },
     { group: "Filter", label: "Critical detections", hint: number(severity.critical || 0), run: () => { setLevel("critical"); goTo("#ledger"); } },
     { group: "Filter", label: "High detections", hint: number(severity.high || 0), run: () => { setLevel("high"); goTo("#ledger"); } },

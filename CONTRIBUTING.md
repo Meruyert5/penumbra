@@ -1,13 +1,13 @@
 # Contributing
 
-Thanks for taking a look. This repo is a detection-engineering portfolio, but it follows the same review rules as a small production detection team.
+This repo is a detection-engineering portfolio. It follows the review rules of a small production detection team.
 
 ## Ground rules
 
 * **Sigma is the source of truth.** Edit files in `rules/sigma/`, never the generated output in `rules/compiled/`.
 * **Every rule needs tuning notes.** `falsepositives`, `references`, `description`, and ATT&CK tags are enforced by `python -m pipeline.lint`.
 * **No real customer data.** Telemetry in this repo is synthetic. Do not add production logs, hostnames, usernames, or IPs that are not documentation ranges (RFC 5737 / RFC 1918).
-* **Keep generated artifacts in sync.** CI fails if `rules/compiled/` or `docs/attck-coverage.md` drift.
+* **Keep generated artifacts in sync.** CI fails if `rules/compiled/`, `docs/attck-coverage.md`, or `docs/assets/attck-heatmap.svg` drift.
 
 ## Adding a detection
 

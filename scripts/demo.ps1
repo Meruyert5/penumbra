@@ -1,4 +1,4 @@
-# Offline demo: proves the whole detection pipeline works without Docker.
+# Offline demo: runs the Docker-free parts of the pipeline end to end.
 # Usage:  .\scripts\demo.ps1
 $ErrorActionPreference = "Stop"
 Set-Location (Split-Path -Parent $PSScriptRoot)

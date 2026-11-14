@@ -1,4 +1,4 @@
-# Case 001 — SSH Brute Force Followed by a Successful Login
+# Case 001: SSH Brute Force Followed by a Successful Login
 
 | Field | Value |
 |---|---|
@@ -56,7 +56,7 @@ Correlation output:
 
 ## Analysis
 
-* **Why true positive.** Failures are sequential, evenly spaced, and rotate usernames — automation, not a human mistyping. The successful login comes from the same IP 36 seconds after the last failure.
+* **Why true positive.** Failures are sequential, evenly spaced, and rotate usernames. That pattern is automation, not a human mistyping. The successful login comes from the same IP 36 seconds after the last failure.
 * **Why the success matters more than the failures.** Failed logins are commodity internet noise and are deliberately `low` severity. The escalation trigger is `failures → success from the same source`, which is exactly what `corr-ssh-bruteforce` encodes.
 * **Scope check.** Querying `lab-*` for `source.ip: 203.0.113.44` over 24 hours returns only these 15 authentication events. No web, process, or file activity from that address.
 * **Host check.** Within the session window there is no `new user:`, no `CMD (` cron entry, and no sudo event on `linux01`. Two persistence alerts on the same host at 10:15Z and 10:17Z were reviewed and attributed to a separate maintenance change; they are outside this incident window and were closed independently.
@@ -66,13 +66,13 @@ Correlation output:
 
 | Technique | Evidence |
 |---|---|
-| T1110.001 — Password Guessing | 14 failures, 6 usernames, one source |
-| T1078 — Valid Accounts | Successful authentication as `deploy` |
-| T1021.004 — SSH | Service used for access |
+| T1110.001: Password Guessing | 14 failures, 6 usernames, one source |
+| T1078: Valid Accounts | Successful authentication as `deploy` |
+| T1021.004: SSH | Service used for access |
 
 ## Verdict
 
-**True positive — successful unauthorized access.** The failed attempts alone would be background noise; the success converts this into a credential compromise.
+**True positive: successful unauthorized access.** The failed attempts alone would be background noise. The success converts this into a credential compromise.
 
 ## Containment and recommendations
 
