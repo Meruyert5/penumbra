@@ -5218,3 +5218,342 @@ body::after { display: none; }
   border-color: var(--coral);
   color: #141210;
 }
+
+/* ======================================================= UMBRA v7 / NIGHT STAGE
+   The cover becomes a full-bleed night observatory: a live starfield, a real
+   sun+moon eclipse stage, a ghost wordmark, and a paper receipt. The rest of
+   the page keeps the paper/black instrument rhythm. */
+
+/* Full-bleed dark hero. */
+.cover {
+  max-width: none;
+  margin: -34px calc(-1 * var(--sheet-pad)) 0;
+  padding: 34px var(--sheet-pad) clamp(44px, 6vw, 74px);
+  background:
+    radial-gradient(940px 620px at 82% -12%, rgba(248, 143, 34, 0.2), transparent 62%),
+    radial-gradient(720px 540px at -6% 108%, rgba(249, 92, 75, 0.11), transparent 62%),
+    #0B0A09;
+  color: var(--paper);
+  border-bottom: 1px solid rgba(255, 227, 179, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+.cover-inner {
+  position: relative;
+  z-index: 3;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+.hero-sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.cover-ghost {
+  position: absolute;
+  left: 50%;
+  bottom: -7vw;
+  z-index: 1;
+  color: transparent;
+  font: 400 clamp(160px, 26vw, 360px)/0.8 var(--serif);
+  letter-spacing: -0.06em;
+  white-space: nowrap;
+  -webkit-text-stroke: 1px rgba(255, 227, 179, 0.09);
+  pointer-events: none;
+  user-select: none;
+  transform: translateX(-50%);
+}
+.cover .cover-top {
+  color: rgba(255, 227, 179, 0.62);
+  border-bottom-color: rgba(255, 227, 179, 0.18);
+  padding-right: 0;
+}
+.cover .cover-top::after { background: linear-gradient(90deg, var(--coral), var(--sun-3)); }
+.cover .cover-status { color: rgba(255, 227, 179, 0.62); }
+.cover .cover-mode { color: var(--sun-3); }
+.cover .cover-mode::before {
+  background:
+    radial-gradient(circle, #050403 0 42%, transparent 43%),
+    conic-gradient(from 210deg, var(--coral), var(--sun-2), var(--sun-3), var(--coral));
+  box-shadow: 0 0 0 1px rgba(255, 227, 179, 0.3), 0 0 8px rgba(248, 143, 34, 0.55);
+}
+.cover .kicker { color: var(--sun-3); }
+.cover .display { color: var(--paper); }
+.cover .display em { color: var(--sun-2); }
+.cover .display em::after { background: linear-gradient(90deg, var(--coral), var(--sun-2), var(--sun-4)); }
+.cover .lede { color: rgba(246, 244, 241, 0.72); }
+.cover .btn:not(.primary):not(.ghost) {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 1px rgba(255, 227, 179, 0.14),
+    0 8px 20px rgba(0, 0, 0, 0.28);
+}
+.cover .btn:not(.primary):not(.ghost):hover {
+  background: linear-gradient(105deg, var(--sun-3), var(--sun-2));
+  border-color: var(--sun-3);
+  color: var(--ink);
+}
+.cover .btn.ghost {
+  color: rgba(246, 244, 241, 0.82);
+  border-color: rgba(246, 244, 241, 0.26);
+}
+.cover .btn.ghost:hover { color: var(--sun-3); border-color: var(--sun-3); }
+.cover .totality-plate {
+  border: 1px solid rgba(255, 227, 179, 0.2);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.48),
+    0 0 90px rgba(248, 143, 34, 0.18);
+}
+.cover .ticket { box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); }
+.cover .scope-field { border-color: rgba(255, 227, 179, 0.18); }
+.cover .phase-ribbon { border-top-color: rgba(255, 227, 179, 0.18); }
+.cover .phase-ribbon::before {
+  background: linear-gradient(90deg, var(--coral), var(--sun-3), var(--coral));
+}
+.cover .phase-step b { color: rgba(246, 244, 241, 0.62); }
+.cover .phase-step em { color: var(--paper); }
+.cover .phase-mark {
+  background: #141210;
+  border-color: rgba(255, 227, 179, 0.26);
+  color: var(--sun-4);
+}
+.cover .phase-step.is-total .phase-mark {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+}
+.cover .phase-note { color: rgba(246, 244, 241, 0.55); }
+.cover .phase-play {
+  background: linear-gradient(105deg, var(--coral), var(--sun-1));
+  border-color: var(--coral);
+  color: #141210;
+}
+.cover .phase-play:hover {
+  background: linear-gradient(105deg, var(--sun-1), var(--sun-2));
+  border-color: var(--sun-1);
+}
+.scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  color: var(--sun-3);
+  font: 600 9px/1 var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.scroll-cue:hover { color: var(--sun-4); }
+.scroll-cue span { display: inline-block; animation: cue-bob 2.4s ease-in-out infinite; }
+@keyframes cue-bob { 50% { transform: translateY(4px); } }
+
+/* The eclipse is a sun and a moon, not a painted black center. */
+.hero-sun {
+  position: absolute;
+  inset: 7%;
+  z-index: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 32%,
+      #FFF6E8 0,
+      #FFE3B3 20%,
+      #FBB931 46%,
+      #F88F22 70%,
+      #EA6113 100%);
+  box-shadow:
+    0 0 38px rgba(251, 185, 49, 0.55),
+    0 0 90px rgba(248, 143, 34, 0.3);
+}
+.hero-moon {
+  position: absolute;
+  inset: 7%;
+  z-index: 2;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, #231B15 0, #0B0A09 52%, #050403 100%);
+  box-shadow:
+    inset -10px -8px 22px rgba(255, 255, 255, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.45);
+  transform: translateX(calc((var(--phase, 2) - 2) * 10%));
+  transition: transform 0.55s var(--ease);
+}
+.totality-disc {
+  z-index: 0;
+  background:
+    radial-gradient(circle, transparent 0 43.5%, #FFE3B3 46.5%, #F88F22 51%, rgba(234, 97, 19, 0.5) 56%, transparent 67%),
+    conic-gradient(from 200deg,
+      transparent 0 7%,
+      rgba(255, 227, 179, 0.52) 11%,
+      transparent 16% 30%,
+      rgba(249, 92, 75, 0.56) 37%,
+      transparent 44% 60%,
+      rgba(251, 185, 49, 0.52) 68%,
+      transparent 76% 92%,
+      rgba(255, 227, 179, 0.36) 96%,
+      transparent 100%);
+  opacity: var(--corona, 1);
+  transition: opacity 0.55s ease;
+}
+.totality-disc::after { display: none; }
+.totality-tag b { color: var(--sun-3); font-weight: 600; }
+
+/* ------------------------------------------------------------- case reel */
+.case-reel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+.case-reel-hint {
+  color: var(--muted);
+  font: 500 8.5px/1.4 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.case-reel-controls { display: flex; gap: 6px; }
+.case-reel-controls .mini { min-width: 34px; justify-content: center; }
+.case-grid {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 2px 2px 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.case-grid .case-card {
+  flex: 0 0 min(78vw, 430px);
+  min-height: 360px;
+  scroll-snap-align: start;
+}
+.case-grid .case-card:last-child { margin-right: 8px; }
+.case-card .case-mark {
+  position: absolute;
+  right: 12px;
+  bottom: 38px;
+  z-index: 0;
+  color: color-mix(in srgb, var(--accent) 10%, transparent);
+  font: 400 96px/0.8 var(--serif);
+  letter-spacing: -0.06em;
+  pointer-events: none;
+}
+.case-card > .case-mark { z-index: 0; }
+
+@media (max-width: 1080px) {
+  .cover { margin-top: -18px; padding-top: 18px; }
+  .cover-ghost { font-size: clamp(120px, 30vw, 260px); }
+}
+@media (max-width: 720px) {
+  .cover { margin-top: -18px; padding-top: 18px; }
+  .cover-ghost { bottom: -40px; opacity: 0.7; }
+  .scroll-cue { margin-top: 16px; }
+  .case-grid .case-card { flex-basis: min(86vw, 360px); min-height: 330px; }
+  .case-card .case-mark { font-size: 76px; bottom: 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-moon,
+  .totality-disc { transition: none; }
+  .scroll-cue span { animation: none; }
+}
+
+/* Cover corrections: the heavy line must stay paper on the night stage. */
+.cover .display-heavy > span { color: var(--paper); }
+.cover .display-heavy em { color: var(--sun-2); }
+.cover-ghost {
+  bottom: -14vw;
+  -webkit-text-stroke-color: rgba(255, 227, 179, 0.055);
+}
+.cover .totality-plate {
+  background:
+    radial-gradient(125% 100% at 72% 0%, rgba(248, 143, 34, 0.3), transparent 58%),
+    radial-gradient(80% 70% at 8% 104%, rgba(249, 92, 75, 0.17), transparent 62%),
+    #0B0A09;
+}
+.totality-orbit { filter: drop-shadow(0 0 26px rgba(248, 143, 34, 0.3)); }
+.totality-disc { box-shadow: 0 0 42px rgba(248, 143, 34, 0.22); }
+@media (max-width: 720px) {
+  .cover-ghost { bottom: -10vw; }
+}
+
+/* ------------------------------------------------------------- phase ticker */
+.phase-ticker {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(105deg, var(--coral), var(--sun-1) 32%, var(--sun-2) 66%, var(--sun-3));
+  color: #141210;
+  border-bottom: 1px solid rgba(20, 18, 16, 0.16);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+.phase-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 36s linear infinite;
+}
+.phase-ticker-group {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 12px 22px 12px 0;
+}
+.phase-ticker-group span {
+  font: 800 clamp(17px, 2.2vw, 28px)/1 var(--sans);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.phase-ticker-group span::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 22px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+  vertical-align: middle;
+}
+.phase-ticker:hover .phase-ticker-track { animation-play-state: paused; }
+@keyframes ticker { to { transform: translateX(-50%); } }
+
+/* Brighter corona on the night stage. */
+.totality-orbit { filter: drop-shadow(0 0 34px rgba(248, 143, 34, 0.4)); }
+.totality-disc { box-shadow: 0 0 70px rgba(248, 143, 34, 0.28); }
+.totality-orbit::after {
+  inset: -5%;
+  border: 6px solid rgba(248, 143, 34, 0.16);
+  filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phase-ticker-track { animation: none; }
+}
+
+/* A total eclipse should feel luminous, not like a black hole. */
+.totality-disc {
+  background:
+    radial-gradient(circle, transparent 0 40%, #FFF6E8 43%, #FFE3B3 47%, #FBB931 52%, #F88F22 58%, rgba(234, 97, 19, 0.65) 64%, transparent 74%),
+    conic-gradient(from 200deg,
+      transparent 0 6%,
+      rgba(255, 246, 232, 0.7) 10%,
+      transparent 16% 28%,
+      rgba(249, 92, 75, 0.7) 36%,
+      transparent 44% 58%,
+      rgba(251, 185, 49, 0.65) 66%,
+      transparent 76% 90%,
+      rgba(255, 227, 179, 0.45) 94%,
+      transparent 100%);
+}
+.totality-orbit { filter: drop-shadow(0 0 46px rgba(248, 143, 34, 0.5)); }
+.cover .totality-plate {
+  background:
+    radial-gradient(130% 110% at 72% 0%, rgba(248, 143, 34, 0.42), transparent 58%),
+    radial-gradient(80% 70% at 8% 104%, rgba(249, 92, 75, 0.17), transparent 62%),
+    #0B0A09;
+}

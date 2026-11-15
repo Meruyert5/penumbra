@@ -615,6 +615,17 @@
      "play the eclipse" walks the contacts without scrolling the page. */
   const phaseSteps = $$(".phase-step");
   const phasePlay = $("#phasePlay");
+  const heroPlate = $(".totality-plate");
+  const heroPhaseLabel = $("#heroPhase");
+  const heroPhaseNames = ["first contact", "second contact", "totality", "third contact", "fourth contact"];
+  function setHeroPhase(index) {
+    if (!heroPlate) return;
+    const n = Math.max(0, Math.min(4, Number(index) || 0));
+    heroPlate.style.setProperty("--phase", String(n));
+    heroPlate.style.setProperty("--corona", n === 2 ? "1" : "0.45");
+    if (heroPhaseLabel) heroPhaseLabel.textContent = heroPhaseNames[n];
+  }
+  setHeroPhase(2);
   let phaseTimer = 0;
   let phaseIndex = 0;
   const phasePlayIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
@@ -637,6 +648,7 @@
       if (!step) return;
       const offset = Number(step.dataset.phaseOffset || 0);
       const index = Math.max(0, Math.min(timeline.length - 1, phasePeak + offset));
+      setHeroPhase(phaseSteps.indexOf(step));
       state.pinnedHour = timeline[index].hour;
       initScope();
       paintHour(index, true);
@@ -721,6 +733,152 @@
       replayChart();
       scheduleReplay();
     });
+  }
+
+  /* ----------------------------------------------------------- hero starfield
+     A light dust field and rare shooting star behind the cover. It pauses
+     offscreen, settles under reduced motion, and never intercepts a pointer. */
+  const heroSky = $("#heroSky");
+  const heroCover = $("#cover");
+  if (heroSky && heroCover) {
+    const skyCtx = heroSky.getContext("2d");
+    let skyW = 0;
+    let skyH = 0;
+    let skyDpr = 1;
+    let stars = [];
+    let dust = [];
+    let skyRaf = 0;
+    let skyRunning = false;
+    let skyLast = 0;
+    const skyBorn = performance.now();
+    const skyPointer = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 };
+    function seedSky() {
+      const count = Math.round(Math.min(150, Math.max(54, skyW * skyH / 9000)));
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * skyW,
+        y: Math.random() * skyH,
+        r: Math.random() * 1.2 + 0.25,
+        a: Math.random() * 0.55 + 0.12,
+        s: Math.random() * 0.9 + 0.25,
+        p: Math.random() * Math.PI * 2
+      }));
+      dust = Array.from({ length: 5 }, () => ({
+        x: Math.random() * skyW,
+        y: Math.random() * skyH,
+        r: Math.random() * 22 + 10,
+        a: Math.random() * 0.05 + 0.02
+      }));
+    }
+    function resizeSky() {
+      const rect = heroCover.getBoundingClientRect();
+      skyW = Math.max(1, Math.round(rect.width));
+      skyH = Math.max(1, Math.round(rect.height));
+      skyDpr = Math.min(2, window.devicePixelRatio || 1);
+      heroSky.width = Math.round(skyW * skyDpr);
+      heroSky.height = Math.round(skyH * skyDpr);
+      heroSky.style.width = skyW + "px";
+      heroSky.style.height = skyH + "px";
+      skyCtx.setTransform(skyDpr, 0, 0, skyDpr, 0, 0);
+      seedSky();
+      if (!skyRunning) drawSky(performance.now());
+    }
+    function drawSky(now) {
+      const t = (now - skyBorn) / 1000;
+      skyCtx.clearRect(0, 0, skyW, skyH);
+      dust.forEach((d) => {
+        const glow = skyCtx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.r);
+        glow.addColorStop(0, "rgba(248, 143, 34, " + d.a + ")");
+        glow.addColorStop(1, "rgba(248, 143, 34, 0)");
+        skyCtx.fillStyle = glow;
+        skyCtx.beginPath();
+        skyCtx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        skyCtx.fill();
+      });
+      skyPointer.x += (skyPointer.tx - skyPointer.x) * 0.04;
+      skyPointer.y += (skyPointer.ty - skyPointer.y) * 0.04;
+      const ox = (skyPointer.x - 0.5) * 14;
+      const oy = (skyPointer.y - 0.5) * 10;
+      stars.forEach((s) => {
+        const twinkle = reduce ? 1 : 0.72 + 0.28 * Math.sin(t * s.s + s.p);
+        skyCtx.globalAlpha = s.a * twinkle;
+        skyCtx.fillStyle = "#FFE3B3";
+        skyCtx.beginPath();
+        skyCtx.arc(s.x + ox * s.s, s.y + oy * s.s, s.r, 0, Math.PI * 2);
+        skyCtx.fill();
+      });
+      skyCtx.globalAlpha = 1;
+      if (!reduce) {
+        const period = 9;
+        const local = (t % period) / period;
+        if (local < 0.18) {
+          const k = local / 0.18;
+          const sx = skyW * (0.12 + k * 0.28);
+          const sy = skyH * (0.18 + k * 0.08);
+          const grad = skyCtx.createLinearGradient(sx, sy, sx + 70, sy + 32);
+          grad.addColorStop(0, "rgba(255, 227, 179, 0)");
+          grad.addColorStop(0.6, "rgba(255, 227, 179, 0.7)");
+          grad.addColorStop(1, "rgba(255, 227, 179, 0)");
+          skyCtx.strokeStyle = grad;
+          skyCtx.lineWidth = 1;
+          skyCtx.beginPath();
+          skyCtx.moveTo(sx, sy);
+          skyCtx.lineTo(sx + 70, sy + 32);
+          skyCtx.stroke();
+        }
+      }
+    }
+    function skyFrame(now) {
+      if (!skyRunning) return;
+      if (now - skyLast > 1000 / 30) {
+        drawSky(now);
+        skyLast = now;
+      }
+      skyRaf = requestAnimationFrame(skyFrame);
+    }
+    function startSky() {
+      if (reduce || skyRunning || document.hidden) return;
+      skyRunning = true;
+      skyRaf = requestAnimationFrame(skyFrame);
+    }
+    function stopSky() {
+      skyRunning = false;
+      cancelAnimationFrame(skyRaf);
+    }
+    resizeSky();
+    window.addEventListener("resize", resizeSky);
+    heroCover.addEventListener("pointermove", (event) => {
+      const rect = heroCover.getBoundingClientRect();
+      skyPointer.tx = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+      skyPointer.ty = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+    });
+    heroCover.addEventListener("pointerleave", () => {
+      skyPointer.tx = 0.5;
+      skyPointer.ty = 0.5;
+    });
+    const skyObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) startSky(); else stopSky();
+      });
+    }, { threshold: 0.02 });
+    skyObserver.observe(heroCover);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopSky(); else startSky();
+    });
+    if (reduce) drawSky(performance.now());
+  }
+
+  /* The ghost wordmark lags the scroll, so the night stage has depth. */
+  const heroGhost = $(".cover-ghost");
+  if (heroGhost && !reduce) {
+    let ghostTick = 0;
+    const moveGhost = () => {
+      const y = Math.min(90, Math.max(0, window.scrollY * 0.14));
+      heroGhost.style.transform = "translate(-50%, " + y.toFixed(1) + "px)";
+      ghostTick = 0;
+    };
+    window.addEventListener("scroll", () => {
+      if (!ghostTick) ghostTick = requestAnimationFrame(moveGhost);
+    }, { passive: true });
   }
 
   /* -------------------------------------------------------------- live scope
@@ -1923,6 +2081,7 @@
     )).join('<span class="chain-link" aria-hidden="true"></span>');
     return (
       '<article class="case-card" tabindex="0" role="button" data-case="' + index + '" aria-haspopup="dialog" style="animation-delay:' + index * 70 + 'ms">' +
+        '<span class="case-mark" aria-hidden="true">' + String(index + 1).padStart(2, "0") + "</span>" +
         '<span class="case-top"><span class="case-id">' + esc(item.id) + '</span><span class="case-verdict">' + esc(item.verdict) + "</span></span>" +
         "<h3>" + esc(item.title) + "</h3>" +
         "<p>" + esc(item.summary) + "</p>" +
@@ -1932,6 +2091,29 @@
       "</article>"
     );
   }).join("") || '<div class="empty">No case files committed yet.</div>';
+
+  /* The case cards are a horizontal reel: native scroll-snap plus explicit
+     previous/next controls so it is discoverable without a trackpad gesture. */
+  const caseReel = $("#caseGrid");
+  const casePrev = $("#casePrev");
+  const caseNext = $("#caseNext");
+  function updateCaseReel() {
+    if (!caseReel || !casePrev || !caseNext) return;
+    const max = caseReel.scrollWidth - caseReel.clientWidth;
+    casePrev.disabled = caseReel.scrollLeft <= 4;
+    caseNext.disabled = caseReel.scrollLeft >= max - 4;
+  }
+  if (caseReel && casePrev && caseNext) {
+    const reelStep = () => {
+      const card = caseReel.querySelector(".case-card");
+      return card ? card.offsetWidth + 12 : caseReel.clientWidth * 0.82;
+    };
+    casePrev.addEventListener("click", () => caseReel.scrollBy({ left: -reelStep(), behavior: reduce ? "auto" : "smooth" }));
+    caseNext.addEventListener("click", () => caseReel.scrollBy({ left: reelStep(), behavior: reduce ? "auto" : "smooth" }));
+    caseReel.addEventListener("scroll", updateCaseReel, { passive: true });
+    window.addEventListener("resize", updateCaseReel);
+    updateCaseReel();
+  }
 
   if ("IntersectionObserver" in window && !reduce) {
     const caseObserver = new IntersectionObserver((entries) => {

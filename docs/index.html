@@ -5243,6 +5243,345 @@ body::after { display: none; }
   border-color: var(--coral);
   color: #141210;
 }
+
+/* ======================================================= UMBRA v7 / NIGHT STAGE
+   The cover becomes a full-bleed night observatory: a live starfield, a real
+   sun+moon eclipse stage, a ghost wordmark, and a paper receipt. The rest of
+   the page keeps the paper/black instrument rhythm. */
+
+/* Full-bleed dark hero. */
+.cover {
+  max-width: none;
+  margin: -34px calc(-1 * var(--sheet-pad)) 0;
+  padding: 34px var(--sheet-pad) clamp(44px, 6vw, 74px);
+  background:
+    radial-gradient(940px 620px at 82% -12%, rgba(248, 143, 34, 0.2), transparent 62%),
+    radial-gradient(720px 540px at -6% 108%, rgba(249, 92, 75, 0.11), transparent 62%),
+    #0B0A09;
+  color: var(--paper);
+  border-bottom: 1px solid rgba(255, 227, 179, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+.cover-inner {
+  position: relative;
+  z-index: 3;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+.hero-sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.cover-ghost {
+  position: absolute;
+  left: 50%;
+  bottom: -7vw;
+  z-index: 1;
+  color: transparent;
+  font: 400 clamp(160px, 26vw, 360px)/0.8 var(--serif);
+  letter-spacing: -0.06em;
+  white-space: nowrap;
+  -webkit-text-stroke: 1px rgba(255, 227, 179, 0.09);
+  pointer-events: none;
+  user-select: none;
+  transform: translateX(-50%);
+}
+.cover .cover-top {
+  color: rgba(255, 227, 179, 0.62);
+  border-bottom-color: rgba(255, 227, 179, 0.18);
+  padding-right: 0;
+}
+.cover .cover-top::after { background: linear-gradient(90deg, var(--coral), var(--sun-3)); }
+.cover .cover-status { color: rgba(255, 227, 179, 0.62); }
+.cover .cover-mode { color: var(--sun-3); }
+.cover .cover-mode::before {
+  background:
+    radial-gradient(circle, #050403 0 42%, transparent 43%),
+    conic-gradient(from 210deg, var(--coral), var(--sun-2), var(--sun-3), var(--coral));
+  box-shadow: 0 0 0 1px rgba(255, 227, 179, 0.3), 0 0 8px rgba(248, 143, 34, 0.55);
+}
+.cover .kicker { color: var(--sun-3); }
+.cover .display { color: var(--paper); }
+.cover .display em { color: var(--sun-2); }
+.cover .display em::after { background: linear-gradient(90deg, var(--coral), var(--sun-2), var(--sun-4)); }
+.cover .lede { color: rgba(246, 244, 241, 0.72); }
+.cover .btn:not(.primary):not(.ghost) {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 1px rgba(255, 227, 179, 0.14),
+    0 8px 20px rgba(0, 0, 0, 0.28);
+}
+.cover .btn:not(.primary):not(.ghost):hover {
+  background: linear-gradient(105deg, var(--sun-3), var(--sun-2));
+  border-color: var(--sun-3);
+  color: var(--ink);
+}
+.cover .btn.ghost {
+  color: rgba(246, 244, 241, 0.82);
+  border-color: rgba(246, 244, 241, 0.26);
+}
+.cover .btn.ghost:hover { color: var(--sun-3); border-color: var(--sun-3); }
+.cover .totality-plate {
+  border: 1px solid rgba(255, 227, 179, 0.2);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.48),
+    0 0 90px rgba(248, 143, 34, 0.18);
+}
+.cover .ticket { box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); }
+.cover .scope-field { border-color: rgba(255, 227, 179, 0.18); }
+.cover .phase-ribbon { border-top-color: rgba(255, 227, 179, 0.18); }
+.cover .phase-ribbon::before {
+  background: linear-gradient(90deg, var(--coral), var(--sun-3), var(--coral));
+}
+.cover .phase-step b { color: rgba(246, 244, 241, 0.62); }
+.cover .phase-step em { color: var(--paper); }
+.cover .phase-mark {
+  background: #141210;
+  border-color: rgba(255, 227, 179, 0.26);
+  color: var(--sun-4);
+}
+.cover .phase-step.is-total .phase-mark {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+}
+.cover .phase-note { color: rgba(246, 244, 241, 0.55); }
+.cover .phase-play {
+  background: linear-gradient(105deg, var(--coral), var(--sun-1));
+  border-color: var(--coral);
+  color: #141210;
+}
+.cover .phase-play:hover {
+  background: linear-gradient(105deg, var(--sun-1), var(--sun-2));
+  border-color: var(--sun-1);
+}
+.scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  color: var(--sun-3);
+  font: 600 9px/1 var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.scroll-cue:hover { color: var(--sun-4); }
+.scroll-cue span { display: inline-block; animation: cue-bob 2.4s ease-in-out infinite; }
+@keyframes cue-bob { 50% { transform: translateY(4px); } }
+
+/* The eclipse is a sun and a moon, not a painted black center. */
+.hero-sun {
+  position: absolute;
+  inset: 7%;
+  z-index: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 32%,
+      #FFF6E8 0,
+      #FFE3B3 20%,
+      #FBB931 46%,
+      #F88F22 70%,
+      #EA6113 100%);
+  box-shadow:
+    0 0 38px rgba(251, 185, 49, 0.55),
+    0 0 90px rgba(248, 143, 34, 0.3);
+}
+.hero-moon {
+  position: absolute;
+  inset: 7%;
+  z-index: 2;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, #231B15 0, #0B0A09 52%, #050403 100%);
+  box-shadow:
+    inset -10px -8px 22px rgba(255, 255, 255, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.45);
+  transform: translateX(calc((var(--phase, 2) - 2) * 10%));
+  transition: transform 0.55s var(--ease);
+}
+.totality-disc {
+  z-index: 0;
+  background:
+    radial-gradient(circle, transparent 0 43.5%, #FFE3B3 46.5%, #F88F22 51%, rgba(234, 97, 19, 0.5) 56%, transparent 67%),
+    conic-gradient(from 200deg,
+      transparent 0 7%,
+      rgba(255, 227, 179, 0.52) 11%,
+      transparent 16% 30%,
+      rgba(249, 92, 75, 0.56) 37%,
+      transparent 44% 60%,
+      rgba(251, 185, 49, 0.52) 68%,
+      transparent 76% 92%,
+      rgba(255, 227, 179, 0.36) 96%,
+      transparent 100%);
+  opacity: var(--corona, 1);
+  transition: opacity 0.55s ease;
+}
+.totality-disc::after { display: none; }
+.totality-tag b { color: var(--sun-3); font-weight: 600; }
+
+/* ------------------------------------------------------------- case reel */
+.case-reel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+.case-reel-hint {
+  color: var(--muted);
+  font: 500 8.5px/1.4 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.case-reel-controls { display: flex; gap: 6px; }
+.case-reel-controls .mini { min-width: 34px; justify-content: center; }
+.case-grid {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 2px 2px 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.case-grid .case-card {
+  flex: 0 0 min(78vw, 430px);
+  min-height: 360px;
+  scroll-snap-align: start;
+}
+.case-grid .case-card:last-child { margin-right: 8px; }
+.case-card .case-mark {
+  position: absolute;
+  right: 12px;
+  bottom: 38px;
+  z-index: 0;
+  color: color-mix(in srgb, var(--accent) 10%, transparent);
+  font: 400 96px/0.8 var(--serif);
+  letter-spacing: -0.06em;
+  pointer-events: none;
+}
+.case-card > .case-mark { z-index: 0; }
+
+@media (max-width: 1080px) {
+  .cover { margin-top: -18px; padding-top: 18px; }
+  .cover-ghost { font-size: clamp(120px, 30vw, 260px); }
+}
+@media (max-width: 720px) {
+  .cover { margin-top: -18px; padding-top: 18px; }
+  .cover-ghost { bottom: -40px; opacity: 0.7; }
+  .scroll-cue { margin-top: 16px; }
+  .case-grid .case-card { flex-basis: min(86vw, 360px); min-height: 330px; }
+  .case-card .case-mark { font-size: 76px; bottom: 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-moon,
+  .totality-disc { transition: none; }
+  .scroll-cue span { animation: none; }
+}
+
+/* Cover corrections: the heavy line must stay paper on the night stage. */
+.cover .display-heavy > span { color: var(--paper); }
+.cover .display-heavy em { color: var(--sun-2); }
+.cover-ghost {
+  bottom: -14vw;
+  -webkit-text-stroke-color: rgba(255, 227, 179, 0.055);
+}
+.cover .totality-plate {
+  background:
+    radial-gradient(125% 100% at 72% 0%, rgba(248, 143, 34, 0.3), transparent 58%),
+    radial-gradient(80% 70% at 8% 104%, rgba(249, 92, 75, 0.17), transparent 62%),
+    #0B0A09;
+}
+.totality-orbit { filter: drop-shadow(0 0 26px rgba(248, 143, 34, 0.3)); }
+.totality-disc { box-shadow: 0 0 42px rgba(248, 143, 34, 0.22); }
+@media (max-width: 720px) {
+  .cover-ghost { bottom: -10vw; }
+}
+
+/* ------------------------------------------------------------- phase ticker */
+.phase-ticker {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(105deg, var(--coral), var(--sun-1) 32%, var(--sun-2) 66%, var(--sun-3));
+  color: #141210;
+  border-bottom: 1px solid rgba(20, 18, 16, 0.16);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+.phase-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 36s linear infinite;
+}
+.phase-ticker-group {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 12px 22px 12px 0;
+}
+.phase-ticker-group span {
+  font: 800 clamp(17px, 2.2vw, 28px)/1 var(--sans);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.phase-ticker-group span::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 22px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+  vertical-align: middle;
+}
+.phase-ticker:hover .phase-ticker-track { animation-play-state: paused; }
+@keyframes ticker { to { transform: translateX(-50%); } }
+
+/* Brighter corona on the night stage. */
+.totality-orbit { filter: drop-shadow(0 0 34px rgba(248, 143, 34, 0.4)); }
+.totality-disc { box-shadow: 0 0 70px rgba(248, 143, 34, 0.28); }
+.totality-orbit::after {
+  inset: -5%;
+  border: 6px solid rgba(248, 143, 34, 0.16);
+  filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phase-ticker-track { animation: none; }
+}
+
+/* A total eclipse should feel luminous, not like a black hole. */
+.totality-disc {
+  background:
+    radial-gradient(circle, transparent 0 40%, #FFF6E8 43%, #FFE3B3 47%, #FBB931 52%, #F88F22 58%, rgba(234, 97, 19, 0.65) 64%, transparent 74%),
+    conic-gradient(from 200deg,
+      transparent 0 6%,
+      rgba(255, 246, 232, 0.7) 10%,
+      transparent 16% 28%,
+      rgba(249, 92, 75, 0.7) 36%,
+      transparent 44% 58%,
+      rgba(251, 185, 49, 0.65) 66%,
+      transparent 76% 90%,
+      rgba(255, 227, 179, 0.45) 94%,
+      transparent 100%);
+}
+.totality-orbit { filter: drop-shadow(0 0 46px rgba(248, 143, 34, 0.5)); }
+.cover .totality-plate {
+  background:
+    radial-gradient(130% 110% at 72% 0%, rgba(248, 143, 34, 0.42), transparent 58%),
+    radial-gradient(80% 70% at 8% 104%, rgba(249, 92, 75, 0.17), transparent 62%),
+    #0B0A09;
+}
 </style>
 </head>
 <body>
@@ -5307,6 +5646,9 @@ body::after { display: none; }
   </div>
 
   <header class="cover" id="cover">
+    <canvas id="heroSky" class="hero-sky" aria-hidden="true"></canvas>
+    <span class="cover-ghost" aria-hidden="true">UMBRA</span>
+    <div class="cover-inner">
     <div class="cover-top">
       <span>Umbra / Eclipse field guide</span>
       <span class="cover-status"><b class="cover-mode" id="coverMode">Corona</b><span id="coverRunLine">Run 001 / loading</span></span>
@@ -5338,9 +5680,14 @@ body::after { display: none; }
 
       <div class="cover-side">
         <figure class="totality-plate" aria-hidden="true">
-          <span class="totality-tag">Plate 00 / totality</span>
-          <span class="totality-orbit"><span class="totality-disc"></span><span class="diamond-ring"></span></span>
-          <span class="totality-foot"><span>Corona / 1.05 R☉</span><span>04:21 UT</span></span>
+          <span class="totality-tag">Plate 00 / <b id="heroPhase">totality</b></span>
+          <span class="totality-orbit">
+            <span class="hero-sun"></span>
+            <span class="totality-disc"></span>
+            <span class="hero-moon"></span>
+            <span class="diamond-ring"></span>
+          </span>
+          <span class="totality-foot"><span>Corona / 1.05 R&#9737;</span><span>04:21 UT</span></span>
         </figure>
 
         <aside class="ticket" aria-label="Run ticket">
@@ -5400,7 +5747,21 @@ body::after { display: none; }
         play the eclipse
       </button>
     </div>
+
+    <a class="scroll-cue" href="#run">First light <span aria-hidden="true">&#8595;</span></a>
+    </div>
   </header>
+
+  <div class="phase-ticker" aria-hidden="true">
+    <div class="phase-ticker-track">
+      <div class="phase-ticker-group">
+        <span>C1 11:58</span><span>First contact</span><span>C2 12:02</span><span>Second contact</span><span>MAX 12:05</span><span>Totality</span><span>C3 12:08</span><span>Third contact</span><span>C4 12:12</span><span>Fourth contact</span><span>Saros 145</span><span>24 hours</span>
+      </div>
+      <div class="phase-ticker-group">
+        <span>C1 11:58</span><span>First contact</span><span>C2 12:02</span><span>Second contact</span><span>MAX 12:05</span><span>Totality</span><span>C3 12:08</span><span>Third contact</span><span>C4 12:12</span><span>Fourth contact</span><span>Saros 145</span><span>24 hours</span>
+      </div>
+    </div>
+  </div>
 
   <section class="interlude" aria-label="Path of totality">
     <div class="interlude-inner">
@@ -5646,6 +6007,13 @@ body::after { display: none; }
       <div class="cc-detail" id="ccDetail" aria-live="polite"></div>
     </div>
 
+    <div class="case-reel-bar" data-reveal>
+      <span class="case-reel-hint">Three eclipses / drag or scroll</span>
+      <div class="case-reel-controls">
+        <button class="mini" id="casePrev" type="button" aria-label="Previous case">&#8592;</button>
+        <button class="mini" id="caseNext" type="button" aria-label="Next case">&#8594;</button>
+      </div>
+    </div>
     <div class="case-grid" id="caseGrid" data-reveal></div>
   </section>
 
@@ -6371,6 +6739,17 @@ body::after { display: none; }
      "play the eclipse" walks the contacts without scrolling the page. */
   const phaseSteps = $$(".phase-step");
   const phasePlay = $("#phasePlay");
+  const heroPlate = $(".totality-plate");
+  const heroPhaseLabel = $("#heroPhase");
+  const heroPhaseNames = ["first contact", "second contact", "totality", "third contact", "fourth contact"];
+  function setHeroPhase(index) {
+    if (!heroPlate) return;
+    const n = Math.max(0, Math.min(4, Number(index) || 0));
+    heroPlate.style.setProperty("--phase", String(n));
+    heroPlate.style.setProperty("--corona", n === 2 ? "1" : "0.45");
+    if (heroPhaseLabel) heroPhaseLabel.textContent = heroPhaseNames[n];
+  }
+  setHeroPhase(2);
   let phaseTimer = 0;
   let phaseIndex = 0;
   const phasePlayIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
@@ -6393,6 +6772,7 @@ body::after { display: none; }
       if (!step) return;
       const offset = Number(step.dataset.phaseOffset || 0);
       const index = Math.max(0, Math.min(timeline.length - 1, phasePeak + offset));
+      setHeroPhase(phaseSteps.indexOf(step));
       state.pinnedHour = timeline[index].hour;
       initScope();
       paintHour(index, true);
@@ -6477,6 +6857,152 @@ body::after { display: none; }
       replayChart();
       scheduleReplay();
     });
+  }
+
+  /* ----------------------------------------------------------- hero starfield
+     A light dust field and rare shooting star behind the cover. It pauses
+     offscreen, settles under reduced motion, and never intercepts a pointer. */
+  const heroSky = $("#heroSky");
+  const heroCover = $("#cover");
+  if (heroSky && heroCover) {
+    const skyCtx = heroSky.getContext("2d");
+    let skyW = 0;
+    let skyH = 0;
+    let skyDpr = 1;
+    let stars = [];
+    let dust = [];
+    let skyRaf = 0;
+    let skyRunning = false;
+    let skyLast = 0;
+    const skyBorn = performance.now();
+    const skyPointer = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 };
+    function seedSky() {
+      const count = Math.round(Math.min(150, Math.max(54, skyW * skyH / 9000)));
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * skyW,
+        y: Math.random() * skyH,
+        r: Math.random() * 1.2 + 0.25,
+        a: Math.random() * 0.55 + 0.12,
+        s: Math.random() * 0.9 + 0.25,
+        p: Math.random() * Math.PI * 2
+      }));
+      dust = Array.from({ length: 5 }, () => ({
+        x: Math.random() * skyW,
+        y: Math.random() * skyH,
+        r: Math.random() * 22 + 10,
+        a: Math.random() * 0.05 + 0.02
+      }));
+    }
+    function resizeSky() {
+      const rect = heroCover.getBoundingClientRect();
+      skyW = Math.max(1, Math.round(rect.width));
+      skyH = Math.max(1, Math.round(rect.height));
+      skyDpr = Math.min(2, window.devicePixelRatio || 1);
+      heroSky.width = Math.round(skyW * skyDpr);
+      heroSky.height = Math.round(skyH * skyDpr);
+      heroSky.style.width = skyW + "px";
+      heroSky.style.height = skyH + "px";
+      skyCtx.setTransform(skyDpr, 0, 0, skyDpr, 0, 0);
+      seedSky();
+      if (!skyRunning) drawSky(performance.now());
+    }
+    function drawSky(now) {
+      const t = (now - skyBorn) / 1000;
+      skyCtx.clearRect(0, 0, skyW, skyH);
+      dust.forEach((d) => {
+        const glow = skyCtx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.r);
+        glow.addColorStop(0, "rgba(248, 143, 34, " + d.a + ")");
+        glow.addColorStop(1, "rgba(248, 143, 34, 0)");
+        skyCtx.fillStyle = glow;
+        skyCtx.beginPath();
+        skyCtx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        skyCtx.fill();
+      });
+      skyPointer.x += (skyPointer.tx - skyPointer.x) * 0.04;
+      skyPointer.y += (skyPointer.ty - skyPointer.y) * 0.04;
+      const ox = (skyPointer.x - 0.5) * 14;
+      const oy = (skyPointer.y - 0.5) * 10;
+      stars.forEach((s) => {
+        const twinkle = reduce ? 1 : 0.72 + 0.28 * Math.sin(t * s.s + s.p);
+        skyCtx.globalAlpha = s.a * twinkle;
+        skyCtx.fillStyle = "#FFE3B3";
+        skyCtx.beginPath();
+        skyCtx.arc(s.x + ox * s.s, s.y + oy * s.s, s.r, 0, Math.PI * 2);
+        skyCtx.fill();
+      });
+      skyCtx.globalAlpha = 1;
+      if (!reduce) {
+        const period = 9;
+        const local = (t % period) / period;
+        if (local < 0.18) {
+          const k = local / 0.18;
+          const sx = skyW * (0.12 + k * 0.28);
+          const sy = skyH * (0.18 + k * 0.08);
+          const grad = skyCtx.createLinearGradient(sx, sy, sx + 70, sy + 32);
+          grad.addColorStop(0, "rgba(255, 227, 179, 0)");
+          grad.addColorStop(0.6, "rgba(255, 227, 179, 0.7)");
+          grad.addColorStop(1, "rgba(255, 227, 179, 0)");
+          skyCtx.strokeStyle = grad;
+          skyCtx.lineWidth = 1;
+          skyCtx.beginPath();
+          skyCtx.moveTo(sx, sy);
+          skyCtx.lineTo(sx + 70, sy + 32);
+          skyCtx.stroke();
+        }
+      }
+    }
+    function skyFrame(now) {
+      if (!skyRunning) return;
+      if (now - skyLast > 1000 / 30) {
+        drawSky(now);
+        skyLast = now;
+      }
+      skyRaf = requestAnimationFrame(skyFrame);
+    }
+    function startSky() {
+      if (reduce || skyRunning || document.hidden) return;
+      skyRunning = true;
+      skyRaf = requestAnimationFrame(skyFrame);
+    }
+    function stopSky() {
+      skyRunning = false;
+      cancelAnimationFrame(skyRaf);
+    }
+    resizeSky();
+    window.addEventListener("resize", resizeSky);
+    heroCover.addEventListener("pointermove", (event) => {
+      const rect = heroCover.getBoundingClientRect();
+      skyPointer.tx = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+      skyPointer.ty = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+    });
+    heroCover.addEventListener("pointerleave", () => {
+      skyPointer.tx = 0.5;
+      skyPointer.ty = 0.5;
+    });
+    const skyObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) startSky(); else stopSky();
+      });
+    }, { threshold: 0.02 });
+    skyObserver.observe(heroCover);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopSky(); else startSky();
+    });
+    if (reduce) drawSky(performance.now());
+  }
+
+  /* The ghost wordmark lags the scroll, so the night stage has depth. */
+  const heroGhost = $(".cover-ghost");
+  if (heroGhost && !reduce) {
+    let ghostTick = 0;
+    const moveGhost = () => {
+      const y = Math.min(90, Math.max(0, window.scrollY * 0.14));
+      heroGhost.style.transform = "translate(-50%, " + y.toFixed(1) + "px)";
+      ghostTick = 0;
+    };
+    window.addEventListener("scroll", () => {
+      if (!ghostTick) ghostTick = requestAnimationFrame(moveGhost);
+    }, { passive: true });
   }
 
   /* -------------------------------------------------------------- live scope
@@ -7679,6 +8205,7 @@ body::after { display: none; }
     )).join('<span class="chain-link" aria-hidden="true"></span>');
     return (
       '<article class="case-card" tabindex="0" role="button" data-case="' + index + '" aria-haspopup="dialog" style="animation-delay:' + index * 70 + 'ms">' +
+        '<span class="case-mark" aria-hidden="true">' + String(index + 1).padStart(2, "0") + "</span>" +
         '<span class="case-top"><span class="case-id">' + esc(item.id) + '</span><span class="case-verdict">' + esc(item.verdict) + "</span></span>" +
         "<h3>" + esc(item.title) + "</h3>" +
         "<p>" + esc(item.summary) + "</p>" +
@@ -7688,6 +8215,29 @@ body::after { display: none; }
       "</article>"
     );
   }).join("") || '<div class="empty">No case files committed yet.</div>';
+
+  /* The case cards are a horizontal reel: native scroll-snap plus explicit
+     previous/next controls so it is discoverable without a trackpad gesture. */
+  const caseReel = $("#caseGrid");
+  const casePrev = $("#casePrev");
+  const caseNext = $("#caseNext");
+  function updateCaseReel() {
+    if (!caseReel || !casePrev || !caseNext) return;
+    const max = caseReel.scrollWidth - caseReel.clientWidth;
+    casePrev.disabled = caseReel.scrollLeft <= 4;
+    caseNext.disabled = caseReel.scrollLeft >= max - 4;
+  }
+  if (caseReel && casePrev && caseNext) {
+    const reelStep = () => {
+      const card = caseReel.querySelector(".case-card");
+      return card ? card.offsetWidth + 12 : caseReel.clientWidth * 0.82;
+    };
+    casePrev.addEventListener("click", () => caseReel.scrollBy({ left: -reelStep(), behavior: reduce ? "auto" : "smooth" }));
+    caseNext.addEventListener("click", () => caseReel.scrollBy({ left: reelStep(), behavior: reduce ? "auto" : "smooth" }));
+    caseReel.addEventListener("scroll", updateCaseReel, { passive: true });
+    window.addEventListener("resize", updateCaseReel);
+    updateCaseReel();
+  }
 
   if ("IntersectionObserver" in window && !reduce) {
     const caseObserver = new IntersectionObserver((entries) => {

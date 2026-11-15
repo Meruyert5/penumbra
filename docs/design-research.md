@@ -223,3 +223,44 @@ pass:
 
 **Rejected:** the saturated orange band, the white chart plate, the pale
 secondary button, the paper fold, and the green low-severity step.
+
+## v7: the night stage (logged-in Pinterest pass)
+
+The logged-in session was used to open the actual pins, not just the search
+grid. The strongest references:
+
+- [Solar Eclipse Watch Party](https://www.pinterest.com/pin/787426316136288318/)
+  — a full-bleed eclipse photograph, black→orange gradient, bold stacked type,
+  and a moon-phase strip.
+- [Eclipse / behind the dark](https://www.pinterest.com/pin/944067140632564933/)
+  — giant serif type over a black field, one hot ring, tiny mono labels.
+- [Solar eclipse editorial](https://www.pinterest.com/pin/1143351424184112447/)
+  — high-contrast serif + italic, a deep photo, thin frame, small labels.
+- [Solar eclipse phases](https://www.pinterest.com/pin/1070449405224367583/)
+  — one central eclipse with orbiting phase thumbnails.
+- [Astronomy site “Look a little further”](https://www.pinterest.com/pin/1147292073900939074/)
+  — dark cinematic hero, a real night photograph, a horizontal planet strip.
+- [Kinetic typography](https://www.pinterest.com/pin/751608625358541883/) and
+  [kinetic type poster](https://www.pinterest.com/pin/1136173812271823162/)
+  — type that creates speed and rhythm.
+- [AL BAHAR](https://www.pinterest.com/pin/636696466091898736/) and
+  [We are all night](https://www.pinterest.com/pin/1131670212633651467/) —
+  one saturated field, one giant word, one dot, layered print texture.
+- [Auren studio](https://www.pinterest.com/pin/395261304820508005/) and
+  [The Studio](https://www.pinterest.com/pin/1147292073903804670/) — black
+  gallery surfaces, white cards, editorial grids.
+
+**Observed → decision:**
+
+| Reference lesson | Decision |
+|---|---|
+| The eclipse is the hero, not a side illustration | Full-bleed dark night stage; the copy and receipt sit over it |
+| A real sun + moon reads better than a painted black center | Separate sun and moon discs; the moon shifts with the selected contact |
+| Giant type can be the image | Ghost `UMBRA` wordmark, oversized `KEEP THE SHADOW`, and a kinetic phase ticker |
+| Dark astronomy sites use one horizontal strip | The path plate and the case cards become horizontal reels |
+| Kinetic posters create rhythm with repetition | The phase ticker repeats C1-C4, Saros, and the window |
+| Paper receipts are the human artifact | The run ticket stays a bright paper object on the night stage |
+| Too many effects flatten the hierarchy | One showpiece per act: eclipse, light curve, corona ring, case reel, terminal |
+
+**Rejected:** copying a reference image, a 3D planet scene, glassmorphism,
+generic SaaS cards, a static paper cover, and a three-column case grid.

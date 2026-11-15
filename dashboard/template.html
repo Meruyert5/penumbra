@@ -74,6 +74,9 @@
   </div>
 
   <header class="cover" id="cover">
+    <canvas id="heroSky" class="hero-sky" aria-hidden="true"></canvas>
+    <span class="cover-ghost" aria-hidden="true">UMBRA</span>
+    <div class="cover-inner">
     <div class="cover-top">
       <span>Umbra / Eclipse field guide</span>
       <span class="cover-status"><b class="cover-mode" id="coverMode">Corona</b><span id="coverRunLine">Run 001 / loading</span></span>
@@ -105,9 +108,14 @@
 
       <div class="cover-side">
         <figure class="totality-plate" aria-hidden="true">
-          <span class="totality-tag">Plate 00 / totality</span>
-          <span class="totality-orbit"><span class="totality-disc"></span><span class="diamond-ring"></span></span>
-          <span class="totality-foot"><span>Corona / 1.05 R☉</span><span>04:21 UT</span></span>
+          <span class="totality-tag">Plate 00 / <b id="heroPhase">totality</b></span>
+          <span class="totality-orbit">
+            <span class="hero-sun"></span>
+            <span class="totality-disc"></span>
+            <span class="hero-moon"></span>
+            <span class="diamond-ring"></span>
+          </span>
+          <span class="totality-foot"><span>Corona / 1.05 R&#9737;</span><span>04:21 UT</span></span>
         </figure>
 
         <aside class="ticket" aria-label="Run ticket">
@@ -167,7 +175,21 @@
         play the eclipse
       </button>
     </div>
+
+    <a class="scroll-cue" href="#run">First light <span aria-hidden="true">&#8595;</span></a>
+    </div>
   </header>
+
+  <div class="phase-ticker" aria-hidden="true">
+    <div class="phase-ticker-track">
+      <div class="phase-ticker-group">
+        <span>C1 11:58</span><span>First contact</span><span>C2 12:02</span><span>Second contact</span><span>MAX 12:05</span><span>Totality</span><span>C3 12:08</span><span>Third contact</span><span>C4 12:12</span><span>Fourth contact</span><span>Saros 145</span><span>24 hours</span>
+      </div>
+      <div class="phase-ticker-group">
+        <span>C1 11:58</span><span>First contact</span><span>C2 12:02</span><span>Second contact</span><span>MAX 12:05</span><span>Totality</span><span>C3 12:08</span><span>Third contact</span><span>C4 12:12</span><span>Fourth contact</span><span>Saros 145</span><span>24 hours</span>
+      </div>
+    </div>
+  </div>
 
   <section class="interlude" aria-label="Path of totality">
     <div class="interlude-inner">
@@ -413,6 +435,13 @@
       <div class="cc-detail" id="ccDetail" aria-live="polite"></div>
     </div>
 
+    <div class="case-reel-bar" data-reveal>
+      <span class="case-reel-hint">Three eclipses / drag or scroll</span>
+      <div class="case-reel-controls">
+        <button class="mini" id="casePrev" type="button" aria-label="Previous case">&#8592;</button>
+        <button class="mini" id="caseNext" type="button" aria-label="Next case">&#8594;</button>
+      </div>
+    </div>
     <div class="case-grid" id="caseGrid" data-reveal></div>
   </section>
 
