@@ -108,6 +108,8 @@ still publicly reachable. Access-controlled Pages requires GitHub Enterprise
 Cloud. If the design must stay private, use a private host with authentication
 (for example Cloudflare Access) rather than a private GitHub repository alone.
 
+For the permanent simple link, see [Custom domain](custom-domain.md).
+
 The current repository keeps the design public. If that changes, move
 `dashboard/`, `docs/design.md`, `docs/design-research.md`, and the dashboard
 screenshots into a private repository, keep the compiled `site/` in the public

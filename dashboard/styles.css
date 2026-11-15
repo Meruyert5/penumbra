@@ -6007,3 +6007,9 @@ body::after { display: none; }
 }
 
 .ta-data-note span { color: var(--sun-3); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Attribution in the colophon. */
+.colophon-brand > .colophon-author {
+  color: var(--sun-3);
+  letter-spacing: 0.12em;
+}

@@ -18,6 +18,7 @@ from pathlib import Path
 from pipeline.common import DOCS_DIR, ROOT
 
 SITE_DIR = ROOT / "site"
+PUBLIC_FILES = ("index.html", "CNAME")
 PUBLIC_DIRS = ("assets", "cases")
 
 
@@ -39,9 +40,14 @@ def publish(docs_dir: Path = DOCS_DIR, site_dir: Path = SITE_DIR) -> dict[str, i
         shutil.rmtree(site_dir)
     site_dir.mkdir(parents=True)
     (site_dir / ".nojekyll").write_text("", encoding="utf-8")
-    shutil.copy2(index, site_dir / "index.html")
 
-    copied_files = 1
+    copied_files = 0
+    for name in PUBLIC_FILES:
+        source = docs_dir / name
+        if source.is_file():
+            shutil.copy2(source, site_dir / name)
+            copied_files += 1
+
     copied_dirs = 0
     for name in PUBLIC_DIRS:
         source = docs_dir / name

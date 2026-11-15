@@ -1,6 +1,13 @@
 # Working instructions for Penumbra
 
-## Website workflow — required
+## Start here
+
+Read [`docs/handoff.md`](docs/handoff.md) for the current commit, rebuild and
+publish commands, the temporary tunnel, GitHub upload, custom-domain setup, and
+the open decisions. Read [`docs/evaluation.md`](docs/evaluation.md) before making
+any claim about detection efficacy.
+
+## Website workflow - required
 
 > Before you design anything, do the Pinterest research. Open the board and the
 > individual pins, read the captions, follow the creators' source links, watch

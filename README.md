@@ -415,7 +415,7 @@ python -m pipeline.report
 python -m pipeline.publish
 ```
 
-`pipeline.publish` writes `site/` with only `index.html`, `assets/`, `cases/`, and `.nojekyll`. The design notes, research log, runbook, and tuning record stay in `docs/` and are not uploaded to Pages. This is a deployment boundary, not a secrecy guarantee: `dashboard/` is still part of this repository.
+`pipeline.publish` writes `site/` with only `index.html`, `assets/`, `cases/`, `.nojekyll`, and `CNAME` when a custom domain is configured. The design notes, research log, runbook, and tuning record stay in `docs/` and are not uploaded to Pages. This is a deployment boundary, not a secrecy guarantee: `dashboard/` is still part of this repository.
 
 1. Push the repository to GitHub.
 2. Open **Settings → Pages** and set **Source** to **GitHub Actions**.
@@ -441,6 +441,12 @@ See [Publishing checklist](docs/publishing.md) for repository metadata, the desi
 ## Contributing and security
 
 Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before changing a rule or the pipeline. Report vulnerabilities through GitHub's private reporting flow described in [`SECURITY.md`](SECURITY.md). Do not open a public issue for a security problem, and do not submit real logs, credentials, or personal data.
+
+## Author
+
+**Meruyert Oshayeva** — detection engineering, detection-as-code, and interface design.
+
+This is an independent portfolio project. It is not affiliated with any company using the Penumbra name. The visual identity, the run, and the writing are part of the portfolio; the rules and pipeline are MIT-licensed for reuse.
 
 ## License
 
