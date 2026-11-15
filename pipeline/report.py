@@ -49,6 +49,10 @@ FONT_FILES = {
         {"file": "dm-mono-400-latin.woff2", "weight": "400"},
         {"file": "dm-mono-500-latin.woff2", "weight": "500"},
     ],
+    "Fraunces": [
+        {"file": "fraunces-latin.woff2", "weight": "300 700"},
+        {"file": "fraunces-italic-latin.woff2", "weight": "300 700", "style": "italic"},
+    ],
 }
 
 
@@ -327,7 +331,7 @@ def build_html(payload: dict[str, Any], source: dict[str, str]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Render the Signal Foundry dashboard")
+    parser = argparse.ArgumentParser(description="Render the Umbra dashboard")
     parser.add_argument("--alerts", default=str(ALERTS_DIR / "alerts.json"))
     parser.add_argument("--rules", default=str(COMPILED_DIR / "rules.json"))
     parser.add_argument("--cases", default=str(CASES_DIR / "cases.json"))

@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: SAM or SECURITY Hive Dumped with Reg.exe
 id: 4f3011e1-0e97-40ce-8367-4f684cde4411
 status: experimental

@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: Ransomware Note Dropped on Disk
 id: 7e6e7920-6d80-484e-80d2-4ecdce55b372
 status: experimental

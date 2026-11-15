@@ -1,11 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Signal Foundry mark">
-  <rect width="64" height="64" rx="12" fill="#f4efe4"/>
-  <rect x="5.5" y="5.5" width="53" height="53" rx="8" fill="none" stroke="#c9bda7"/>
-  <path d="M46 6h12v12z" fill="#e3d8c4"/>
-  <path d="M46 6 58 18" fill="none" stroke="#b9ab93" stroke-width="1"/>
-  <path class="mark-grid" d="M18 18v28M32 16v32M46 18v28" stroke="#c9bda7" stroke-opacity="0.55" stroke-width="1"/>
-  <path class="mark-signal" d="M9 40h8l4-15 6 25 5-18 4 8h16" fill="none" stroke="#1f4a5c" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle class="mark-dot" cx="52" cy="40" r="2.8" fill="#9b2f2a"/>
-  <path class="mark-ticks" d="M13 14h9M13 18h5" stroke="#1f4a5c" stroke-opacity="0.42" stroke-width="1.4" stroke-linecap="round"/>
-  <path class="mark-ticks" d="M51 50h-9M51 46h-5" stroke="#1f4a5c" stroke-opacity="0.28" stroke-width="1.4" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Umbra eclipse mark">
+  <rect width="64" height="64" rx="12" fill="#F6F4F1"/>
+  <rect x="5.5" y="5.5" width="53" height="53" rx="8" fill="none" stroke="#D7D0C4"/>
+  <circle cx="32" cy="32" r="17" fill="#141210"/>
+  <path d="M15 32a17 17 0 0 1 34 0" fill="none" stroke="#F95C4B" stroke-width="3" stroke-linecap="round"/>
+  <path d="M17.5 38a17 17 0 0 0 29 0" fill="none" stroke="#FBB931" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M32 9v4.5M32 50.5V55M9 32h4.5M50.5 32H55" stroke="#EA6113" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>
+  <circle cx="47" cy="19" r="2.4" fill="#F95C4B"/>
 </svg>

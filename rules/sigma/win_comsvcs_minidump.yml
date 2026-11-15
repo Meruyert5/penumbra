@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: LSASS Memory Dumped via Comsvcs
 id: 7b9d13fd-9437-4e70-858e-ff32e932b588
 status: experimental

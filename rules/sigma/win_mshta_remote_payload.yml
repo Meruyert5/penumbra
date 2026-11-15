@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: Mshta Executing Remote or Script Content
 id: dc638b8c-245c-403a-a713-fb52a6160067
 status: experimental

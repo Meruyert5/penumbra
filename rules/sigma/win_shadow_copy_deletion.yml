@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: Shadow Copy Deletion via VSSAdmin or WMIC
 id: d7397f8d-24fe-4e7f-95d9-028446ab3bbd
 status: experimental

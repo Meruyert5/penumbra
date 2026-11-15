@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: Cloud Root Account Console Login
 id: 0d807457-1ee7-4556-9e62-8f7360e4e181
 status: experimental

@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: PsExec Service Creation
 id: f42eb029-3b7c-489f-aaa5-e310226851c2
 status: experimental

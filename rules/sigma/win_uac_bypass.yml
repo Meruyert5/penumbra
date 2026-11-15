@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: UAC Bypass via Auto-Elevating Binary
 id: 75d5c5b4-4439-4f50-8233-aec63d27c69a
 status: experimental

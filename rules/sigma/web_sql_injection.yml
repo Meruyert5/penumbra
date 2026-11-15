@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: SQL Injection Attempt in Web Request
 id: b62c9d2d-7e71-478c-84e0-b77b21202c88
 status: experimental

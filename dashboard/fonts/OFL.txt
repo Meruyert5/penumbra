@@ -4,7 +4,10 @@ Copyright 2022 The Bricolage Grotesque Project Authors (https://github.com/ateli
 DM Mono
 Copyright 2020 The DM Mono Project Authors (https://www.github.com/googlefonts/dm-mono)
 
-Both font families are licensed under the SIL Open Font License, Version 1.1.
+Fraunces
+Copyright 2020 The Fraunces Project Authors (https://github.com/undercasetype/Fraunces)
+
+All three font families are licensed under the SIL Open Font License, Version 1.1.
 
 -----------------------------------------------------------
 SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007

@@ -1,4 +1,4 @@
-name: signal-foundry-ci
+name: umbra-ci
 
 on:
   push:

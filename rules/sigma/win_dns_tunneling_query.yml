@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: DNS Query to Exfiltration Domain
 id: 4acbed78-70f2-4b6e-a239-9319be8540c7
 status: experimental

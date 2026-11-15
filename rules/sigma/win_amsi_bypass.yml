@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: AMSI Bypass via Reflection
 id: c0f89849-a795-47df-87a4-91f8d81e3f20
 status: experimental

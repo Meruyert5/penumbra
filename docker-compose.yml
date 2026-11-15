@@ -1,8 +1,8 @@
-# Signal Foundry: single-node Elasticsearch + Kibana + Filebeat.
+# Umbra: single-node Elasticsearch + Kibana + Filebeat.
 #
 # Security is DISABLED on purpose. This stack is for a local lab only.
 # Never expose port 9200 to a network you do not control.
-name: signal-foundry
+name: umbra
 
 services:
   elasticsearch:

@@ -2,7 +2,7 @@
 
 ## This is a lab, not a product
 
-Signal Foundry ships a deliberately insecure Elasticsearch/Kibana stack:
+Umbra ships a deliberately insecure Elasticsearch/Kibana stack:
 
 * security and TLS are disabled;
 * ports `9200` and `5601` bind to localhost by default;

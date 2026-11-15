@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: Rundll32 or Regsvr32 Remote Payload
 id: 675424d0-3b84-4a33-bbf0-517041473d85
 status: experimental

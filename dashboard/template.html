@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Signal Foundry: a detection field guide. One deterministic run from raw telemetry to Sigma rules, Elasticsearch EQL matches, correlations, ATT&CK coverage, and defensible case files.">
+<meta name="description" content="Umbra: a solar eclipse detection lab. One deterministic orbit from raw telemetry to 50 Sigma rules, Elasticsearch EQL matches, correlations, ATT&CK corona coverage, and three defensible case files.">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#f4efe4">
+<meta name="theme-color" content="#F6F4F1">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Signal Foundry">
-<meta property="og:title" content="Signal Foundry / Detection field guide">
-<meta property="og:description" content="One deterministic detection run: Sigma rules, EQL matches, correlation, ATT&CK coverage, and three defensible case files.">
+<meta property="og:site_name" content="Umbra">
+<meta property="og:title" content="Umbra / Solar eclipse detection lab">
+<meta property="og:description" content="One deterministic detection run: Sigma rules, EQL matches, correlation, ATT&CK corona coverage, and three defensible case files.">
 <meta property="og:image" content="assets/dashboard.png">
-<meta property="og:image:alt" content="Signal Foundry detection field guide cover">
+<meta property="og:image:alt" content="Umbra solar eclipse detection lab cover">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Signal Foundry / Detection field guide">
-<meta name="twitter:description" content="One deterministic detection run: Sigma rules, EQL matches, correlation, ATT&CK coverage, and three defensible case files.">
+<meta name="twitter:title" content="Umbra / Solar eclipse detection lab">
+<meta name="twitter:description" content="One deterministic detection run: Sigma rules, EQL matches, correlation, ATT&CK corona coverage, and three defensible case files.">
 <meta name="twitter:image" content="assets/dashboard.png">
-<meta name="twitter:image:alt" content="Signal Foundry detection field guide cover">
-<title>Signal Foundry / Detection field guide</title>
+<meta name="twitter:image:alt" content="Umbra solar eclipse detection lab cover">
+<title>Umbra / Solar eclipse detection lab</title>
 <link rel="icon" href="__FAVICON__">
 <style>/*FONTS*//*STYLES*/</style>
 </head>
@@ -26,22 +26,22 @@
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <aside class="rail" aria-label="Field guide contents">
-  <a class="rail-brand" href="#cover" aria-label="Signal Foundry, back to the cover">
+  <a class="rail-brand" href="#cover" aria-label="Umbra, back to the cover">
     __ICON_SVG__
-    <span class="rail-wordmark"><b>Signal Foundry</b><span>Detection field guide</span></span>
+    <span class="rail-wordmark"><b>Umbra</b><span>Eclipse detection lab</span></span>
   </a>
 
   <div class="rail-index">
     <span class="rail-index-label">Contents</span>
     <div class="rail-track" aria-hidden="true"><i id="railFill"></i></div>
     <nav class="rail-nav" id="railNav" aria-label="Chapters">
-      <a href="#cover" data-chapter="cover" class="active" aria-current="location"><span class="n">00</span><span class="t">Cover</span></a>
-      <a href="#run" data-chapter="run"><span class="n">01</span><span class="t">The run</span></a>
-      <a href="#method" data-chapter="method"><span class="n">02</span><span class="t">Method</span></a>
-      <a href="#ledger" data-chapter="ledger"><span class="n">03</span><span class="t">Watch floor</span></a>
-      <a href="#coverage" data-chapter="coverage"><span class="n">04</span><span class="t">Coverage</span></a>
-      <a href="#cases" data-chapter="cases"><span class="n">05</span><span class="t">Cases</span></a>
-      <a href="#reproduce" data-chapter="reproduce"><span class="n">06</span><span class="t">Reproduce</span></a>
+      <a href="#cover" data-chapter="cover" class="active" aria-current="location"><span class="n">00</span><span class="t">Totality</span></a>
+      <a href="#run" data-chapter="run"><span class="n">01</span><span class="t">First light</span></a>
+      <a href="#method" data-chapter="method"><span class="n">02</span><span class="t">Instruments</span></a>
+      <a href="#ledger" data-chapter="ledger"><span class="n">03</span><span class="t">Umbra</span></a>
+      <a href="#coverage" data-chapter="coverage"><span class="n">04</span><span class="t">Corona</span></a>
+      <a href="#cases" data-chapter="cases"><span class="n">05</span><span class="t">Eclipses</span></a>
+      <a href="#reproduce" data-chapter="reproduce"><span class="n">06</span><span class="t">Recurrence</span></a>
     </nav>
   </div>
 
@@ -61,7 +61,7 @@
       <svg viewBox="0 0 120 24" preserveAspectRatio="none"><path class="rail-wave" d="M0 12h14l3-6 4 12 4-9 3 6h14l3-8 4 15 4-11 3 7h14l3-6 4 10 3-5h14"/></svg>
       <span class="rail-signal-label"><i class="live-dot"></i>signal nominal</span>
     </div>
-    <div class="rail-seal" aria-hidden="true"><span>SF</span><span>EST. 2026</span></div>
+    <div class="rail-seal" aria-hidden="true"><span>UM</span><span>EST. 2026</span></div>
   </div>
 </aside>
 
@@ -69,25 +69,25 @@
 
   <header class="cover" id="cover">
     <div class="cover-top">
-      <span>Signal Foundry / Field guide</span>
+      <span>Umbra / Eclipse field guide</span>
       <span id="coverRunLine">Run 001 / loading</span>
     </div>
 
     <div class="cover-grid">
       <div class="cover-copy">
-        <p class="kicker"><i></i>Detection engineering, end to end</p>
+        <p class="kicker"><i></i>Solar eclipse detection lab</p>
         <h1 class="display">
-          <span class="line"><span>Read the signal.</span></span>
-          <span class="line"><span>Keep the <em>evidence.</em></span></span>
+          <span class="line display-serif"><span>Read the light.</span></span>
+          <span class="line display-heavy"><span>Keep the <em>shadow.</em></span></span>
         </h1>
         <p class="lede">
-          One deterministic run through a 50-rule Sigma library. Raw telemetry becomes
-          Elasticsearch EQL matches, correlations, and three defensible case files.
+          One deterministic orbit through a 50-rule Sigma library. Raw telemetry crosses
+          into Elasticsearch EQL matches, correlations, and three defensible case files.
           Every number on this page traces back to an event and the query that found it.
         </p>
         <div class="cover-actions">
           <a class="btn primary" href="#ledger">
-            Open the watch floor
+            Enter the umbra
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
           <button class="btn" id="tourBtn" type="button">Guided reading</button>
@@ -97,21 +97,29 @@
         </div>
       </div>
 
-      <aside class="ticket" aria-label="Run ticket">
-        <div class="ticket-stamp" id="ticketStamp"><b>Verified</b><span>no execution errors</span></div>
-        <div class="ticket-head"><span>Run ticket</span><span id="ticketNo">SF-001</span></div>
-        <dl class="ticket-rows">
-          <div><dt>Generated</dt><dd id="railGenerated">loading</dd></div>
-          <div><dt>Window</dt><dd id="railWindow">24 hours</dd></div>
-          <div><dt>Telemetry</dt><dd><b data-count id="railEvents">0</b> events</dd></div>
-          <div><dt>Library</dt><dd><b data-count id="railRules">0</b> Sigma rules</dd></div>
-          <div><dt>Correlation</dt><dd><b data-count id="railCorr">0</b> specs</dd></div>
-          <div><dt>Seed</dt><dd>1337</dd></div>
-          <div><dt>Integrity</dt><dd id="railErrors">0 execution errors</dd></div>
-        </dl>
-        <div class="ticket-barcode" aria-hidden="true"><i></i></div>
-        <div class="ticket-foot"><span id="ticketWindow">24 hour window</span><span>Synthetic telemetry</span></div>
-      </aside>
+      <div class="cover-side">
+        <figure class="totality-plate" aria-hidden="true">
+          <span class="totality-tag">Plate 00 / totality</span>
+          <span class="totality-orbit"><span class="totality-disc"></span></span>
+          <span class="totality-foot"><span>Corona / 1.05 R☉</span><span>04:21 UT</span></span>
+        </figure>
+
+        <aside class="ticket" aria-label="Run ticket">
+          <div class="ticket-stamp" id="ticketStamp"><b>Verified</b><span>no execution errors</span></div>
+          <div class="ticket-head"><span>Run ticket</span><span id="ticketNo">UM-001</span></div>
+          <dl class="ticket-rows">
+            <div><dt>Generated</dt><dd id="railGenerated">loading</dd></div>
+            <div><dt>Window</dt><dd id="railWindow">24 hours</dd></div>
+            <div><dt>Telemetry</dt><dd><b data-count id="railEvents">0</b> events</dd></div>
+            <div><dt>Library</dt><dd><b data-count id="railRules">0</b> Sigma rules</dd></div>
+            <div><dt>Correlation</dt><dd><b data-count id="railCorr">0</b> specs</dd></div>
+            <div><dt>Seed</dt><dd>1337</dd></div>
+            <div><dt>Integrity</dt><dd id="railErrors">0 execution errors</dd></div>
+          </dl>
+          <div class="ticket-barcode" aria-hidden="true"><i></i></div>
+          <div class="ticket-foot"><span id="ticketWindow">24 hour window</span><span>Synthetic telemetry</span></div>
+        </aside>
+      </div>
     </div>
 
     <div class="scope-field" id="scopeField" data-reveal tabindex="0" role="button" aria-labelledby="scopeLabel fieldReadout scopeSignal fieldPeak">
@@ -131,19 +139,19 @@
     <header class="chapter-head" data-reveal>
       <span class="chapter-no" aria-hidden="true">01</span>
       <div class="chapter-intro">
-        <p class="chapter-label">The run</p>
-        <h2>Quiet hours, then several loud ones.</h2>
+        <p class="chapter-label">First light</p>
+        <h2>A quiet day, then one bright <span class="sans-word">burst.</span></h2>
         <p class="chapter-lede">
-          The run spans a full day. Matched events land in several hours as the scenario
-          set unfolds, with quiet stretches between the bursts. The shape matters: a rule
-          that fires on everything cannot discriminate.
+          The run spans a full day. Matched events flare in several hours as the scenario
+          set unfolds, with long quiet stretches between. The shape matters: a rule that
+          fires on everything cannot discriminate.
         </p>
       </div>
     </header>
 
     <figure class="plate" id="scopePlate" data-reveal>
       <figcaption class="plate-bar">
-        <span class="plate-title"><i class="live-dot" aria-hidden="true"></i>Fig. 1 / Matched events by hour</span>
+        <span class="plate-title"><i class="live-dot" aria-hidden="true"></i>Fig. 1 / Light curve / matched events by hour</span>
         <span class="plate-tools">
           <span class="plate-note" id="scopeHint">hover or tap a column</span>
           <button class="mini plate-replay" id="chartReplay" type="button" aria-label="Replay the chart animation">
@@ -167,8 +175,8 @@
     <header class="chapter-head" data-reveal>
       <span class="chapter-no" aria-hidden="true">02</span>
       <div class="chapter-intro">
-        <p class="chapter-label">Method</p>
-        <h2>Five instruments, one chain of custody.</h2>
+        <p class="chapter-label">Instruments</p>
+        <h2>Five instruments, one <span class="sans-word">chain.</span></h2>
         <p class="chapter-lede">
           Sigma stays the source of truth. Generation, compilation, execution, correlation,
           and triage each leave an artifact you can inspect and rerun.
@@ -184,8 +192,8 @@
     <header class="chapter-head" data-reveal>
       <span class="chapter-no" aria-hidden="true">03</span>
       <div class="chapter-intro">
-        <p class="chapter-label">Watch floor</p>
-        <h2>The queue, with the query attached.</h2>
+        <p class="chapter-label">Umbra / watch floor</p>
+        <h2>The queue, with the query <span class="sans-word">attached.</span></h2>
         <p class="chapter-lede">
           Filter by severity, host, or technique. Select a detection to keep its events and
           exact EQL beside the queue. Host lanes show where the hour landed, and the
@@ -265,24 +273,34 @@
     <header class="chapter-head" data-reveal>
       <span class="chapter-no" aria-hidden="true">04</span>
       <div class="chapter-intro">
-        <p class="chapter-label">Coverage</p>
-        <h2>Every priority technique covered.</h2>
+        <p class="chapter-label">Corona</p>
+        <h2>Every priority technique, <span class="sans-word">covered.</span></h2>
         <p class="chapter-lede">
-          All 45 priority techniques are covered. Filled ticks name the rule or correlation
-          that closes them; the gaps view stays available as a regression check.
+          All 45 priority techniques are covered. Each filled tick in the corona ring names
+          the rule or correlation that closes it; the gaps view stays available as a
+          regression check.
         </p>
       </div>
     </header>
 
     <div class="coverage-top" data-reveal>
-      <div class="coverage-score">
-        <b id="coverageCovered">0</b><span>/ <i id="coverageTotal">45</i></span>
-        <p>priority techniques covered</p>
+      <div class="coverage-dial">
+        <div class="coverage-score">
+          <b id="coverageCovered">0</b><span>/ <i id="coverageTotal">45</i></span>
+          <p>priority techniques covered</p>
+        </div>
+        <div class="gauge" id="coverageGauge" aria-hidden="true"></div>
       </div>
-      <div class="gauge" id="coverageGauge" aria-hidden="true"></div>
-      <div class="coverage-actions">
-        <button class="chip" id="gapsBtn" type="button" aria-pressed="false">show gaps only</button>
-        <span class="coverage-note" id="coverageNote">loading</span>
+      <div class="coverage-copy">
+        <p class="coverage-kicker">Corona index / 45 priority techniques</p>
+        <p class="coverage-lede">
+          The ring reads clockwise from the first technique. Coral, orange, and amber
+          mark the four quadrants; a dashed tick would name a gap.
+        </p>
+        <div class="coverage-actions">
+          <button class="chip" id="gapsBtn" type="button" aria-pressed="false">show gaps only</button>
+          <span class="coverage-note" id="coverageNote">loading</span>
+        </div>
       </div>
     </div>
 
@@ -295,8 +313,8 @@
     <header class="chapter-head" data-reveal>
       <span class="chapter-no" aria-hidden="true">05</span>
       <div class="chapter-intro">
-        <p class="chapter-label">Cases</p>
-        <h2>Three investigations, one structure.</h2>
+        <p class="chapter-label">Eclipses</p>
+        <h2>Three investigations, one <span class="sans-word">shadow.</span></h2>
         <p class="chapter-lede">
           Each case follows the same file: summary, timeline, evidence, analysis, verdict,
           containment, and the detection improvement that came out of it.
@@ -307,7 +325,7 @@
     <div class="casechain" id="caseChain" data-reveal>
       <div class="cc-head">
         <div class="cc-heading">
-          <p class="chapter-label">Chain view</p>
+          <p class="chapter-label">Eclipse chain</p>
           <h3 id="ccTitle">Case 002 / Multi-stage intrusion</h3>
         </div>
         <div class="cc-tabs" id="ccTabs" role="tablist" aria-label="Choose a case"></div>
@@ -331,8 +349,8 @@
     <header class="chapter-head" data-reveal>
       <span class="chapter-no" aria-hidden="true">06</span>
       <div class="chapter-intro">
-        <p class="chapter-label">Reproduce</p>
-        <h2>Same seed. Same queue.</h2>
+        <p class="chapter-label">Recurrence</p>
+        <h2>Same seed. Same <span class="sans-word">orbit.</span></h2>
         <p class="chapter-lede">
           The lab needs Python 3.11 and Docker. Generation is deterministic, so the same
           commands produce the same event field, the same detections, and this same page.
@@ -357,7 +375,7 @@
       </div>
 
       <div class="terminal">
-        <div class="terminal-bar"><i></i><i></i><i></i><span>signal-foundry / powershell</span><button type="button" id="copyAll" class="mini">copy all</button></div>
+        <div class="terminal-bar"><i></i><i></i><i></i><span>umbra / powershell</span><button type="button" id="copyAll" class="mini">copy all</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.labgen --scenario all --base-time 2026-11-11T12:30:00Z</code><button type="button" data-copy="python -m pipeline.labgen --scenario all --base-time 2026-11-11T12:30:00Z">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.compile</code><button type="button" data-copy="python -m pipeline.compile">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> docker compose up -d</code><button type="button" data-copy="docker compose up -d">copy</button></div>
@@ -369,14 +387,18 @@
   </section>
 
   <footer class="colophon" data-reveal>
-    <div>
-      <b>Signal Foundry</b>
-      <span>Detection engineering, from raw telemetry to defensible alerts.</span>
+    <div class="colophon-brand">
+      <b>Umbra</b>
+      <span>A solar eclipse detection lab. Read the light, keep the shadow.</span>
     </div>
-    <div class="colophon-marks">
-      <span>Synthetic telemetry</span>
-      <span>No production data</span>
-    </div>
+    <nav class="colophon-links" aria-label="Footer chapters">
+      <a href="#run">First light</a>
+      <a href="#ledger">Umbra</a>
+      <a href="#coverage">Corona</a>
+      <a href="#cases">Eclipses</a>
+      <a href="#reproduce">Recurrence</a>
+    </nav>
+    <span class="colophon-dot" aria-hidden="true"></span>
   </footer>
 </main>
 
@@ -425,7 +447,7 @@
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script id="sf-data" type="application/json">__DATA_JSON__</script>
+<script id="umbra-data" type="application/json">__DATA_JSON__</script>
 <script>/*SCRIPT*/</script>
 </body>
 </html>

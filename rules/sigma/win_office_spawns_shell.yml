@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: Office Application Spawns a Shell
 id: e1ae8d6e-b6b2-46a2-86bf-acfabb836f65
 status: experimental

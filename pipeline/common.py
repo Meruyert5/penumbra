@@ -1,4 +1,4 @@
-"""Shared paths, configuration and Sigma helpers for Signal Foundry."""
+"""Shared paths, configuration and Sigma helpers for Umbra."""
 
 from __future__ import annotations
 

@@ -29,23 +29,23 @@ TILE_GAP = 5
 HEADER_H = 92
 LEGEND_H = 34
 
-# Signal Foundry palette: deep petrol, bone, brass, oxidized teal, clay.
-BG = "#07110f"
-PANEL = "#0e211e"
-TILE = "#122a26"
-LINE = "#24423c"
-LINE_SOFT = "#1a332e"
-BONE = "#f1eadb"
-MUTED = "#93a49c"
-BRASS = "#d8a657"
-TEAL = "#5aa899"
-CLAY = "#c4664a"
+# Umbra palette: totality black, paper, ember, corona amber, stone.
+BG = "#0B0A09"
+PANEL = "#141210"
+TILE = "#1B1612"
+LINE = "#332C25"
+LINE_SOFT = "#241F1A"
+BONE = "#F6F4F1"
+MUTED = "#A79E91"
+BRASS = "#FBB931"
+TEAL = "#FFE3B3"
+CLAY = "#F95C4B"
 
 LEVEL_COLOR = {
-    "critical": "#e2645a",
-    "high": "#d99a4e",
-    "medium": "#c9b458",
-    "low": "#6aa9a0",
+    "critical": "#F95C4B",
+    "high": "#EA6113",
+    "medium": "#FBB931",
+    "low": "#B9A88F",
 }
 
 
@@ -87,7 +87,7 @@ def build_svg(compiled: list[dict[str, Any]], correlations: list[Any] | None = N
     parts.append(f'<rect width="{WIDTH}" height="4" fill="{BRASS}"/>')
     parts.append(
         f'<text x="{PAD}" y="40" fill="{BONE}" font-size="20" font-weight="700" '
-        f'letter-spacing="0.2">SIGNAL FOUNDRY</text>'
+        f'letter-spacing="0.2">Umbra</text>'
     )
     parts.append(
         f'<text x="{PAD}" y="62" fill="{MUTED}" font-size="11">'

@@ -1,6 +1,6 @@
-# Signal Foundry
+# Umbra
 
-**Detection engineering, from raw telemetry to defensible alerts.**
+**A solar eclipse detection lab. Read the light, keep the shadow.**
 
 [![Python 3.11](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
 [![Elasticsearch 8.15](https://img.shields.io/badge/Elasticsearch-8.15-005571?logo=elasticsearch&logoColor=white)](docker-compose.yml)
@@ -10,9 +10,9 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea043)](LICENSE)
 [![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2ea043)](.github/workflows/ci.yml)
 
-![Signal Foundry interactive dashboard](docs/assets/dashboard.png)
+![Umbra interactive dashboard](docs/assets/dashboard.png)
 
-Signal Foundry is a detection lab you can rerun. It generates 9,223 synthetic events, compiles 50 Sigma rules to Elasticsearch EQL and KQL, runs them against a local Elasticsearch stack, correlates the matches, and turns the result into an interactive dashboard and three analyst case reports. Every number in the dashboard traces to an event and the query that found it.
+Umbra is a detection lab you can rerun. It generates 9,223 synthetic events, compiles 50 Sigma rules to Elasticsearch EQL and KQL, runs them against a local Elasticsearch stack, correlates the matches, and turns the result into an interactive dashboard and three analyst case reports. Every number in the dashboard traces to an event and the query that found it.
 
 | What you can inspect | Where |
 |---|---|
@@ -264,7 +264,7 @@ The design system, motion rules, contrast evidence, and accessibility contract a
 Chrome Lighthouse against the built page reports **100 accessibility, 100 best practices, and 100 SEO**. Performance is not part of that audit, so this repo does not publish a performance score.
 
 <p align="center">
-  <img src="docs/assets/dashboard-night.png" alt="Signal Foundry in the night theme, showing the watch floor" width="820">
+  <img src="docs/assets/dashboard-night.png" alt="Umbra in the night theme, showing the watch floor" width="820">
 </p>
 
 ---

@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: Boot Recovery Disabled via BCDEdit
 id: 34f0ef8d-a4da-44a6-8ab2-c4b5c2b41f63
 status: experimental

@@ -1,0 +1,54 @@
+# Working instructions for Umbra
+
+## Pinterest first
+
+Before any visual, UI, brand, motion, or layout change:
+
+1. Load the `pinterest-reference-first` skill.
+2. Read [`docs/design-research.md`](docs/design-research.md).
+3. If the change is a new direction, reopen the relevant pins, captions, source
+   links, and video frames. Do not design from memory.
+4. Write the observed → decision → trade-off trail in the research file.
+
+The full skill and the Desktop brief are at:
+
+- `C:\Users\Meruyert\.agents\skills\pinterest-reference-first\SKILL.md`
+- `C:\Users\Meruyert\Desktop\Pinterest-First-Design-Instruction.md`
+
+## The system
+
+- Palette: Paper `#F6F4F1`, Stone `#E4DED2`, Coral `#F95C4B` (fills) /
+  `#C9402C` (text), Black `#141210`, Sunset `#EA6113` → `#F88F22` → `#FBB931`
+  → `#FFE3B3`.
+- Type: Fraunces for the editorial voice, Bricolage Grotesque 800 for one poster
+  word, DM Mono for data. Do not add a fourth family without a reason.
+- One poster move per page. The cover carries the black totality plate, the
+  corona disc, and the paper ticket. Everything else stays readable.
+- Texture goes on surfaces, never behind body copy.
+- Motion is an instrument. Respect `prefers-reduced-motion` and keep the final
+  state.
+
+## Source of truth
+
+- [`dashboard/styles.css`](dashboard/styles.css)
+- [`dashboard/template.html`](dashboard/template.html)
+- [`dashboard/app.js`](dashboard/app.js)
+- [`pipeline/report.py`](pipeline/report.py)
+- [`docs/design.md`](docs/design.md)
+- [`docs/design-research.md`](docs/design-research.md)
+
+## Before calling it done
+
+```powershell
+node --check dashboard\app.js
+.\.venv\Scripts\python.exe -m pipeline.report
+.\.venv\Scripts\python.exe -m pipeline.heatmap
+.\.venv\Scripts\python.exe -m pipeline.lint
+.\.venv\Scripts\python.exe -m pipeline.compile --check
+.\.venv\Scripts\python.exe -m pipeline.coverage --check
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+Then check the built page at 1440 and at a true 390px iframe, in light and dark,
+with no console errors and Lighthouse accessibility / best practices / SEO at
+100. Refresh `docs/assets/dashboard.png` and `docs/assets/dashboard-night.png`.

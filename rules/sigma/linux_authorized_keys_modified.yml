@@ -1,4 +1,4 @@
-# Sigma rule generated for Signal Foundry. Edit the rule, not this comment.
+# Sigma rule generated for Umbra. Edit the rule, not this comment.
 title: SSH Authorized Keys Modified
 id: f43a7758-c7bc-40a0-8557-ee78d2515c6b
 status: experimental

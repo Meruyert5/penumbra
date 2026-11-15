@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const DATA = JSON.parse(document.getElementById("sf-data").textContent);
+  const DATA = JSON.parse(document.getElementById("umbra-data").textContent);
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
   const LEVELS = ["critical", "high", "medium", "low"];
@@ -67,8 +67,8 @@
     themeButton.setAttribute("aria-label", theme === "dark" ? "Switch to paper theme" : "Switch to night theme");
     const meta = $('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", theme === "dark" ? "#070d10" : "#f4efe4");
-    document.dispatchEvent(new CustomEvent("sf:theme", { detail: theme }));
-    try { localStorage.setItem("sf-theme", theme); } catch (error) { /* file:// storage can be blocked */ }
+    document.dispatchEvent(new CustomEvent("umbra:theme", { detail: theme }));
+    try { localStorage.setItem("umbra-theme", theme); } catch (error) { /* file:// storage can be blocked */ }
     if (instant) {
       requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("no-transition")));
     }
@@ -85,7 +85,7 @@
   const themeOverride = requestedTheme === "dark" || requestedTheme === "light" ? requestedTheme : "";
   let savedTheme = themeOverride || "light";
   if (!themeOverride) {
-    try { savedTheme = localStorage.getItem("sf-theme") || "light"; } catch (error) { savedTheme = "light"; }
+    try { savedTheme = localStorage.getItem("umbra-theme") || "light"; } catch (error) { savedTheme = "light"; }
   }
   setTheme(savedTheme);
   themeButton.addEventListener("click", toggleTheme);
@@ -736,15 +736,28 @@
 
       const ink = getComputedStyle(document.documentElement);
       const readColor = (name, fallback) => ink.getPropertyValue(name).trim() || fallback;
-      const signal = readColor("--scope-trace", "#1f4a5c");
-      const grid = readColor("--scope-grid", "rgba(31,74,92,0.14)");
-      const fillTop = readColor("--scope-fill", "rgba(31,74,92,0.12)");
-      const echoColor = readColor("--scope-echo", "rgba(31,74,92,0.34)");
-      const beamColor = readColor("--scope-beam", "rgba(31,74,92,0.13)");
-      const pingColor = readColor("--scope-ping", "rgba(31,74,92,0.55)");
-      const peakColor = readColor("--scope-peak", "#9b2f2a");
-      const scanColor = readColor("--scope-scan", "rgba(31,74,92,0.45)");
-      const pointerColor = readColor("--scope-pointer", "rgba(31,74,92,0.35)");
+      const signal = readColor("--scope-trace", "#FBB931");
+      const grid = readColor("--scope-grid", "rgba(255,227,179,0.12)");
+      const fillTop = readColor("--scope-fill", "rgba(248,143,34,0.20)");
+      const echoColor = readColor("--scope-echo", "rgba(249,92,75,0.30)");
+      const beamColor = readColor("--scope-beam", "rgba(251,185,49,0.16)");
+      const pingColor = readColor("--scope-ping", "rgba(255,227,179,0.55)");
+      const peakColor = readColor("--scope-peak", "#F95C4B");
+      const scanColor = readColor("--scope-scan", "rgba(255,227,179,0.50)");
+      const pointerColor = readColor("--scope-pointer", "rgba(255,227,179,0.35)");
+      const sun1 = readColor("--sun-1", "#EA6113");
+      const sun2 = readColor("--sun-2", "#F88F22");
+      const sun3 = readColor("--sun-3", "#FBB931");
+      const sun4 = readColor("--sun-4", "#FFE3B3");
+      const totality = readColor("--totality", "#0B0A09");
+      const traceGrade = ctx.createLinearGradient(0, 0, width, 0);
+      traceGrade.addColorStop(0, sun1);
+      traceGrade.addColorStop(0.42, sun2);
+      traceGrade.addColorStop(0.74, sun3);
+      traceGrade.addColorStop(1, sun4);
+      const fillGrade = ctx.createLinearGradient(0, 30, 0, height - 22);
+      fillGrade.addColorStop(0, fillTop);
+      fillGrade.addColorStop(1, "transparent");
 
       // Etched graticule.
       ctx.strokeStyle = grid;
@@ -761,17 +774,14 @@
       });
       ctx.stroke();
 
-      // Area under the trace.
+      // Area under the trace: the corona, warming toward the horizon.
       const trace = smoothPath(visible);
       if (visible.length > 1) {
         const area = smoothPath(visible);
         area.lineTo(visible[visible.length - 1][0], height - 22);
         area.lineTo(visible[0][0], height - 22);
         area.closePath();
-        const fill = ctx.createLinearGradient(0, 30, 0, height - 20);
-        fill.addColorStop(0, fillTop);
-        fill.addColorStop(1, "transparent");
-        ctx.fillStyle = fill;
+        ctx.fillStyle = fillGrade;
         ctx.fill(area);
       }
 
@@ -787,35 +797,53 @@
         ctx.globalAlpha = 1;
       }
 
-      // Main trace with a restrained glow. Paper wants ink, not neon.
+      // Main trace: a warm light curve, not a cyan oscilloscope.
       ctx.save();
-      ctx.shadowColor = signal;
-      ctx.shadowBlur = document.documentElement.dataset.theme === "dark" ? 10 : 0;
-      ctx.strokeStyle = signal;
-      ctx.lineWidth = 1.8;
+      ctx.shadowColor = sun2;
+      ctx.shadowBlur = document.documentElement.dataset.theme === "dark" ? 14 : 9;
+      ctx.strokeStyle = traceGrade;
+      ctx.lineWidth = 2;
       ctx.lineJoin = "round";
+      ctx.lineCap = "round";
       ctx.stroke(trace);
       ctx.restore();
 
-      // Hour points and the peak marker.
-      ctx.fillStyle = signal;
+      // Hour points and the eclipse marker at the brightest hour.
+      ctx.fillStyle = sun4;
       visible.forEach(([x, y], index) => {
         const total = totals[index] || 0;
         if (total <= 0) return;
         const near = pointer.active && Math.abs(pointer.x - x) < 26;
-        ctx.globalAlpha = near ? 1 : 0.55;
+        ctx.globalAlpha = near ? 1 : 0.62;
         ctx.beginPath();
-        ctx.arc(x, y, near ? 3.4 : 2.1, 0, Math.PI * 2);
+        ctx.arc(x, y, near ? 3.6 : 2.2, 0, Math.PI * 2);
         ctx.fill();
       });
       ctx.globalAlpha = 1;
       if (reveal >= 1 && points[peakIndex]) {
         const [px, py] = points[peakIndex];
-        ctx.strokeStyle = peakColor;
-        ctx.lineWidth = 1.2;
+        const halo = ctx.createRadialGradient(px, py, 0, px, py, 30);
+        halo.addColorStop(0, "rgba(249, 92, 75, 0.55)");
+        halo.addColorStop(0.55, "rgba(248, 143, 34, 0.24)");
+        halo.addColorStop(1, "rgba(248, 143, 34, 0)");
+        ctx.fillStyle = halo;
         ctx.beginPath();
-        ctx.arc(px, py, 5.5, 0, Math.PI * 2);
+        ctx.arc(px, py, 30, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = totality;
+        ctx.beginPath();
+        ctx.arc(px, py, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = peakColor;
+        ctx.lineWidth = 1.8;
         ctx.stroke();
+        ctx.strokeStyle = sun3;
+        ctx.globalAlpha = 0.7;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(px, py, 12.5, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
       }
 
       // Scan slit and the pings it triggers.
@@ -941,7 +969,7 @@
         });
       }, { threshold: 0.15 }).observe(fieldBox);
     }
-    document.addEventListener("sf:theme", () => {
+    document.addEventListener("umbra:theme", () => {
       if (!running) drawField(performance.now());
     });
     resizeField();
