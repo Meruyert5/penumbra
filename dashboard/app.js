@@ -617,6 +617,7 @@
   const phasePlay = $("#phasePlay");
   const heroPlate = $(".totality-plate");
   const heroPhaseLabel = $("#heroPhase");
+  const railPhaseLabel = $("#railPhase");
   const heroPhaseNames = ["first contact", "second contact", "totality", "third contact", "fourth contact"];
   function setHeroPhase(index) {
     if (!heroPlate) return;
@@ -624,6 +625,7 @@
     heroPlate.style.setProperty("--phase", String(n));
     heroPlate.style.setProperty("--corona", n === 2 ? "1" : "0.45");
     if (heroPhaseLabel) heroPhaseLabel.textContent = heroPhaseNames[n];
+    if (railPhaseLabel) railPhaseLabel.textContent = heroPhaseNames[n];
   }
   setHeroPhase(2);
   let phaseTimer = 0;
@@ -879,6 +881,56 @@
     window.addEventListener("scroll", () => {
       if (!ghostTick) ghostTick = requestAnimationFrame(moveGhost);
     }, { passive: true });
+  }
+
+  /* ------------------------------------------------------- pinned totality act
+     Native scroll is the source of truth. The stage is sticky; one normalized
+     progress value drives the moon, corona, Baily's beads, diamond ring, copy,
+     and the progress rail. Reduced motion gets the static totality frame. */
+  const totalityAct = $("#totalityAct");
+  if (totalityAct) {
+    const taPhase = $("#taPhase");
+    const taHint = $("#taHint");
+    const taProgress = $("#taProgress");
+    const taWords = ["First contact", "Baily's beads", "Second contact", "Totality", "Third contact", "Fourth contact"];
+    let taTick = 0;
+    function renderTotality(value) {
+      const t = Math.min(1, Math.max(0, value));
+      totalityAct.style.setProperty("--moon", ((1 - t * 2) * 82).toFixed(1));
+      totalityAct.style.setProperty("--corona", (0.12 + 0.88 * (1 - Math.abs(t - 0.5) * 2)).toFixed(3));
+      const beads = Math.max(0, 1 - Math.abs(t - 0.34) / 0.12, 1 - Math.abs(t - 0.66) / 0.12);
+      totalityAct.style.setProperty("--beads", Math.min(1, beads).toFixed(3));
+      const diamond = Math.max(0, 1 - Math.abs(t - 0.27) / 0.045, 1 - Math.abs(t - 0.73) / 0.045);
+      totalityAct.style.setProperty("--diamond", Math.min(1, diamond).toFixed(3));
+      let word = 0;
+      if (t >= 0.16) word = 1;
+      if (t >= 0.30) word = 2;
+      if (t >= 0.44) word = 3;
+      if (t >= 0.62) word = 4;
+      if (t >= 0.82) word = 5;
+      if (taPhase) taPhase.textContent = taWords[word];
+      if (taHint) taHint.style.opacity = String(Math.max(0, 1 - t * 5));
+      if (taProgress) taProgress.style.transform = "scaleX(" + t.toFixed(4) + ")";
+    }
+    function updateTotality() {
+      const rect = totalityAct.getBoundingClientRect();
+      const span = Math.max(1, rect.height - window.innerHeight);
+      renderTotality((0 - rect.top) / span);
+    }
+    function scheduleTotality() {
+      if (taTick) return;
+      taTick = requestAnimationFrame(() => {
+        taTick = 0;
+        updateTotality();
+      });
+    }
+    if (reduce) {
+      renderTotality(0.5);
+    } else {
+      renderTotality(0);
+      window.addEventListener("scroll", scheduleTotality, { passive: true });
+      window.addEventListener("resize", updateTotality);
+    }
   }
 
   /* -------------------------------------------------------------- live scope
@@ -2140,6 +2192,13 @@
   function openCase(index) {
     const item = cases[index];
     if (!item) return;
+    const caseModal = $("#caseModal");
+    const card = document.querySelector('.case-card[data-case="' + index + '"]');
+    if (caseModal && card) {
+      const r = card.getBoundingClientRect();
+      caseModal.style.setProperty("--case-x", (r.left + r.width / 2) + "px");
+      caseModal.style.setProperty("--case-y", (r.top + r.height / 2) + "px");
+    }
     caseReturnFocus = document.activeElement;
     const techs = (item.techniques || []).map((tech) => '<span class="tech">' + esc(tech) + "</span>").join("");
     const detectionsList = (item.detections || []).map((id) => '<span class="tech">' + esc(id) + "</span>").join("");
@@ -2503,6 +2562,23 @@
   /* -------------------------------------------------------------- scroll UI */
   const progressBar = $("#scrollProgress");
   const railFill = $("#railFill");
+
+  /* The corona ring turns slightly as the coverage section passes. */
+  const coverageSection = $("#coverage");
+  const coverageGauge = $(".gauge");
+  if (coverageSection && coverageGauge && !reduce) {
+    let gaugeTick = 0;
+    const turnGauge = () => {
+      const rect = coverageSection.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (window.innerHeight - rect.top) / (window.innerHeight + rect.height)));
+      coverageGauge.style.transform = "rotate(" + ((p - 0.5) * 18).toFixed(2) + "deg)";
+      gaugeTick = 0;
+    };
+    window.addEventListener("scroll", () => {
+      if (!gaugeTick) gaugeTick = requestAnimationFrame(turnGauge);
+    }, { passive: true });
+    turnGauge();
+  }
   function updateScroll() {
     const max = document.documentElement.scrollHeight - window.innerHeight;
     const value = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;

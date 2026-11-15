@@ -59,7 +59,7 @@
     </button>
     <div class="rail-phase" aria-hidden="true">
       <span class="rail-phase-disc"></span>
-      <span class="rail-phase-copy"><b>Phase / totality</b><span>C2 12:02 / C3 12:08</span></span>
+      <span class="rail-phase-copy"><b>Phase / <span id="railPhase">totality</span></b><span>C2 12:02 / C3 12:08</span></span>
     </div>
     <div class="rail-seal" aria-hidden="true"><span>UM</span><span>EST. 2026</span></div>
   </div>
@@ -86,7 +86,7 @@
       <div class="cover-copy">
         <p class="kicker"><i></i>Solar eclipse detection lab</p>
         <h1 class="display">
-          <span class="line display-serif"><span>Read the light.</span></span>
+          <span class="line display-serif"><span>Read the <i>light.</i></span></span>
           <span class="line display-heavy"><span>Keep the <em>shadow.</em></span></span>
         </h1>
         <p class="lede">
@@ -190,6 +190,39 @@
       </div>
     </div>
   </div>
+
+  <section class="totality-act" id="totalityAct" aria-label="Totality sequence">
+    <div class="ta-stage">
+      <div class="ta-sky" aria-hidden="true"></div>
+      <div class="ta-orbit" aria-hidden="true">
+        <span class="ta-sun"></span>
+        <span class="ta-corona"></span>
+        <span class="ta-moon"></span>
+        <span class="ta-beads">
+          <i style="--a:0deg"></i><i style="--a:30deg"></i><i style="--a:60deg"></i>
+          <i style="--a:90deg"></i><i style="--a:120deg"></i><i style="--a:150deg"></i>
+          <i style="--a:180deg"></i><i style="--a:210deg"></i><i style="--a:240deg"></i>
+          <i style="--a:270deg"></i><i style="--a:300deg"></i><i style="--a:330deg"></i>
+        </span>
+        <span class="ta-diamond"></span>
+      </div>
+      <div class="ta-copy">
+        <p class="ta-kicker">Totality sequence / 12:05Z</p>
+        <h2 class="sr-only">Totality sequence</h2>
+        <p class="ta-word" id="taPhase" aria-hidden="true">Totality</p>
+        <p class="ta-line">The moon covers the photosphere. For one minute fifty-two seconds, the corona is the only light.</p>
+        <ol class="ta-contacts" aria-label="Contact times">
+          <li><b>C1</b><span>11:58</span></li>
+          <li><b>C2</b><span>12:02</span></li>
+          <li><b>MAX</b><span>12:05</span></li>
+          <li><b>C3</b><span>12:08</span></li>
+          <li><b>C4</b><span>12:12</span></li>
+        </ol>
+        <p class="ta-hint" id="taHint">Scroll to move the moon</p>
+      </div>
+      <div class="ta-progress" aria-hidden="true"><i id="taProgress"></i></div>
+    </div>
+  </section>
 
   <section class="interlude" aria-label="Path of totality">
     <div class="interlude-inner">

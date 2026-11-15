@@ -110,6 +110,10 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
 - **Interlude.** The ticker hands off to a paper band with a soft corona arc, a
   black path-of-totality plate, a five-node contact path, and a Baily's-beads
   rule. In Totality the band goes dark and the path plate goes paper.
+- **Totality act.** A 240vh pinned sequence between the ticker and the paper
+  interlude. Native scroll drives the moon across the sun, the corona, Baily's
+  beads, the diamond ring, the phase word, and a progress rail. Reduced motion
+  renders the static totality frame.
 - **Chapters.** A serif index, a one-word label, a serif title with one Sora
   word, and a 58ch lede. The rule above each chapter is stone, with a small bead
   cluster at the right edge.
@@ -158,6 +162,8 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
 | Ghost wordmark | Scroll lag, 0.14× |
 | Phase ticker | 36s linear loop; pauses on hover |
 | Case reel | Native scroll-snap; smooth previous/next |
+| Totality act | 240vh scroll; moon position, corona, beads, diamond, copy, progress |
+| Coverage ring | ±9° scroll-linked turn |
 | Corona disc | 44s linear rotation |
 | Corona streamers | 68s counter-rotation |
 | Diamond ring | 4.2s pulse |

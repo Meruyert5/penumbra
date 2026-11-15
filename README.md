@@ -245,6 +245,7 @@ Representative coverage:
 
 * A dark corona scope on the cover that scans the same hourly run as the chart, with pings where volume crosses the peak threshold; click it to pin that hour on the chart. It is a warm sunset light curve in both Corona and Totality, with a black-disc peak marker.
 * A full-bleed night stage with a live starfield, a sun/moon eclipse that shifts with the selected contact, and a ghost wordmark
+* A pinned scroll-scrubbed totality act with a giant sun/moon, Baily's beads, a diamond ring, and a progress rail
 * A kinetic phase ticker and a horizontal case reel with previous/next controls
 * A five-stop contact ribbon (C1, C2, totality, C3, C4) and a gradient path-of-totality plate with the observing window on it
 * A run ticket with contact times, Saros 145, magnitude 1.02, 100% obscuration, and a paper receipt texture

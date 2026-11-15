@@ -261,6 +261,7 @@ grid. The strongest references:
 | Kinetic posters create rhythm with repetition | The phase ticker repeats C1-C4, Saros, and the window |
 | Paper receipts are the human artifact | The run ticket stays a bright paper object on the night stage |
 | Too many effects flatten the hierarchy | One showpiece per act: eclipse, light curve, corona ring, case reel, terminal |
+| A static phase illustration does not use the medium | A 240vh pinned totality act: scroll drives the moon, corona, Baily's beads, diamond ring, phase word, and progress rail |
 
 **Rejected:** copying a reference image, a 3D planet scene, glassmorphism,
 generic SaaS cards, a static paper cover, and a three-column case grid.
