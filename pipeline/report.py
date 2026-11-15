@@ -40,18 +40,18 @@ DASHBOARD_DIR = ROOT / "dashboard"
 CASES_DIR = ROOT / "cases"
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
-# Local font files keep the report self-contained. Both families are SIL OFL 1.1.
+# Local font files keep the report self-contained. All families are SIL OFL 1.1.
 FONT_FILES = {
-    "Bricolage Grotesque": [
-        {"file": "bricolage-grotesque-latin.woff2", "weight": "200 800"}
+    "Archivo": [
+        {"file": "archivo-latin.woff2", "weight": "100 900"}
     ],
-    "DM Mono": [
-        {"file": "dm-mono-400-latin.woff2", "weight": "400"},
-        {"file": "dm-mono-500-latin.woff2", "weight": "500"},
+    "Space Mono": [
+        {"file": "space-mono-400-latin.woff2", "weight": "400"},
+        {"file": "space-mono-700-latin.woff2", "weight": "700"},
     ],
-    "Fraunces": [
-        {"file": "fraunces-latin.woff2", "weight": "300 700"},
-        {"file": "fraunces-italic-latin.woff2", "weight": "300 700", "style": "italic"},
+    "Bodoni Moda": [
+        {"file": "bodoni-moda-latin.woff2", "weight": "400 900"},
+        {"file": "bodoni-moda-italic-latin.woff2", "weight": "400 900", "style": "italic"},
     ],
 }
 

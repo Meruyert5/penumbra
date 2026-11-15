@@ -26,8 +26,8 @@ the copy still says exactly what the pipeline does.
    or a coverage rule. The eclipse is a frame for the data, never a substitute.
 2. **One poster move.** The cover carries the black plate, the corona disc, and
    the paper ticket. The rest of the page stays quiet and readable.
-3. **Paper and totality are one system.** The light theme is the record on a
-   desk; the night theme is the same record under a dark sky. The run ticket
+3. **Paper and totality are one system.** The Corona theme is the record on a
+   desk; the Totality theme is the same record under a black sky. The run ticket
    stays paper in both.
 4. **Motion is an instrument.** The corona turns, the scope sweeps, the chart
    draws, and the ring breathes. Everything pauses under reduced motion.
@@ -38,7 +38,7 @@ the copy still says exactly what the pipeline does.
 
 ### Tokens
 
-| Token | Paper | Night |
+| Token | Corona | Totality |
 |---|---|---|
 | `--paper` | `#F6F4F1` | - |
 | `--stone` | `#E4DED2` | - |
@@ -87,14 +87,14 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
 
 ## Typography
 
-- **Display: Fraunces** 300-700, roman and italic. The cover lyric, chapter
+- **Display: Bodoni Moda** 400-900, roman and italic. The cover lyric, chapter
   titles, case titles, the coverage numeral, the footer wordmark, and the big
-  chapter indices use it.
-- **Poster: Bricolage Grotesque 800.** One word per chapter title and the
-  `SHADOW.` line on the cover. It is the loud counterweight to Fraunces.
-- **Data: DM Mono 400 and 500.** Labels, timestamps, IDs, table values, and
+  chapter indices use it. Its high contrast is the eclipse-poster voice.
+- **Poster: Archivo 900.** One word per chapter title and the `SHADOW.` line on
+  the cover. It is the loud counterweight to Bodoni.
+- **Data: Space Mono 400 and 700.** Labels, timestamps, IDs, table values, and
   commands. Mono is never body copy.
-- **Scale:** 8, 9, 9.5, 10.5, 12, 14, 15, 16, 19, 22, 30, 36, 46, 62, 78, 112.
+- **Scale:** 8, 9, 9.5, 10.5, 12, 14, 15, 16, 19, 22, 30, 36, 46, 66, 100, 122.
 - **Line length:** ledes cap at 54-58ch; chapter ledes at 58ch; matrix labels
   wrap inside their tiles.
 - **Numbers** use `tabular-nums` in tables, tickets, and chart axis text.
@@ -105,9 +105,14 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
 
 - **Cover.** A two-column poster: the lyric and actions on paper, a black
   totality plate with a corona disc on the right, and a paper run ticket pinned
-  over the plate. Under 1080px the columns stack and the ticket keeps its overlap.
-- **Chapters.** A serif index, a one-word label, a serif title with one Bricolage
-  word, and a 58ch lede. The rule above each chapter is stone, not black.
+  over the plate. A diamond ring sits on the corona edge; a five-stop contact
+  ribbon follows the scope. Under 1080px the columns stack and the ticket keeps
+  its overlap.
+- **Interlude.** A full-bleed corona gradient band with a black path-of-totality
+  plate, a five-node contact path, and a Baily's-beads rule.
+- **Chapters.** A serif index, a one-word label, a serif title with one Archivo
+  word, and a 58ch lede. The rule above each chapter is stone, with a small bead
+  cluster at the right edge.
 - **Instruments.** The scope is a full-width black plate with a warm light curve.
   The chart is a paper plate with an ember envelope and four severity stems.
 - **Corona.** A 300px radial dial with 45 ticks, one per priority technique.
@@ -117,6 +122,21 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
 - **Footer.** A black totality band with a serif wordmark, chapter links, and one
   coral dot. A four-stop sunset rule sits on its top edge.
 
+## Eclipse geometry
+
+- **Sky.** A fixed corona ring, sunburst, and dark-moon watermark sit behind
+  the sheet at low opacity. They read as the sky, not as content.
+- **Plates.** Cards use a 2px/24px cut corner. Buttons, chips, inputs, tabs,
+  and the toast are capsules. Coverage tiles use a 1px/10px cut.
+- **Nodes.** Method stages, case-chain nodes, severity marks, and phase marks
+  are eclipse discs or crescents. The active method stage carries a corona ring
+  and a pulse.
+- **Lines.** Section rules carry a Baily's-beads stitch. The contact ribbon and
+  the path of totality draw the five contacts as one instrument.
+- **Gradients.** The sun ramp appears in the cover, ticket, scope, chart,
+  interlude, dial halo, case rings, terminal, palette, toast, and footer.
+  Gradients are surfaces and instruments, never body text.
+
 ## Motion
 
 | Element | Motion |
@@ -124,26 +144,38 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
 | Cover lines | Masked rise, 1s `cubic-bezier(0.16, 1, 0.3, 1)` |
 | Cover plate | Clip-path reveal, 1s, 0.2s delay |
 | Corona disc | 44s linear rotation |
+| Corona streamers | 68s counter-rotation |
+| Diamond ring | 4.2s pulse |
+| Path of totality | Static contact path |
+| Phase ribbon | Reveal with the cover |
 | Ticket stamp | 460ms press to a 2.5-degree settle |
 | Scope | 9s scan column; pings on loud hours |
 | Chart | 8s replay while visible; envelope draws in |
 | Corona ring | 7s breathe, 42ms per tick |
+| Sky sunburst | 150s rotation |
+| Baily's beads | 16s shimmer |
+| Method node | 3.4s ring pulse |
+| Theme switch | 620ms circular eclipse wipe |
 | Case chain | 1.2s per step; active dot pings |
 
 Reduced motion keeps every final state: the plate is static, the corona does not
-turn, the ring does not breathe, the chain does not autoplay, and the scope draws
-once.
+turn, the sky and beads do not move, the ring does not breathe, the theme
+switch is instant, the chain does not autoplay, and the scope draws once.
 
 ## Instruments
 
 - **Live scope.** A canvas light curve on a black plate. The trace is a horizontal
-  sunset gradient; the peak is a black disc with a coral ring and an amber halo.
-  It pauses offscreen and re-draws on theme change.
+  sunset gradient; the peak is a black disc with a coral ring, an amber halo, and
+  a diamond flare. It pauses offscreen and re-draws on theme change.
+- **Fig. 0.** The path of totality: a black plate inside the gradient interlude,
+  with a warm path, five contact nodes, and the observing window.
 - **Fig. 1.** An SVG chart of matched events by hour. The envelope is ember; the
   stems are critical/high/medium/low. Hover, keyboard arrows, and click pin an
   hour.
 - **Corona ring.** 45 radial ticks generated from the coverage payload. Each tick
   names its technique and the rule or correlation that closes it.
+- **Contact ribbon.** C1, C2, totality, C3, C4 with times, above a ticket block
+  that adds Saros 145, magnitude 1.02, and 100% obscuration.
 - **Run ticket.** The live numbers (events, rules, correlations, errors) sit on a
   paper receipt with a barcode and a verified stamp.
 

@@ -1,11 +1,11 @@
-Bricolage Grotesque
-Copyright 2022 The Bricolage Grotesque Project Authors (https://github.com/ateliertriay/bricolage)
+Archivo
+Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)
 
-DM Mono
-Copyright 2020 The DM Mono Project Authors (https://www.github.com/googlefonts/dm-mono)
+Space Mono
+Copyright 2016 The Space Mono Project Authors (https://github.com/googlefonts/spacemono)
 
-Fraunces
-Copyright 2020 The Fraunces Project Authors (https://github.com/undercasetype/Fraunces)
+Bodoni Moda
+Copyright 2020 The Bodoni Moda Project Authors (https://github.com/indestructible-type/Bodoni)
 
 All three font families are licensed under the SIL Open Font License, Version 1.1.
 

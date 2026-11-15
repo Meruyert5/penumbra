@@ -20,10 +20,16 @@ The full skill and the Desktop brief are at:
 - Palette: Paper `#F6F4F1`, Stone `#E4DED2`, Coral `#F95C4B` (fills) /
   `#C9402C` (text), Black `#141210`, Sunset `#EA6113` → `#F88F22` → `#FBB931`
   → `#FFE3B3`.
-- Type: Fraunces for the editorial voice, Bricolage Grotesque 800 for one poster
-  word, DM Mono for data. Do not add a fourth family without a reason.
+- Type: Bodoni Moda for the editorial voice, Archivo 900 for one poster word,
+  Space Mono for data. Do not add a fourth family without a reason.
+- Themes: **Corona** is the light record; **Totality** is the dark instrument.
 - One poster move per page. The cover carries the black totality plate, the
   corona disc, and the paper ticket. Everything else stays readable.
+- Geometry: the page is an eclipse instrument. The sky ring, cut-corner plates,
+  capsule controls, eclipse nodes, bead rails, contact ribbon, and path of
+  totality are part of the system, not decoration.
+- The contact ribbon is interactive: each phase pins its nearest hour on the
+  chart. Keep the buttons and their labels.
 - Texture goes on surfaces, never behind body copy.
 - Motion is an instrument. Respect `prefers-reduced-motion` and keep the final
   state.
@@ -51,4 +57,4 @@ node --check dashboard\app.js
 
 Then check the built page at 1440 and at a true 390px iframe, in light and dark,
 with no console errors and Lighthouse accessibility / best practices / SEO at
-100. Refresh `docs/assets/dashboard.png` and `docs/assets/dashboard-night.png`.
+100. Refresh `docs/assets/dashboard.png` and `docs/assets/dashboard-totality.png`.

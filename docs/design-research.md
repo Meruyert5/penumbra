@@ -68,7 +68,7 @@ not a mood board.
 
 A warm monochrome record with one hot accent and a four-stop corona:
 
-| Role | Paper | Night |
+| Role | Corona | Totality |
 |---|---|---|
 | Paper / desk | `#F6F4F1` | `#0B0A09` |
 | Stone | `#E4DED2` | `#1D1916` |
@@ -95,11 +95,11 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 
 ## Typography
 
-- **Fraunces** for the editorial voice: cover lyric, chapter titles, case
+- **Bodoni Moda** for the editorial voice: cover lyric, chapter titles, case
   titles, big numerals. Its high contrast and soft terminals carry the poster.
-- **Bricolage Grotesque 800** for one poster word per chapter and the `SHADOW.`
+- **Archivo 900** for one poster word per chapter and the `SHADOW.`
   line. The pairing is the 5 Layout Rules move: serif + heavy grotesque.
-- **DM Mono 400/500** for labels, timestamps, IDs, and commands.
+- **Space Mono 400/500** for labels, timestamps, IDs, and commands.
 - Two families do the identity; mono is the instrument. Do not add a fourth.
 - Scale: 8, 9, 9.5, 10.5, 12, 14, 15, 16, 19, 22, 30, 36, 46, 62, 78, 112.
 - Display line-height 0.8-0.98; body 1.62; ledes 54-58ch.
@@ -135,7 +135,7 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 
 - The cover is a two-column poster: lyric and actions on paper; a black plate
   with a corona disc; a paper ticket pinned over the plate.
-- Chapter indices are solid coral Fraunces, not faint outlines. The number is the
+- Chapter indices are solid coral Bodoni Moda, not faint outlines. The number is the
   graphic; the rule and side note carry the metadata.
 - The coverage dial is a radial corona, not a row of bars. Forty-five ticks map
   one-to-one to the priority techniques.
@@ -181,8 +181,13 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 
 ## Direction chosen
 
-**A printed eclipse observation with a poster cover.** Paper, stone, coral, and
-totality black; Fraunces for the record; Bricolage 800 for the shout; DM Mono for
-the instruments. The new moves are the black totality plate, the corona disc,
-the paper run ticket, the radial corona ring, the warm light curve, and the
-sunset footer rule. The scope stays flat and data-readable.
+**An eclipse instrument, not a page about an eclipse.** Paper, stone, coral, and
+totality black; Bodoni Moda for the record; Archivo 900 for the shout; Space
+Mono for the instruments. The first pass built the black totality plate, the
+corona disc, the paper run ticket, the radial corona ring, the warm light curve,
+and the sunset footer. The second pass pushed the same language through every
+surface: a fixed sky with a corona ring and sunburst, a five-stop contact ribbon
+that pins the chart, a gradient path-of-totality interlude, a solar prominence
+and diamond ring, Baily's-beads rules, cut-corner plates, capsule controls,
+eclipse nodes in the pipeline and case chain, and a circular eclipse wipe on the
+theme switch. The scope stays flat and data-readable.

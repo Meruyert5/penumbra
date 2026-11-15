@@ -59,14 +59,23 @@
   /* ------------------------------------------------------------------ theme */
   const themeLabel = $("#themeLabel");
   const themeButton = $("#themeBtn");
+  const THEME_COLOR = { corona: "#F6F4F1", totality: "#0B0A09" };
+  function normalizeTheme(value) {
+    if (value === "totality" || value === "umbra" || value === "dark") return "totality";
+    if (value === "corona" || value === "light") return "corona";
+    return "";
+  }
   function setTheme(theme, instant) {
     const root = document.documentElement;
     if (instant) root.classList.add("no-transition");
     root.dataset.theme = theme;
-    themeLabel.textContent = theme === "dark" ? "Paper theme" : "Night theme";
-    themeButton.setAttribute("aria-label", theme === "dark" ? "Switch to paper theme" : "Switch to night theme");
+    const isTotality = theme === "totality";
+    themeLabel.textContent = isTotality ? "Totality / corona" : "Corona / totality";
+    themeButton.setAttribute("aria-label", isTotality ? "Totality / corona: switch to the Corona theme" : "Corona / totality: switch to the Totality theme");
+    const coverMode = $("#coverMode");
+    if (coverMode) coverMode.textContent = isTotality ? "Totality" : "Corona";
     const meta = $('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "dark" ? "#070d10" : "#f4efe4");
+    if (meta) meta.setAttribute("content", THEME_COLOR[theme] || THEME_COLOR.corona);
     document.dispatchEvent(new CustomEvent("umbra:theme", { detail: theme }));
     try { localStorage.setItem("umbra-theme", theme); } catch (error) { /* file:// storage can be blocked */ }
     if (instant) {
@@ -74,20 +83,24 @@
     }
   }
   function toggleTheme() {
-    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    const next = document.documentElement.dataset.theme === "totality" ? "corona" : "totality";
     if (!reduce && document.startViewTransition) {
+      const rect = themeButton.getBoundingClientRect();
+      const root = document.documentElement;
+      root.style.setProperty("--tx", (rect.left + rect.width / 2) + "px");
+      root.style.setProperty("--ty", (rect.top + rect.height / 2) + "px");
       document.startViewTransition(() => setTheme(next, true));
     } else {
       setTheme(next, true);
     }
   }
-  const requestedTheme = params.get("theme");
-  const themeOverride = requestedTheme === "dark" || requestedTheme === "light" ? requestedTheme : "";
-  let savedTheme = themeOverride || "light";
-  if (!themeOverride) {
-    try { savedTheme = localStorage.getItem("umbra-theme") || "light"; } catch (error) { savedTheme = "light"; }
+  const requestedTheme = normalizeTheme(params.get("theme"));
+  let storedTheme = "";
+  if (!requestedTheme) {
+    try { storedTheme = normalizeTheme(localStorage.getItem("umbra-theme")); } catch (error) { storedTheme = ""; }
   }
-  setTheme(savedTheme);
+  const prefersTotality = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  setTheme(requestedTheme || storedTheme || (prefersTotality ? "totality" : "corona"));
   themeButton.addEventListener("click", toggleTheme);
 
   const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
@@ -351,7 +364,7 @@
     const desc = svgNode("desc", {});
     const peakIndex = totals.indexOf(Math.max(...totals));
     desc.textContent = "Hourly matched events. " + number(totals[peakIndex]) + " at " +
-      timeline[peakIndex].hour.slice(11, 16) + "Z, with quiet hours between the bursts.";
+      timeline[peakIndex].hour.slice(11, 16) + "Z, with shadow bands between the bursts.";
     chart.appendChild(desc);
 
     const grid = svgNode("g", { class: "chart-axis" });
@@ -448,10 +461,10 @@
         d: "M" + bx1.toFixed(1) + " " + (by + 6) + " V" + by + " H" + bx2.toFixed(1) + " V" + (by + 6)
       }));
       const label = svgNode("text", { class: "quiet-label", x: bx1.toFixed(1), y: by + 18 });
-      label.textContent = "QUIET HOURS";
+      label.textContent = "SHADOW BANDS";
       bracket.appendChild(label);
       const count = svgNode("text", { class: "quiet-label", x: bx1.toFixed(1), y: by + 28 });
-      count.textContent = longestQuiet.length + " HOURS ≤ 3 EVENTS";
+      count.textContent = longestQuiet.length + " HOURS / 3 EVENTS";
       bracket.appendChild(count);
       chart.appendChild(bracket);
     }
@@ -485,7 +498,7 @@
 
     const labels = svgNode("g", { class: "chart-axis" });
     const showEvery = timeline.length > 14
-      ? (width < 560 ? 4 : 3)
+      ? (width < 430 ? 8 : width < 620 ? 6 : 3)
       : (width < 560 ? 2 : 1);
     timeline.forEach((row, index) => {
       if (index % showEvery !== 0 && index !== timeline.length - 1) return;
@@ -597,6 +610,24 @@
       }
     }, 180);
   });
+
+  /* The contact ribbon is a control: each phase pins its nearest hour. */
+  const phaseSteps = $$(".phase-step");
+  if (phaseSteps.length && timeline.length) {
+    const phaseTotals = timeline.map((row) => Number(row.total || 0));
+    const phasePeak = phaseTotals.indexOf(Math.max(...phaseTotals));
+    phaseSteps.forEach((step) => {
+      step.addEventListener("click", () => {
+        const offset = Number(step.dataset.phaseOffset || 0);
+        const index = Math.max(0, Math.min(timeline.length - 1, phasePeak + offset));
+        state.pinnedHour = timeline[index].hour;
+        initScope();
+        paintHour(index, true);
+        $("#run").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+        toast("Pinned " + timeline[index].hour.slice(11, 16) + "Z / " + step.dataset.phaseName);
+      });
+    });
+  }
 
   /* The chart is a signal instrument, not a static figure. It replays while it
      is on screen, pauses when it leaves, and yields to reduced motion. */
@@ -800,7 +831,7 @@
       // Main trace: a warm light curve, not a cyan oscilloscope.
       ctx.save();
       ctx.shadowColor = sun2;
-      ctx.shadowBlur = document.documentElement.dataset.theme === "dark" ? 14 : 9;
+      ctx.shadowBlur = document.documentElement.dataset.theme === "totality" ? 14 : 9;
       ctx.strokeStyle = traceGrade;
       ctx.lineWidth = 2;
       ctx.lineJoin = "round";
@@ -843,6 +874,22 @@
         ctx.beginPath();
         ctx.arc(px, py, 12.5, 0, Math.PI * 2);
         ctx.stroke();
+        // A diamond-ring flare on the corona edge.
+        const fx = px + 11;
+        const fy = py - 11;
+        ctx.globalAlpha = 0.95;
+        ctx.fillStyle = sun4;
+        ctx.beginPath();
+        ctx.moveTo(fx, fy - 9);
+        ctx.lineTo(fx + 1.8, fy - 1.8);
+        ctx.lineTo(fx + 9, fy);
+        ctx.lineTo(fx + 1.8, fy + 1.8);
+        ctx.lineTo(fx, fy + 9);
+        ctx.lineTo(fx - 1.8, fy + 1.8);
+        ctx.lineTo(fx - 9, fy);
+        ctx.lineTo(fx - 1.8, fy - 1.8);
+        ctx.closePath();
+        ctx.fill();
         ctx.globalAlpha = 1;
       }
 
@@ -985,10 +1032,12 @@
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 17V7m5 10V9m5 8V5m5 12v-6"/></svg>',
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>'
   ];
+  const stagePhases = ["C1 / first contact", "C2 / corona", "MAX / totality", "C3 / beads", "C4 / last light"];
   $("#pathStrip").innerHTML = pipeline.map((step, index) => (
     '<button class="path-step' + (index === 0 ? " active" : "") + '" type="button" role="tab" aria-selected="' + (index === 0) + '" data-index="' + index + '">' +
       '<span class="path-top"><span class="path-dot">' + String(index + 1).padStart(2, "0") + "</span>" +
       '<span class="path-icon">' + (stageIcons[index] || stageIcons[0]) + "</span></span>" +
+      '<span class="path-phase">' + stagePhases[index] + "</span>" +
       '<span class="path-label">' + esc(step.label) + "</span>" +
       '<span class="path-title">' + esc(step.title) + "</span>" +
       '<span class="path-bottom"><span class="path-count">' + esc(step.count) + "</span>" +
@@ -1953,14 +2002,14 @@
   /* ------------------------------------------------------------------ tour */
   const steps = [
     { target: "#cover .ticket", title: "A run you can inspect", body: "This is the output of one deterministic run: 9,223 events, a 50-rule Sigma library, and eight correlation specs. The ticket is the receipt." },
-    { target: "#scopePlate", title: "Read the signal", body: "The chart counts matched events across the full day. Several hours carry bursts; the quiet stretches between them are part of the shape. A rule that fires on everything cannot discriminate." },
+    { target: "#scopePlate", title: "Read the light curve", body: "The light curve counts matched events across the full day. Several hours carry bursts; the shadow bands between them are part of the shape. A rule that fires on everything cannot discriminate." },
     { target: "#pathStrip", title: "Follow the chain", body: "Sigma compiles to Elasticsearch EQL and KQL. Detection executes the queries, correlation adds volume logic, and triage turns matches into a queue with evidence." },
-    { target: "#ledger .chapter-head", title: "Enter the watch floor", body: "Chapter 03 is the working console. The queue, the evidence inspector, the host lanes, and the coincidence strip all read from the same detection run." },
+    { target: "#ledger .chapter-head", title: "Enter the umbra", body: "Umbra is the working console. The queue, the evidence inspector, the host lanes, and the coincidence strip all read from the same detection run." },
     { target: "#ledgerPanel", title: "Work the queue", body: "Filter by severity, host, or technique. Select a detection to keep its events and exact EQL beside the queue. J and K move; Enter selects." },
     { target: "#wfLaneList", title: "Read the field", body: "Every mark is a detection against the 24-hour window, one lane per host. The coincidence strip below adds the volume conditions that a single event cannot carry." },
-    { target: "#matrix", title: "Check the gaps", body: "Coverage only counts priority techniques. All 45 are closed in this run; the gaps view stays available as a regression check." },
+    { target: "#matrix", title: "Read the corona", body: "The corona ring only counts priority techniques. All 45 are closed in this run; the gaps view stays available as a regression check." },
     { target: "#caseGrid", title: "Read the investigations", body: "Each case follows the same structure: summary, timeline, evidence, analysis, verdict, containment, and the detection improvement that came out of it." },
-    { target: "#reproduce .terminal", title: "Reproduce it", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." }
+    { target: "#reproduce .terminal", title: "Repeat the orbit", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." }
   ];
   const spot = $("#tourSpot");
   const tourCard = $("#tourCard");
@@ -2100,13 +2149,13 @@
   }
 
   paletteCommands = [
-    { group: "Go", label: "Cover", hint: "00", run: () => goTo("#cover") },
-    { group: "Go", label: "The run", hint: "01", run: () => goTo("#run") },
-    { group: "Go", label: "Method", hint: "02", run: () => goTo("#method") },
-    { group: "Go", label: "Watch floor", hint: "03", run: () => goTo("#ledger") },
-    { group: "Go", label: "Coverage", hint: "04", run: () => goTo("#coverage") },
-    { group: "Go", label: "Cases", hint: "05", run: () => goTo("#cases") },
-    { group: "Go", label: "Reproduce", hint: "06", run: () => goTo("#reproduce") },
+    { group: "Go", label: "Totality", hint: "00", run: () => goTo("#cover") },
+    { group: "Go", label: "First light", hint: "01", run: () => goTo("#run") },
+    { group: "Go", label: "Instruments", hint: "02", run: () => goTo("#method") },
+    { group: "Go", label: "Umbra", hint: "03", run: () => goTo("#ledger") },
+    { group: "Go", label: "Corona", hint: "04", run: () => goTo("#coverage") },
+    { group: "Go", label: "Eclipses", hint: "05", run: () => goTo("#cases") },
+    { group: "Go", label: "Recurrence", hint: "06", run: () => goTo("#reproduce") },
     { group: "Filter", label: "All detections", hint: "clear severity", run: () => { setLevel("all"); goTo("#ledger"); } },
     { group: "Filter", label: "Critical detections", hint: number(severity.critical || 0), run: () => { setLevel("critical"); goTo("#ledger"); } },
     { group: "Filter", label: "High detections", hint: number(severity.high || 0), run: () => { setLevel("high"); goTo("#ledger"); } },
