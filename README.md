@@ -398,7 +398,7 @@ config/                 Elasticsearch template, Filebeat, Winlogbeat, index rout
 lab/logs/               Generated telemetry (gitignored)
 alerts/                 Detection output (gitignored)
 cases/                  Analyst case reports and dashboard metadata
-docs/                   Dashboard, design system, runbook, tuning log, ATT&CK coverage, evaluation
+docs/                   Dashboard, design system, runbook, tuning log, ATT&CK coverage, evaluation, publishing
 site/                   Generated public site (dashboard + assets + cases; gitignored)
 tests/                  pytest suite
 scripts/                Convenience scripts
@@ -422,6 +422,8 @@ python -m pipeline.publish
 3. Push to `main` or run the workflow manually. GitHub shows the published URL in the workflow run and in **Settings → Pages**.
 
 The dashboard has no server-side dependencies, so Pages serves it as-is. If you fork the repo under a different name, the workflow still publishes `site/`; no code change is needed.
+
+See [Publishing checklist](docs/publishing.md) for repository metadata, the design-privacy options, and the post-deploy checks.
 
 ---
 
