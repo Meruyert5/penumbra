@@ -96,20 +96,25 @@ The dashboard and coverage graphics are generated, committed, and checked by CI:
 ```powershell
 .\.venv\Scripts\python.exe -m pipeline.detect --hours 24
 .\.venv\Scripts\python.exe -m pipeline.report      # docs/index.html
+.\.venv\Scripts\python.exe -m pipeline.publish     # site/ (public surface only)
 .\.venv\Scripts\python.exe -m pipeline.coverage    # docs/attck-coverage.md
 .\.venv\Scripts\python.exe -m pipeline.heatmap     # docs/assets/attck-heatmap.svg
 ```
 
-Refresh the README hero screenshot after a dashboard change. With the dashboard served locally:
+Serve `site/` when you want to see exactly what Pages will publish. Serve `docs/` only for internal work, because it also contains the design notes and runbook.
+
+Refresh the README hero screenshots after a dashboard change:
 
 ```powershell
-.\.venv\Scripts\python.exe -m http.server 8765 --bind 127.0.0.1 --directory docs
+.\.venv\Scripts\python.exe -m http.server 8765 --bind 127.0.0.1 --directory site
 
 & "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new `
   --disable-gpu --hide-scrollbars --force-device-scale-factor=1 `
-  --user-data-dir="$env:TEMP\sf-chrome" --window-size=1440,2100 `
-  --screenshot="$PWD\docs\assets\dashboard-corona.png" "http://localhost:8765/index.html"
+  --user-data-dir="$env:TEMP\penumbra-chrome" --window-size=1440,1200 `
+  --screenshot="$PWD\docs\assets\dashboard-corona.png" "http://localhost:8765/index.html?static=1&theme=corona"
 ```
+
+Use `theme=umbra` and scroll to `#ledger` for the watch-floor image.
 
 Commit the regenerated files together with the change that caused them.
 

@@ -81,12 +81,14 @@ The full skill and the Desktop brief are at:
 - [`pipeline/report.py`](pipeline/report.py)
 - [`docs/design.md`](docs/design.md)
 - [`docs/design-research.md`](docs/design-research.md)
+- [`docs/evaluation.md`](docs/evaluation.md)
 
 ## Before calling it done
 
 ```powershell
 node --check dashboard\app.js
 .\.venv\Scripts\python.exe -m pipeline.report
+.\.venv\Scripts\python.exe -m pipeline.publish
 .\.venv\Scripts\python.exe -m pipeline.heatmap
 .\.venv\Scripts\python.exe -m pipeline.lint
 .\.venv\Scripts\python.exe -m pipeline.compile --check

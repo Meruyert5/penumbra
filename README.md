@@ -5,7 +5,7 @@
 [![Python 3.11](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
 [![Elasticsearch 8.15](https://img.shields.io/badge/Elasticsearch-8.15-005571?logo=elasticsearch&logoColor=white)](docker-compose.yml)
 [![Sigma](https://img.shields.io/badge/rules-50%20Sigma-1f6feb)](rules/sigma)
-[![Tests](https://img.shields.io/badge/tests-44%20passing-2ea043)](tests)
+[![Tests](https://img.shields.io/badge/tests-46%20passing-2ea043)](tests)
 [![ATT&CK](https://img.shields.io/badge/MITRE%20ATT%26CK-48%20techniques-ff5d5d)](docs/attck-coverage.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea043)](LICENSE)
 [![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2ea043)](.github/workflows/ci.yml)
@@ -13,6 +13,29 @@
 ![Penumbra interactive dashboard](docs/assets/dashboard-corona.png)
 
 Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, compiles 50 Sigma rules to Elasticsearch EQL and KQL, runs them against a local Elasticsearch stack, correlates the matches, and turns the result into an interactive dashboard and three analyst case reports. Every number in the dashboard traces to an event and the query that found it.
+
+> **Project status: portfolio lab, not a production detection product.** The telemetry is synthetic and generated to exercise this rule set. The repository demonstrates detection-as-code, validation, triage, and reporting; it does not claim production precision or recall. The evidence boundary is documented in [Evaluation and validation](docs/evaluation.md).
+
+## Reviewer path
+
+| Time | Open | Why it matters |
+|---|---|---|
+| 2 minutes | [The dashboard](docs/index.html) | See the run, the peak hour, the coverage ring, and the triage queue |
+| 5 minutes | [`rules/sigma/`](rules/sigma) and [`rules/compiled/`](rules/compiled) | Read the source rule and the EQL/KQL that Elasticsearch actually runs |
+| 5 minutes | [`cases/case-002-multi-stage-intrusion/report.md`](cases/case-002-multi-stage-intrusion/report.md) | Follow one investigation from alert to verdict |
+| 5 minutes | [`docs/attck-coverage.md`](docs/attck-coverage.md) and [`docs/tuning.md`](docs/tuning.md) | Check coverage and the tuning record |
+| 2 minutes | [`tests/`](tests) and [`ci.yml`](.github/workflows/ci.yml) | See rules treated as reviewed software |
+
+## What this is, and what it is not
+
+| This repository is | This repository is not |
+|---|---|
+| A reproducible detection-as-code lab with a deterministic run | A production SIEM deployment |
+| A portfolio of 50 reviewed Sigma rules, 8 correlation specs, and 3 case reports | A benchmark of vendor detection efficacy |
+| A demonstration of EQL/KQL compilation, ATT&CK coverage, and triage UX | A source of real incident data or threat intelligence |
+| A baseline for learning, review, and extension | A claim of production precision, recall, or coverage completeness |
+
+## What you can inspect
 
 | What you can inspect | Where |
 |---|---|
@@ -37,7 +60,7 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | **Coverage** | 48 ATT&CK techniques, 13 tactics, 45 of 45 priority techniques, 0 gaps |
 | **Correlation** | Sliding windows with optional distinct-value thresholds, for example 10 attempts across 8 accounts |
 | **Backend** | Elasticsearch 8.15.3 and Kibana 8.15.3, single node, security disabled for lab use |
-| **Tests** | 44 passing: lint, compilation, correlation, lab generation, coverage, dashboard assembly |
+| **Tests** | 46 passing: lint, compilation, correlation, lab generation, coverage, publishing, dashboard assembly |
 | **Frontend** | One self-contained HTML file with no build step, CDN, or network request |
 
 ---
@@ -76,6 +99,12 @@ The repo has two ingestion paths on purpose:
 * **Real.** Point a Windows VM running Sysmon and Winlogbeat at the same Elasticsearch with [`config/winlogbeat.yml`](config/winlogbeat.yml), then switch [`config/logsource_map.yml`](config/logsource_map.yml) to the `logs-windows.*` data streams.
 
 > All telemetry in this repo is synthetic lab data and is labelled as such. It models attacker behaviour. It is not a production baseline.
+
+### Data provenance
+
+`pipeline/labgen.py` is the source of the run. The committed dashboard uses seed `1337` and base time `2026-11-11T12:30:00Z`; the same commands reproduce the same event count and timestamps. Every host, user, and address is synthetic. IP addresses use RFC 5737 documentation ranges, and the repository contains no customer logs, credentials, or personal data.
+
+The current corpus is deliberately small and narrow: 9,223 events across Windows, Linux, web, AWS CloudTrail, and network flow over 24 hours. That is enough to exercise this rule set and keep CI fast. It is not enough to measure production noise tolerance, precision, or recall. See [Evaluation and validation](docs/evaluation.md) for what is measured, what is not, and how to extend the evidence with public real-telemetry datasets.
 
 ---
 
@@ -170,6 +199,7 @@ python -m pipeline.correlate --input lab/logs/linux.ndjson
 | `python -m pipeline.detect --dry-run` | Prints the queries without running them |
 | `python -m pipeline.correlate --input FILE` | Runs correlation over an exported NDJSON file |
 | `python -m pipeline.report --open` | Builds and opens `docs/index.html` |
+| `python -m pipeline.publish` | Copies only the dashboard, assets, and cases into `site/` for Pages |
 | `python -m pipeline.coverage` | Regenerates `docs/attck-coverage.md` |
 | `python -m pipeline.heatmap` | Regenerates `docs/assets/attck-heatmap.svg` |
 | `python -m pipeline.lint` | Fails on missing rule metadata or ATT&CK tags |
@@ -300,7 +330,7 @@ The `.caseless` fields come from the Winlogbeat processors. Without them, rules 
 python -m pytest -q
 ```
 
-The 44 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, and dashboard assembly.
+The 46 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, public-site publishing, and dashboard assembly.
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request:
 
@@ -328,6 +358,23 @@ Generated artifacts are committed so reviewers can read them without running any
 
 ---
 
+## Evaluation and validation
+
+The current evidence is structural and behavioural, not statistical. CI proves that every rule has metadata and ATT&CK tags, compiles to EQL/KQL, stays in sync with generated artifacts, and fires on the matching lab scenario. The benign baseline proves that a small set of ordinary activity does not trip the correlation thresholds. None of that is a precision or recall measurement.
+
+| Evidence | Status |
+|---|---|
+| Deterministic synthetic run | Done: 9,223 events, 33 attack scenarios plus baseline |
+| Rule metadata and ATT&CK tags enforced | Done: `pipeline.lint` |
+| Compilation and artifact drift | Done: `pipeline.compile --check`, `pipeline.coverage --check` |
+| Scenario-to-detection tests | Done for the committed scenarios |
+| Benign baseline | Small, not a production noise model |
+| Per-rule false-positive suite | Partial; tracked in the roadmap |
+| Real-telemetry validation | Not yet; see the external dataset plan |
+| Production precision / recall | Not claimed |
+
+The next evidence step is to replay public real telemetry from [OTRF Security Datasets](https://github.com/OTRF/Security-Datasets), [Splunk Attack Data](https://github.com/splunk/attack_data), and [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team), then record per-rule true positives, false positives, false negatives, and alert volume. The method and source map are in [Evaluation and validation](docs/evaluation.md).
+
 ## Limitations
 
 * Single-node Elasticsearch with security disabled. This is a lab, not a production deployment.
@@ -345,13 +392,14 @@ Generated artifacts are committed so reviewers can read them without running any
 rules/sigma/            Sigma rules (source of truth)
 rules/compiled/         Generated EQL/KQL and metadata (committed for review)
 correlations/           Threshold and distinct-value correlation specs
-pipeline/               compile, lint, coverage, labgen, ingest, detect, correlate, report, heatmap
+pipeline/               compile, lint, coverage, labgen, ingest, detect, correlate, report, publish, heatmap
 dashboard/              Dashboard source: template, styles, script, icon, fonts
 config/                 Elasticsearch template, Filebeat, Winlogbeat, index routing
 lab/logs/               Generated telemetry (gitignored)
 alerts/                 Detection output (gitignored)
 cases/                  Analyst case reports and dashboard metadata
-docs/                   Dashboard, design system, runbook, tuning log, ATT&CK coverage
+docs/                   Dashboard, design system, runbook, tuning log, ATT&CK coverage, evaluation
+site/                   Generated public site (dashboard + assets + cases; gitignored)
 tests/                  pytest suite
 scripts/                Convenience scripts
 ```
@@ -360,13 +408,20 @@ scripts/                Convenience scripts
 
 ## Publish the dashboard
 
-[`.github/workflows/pages.yml`](.github/workflows/pages.yml) publishes `docs/` on every push to `main`.
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) publishes a filtered public site on every push to `main`:
+
+```powershell
+python -m pipeline.report
+python -m pipeline.publish
+```
+
+`pipeline.publish` writes `site/` with only `index.html`, `assets/`, `cases/`, and `.nojekyll`. The design notes, research log, runbook, and tuning record stay in `docs/` and are not uploaded to Pages. This is a deployment boundary, not a secrecy guarantee: `dashboard/` is still part of this repository.
 
 1. Push the repository to GitHub.
 2. Open **Settings → Pages** and set **Source** to **GitHub Actions**.
 3. Push to `main` or run the workflow manually. GitHub shows the published URL in the workflow run and in **Settings → Pages**.
 
-The dashboard has no server-side dependencies, so Pages serves it as-is. If you fork the repo under a different name, the workflow still publishes `docs/`; no code change is needed.
+The dashboard has no server-side dependencies, so Pages serves it as-is. If you fork the repo under a different name, the workflow still publishes `site/`; no code change is needed.
 
 ---
 
@@ -387,3 +442,5 @@ Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before changing a rule or the pipeline
 ## License
 
 [MIT](LICENSE). Use the rules and pipeline freely. Attribution is appreciated.
+
+The MIT license covers the pipeline, rules, tests, configuration, and documentation. The Penumbra name, wordmark, eclipse mark, and dashboard screenshots are brand identifiers; the license does not grant trademark rights. This is an independent portfolio project and is not affiliated with any company using the Penumbra name. If you plan to reuse the visual identity in a product, please ask first.

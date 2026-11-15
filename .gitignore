@@ -15,6 +15,9 @@ alerts/
 .env
 config/local.*.yml
 
+# Generated public site (Pages builds it from docs/)
+site/
+
 # OS / editor
 .DS_Store
 Thumbs.db

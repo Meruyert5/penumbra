@@ -1,26 +1,31 @@
 ## What changed
 
-<!-- One or two sentences. Link the issue if there is one. -->
+<!-- One or two sentences. Link the detection gap, bug, or design decision. -->
 
-## Why
+## Type
 
-<!-- The detection gap, bug, or documentation problem this fixes. -->
+- [ ] New or changed Sigma rule
+- [ ] Correlation spec
+- [ ] Pipeline or CI
+- [ ] Dashboard or design
+- [ ] Documentation
 
 ## Verification
 
-<!-- Paste the commands you ran and the relevant output. -->
+Paste the commands you ran and their result. At minimum:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pipeline.lint
-.\.venv\Scripts\python.exe -m pipeline.compile
-.\.venv\Scripts\python.exe -m pipeline.coverage
-.\.venv\Scripts\python.exe -m pytest
+python -m pipeline.lint
+python -m pipeline.compile --check
+python -m pipeline.coverage --check
+python -m pytest
 ```
 
 ## Checklist
 
-- [ ] Sigma rules were edited, not `rules/compiled/`
-- [ ] Generated artifacts (`rules/compiled/`, `docs/attck-coverage.md`, `docs/assets/attck-heatmap.svg`) are committed
-- [ ] Tests cover the new behaviour or the fix
-- [ ] No real telemetry, credentials, or personal data added
-- [ ] Documentation updated where behaviour changed
+- [ ] Sigma remains the source of truth; generated artifacts were rebuilt, not hand-edited.
+- [ ] Every changed rule has `description`, `references`, `falsepositives`, `level`, and ATT&CK tags.
+- [ ] Generated coverage, heatmap, and compiled rules are committed together with the rule.
+- [ ] No real logs, credentials, personal data, or non-documentation IP addresses were added.
+- [ ] Screenshots were refreshed if the dashboard changed.
+- [ ] The change is documented in the README, runbook, or tuning log when it changes behaviour.
