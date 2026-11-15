@@ -1,7 +1,6 @@
 # Custom domain
 
-The Cloudflare Quick Tunnel hostname is random by design and cannot be renamed.
-The permanent, memorable path is:
+The public host is GitHub Pages. A permanent, memorable link is:
 
 1. publish the dashboard on GitHub Pages;
 2. register `penumbra.is-a.dev` (or a fallback) and point its CNAME at the Pages
@@ -90,13 +89,7 @@ If `penumbra` is taken, use `penumbra-lab`; the URL becomes
 `https://penumbra-lab.pages.dev`. Add the Pages project as a custom domain later
 if you also want `penumbra.is-a.dev`.
 
-## Option C — short redirect for the temporary tunnel
-
-A short URL such as `https://is.gd/...` can point at the current Quick Tunnel, but
-it breaks when the tunnel restarts. Use it only while showing the demo; do not
-put it in a CV or the repository README.
-
-## Option D — named Cloudflare Tunnel
+## Option C — named Cloudflare Tunnel
 
 A named tunnel supports a stable public hostname, but the hostname must be in a
 Cloudflare zone you control. `is-a.dev` is not your zone, so a named tunnel does

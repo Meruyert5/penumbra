@@ -8,8 +8,8 @@ from pathlib import Path
 
 from pipeline.common import COMPILED_DIR
 from pipeline.compile import compile_all
-from pipeline.coverage import PRIORITY_TECHNIQUES
 from pipeline.correlate import load_specs
+from pipeline.coverage import PRIORITY_TECHNIQUES
 from pipeline.heatmap import build_svg
 from pipeline.report import (
     build_html,

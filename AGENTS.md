@@ -58,8 +58,8 @@ Before any visual, UI, brand, motion, or layout change:
 
 The full skill and the Desktop brief are at:
 
-- `C:\Users\Meruyert\.agents\skills\pinterest-reference-first\SKILL.md`
-- `C:\Users\Meruyert\Desktop\Pinterest-First-Design-Instruction.md`
+- `~/.agents/skills/pinterest-reference-first/SKILL.md`
+- `~/Desktop/Pinterest-First-Design-Instruction.md` (if present)
 
 ## The system
 

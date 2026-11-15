@@ -404,32 +404,53 @@
     const focus = svgNode("rect", { id: "chartFocus", class: "col-focus", y: top, height: plotH, x: left, width: step });
     chart.appendChild(focus);
 
+    const stemDefs = svgNode("defs");
+    chart.appendChild(stemDefs);
+
     timeline.forEach((row, index) => {
       const total = Number(row.total || 0);
       const stem = svgNode("g", { class: "stem" });
       stem.style.setProperty("--stem-delay", (index * 38) + "ms");
       if (total > 0) {
-        let base = height - bottom;
+        const base = height - bottom;
+        const topY = y(total);
+        const x0 = x(index) - barWidth / 2;
+        const x1 = x(index) + barWidth / 2;
+        const radius = Math.min(4, barWidth / 2);
+        const clipId = "stem-clip-" + index;
+        const clip = svgNode("clipPath", { id: clipId });
+        clip.appendChild(svgNode("path", {
+          d: "M" + x0.toFixed(1) + " " + base.toFixed(1) +
+            " L" + x0.toFixed(1) + " " + (topY + radius).toFixed(1) +
+            " Q" + x0.toFixed(1) + " " + topY.toFixed(1) + " " + (x0 + radius).toFixed(1) + " " + topY.toFixed(1) +
+            " L" + (x1 - radius).toFixed(1) + " " + topY.toFixed(1) +
+            " Q" + x1.toFixed(1) + " " + topY.toFixed(1) + " " + x1.toFixed(1) + " " + (topY + radius).toFixed(1) +
+            " L" + x1.toFixed(1) + " " + base.toFixed(1) + " Z"
+        }));
+        stemDefs.appendChild(clip);
+        const clipped = svgNode("g", { class: "stem-clip", "clip-path": "url(#" + clipId + ")" });
+        let baseY = base;
         ["low", "medium", "high", "critical"].forEach((level) => {
           const value = Number(row[level] || 0);
           if (!value) return;
           const segHeight = (value / max) * plotH;
           const rect = svgNode("rect", {
             class: "seg-" + level,
-            x: (x(index) - barWidth / 2).toFixed(1),
-            y: (base - segHeight).toFixed(1),
+            x: x0.toFixed(1),
+            y: (baseY - segHeight).toFixed(1),
             width: barWidth.toFixed(1),
             height: Math.max(0.8, segHeight).toFixed(1)
           });
-          stem.appendChild(rect);
-          base -= segHeight;
+          clipped.appendChild(rect);
+          baseY -= segHeight;
         });
-        stem.appendChild(svgNode("line", {
+        stem.appendChild(clipped);
+        stem.appendChild(svgNode("path", {
           class: "stem-cap",
-          x1: (x(index) - barWidth / 2).toFixed(1),
-          y1: y(total).toFixed(1),
-          x2: (x(index) + barWidth / 2).toFixed(1),
-          y2: y(total).toFixed(1)
+          d: "M" + x0.toFixed(1) + " " + (topY + radius).toFixed(1) +
+            " Q" + x0.toFixed(1) + " " + topY.toFixed(1) + " " + (x0 + radius).toFixed(1) + " " + topY.toFixed(1) +
+            " L" + (x1 - radius).toFixed(1) + " " + topY.toFixed(1) +
+            " Q" + x1.toFixed(1) + " " + topY.toFixed(1) + " " + x1.toFixed(1) + " " + (topY + radius).toFixed(1)
         }));
       } else {
         stem.appendChild(svgNode("line", {

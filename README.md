@@ -5,7 +5,7 @@
 [![Python 3.11](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
 [![Elasticsearch 8.15](https://img.shields.io/badge/Elasticsearch-8.15-005571?logo=elasticsearch&logoColor=white)](docker-compose.yml)
 [![Sigma](https://img.shields.io/badge/rules-50%20Sigma-1f6feb)](rules/sigma)
-[![Tests](https://img.shields.io/badge/tests-46%20passing-2ea043)](tests)
+[![Tests](https://img.shields.io/badge/tests-50%20passing-2ea043)](tests)
 [![ATT&CK](https://img.shields.io/badge/MITRE%20ATT%26CK-48%20techniques-ff5d5d)](docs/attck-coverage.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea043)](LICENSE)
 [![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2ea043)](.github/workflows/ci.yml)
@@ -60,7 +60,7 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | **Coverage** | 48 ATT&CK techniques, 13 tactics, 45 of 45 priority techniques, 0 gaps |
 | **Correlation** | Sliding windows with optional distinct-value thresholds, for example 10 attempts across 8 accounts |
 | **Backend** | Elasticsearch 8.15.3 and Kibana 8.15.3, single node, security disabled for lab use |
-| **Tests** | 46 passing: lint, compilation, correlation, lab generation, coverage, publishing, dashboard assembly |
+| **Tests** | 50 passing: lint, compilation, correlation, lab generation, coverage, publishing, replay mapping, validation table, secret scan, dashboard assembly |
 | **Frontend** | One self-contained HTML file with no build step, CDN, or network request |
 
 ---
@@ -197,6 +197,8 @@ python -m pipeline.correlate --input lab/logs/linux.ndjson
 | `python -m pipeline.compile` | Compiles Sigma to EQL and KQL under `rules/compiled/` |
 | `python -m pipeline.detect --hours 24` | Runs every rule and correlation, writes `alerts/` |
 | `python -m pipeline.detect --dry-run` | Prints the queries without running them |
+| `python -m pipeline.replay --source FILE` | Normalizes an OTRF/Mordor sample into lab NDJSON |
+| `python -m pipeline.validation` | Writes the synthetic per-rule results table |
 | `python -m pipeline.correlate --input FILE` | Runs correlation over an exported NDJSON file |
 | `python -m pipeline.report --open` | Builds and opens `docs/index.html` |
 | `python -m pipeline.publish` | Copies only the dashboard, assets, and cases into `site/` for Pages |
@@ -330,7 +332,7 @@ The `.caseless` fields come from the Winlogbeat processors. Without them, rules 
 python -m pytest -q
 ```
 
-The 46 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, public-site publishing, and dashboard assembly.
+The 50 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, public-site publishing, OTRF replay mapping, the synthetic per-rule table, a high-confidence secret-pattern scan, and dashboard assembly.
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request:
 
@@ -373,7 +375,7 @@ The current evidence is structural and behavioural, not statistical. CI proves t
 | Real-telemetry validation | Not yet; see the external dataset plan |
 | Production precision / recall | Not claimed |
 
-The next evidence step is to replay public real telemetry from [OTRF Security Datasets](https://github.com/OTRF/Security-Datasets), [Splunk Attack Data](https://github.com/splunk/attack_data), and [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team), then record per-rule true positives, false positives, false negatives, and alert volume. The method and source map are in [Evaluation and validation](docs/evaluation.md).
+The next evidence step is to replay public real telemetry from [OTRF Security Datasets](https://github.com/OTRF/Security-Datasets), [Splunk Attack Data](https://github.com/splunk/attack_data), and [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team), then record per-rule true positives, false positives, false negatives, and alert volume. The method and source map are in [Evaluation and validation](docs/evaluation.md); the executable runbook is [docs/validation/real-telemetry.md](docs/validation/real-telemetry.md). The current synthetic per-rule table is in [docs/validation/synthetic-run.md](docs/validation/synthetic-run.md); it is a construction-labelled report, not a precision or recall measurement.
 
 ## Limitations
 
@@ -398,7 +400,7 @@ config/                 Elasticsearch template, Filebeat, Winlogbeat, index rout
 lab/logs/               Generated telemetry (gitignored)
 alerts/                 Detection output (gitignored)
 cases/                  Analyst case reports and dashboard metadata
-docs/                   Dashboard, design system, runbook, tuning log, ATT&CK coverage, evaluation, publishing
+docs/                   Dashboard, design system, runbook, tuning log, ATT&CK coverage, evaluation, publishing, validation
 site/                   Generated public site (dashboard + assets + cases; gitignored)
 tests/                  pytest suite
 scripts/                Convenience scripts
@@ -440,7 +442,11 @@ See [Publishing checklist](docs/publishing.md) for repository metadata, the desi
 
 ## Contributing and security
 
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before changing a rule or the pipeline. Report vulnerabilities through GitHub's private reporting flow described in [`SECURITY.md`](SECURITY.md). Do not open a public issue for a security problem, and do not submit real logs, credentials, or personal data.
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before changing a rule or the pipeline. Report vulnerabilities through GitHub's private reporting flow described in [`SECURITY.md`](SECURITY.md). The lab threat model is in [`docs/threat-model.md`](docs/threat-model.md). Do not open a public issue for a security problem, and do not submit real logs, credentials, or personal data.
+
+## Support
+
+The repository includes a `.github/FUNDING.yml` and is ready for a Sponsor button. GitHub Sponsors payouts depend on the maintainer's region; see [Publishing checklist](docs/publishing.md#sponsorship) for the supported paths. For now, the best support is a review, a reproducible issue, or sharing the dashboard.
 
 ## Author
 
@@ -453,3 +459,5 @@ This is an independent portfolio project. It is not affiliated with any company 
 [MIT](LICENSE). Use the rules and pipeline freely. Attribution is appreciated.
 
 The MIT license covers the pipeline, rules, tests, configuration, and documentation. The Penumbra name, wordmark, eclipse mark, and dashboard screenshots are brand identifiers; the license does not grant trademark rights. This is an independent portfolio project and is not affiliated with any company using the Penumbra name. If you plan to reuse the visual identity in a product, please ask first.
+
+See [`NOTICE.md`](NOTICE.md) for copyright, font, and third-party notices.

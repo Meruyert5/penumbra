@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from pipeline.common import tactics
 from pipeline.compile import compile_all
-from pipeline.coverage import PRIORITY_TECHNIQUES, build_markdown, coverage_tiles
 from pipeline.correlate import load_specs
+from pipeline.coverage import PRIORITY_TECHNIQUES, build_markdown, coverage_tiles
 
 
 def test_coverage_lists_every_technique():

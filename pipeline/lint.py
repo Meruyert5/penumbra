@@ -17,7 +17,6 @@ from pipeline.common import (
     LEVELS,
     STATUSES,
     load_rules,
-    read_text,
     techniques,
 )
 

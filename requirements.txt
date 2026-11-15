@@ -5,3 +5,4 @@ pySigma-backend-elasticsearch==2.1.1
 PyYAML==6.0.3
 requests==2.34.2
 pytest==9.2.0
+ruff==0.17.5

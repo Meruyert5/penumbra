@@ -18,8 +18,8 @@ from typing import Any
 from xml.sax.saxutils import escape
 
 from pipeline.common import COMPILED_DIR, DOCS_DIR, TACTIC_ORDER, ensure_dir
-from pipeline.coverage import PRIORITY_TECHNIQUES, TACTIC_LABEL, coverage_tiles
 from pipeline.correlate import load_specs
+from pipeline.coverage import PRIORITY_TECHNIQUES, TACTIC_LABEL, coverage_tiles
 
 WIDTH = 1000
 PAD = 26

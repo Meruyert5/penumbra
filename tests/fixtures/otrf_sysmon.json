@@ -1,0 +1,14 @@
+[
+  {
+    "EventID": 1,
+    "Channel": "Microsoft-Windows-Sysmon/Operational",
+    "Computer": "WIN10-LAB",
+    "UtcTime": "2026-11-11T12:10:40.000Z",
+    "Image": "C:\\Windows\\System32\\rundll32.exe",
+    "CommandLine": "rundll32.exe C:\\Windows\\System32\\comsvcs.dll, MiniDump 640 C:\\Users\\Public\\lsass.dmp full",
+    "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+    "ParentCommandLine": "cmd.exe /c rundll32 comsvcs.dll MiniDump",
+    "User": "LAB\\admin",
+    "ProcessId": "6440"
+  }
+]

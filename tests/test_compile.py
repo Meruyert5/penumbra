@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import json
 
-from pipeline.compile import compile_all
 from pipeline.common import COMPILED_DIR, ROOT
+from pipeline.compile import compile_all
 
 
 def test_every_rule_compiles():

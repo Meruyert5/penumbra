@@ -75,21 +75,32 @@ Topics: `detection-engineering`, `detection-as-code`, `sigma`, `elasticsearch`,
   practices, and SEO scores.
 - Open one case link, one ATT&CK tile, the command palette, the theme toggle, and
   the Totality sequence at 390px and 1440px.
-- Confirm the Quick Tunnel is stopped when it is no longer needed.
+- Confirm the Cloudflare tunnel process is stopped; GitHub Pages is the only
+  public host.
 
-## Quick Tunnel vs Pages
+## Public hosting
 
-The Quick Tunnel in the development notes is only for a temporary preview:
+GitHub Pages is the durable public home. The workflow uploads `site/`, never
+`docs/`. The Cloudflare Quick Tunnel has been removed from this project. If you
+need a temporary preview, serve `site/` on localhost and keep it private; do not
+point a public tunnel at the working tree.
 
-- free and accountless;
-- no uptime guarantee;
-- the hostname changes on restart;
-- 200 in-flight requests, then `429`;
-- anyone with the URL can access it unless `--allowed-mail` is used;
-- it should never expose secrets, real telemetry, or a local admin service.
+## Sponsorship
 
-GitHub Pages is the durable public home. A named Cloudflare Tunnel or Cloudflare
-Pages is the better option if a custom domain or access control is required.
+The repository includes a `.github/FUNDING.yml` and is ready for a Sponsor button.
+GitHub Sponsors payouts require residence in a supported region; Kazakhstan is
+not on the current list. Two paths are available:
+
+1. Apply for GitHub Sponsors and join the waitlist if GitHub offers one for the
+   region. Once approved, replace the `github:` handle in `.github/FUNDING.yml`
+   with the exact username and enable **Settings → General → Features →
+   Sponsorships**.
+2. Use a custom funding page (Ko-fi, Patreon, Open Collective) and add it as
+   `custom: ["https://..."]`. The Sponsor button will show the custom link even
+   without a GitHub Sponsors profile.
+
+Do not add payment details or a tax form until the account is ready. A public
+repository can show the sponsorship entry without collecting anything.
 
 ## Design privacy
 

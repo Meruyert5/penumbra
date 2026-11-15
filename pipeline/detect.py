@@ -16,7 +16,7 @@ from typing import Any
 
 import requests
 
-from pipeline.common import ALERTS_DIR, COMPILED_DIR, LEVEL_RANK, es_url, ensure_dir
+from pipeline.common import ALERTS_DIR, COMPILED_DIR, LEVEL_RANK, ensure_dir, es_url
 from pipeline.correlate import correlate, load_specs
 
 MAX_EVENTS_PER_RULE = 100

@@ -615,12 +615,15 @@ button { cursor: pointer; }
   text-align: center;
   font-family: var(--mono);
   line-height: 1;
-  transform: rotate(-2.5deg);
-  transform-origin: 70% 30%;
+  transform: rotate(2.5deg);
+  transform-origin: 30% 30%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  backface-visibility: hidden;
   animation: stamp-in 0.46s var(--ease) 1.05s both;
 }
-.ticket-stamp b { display: block; font: 500 10.5px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
-.ticket-stamp span { display: block; margin-top: 3px; font: 500 9.5px/1.1 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; }
+.ticket-stamp b { display: block; font: 600 11.5px/1 var(--mono); letter-spacing: 0.09em; text-transform: uppercase; }
+.ticket-stamp span { display: block; margin-top: 3px; font: 600 10px/1.15 var(--mono); letter-spacing: 0.035em; text-transform: uppercase; }
 
 /* The Umbra theme keeps the run ticket as a physical paper receipt. */
 :root[data-theme="umbra"] .ticket {
@@ -1872,8 +1875,8 @@ kbd {
 }
 @keyframes ticket-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes stamp-in {
-  from { opacity: 0; transform: translateY(-6px) rotate(-6deg) scale(1.06); }
-  to { opacity: 1; transform: rotate(-2.5deg) scale(1); }
+  from { opacity: 0; transform: translateY(-6px) rotate(6deg) scale(1.06); }
+  to { opacity: 1; transform: rotate(2.5deg) scale(1); }
 }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fileIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -1939,7 +1942,7 @@ kbd {
 .static .display .line > span { transform: none; }
 .static .stem { transform: none; }
 .static .rail-brand .mark-signal { stroke-dashoffset: 0; }
-.static .ticket-stamp { opacity: 1; transform: rotate(-2.5deg); }
+.static .ticket-stamp { opacity: 1; transform: rotate(2.5deg); }
 
 /* Section entrances are opt-in: only the beats that deserve one. */
 .js [data-reveal] {
@@ -6039,6 +6042,176 @@ body::after { display: none; }
   color: var(--sun-3);
   letter-spacing: 0.12em;
 }
+
+/* Rounded column silhouettes: the stack is clipped to a smooth top, so the
+   candlestick bars read as one curve instead of stacked rectangles. */
+.stem-clip rect { rx: 0; }
+.stem-cap { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Refined totality sun: granulation, limb darkening, a slow corona turn, and a
+   quieter moon. The phase word and contact data stay the only loud elements. */
+.ta-sun {
+  background:
+    radial-gradient(circle at 34% 28%,
+      #FFFDF8 0,
+      #FFF4DA 10%,
+      #FFE6B8 22%,
+      #FBC64A 46%,
+      #F79A2C 70%,
+      #E96214 100%);
+  box-shadow:
+    inset -10px -8px 30px rgba(150, 42, 8, 0.28),
+    inset 6px 6px 18px rgba(255, 255, 255, 0.22),
+    0 0 46px rgba(251, 185, 49, 0.5),
+    0 0 120px rgba(248, 143, 34, 0.28),
+    0 0 220px rgba(234, 97, 19, 0.12);
+}
+.ta-sun::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 29% 36%, rgba(255,255,255,.32) 0 1.4%, transparent 2.2%),
+    radial-gradient(circle at 38% 22%, rgba(255,246,232,.24) 0 1.1%, transparent 1.8%),
+    radial-gradient(circle at 55% 28%, rgba(255,246,232,.2) 0 1.5%, transparent 2.4%),
+    radial-gradient(circle at 68% 44%, rgba(255,246,232,.18) 0 1.2%, transparent 2%),
+    radial-gradient(circle at 44% 58%, rgba(255,246,232,.2) 0 1.8%, transparent 2.8%),
+    radial-gradient(circle at 58% 70%, rgba(255,246,232,.16) 0 1.3%, transparent 2.2%),
+    radial-gradient(circle at 24% 62%, rgba(255,246,232,.14) 0 1%, transparent 1.8%);
+  mix-blend-mode: screen;
+  opacity: .8;
+}
+.ta-sun::after {
+  background:
+    radial-gradient(circle at 35% 40%, rgba(86,30,8,.24) 0 2.6%, rgba(120,52,16,.12) 2.8% 4.2%, transparent 4.6%),
+    radial-gradient(circle at 62% 33%, rgba(86,30,8,.2) 0 2%, rgba(120,52,16,.1) 2.2% 3.4%, transparent 3.8%),
+    radial-gradient(circle at 54% 64%, rgba(86,30,8,.18) 0 2.8%, rgba(120,52,16,.09) 3% 4.6%, transparent 5%),
+    radial-gradient(circle at 26% 54%, rgba(86,30,8,.14) 0 1.6%, transparent 2.2%),
+    radial-gradient(circle at 72% 60%, rgba(86,30,8,.12) 0 1.4%, transparent 2%);
+}
+.ta-corona {
+  background:
+    radial-gradient(circle, transparent 0 33%, rgba(255,246,232,.95) 36%, rgba(255,227,179,.9) 39%, rgba(251,185,49,.85) 45%, rgba(248,143,34,.55) 53%, rgba(234,97,19,.22) 62%, transparent 72%),
+    conic-gradient(from 200deg,
+      transparent 0 7%,
+      rgba(255,246,232,.8) 11%,
+      transparent 16% 27%,
+      rgba(249,92,75,.72) 35%,
+      transparent 43% 57%,
+      rgba(251,185,49,.7) 65%,
+      transparent 74% 88%,
+      rgba(255,227,179,.55) 94%,
+      transparent 100%);
+  box-shadow:
+    0 0 40px rgba(251,185,49,.18),
+    0 0 110px rgba(248,143,34,.12);
+  animation: ta-corona-turn 140s linear infinite;
+}
+@keyframes ta-corona-turn { to { transform: rotate(360deg); } }
+.ta-moon {
+  background:
+    radial-gradient(circle at 34% 28%, #221B16 0, #0B0A09 48%, #040403 100%);
+  box-shadow:
+    inset -12px -10px 26px rgba(255,255,255,.045),
+    inset 0 0 0 1px rgba(255,227,179,.08),
+    0 0 0 1px rgba(0,0,0,.55),
+    0 0 22px rgba(0,0,0,.55);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ta-corona { animation: none; }
+}
+
+/* Final corona pass: a hot limb, fine streamers, and a feathered outer edge. */
+.ta-corona {
+  background:
+    radial-gradient(circle,
+      transparent 0 29%,
+      rgba(255,246,232,.98) 30.5%,
+      rgba(255,227,179,.92) 33%,
+      rgba(251,185,49,.82) 38%,
+      rgba(248,143,34,.5) 46%,
+      rgba(234,97,19,.2) 56%,
+      transparent 68%),
+    conic-gradient(from 200deg,
+      transparent 0 6%,
+      rgba(255,246,232,.78) 10%,
+      transparent 15% 26%,
+      rgba(249,92,75,.7) 34%,
+      transparent 42% 56%,
+      rgba(251,185,49,.68) 64%,
+      transparent 73% 87%,
+      rgba(255,227,179,.55) 93%,
+      transparent 100%);
+  -webkit-mask-image: radial-gradient(circle, #000 0 64%, transparent 88%);
+  mask-image: radial-gradient(circle, #000 0 64%, transparent 88%);
+}
+.ta-corona::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg,
+    transparent 0 2.1deg,
+    rgba(255,246,232,.16) 2.1deg 2.4deg,
+    transparent 2.4deg 5.2deg);
+  -webkit-mask-image: radial-gradient(circle, transparent 0 34%, #000 40% 62%, transparent 76%);
+  mask-image: radial-gradient(circle, transparent 0 34%, #000 40% 62%, transparent 76%);
+  animation: ta-corona-turn 90s linear infinite reverse;
+  pointer-events: none;
+}
+.ta-moon::after {
+  content: "";
+  position: absolute;
+  inset: -1.2%;
+  border-radius: 50%;
+  box-shadow:
+    0 0 16px rgba(255,246,232,.32),
+    inset 0 0 0 1px rgba(255,227,179,.24);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ta-corona,
+  .ta-corona::after { animation: none; }
+}
+
+/* Keep the corona soft: broad streamers over the hot limb, no wireframe rays. */
+.ta-corona {
+  background:
+    conic-gradient(from 200deg,
+      transparent 0 5%,
+      rgba(255,246,232,.16) 9%,
+      transparent 15% 25%,
+      rgba(249,92,75,.14) 33%,
+      transparent 42% 55%,
+      rgba(251,185,49,.14) 63%,
+      transparent 73% 87%,
+      rgba(255,227,179,.12) 93%,
+      transparent 100%),
+    radial-gradient(circle,
+      transparent 0 29%,
+      rgba(255,246,232,.98) 30.5%,
+      rgba(255,227,179,.92) 33%,
+      rgba(251,185,49,.82) 38%,
+      rgba(248,143,34,.5) 46%,
+      rgba(234,97,19,.2) 56%,
+      transparent 68%);
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.ta-corona::after { display: none; }
+
+/* Lighthouse target-size: keep the mobile chapter tabs at least 28px. */
+@media (max-width: 720px) {
+  .rail-nav a {
+    min-width: 28px;
+    min-height: 28px;
+    justify-content: center;
+  }
+}
+
+/* The chapter rail is a navigation control at every width. */
+.rail-nav a { min-height: 28px; }
 </style>
 </head>
 <body>
@@ -6499,12 +6672,12 @@ body::after { display: none; }
         </div>
         <div class="cc-tabs" id="ccTabs" role="tablist" aria-label="Choose a case"></div>
         <div class="cc-controls">
-          <button class="mini cc-step" id="ccPrev" type="button" aria-label="Previous step">prev</button>
+          <button class="mini cc-step" id="ccPrev" type="button" aria-label="prev step">prev</button>
           <button class="mini cc-play" id="ccPlay" type="button">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
             play chain
           </button>
-          <button class="mini cc-step" id="ccNext" type="button" aria-label="Next step">next</button>
+          <button class="mini cc-step" id="ccNext" type="button" aria-label="next step">next</button>
         </div>
       </div>
       <div class="cc-stage" id="ccStage" aria-label="Case detection chain"></div>
@@ -7033,32 +7206,53 @@ body::after { display: none; }
     const focus = svgNode("rect", { id: "chartFocus", class: "col-focus", y: top, height: plotH, x: left, width: step });
     chart.appendChild(focus);
 
+    const stemDefs = svgNode("defs");
+    chart.appendChild(stemDefs);
+
     timeline.forEach((row, index) => {
       const total = Number(row.total || 0);
       const stem = svgNode("g", { class: "stem" });
       stem.style.setProperty("--stem-delay", (index * 38) + "ms");
       if (total > 0) {
-        let base = height - bottom;
+        const base = height - bottom;
+        const topY = y(total);
+        const x0 = x(index) - barWidth / 2;
+        const x1 = x(index) + barWidth / 2;
+        const radius = Math.min(4, barWidth / 2);
+        const clipId = "stem-clip-" + index;
+        const clip = svgNode("clipPath", { id: clipId });
+        clip.appendChild(svgNode("path", {
+          d: "M" + x0.toFixed(1) + " " + base.toFixed(1) +
+            " L" + x0.toFixed(1) + " " + (topY + radius).toFixed(1) +
+            " Q" + x0.toFixed(1) + " " + topY.toFixed(1) + " " + (x0 + radius).toFixed(1) + " " + topY.toFixed(1) +
+            " L" + (x1 - radius).toFixed(1) + " " + topY.toFixed(1) +
+            " Q" + x1.toFixed(1) + " " + topY.toFixed(1) + " " + x1.toFixed(1) + " " + (topY + radius).toFixed(1) +
+            " L" + x1.toFixed(1) + " " + base.toFixed(1) + " Z"
+        }));
+        stemDefs.appendChild(clip);
+        const clipped = svgNode("g", { class: "stem-clip", "clip-path": "url(#" + clipId + ")" });
+        let baseY = base;
         ["low", "medium", "high", "critical"].forEach((level) => {
           const value = Number(row[level] || 0);
           if (!value) return;
           const segHeight = (value / max) * plotH;
           const rect = svgNode("rect", {
             class: "seg-" + level,
-            x: (x(index) - barWidth / 2).toFixed(1),
-            y: (base - segHeight).toFixed(1),
+            x: x0.toFixed(1),
+            y: (baseY - segHeight).toFixed(1),
             width: barWidth.toFixed(1),
             height: Math.max(0.8, segHeight).toFixed(1)
           });
-          stem.appendChild(rect);
-          base -= segHeight;
+          clipped.appendChild(rect);
+          baseY -= segHeight;
         });
-        stem.appendChild(svgNode("line", {
+        stem.appendChild(clipped);
+        stem.appendChild(svgNode("path", {
           class: "stem-cap",
-          x1: (x(index) - barWidth / 2).toFixed(1),
-          y1: y(total).toFixed(1),
-          x2: (x(index) + barWidth / 2).toFixed(1),
-          y2: y(total).toFixed(1)
+          d: "M" + x0.toFixed(1) + " " + (topY + radius).toFixed(1) +
+            " Q" + x0.toFixed(1) + " " + topY.toFixed(1) + " " + (x0 + radius).toFixed(1) + " " + topY.toFixed(1) +
+            " L" + (x1 - radius).toFixed(1) + " " + topY.toFixed(1) +
+            " Q" + x1.toFixed(1) + " " + topY.toFixed(1) + " " + x1.toFixed(1) + " " + (topY + radius).toFixed(1)
         }));
       } else {
         stem.appendChild(svgNode("line", {

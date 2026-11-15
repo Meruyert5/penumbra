@@ -27,13 +27,13 @@ from pipeline.common import (
     LEVEL_RANK,
     ROOT,
     logsource_map,
+    read_text,
+    read_yaml,
     resolve_index,
     rule_paths,
-    read_text,
     tactics,
     techniques,
     write_json,
-    read_yaml,
 )
 
 

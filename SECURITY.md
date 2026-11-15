@@ -28,7 +28,7 @@ You can expect an acknowledgement within a few days. This is a personal portfoli
 
 ## Scope
 
-In scope:
+The lab threat model is in [`docs/threat-model.md`](docs/threat-model.md). In scope:
 
 * the Python pipeline (`pipeline/`), Docker configuration, and CI workflows;
 * rule logic that could cause unsafe query behaviour;

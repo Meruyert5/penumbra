@@ -31,8 +31,8 @@ from pipeline.common import (
     TACTIC_ORDER,
     ensure_dir,
 )
-from pipeline.coverage import PRIORITY_TECHNIQUES, TACTIC_LABEL, coverage_tiles
 from pipeline.correlate import load_specs
+from pipeline.coverage import PRIORITY_TECHNIQUES, TACTIC_LABEL, coverage_tiles
 from pipeline.labgen import SCENARIOS
 
 LEVELS = ["critical", "high", "medium", "low"]

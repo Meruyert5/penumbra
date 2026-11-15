@@ -13,10 +13,18 @@ alerts/
 
 # Local overrides
 .env
+.env.*
+!.env.example
 config/local.*.yml
+*.pem
+*.key
+*.p12
 
 # Generated public site (Pages builds it from docs/)
 site/
+
+# Lighthouse CI output
+.lighthouseci/
 
 # OS / editor
 .DS_Store

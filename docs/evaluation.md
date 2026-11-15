@@ -14,7 +14,9 @@ comparison, or a source of real incident telemetry.
 The committed dashboard represents one deterministic run: 9,223 synthetic events
 across Windows, Linux, web, AWS CloudTrail, and network flow over 24 hours. The
 run contains 33 attack scenarios plus a benign baseline, 50 Sigma rules, 8
-correlation specs, and three case reports.
+correlation specs, and three case reports. About 8,280 of the events come from the
+benign baseline loop; raw volume is therefore not the main gap. Independent
+labels, source diversity, and real noise are.
 
 ## What the current evidence proves
 
@@ -28,6 +30,7 @@ correlation specs, and three case reports.
 | The benign baseline does not trip the correlation thresholds | `tests/test_labgen.py::test_baseline_is_benign` | Verified for a small baseline |
 | The dashboard is assembled from the run data | `tests/test_report.py` and `pipeline.report` | Verified |
 | The page meets the published accessibility contract | Lighthouse and manual review | Verified for the built page |
+| Per-rule synthetic results | [docs/validation/synthetic-run.md](validation/synthetic-run.md) | Generated from the committed run; not precision or recall |
 
 ## What the current evidence does not prove
 
@@ -77,6 +80,10 @@ teams and research groups and include labelled attack activity or benign data.
 | [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) | Portable technique tests that generate real host telemetry | Execute a bounded set in an isolated VM, capture Sysmon, and compare the rule output |
 | [Elastic detection rules](https://github.com/elastic/detection-rules) | Production rule and test conventions | Compare rule structure, test expectations, and field assumptions |
 | [Splunk Attack Range](https://github.com/splunk/attack_range) | Instrumented lab orchestration | Use as an alternative to the synthetic path when a full VM range is available |
+
+The executable runbook is [Real-telemetry validation](validation/real-telemetry.md).
+The mapping harness is `pipeline/replay.py`; it is tested but has not been run
+against a real dataset in this repository.
 
 ### Metrics to record
 

@@ -11,17 +11,19 @@ account.
 | Author | Meruyert Oshayeva |
 | Branch | `main` |
 | Latest commit | use `git log -1 --oneline`; the repository is clean after each handoff |
-| Local repo | `C:\Users\Meruyert\Documents\detection-lab` |
+| Local repo | the repository checkout |
 | Built dashboard | `docs/index.html` |
 | Public site | `site/` (generated, gitignored) |
 | Public surface | `index.html`, `assets/`, `cases/`, `.nojekyll`; optionally `CNAME` |
-| Temporary preview | `https://pre-starsmerchant-freelance-brian.trycloudflare.com` |
+| Public host | GitHub Pages (after the first upload) |
 | Permanent target | `https://penumbra.is-a.dev` (pending registration and Pages setup) |
-| Tests | 46 passing |
+| Tests | 50 passing |
 | Lighthouse | 100 accessibility / 100 best practices / 100 SEO |
 
-The temporary Quick Tunnel serves `site/`, not `docs/`. `design.md`,
-`design-research.md`, `runbook.md`, and `tuning.md` return 404 on the public URL.
+The local server can serve `site/` for review. GitHub Pages is the only public
+host; the Cloudflare Quick Tunnel has been removed. `design.md`,
+`design-research.md`, `runbook.md`, and `tuning.md` are not part of the public
+surface.
 
 ## Rebuild and verify
 
@@ -33,7 +35,17 @@ node --check dashboard\app.js
 .\.venv\Scripts\python.exe -m pipeline.compile --check
 .\.venv\Scripts\python.exe -m pipeline.coverage --check
 .\.venv\Scripts\python.exe -m pipeline.heatmap
+.\.venv\Scripts\python.exe -m pipeline.validation
 .\.venv\Scripts\python.exe -m pytest -q
+```
+
+The optional replay path is:
+
+```powershell
+python -m pipeline.replay --source path\to\otrf.json --file windows --label malicious
+python -m pipeline.ingest --reset
+python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z
+python -m pipeline.validation
 ```
 
 `pipeline.publish` copies only the public surface into `site/`. It deletes and
@@ -48,25 +60,12 @@ recreates `site/`, so never put source files there.
 For internal design work, `--directory docs` is acceptable, but it exposes the
 design notes, runbook, and tuning log. Do not point a public tunnel at `docs/`.
 
-## Temporary tunnel
+## Public hosting
 
-The Quick Tunnel command is:
-
-```powershell
-cloudflared tunnel --url http://localhost:8765
-```
-
-Limits and rules:
-
-- free and accountless;
-- random hostname, changed on every restart;
-- no uptime guarantee;
-- 200 in-flight requests, then `429`;
-- anyone with the URL can access it unless `--allowed-mail` is used;
-- use it for previews only, not as the permanent link.
-
-The hostname cannot be customised. For a permanent, memorable link, use
-[`docs/custom-domain.md`](custom-domain.md).
+GitHub Pages is the public host. The workflow uploads `site/`, never `docs/`.
+The Cloudflare Quick Tunnel is not used for this project. If you need a temporary
+preview, serve `site/` on localhost and keep it private; do not publish a tunnel
+that exposes the working tree.
 
 ## Upload to GitHub
 
@@ -77,7 +76,7 @@ and push:
 ```powershell
 winget install --id GitHub.cli -e
 gh auth login --hostname github.com --git-protocol https --web
-cd C:\Users\Meruyert\Documents\detection-lab
+cd <repo>
 gh repo create penumbra --public --source=. --remote=origin --push
 ```
 
@@ -94,8 +93,8 @@ git push -u origin main
 
 The prepared artifacts are:
 
-- `C:\Users\Meruyert\Documents\penumbra-upload.zip` — tracked-file snapshot;
-- `C:\Users\Meruyert\Documents\penumbra.bundle` — full Git history.
+- `%USERPROFILE%\Documents\penumbra-upload.zip` — tracked-file snapshot;
+- `%USERPROFILE%\Documents\penumbra.bundle` — full Git history.
 
 ## GitHub Pages
 

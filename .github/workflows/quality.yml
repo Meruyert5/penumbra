@@ -1,0 +1,49 @@
+name: penumbra-quality
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check local documentation links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress README.md AGENTS.md NOTICE.md SECURITY.md CONTRIBUTING.md CHANGELOG.md docs
+          fail: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build public site
+        run: python -m pipeline.publish
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Lighthouse CI
+        run: |
+          python -m http.server 8080 --bind 127.0.0.1 --directory site &
+          sleep 2
+          npx -y @lhci/cli@0.16.1 autorun
