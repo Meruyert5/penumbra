@@ -1,4 +1,4 @@
-# Sigma rule generated for Umbra. Edit the rule, not this comment.
+# Sigma rule generated for Penumbra. Edit the rule, not this comment.
 title: Registry Run Key Persistence
 id: e0da490d-63f4-41da-aecb-f661b0601cd4
 status: experimental

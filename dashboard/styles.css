@@ -1,4 +1,4 @@
-/* Umbra: a solar eclipse detection lab.
+/* Penumbra: a solar eclipse detection lab.
    Corona (light) and Totality (dark). Instrument Serif, Sora, IBM Plex Mono. */
 :root {
   color-scheme: light;
@@ -48,7 +48,7 @@
   --scope-pointer: rgba(31, 74, 92, 0.35);
 }
 
-:root[data-theme="totality"] {
+:root[data-theme="umbra"] {
   color-scheme: dark;
   --bg: #070d10;
   --surface: #0d191c;
@@ -114,7 +114,7 @@ body {
     linear-gradient(178deg, #faf6ed 0%, #f5efe3 48%, #f1e8d8 100%);
   background-attachment: fixed;
 }
-:root[data-theme="totality"] body {
+:root[data-theme="umbra"] body {
   background-color: var(--bg);
   background-image:
     radial-gradient(1150px 720px at 68% -12%, #153438 0%, transparent 58%),
@@ -141,7 +141,7 @@ body::before {
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.35 0 0 0 0 0.29 0 0 0 0 0.21 0.04 0.04 0.04 0 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
   background-size: 420px 420px, 520px 520px, 180px 180px;
 }
-:root[data-theme="totality"] body::before {
+:root[data-theme="umbra"] body::before {
   mix-blend-mode: screen;
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='dm'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.72 0 0 0 0 0.8 0 0 0 0 0.76 0.02 0.02 0.02 0 0'/%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23dm)'/%3E%3C/svg%3E"),
@@ -157,7 +157,7 @@ body::after {
   pointer-events: none;
   background: radial-gradient(122% 92% at 50% 38%, transparent 56%, rgba(84, 66, 38, 0.13) 100%);
 }
-:root[data-theme="totality"] body::after {
+:root[data-theme="umbra"] body::after {
   background: radial-gradient(122% 92% at 50% 38%, transparent 48%, rgba(0, 0, 0, 0.5) 100%);
 }
 a { color: var(--forest-2); text-decoration: none; }
@@ -304,8 +304,8 @@ button { cursor: pointer; }
 }
 .theme-icon { width: 14px; height: 14px; flex: none; }
 .icon-sun { display: none; }
-:root[data-theme="totality"] .icon-moon { display: none; }
-:root[data-theme="totality"] .icon-sun { display: block; }
+:root[data-theme="umbra"] .icon-moon { display: none; }
+:root[data-theme="umbra"] .icon-sun { display: block; }
 
 /* A small console instrument in the rail: the run is a live signal, not a PDF. */
 .rail-signal {
@@ -413,8 +413,8 @@ button { cursor: pointer; }
   animation: fold-crease 1.05s var(--ease) 0.28s both;
   pointer-events: none;
 }
-:root[data-theme="totality"] .sheet::before,
-:root[data-theme="totality"] .sheet::after { display: none; }
+:root[data-theme="umbra"] .sheet::before,
+:root[data-theme="umbra"] .sheet::after { display: none; }
 .cover, .chapter, .colophon { max-width: 1120px; margin: 0 auto; }
 .scroll-progress {
   position: fixed;
@@ -538,8 +538,8 @@ button { cursor: pointer; }
 .btn:not(:disabled):active { background: var(--surface-2); }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff8f4; }
 .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff8f4; }
-:root[data-theme="totality"] .btn.primary { color: #07100f; }
-:root[data-theme="totality"] .btn.primary:hover { background: var(--accent-hover); color: #07100f; }
+:root[data-theme="umbra"] .btn.primary { color: #07100f; }
+:root[data-theme="umbra"] .btn.primary:hover { background: var(--accent-hover); color: #07100f; }
 .btn.primary:focus-visible, .chip.active:focus-visible, .mini.next:focus-visible { outline-color: currentColor; }
 .btn.ghost { background: transparent; }
 .cover-actions .btn:nth-child(2) {
@@ -596,28 +596,28 @@ button { cursor: pointer; }
 .ticket-stamp b { display: block; font: 500 10.5px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
 .ticket-stamp span { display: block; margin-top: 3px; font: 500 9.5px/1.1 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; }
 
-/* The Totality theme keeps the run ticket as a physical paper receipt. */
-:root[data-theme="totality"] .ticket {
+/* The Umbra theme keeps the run ticket as a physical paper receipt. */
+:root[data-theme="umbra"] .ticket {
   background-color: #eef1ea;
   background-image: linear-gradient(90deg, var(--accent) 0 28%, var(--ochre) 28% 52%, var(--forest) 52% 78%, var(--signal) 78% 100%);
   border-color: #b6c1b3;
   color: #121b1c;
   box-shadow: 0 26px 60px rgba(0, 0, 0, 0.48);
 }
-:root[data-theme="totality"] .ticket::before { border-color: #d1d9cc; }
-:root[data-theme="totality"] .ticket-head {
+:root[data-theme="umbra"] .ticket::before { border-color: #d1d9cc; }
+:root[data-theme="umbra"] .ticket-head {
   color: #5f7066;
   border-color: #b6c1b3;
 }
-:root[data-theme="totality"] .ticket-rows > div { border-color: #d1d9cc; }
-:root[data-theme="totality"] .ticket-rows dt { color: #5f7066; }
-:root[data-theme="totality"] .ticket-rows dd { color: #384640; }
-:root[data-theme="totality"] .ticket-rows dd b { color: #121b1c; }
-:root[data-theme="totality"] .ticket-foot {
+:root[data-theme="umbra"] .ticket-rows > div { border-color: #d1d9cc; }
+:root[data-theme="umbra"] .ticket-rows dt { color: #5f7066; }
+:root[data-theme="umbra"] .ticket-rows dd { color: #384640; }
+:root[data-theme="umbra"] .ticket-rows dd b { color: #121b1c; }
+:root[data-theme="umbra"] .ticket-foot {
   color: #5f7066;
   border-color: #b6c1b3;
 }
-:root[data-theme="totality"] .ticket-stamp {
+:root[data-theme="umbra"] .ticket-stamp {
   background: #eef1ea;
   color: #a83a2a;
   border-color: #a83a2a;
@@ -990,15 +990,15 @@ button { cursor: pointer; }
 .chip:disabled { opacity: 0.5; cursor: not-allowed; }
 .chip:not(:disabled):active { background: color-mix(in srgb, var(--signal) 12%, transparent); }
 .chip.active { background: var(--signal); border-color: var(--signal); color: #f7fbf8; }
-:root[data-theme="totality"] .chip.active { color: #041012; }
+:root[data-theme="umbra"] .chip.active { color: #041012; }
 .chip[data-level="critical"].active { background: var(--critical); border-color: var(--critical); color: #fff7f4; }
 .chip[data-level="high"].active { background: var(--high); border-color: var(--high); color: #fff8ec; }
 .chip[data-level="medium"].active { background: var(--medium); border-color: var(--medium); color: #fdfbea; }
 .chip[data-level="low"].active { background: var(--low); border-color: var(--low); color: #f3fbf7; }
-:root[data-theme="totality"] .chip[data-level="critical"].active,
-:root[data-theme="totality"] .chip[data-level="high"].active,
-:root[data-theme="totality"] .chip[data-level="medium"].active,
-:root[data-theme="totality"] .chip[data-level="low"].active { color: #07100f; }
+:root[data-theme="umbra"] .chip[data-level="critical"].active,
+:root[data-theme="umbra"] .chip[data-level="high"].active,
+:root[data-theme="umbra"] .chip[data-level="medium"].active,
+:root[data-theme="umbra"] .chip[data-level="low"].active { color: #07100f; }
 .tools-grow { flex: 1; }
 .field {
   min-height: 34px;
@@ -1252,13 +1252,13 @@ button { cursor: pointer; }
 .wf-mix i.high { background: var(--high); }
 .wf-mix i.medium { background: var(--medium); }
 .wf-mix i.low { background: var(--low); }
-:root[data-theme="totality"] .wf-status { background: #061013; color: var(--text-2); }
-:root[data-theme="totality"] .wf-live { color: var(--text); }
-:root[data-theme="totality"] .wf-live i { background: #f2c66d; box-shadow: 0 0 0 3px color-mix(in srgb, #f2c66d 18%, transparent); }
-:root[data-theme="totality"] #wfDetections { color: #f2c66d; }
-:root[data-theme="totality"] #wfCorrelations { color: #8adce8; }
-:root[data-theme="totality"] #wfErrors { color: #8fe0c6; }
-:root[data-theme="totality"] .wf-clock { color: var(--muted); }
+:root[data-theme="umbra"] .wf-status { background: #061013; color: var(--text-2); }
+:root[data-theme="umbra"] .wf-live { color: var(--text); }
+:root[data-theme="umbra"] .wf-live i { background: #f2c66d; box-shadow: 0 0 0 3px color-mix(in srgb, #f2c66d 18%, transparent); }
+:root[data-theme="umbra"] #wfDetections { color: #f2c66d; }
+:root[data-theme="umbra"] #wfCorrelations { color: #8adce8; }
+:root[data-theme="umbra"] #wfErrors { color: #8fe0c6; }
+:root[data-theme="umbra"] .wf-clock { color: var(--muted); }
 
 .wf-grid {
   display: grid;
@@ -1288,7 +1288,7 @@ button { cursor: pointer; }
   background: color-mix(in srgb, var(--accent) 7%, var(--surface));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
 }
-:root[data-theme="totality"] .wf .row.selected { background: color-mix(in srgb, var(--accent) 13%, var(--surface)); }
+:root[data-theme="umbra"] .wf .row.selected { background: color-mix(in srgb, var(--accent) 13%, var(--surface)); }
 .wf .row.selected::before { width: 5px; background: var(--accent); }
 .wf .row.selected .row-open { border-color: var(--accent); background: var(--accent); color: var(--surface); }
 .wf .row-title { font-size: 15px; line-height: 1.25; display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
@@ -1596,15 +1596,15 @@ button { cursor: pointer; }
 .case-foot b { color: var(--text-2); }
 
 /* Totality surfaces need more separation from the page than the Corona theme. */
-:root[data-theme="totality"] .plate,
-:root[data-theme="totality"] .ledger,
-:root[data-theme="totality"] .case-card,
-:root[data-theme="totality"] .path-detail {
+:root[data-theme="umbra"] .plate,
+:root[data-theme="umbra"] .ledger,
+:root[data-theme="umbra"] .case-card,
+:root[data-theme="umbra"] .path-detail {
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 48%);
 }
-:root[data-theme="totality"] .plate,
-:root[data-theme="totality"] .ledger,
-:root[data-theme="totality"] .case-card {
+:root[data-theme="umbra"] .plate,
+:root[data-theme="umbra"] .ledger,
+:root[data-theme="umbra"] .case-card {
   box-shadow: 0 24px 54px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -1804,7 +1804,7 @@ kbd {
 .tour-actions { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
 .tour-left { display: flex; gap: 6px; }
 .mini.next { border-color: var(--accent); background: var(--accent); color: #fbf6ea; }
-:root[data-theme="totality"] .mini.next { color: #07100f; }
+:root[data-theme="umbra"] .mini.next { color: #07100f; }
 .mini:disabled { opacity: 0.35; cursor: not-allowed; }
 
 /* -------------------------------------------------------------------- toast */
@@ -1827,7 +1827,7 @@ kbd {
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 .toast.on { opacity: 1; transform: translate(-50%, 0); }
-:root[data-theme="totality"] .toast { color: #07100f; }
+:root[data-theme="umbra"] .toast { color: #07100f; }
 
 /* ------------------------------------------------------------------- motion */
 @keyframes rise { to { transform: none; } }
@@ -1986,7 +1986,7 @@ kbd {
   border-radius: calc(var(--r-lg) - 4px);
   pointer-events: none;
 }
-:root[data-theme="totality"] .scope-field {
+:root[data-theme="umbra"] .scope-field {
   border-color: #1c3235;
   background:
     radial-gradient(520px 260px at 80% 0%, rgba(111, 217, 227, 0.12), transparent 70%),
@@ -1994,8 +1994,8 @@ kbd {
   color: #c9d8d0;
   box-shadow: var(--shadow);
 }
-:root[data-theme="totality"] .scope-field::after { border-color: rgba(111, 217, 227, 0.08); }
-:root[data-theme="totality"] .scope-field::before {
+:root[data-theme="umbra"] .scope-field::after { border-color: rgba(111, 217, 227, 0.08); }
+:root[data-theme="umbra"] .scope-field::before {
   background-image: repeating-linear-gradient(0deg, rgba(111, 217, 227, 0.04) 0 1px, transparent 1px 4px);
 }
 .scope-field canvas {
@@ -2030,11 +2030,11 @@ kbd {
 }
 .scope-field #fieldReadout,
 .scope-field #fieldPeak { color: var(--accent); }
-:root[data-theme="totality"] .scope-field-top,
-:root[data-theme="totality"] .scope-field-bottom { color: #8fa59c; }
-:root[data-theme="totality"] .scope-field-top > span:first-child { color: #dfeee8; }
-:root[data-theme="totality"] .scope-field #fieldReadout,
-:root[data-theme="totality"] .scope-field #fieldPeak { color: #8fe0c6; }
+:root[data-theme="umbra"] .scope-field-top,
+:root[data-theme="umbra"] .scope-field-bottom { color: #8fa59c; }
+:root[data-theme="umbra"] .scope-field-top > span:first-child { color: #dfeee8; }
+:root[data-theme="umbra"] .scope-field #fieldReadout,
+:root[data-theme="umbra"] .scope-field #fieldPeak { color: #8fe0c6; }
 
 .chart-envelope {
   fill: none;
@@ -2584,7 +2584,7 @@ kbd {
 }
 
 @media print {
-  :root, :root[data-theme="totality"] {
+  :root, :root[data-theme="umbra"] {
     color-scheme: light;
     --bg: #ffffff;
     --surface: #ffffff;
@@ -2622,7 +2622,7 @@ kbd {
   .wf-queue { border-right: 0; }
   .wf .row .drawer { display: grid !important; grid-template-rows: 1fr; opacity: 1; visibility: visible; }
   .chapter { break-inside: avoid; }
-  .btn.primary, :root[data-theme="totality"] .btn.primary { color: #fff8f4; }
+  .btn.primary, :root[data-theme="umbra"] .btn.primary { color: #fff8f4; }
   .case-card::before, .gauge-tick, .chart-scan, .peak-halo, .quiet-dot,
   .path::after, .rail-wave, .live-dot::after { animation: none !important; }
 }
@@ -2635,7 +2635,7 @@ kbd {
   --poster-block: #1f4a5c;
   --poster-dot: #a52f2a;
 }
-:root[data-theme="totality"] {
+:root[data-theme="umbra"] {
   --poster-block: #0f2234;
   --poster-dot: #f06b55;
 }
@@ -2679,7 +2679,7 @@ kbd {
   text-transform: uppercase;
   white-space: nowrap;
 }
-:root[data-theme="totality"] .cover-block-label { color: color-mix(in srgb, #eef2ee 70%, transparent); }
+:root[data-theme="umbra"] .cover-block-label { color: color-mix(in srgb, #eef2ee 70%, transparent); }
 
 .ticket-stamp {
   border-color: var(--poster-dot);
@@ -2709,7 +2709,7 @@ kbd {
   background: var(--text);
   color: var(--bg);
 }
-:root[data-theme="totality"] .colophon { background: #05080b; color: var(--text); }
+:root[data-theme="umbra"] .colophon { background: #05080b; color: var(--text); }
 .colophon-brand b {
   display: block;
   color: inherit;
@@ -2784,7 +2784,7 @@ kbd {
 .cover-grid::before { width: min(35%, 392px); }
 .cover-grid::after { right: calc(min(35%, 392px) - clamp(10px, 1.4vw, 18px)); }
 
-/* ============================================================ UMBRA / ECLIPSE
+/* ============================================================ PENUMBRA / ECLIPSE
    Paper, stone, coral, black. The sun ramp runs from ember to corona.
    Instrument Serif carries the editorial voice; Sora carries the poster;
    IBM Plex Mono stays on the instruments. */
@@ -2845,7 +2845,7 @@ kbd {
   --scope-pointer: rgba(255, 227, 179, 0.35);
 }
 
-:root[data-theme="totality"] {
+:root[data-theme="umbra"] {
   color-scheme: dark;
   --coral: #FF7563;
   --sun-1: #FF7A1F;
@@ -2900,7 +2900,7 @@ kbd {
     linear-gradient(178deg, #FBFAF8 0%, var(--paper) 46%, #F1ECE4 100%);
   background-attachment: fixed;
 }
-:root[data-theme="totality"] body {
+:root[data-theme="umbra"] body {
   background-color: var(--bg);
   background-image:
     radial-gradient(1000px 660px at 78% -14%, color-mix(in srgb, var(--sun-1) 18%, transparent), transparent 60%),
@@ -3060,7 +3060,7 @@ kbd {
   );
 }
 .ticket-foot { color: #6E675D; }
-:root[data-theme="totality"] .ticket {
+:root[data-theme="umbra"] .ticket {
   background-color: #F6F4F1;
   background-image: linear-gradient(90deg, var(--coral) 0 25%, var(--sun-1) 25% 50%, var(--sun-2) 50% 75%, var(--sun-3) 75% 100%);
   border-color: #141210;
@@ -3149,7 +3149,7 @@ kbd {
   box-shadow: inset 2.5px 0 0 var(--ink);
   vertical-align: 0;
 }
-:root[data-theme="totality"] .chapter-label::before { box-shadow: inset 2.5px 0 0 var(--paper); }
+:root[data-theme="umbra"] .chapter-label::before { box-shadow: inset 2.5px 0 0 var(--paper); }
 .chapter-head h2 {
   max-width: 23ch;
   font-family: var(--serif);
@@ -3168,13 +3168,13 @@ kbd {
 /* Buttons and chips. */
 .btn { border-radius: 2px; }
 .btn.primary,
-:root[data-theme="totality"] .btn.primary {
+:root[data-theme="umbra"] .btn.primary {
   background: var(--coral);
   border-color: var(--coral);
   color: #141210;
 }
 .btn.primary:hover,
-:root[data-theme="totality"] .btn.primary:hover {
+:root[data-theme="umbra"] .btn.primary:hover {
   background: var(--sun-1);
   border-color: var(--sun-1);
   color: #141210;
@@ -3186,8 +3186,8 @@ kbd {
   border-color: var(--ink);
   color: var(--paper);
 }
-:root[data-theme="totality"] .chip.active,
-:root[data-theme="totality"] .chip[aria-pressed="true"] {
+:root[data-theme="umbra"] .chip.active,
+:root[data-theme="umbra"] .chip[aria-pressed="true"] {
   background: var(--sun-3);
   border-color: var(--sun-3);
   color: #141210;
@@ -3196,7 +3196,7 @@ kbd {
 /* The plate is an instrument, not a card. */
 .plate { border-radius: 2px; }
 .plate-bar { background: color-mix(in srgb, var(--stone) 40%, var(--surface)); }
-:root[data-theme="totality"] .plate-bar { background: color-mix(in srgb, var(--sun-1) 9%, var(--surface)); }
+:root[data-theme="umbra"] .plate-bar { background: color-mix(in srgb, var(--sun-1) 9%, var(--surface)); }
 .plate-note { color: var(--accent); }
 .chart-grid { stroke: var(--line-soft); }
 .chart-base { stroke: var(--line); }
@@ -3238,7 +3238,7 @@ kbd {
 .scope-field #fieldReadout,
 .scope-field #fieldPeak { color: var(--sun-3); }
 .scope-field .live-dot { background: var(--coral); box-shadow: 0 0 10px var(--coral); }
-:root[data-theme="totality"] .scope-field {
+:root[data-theme="umbra"] .scope-field {
   border-color: #2A241F;
   background:
     radial-gradient(640px 300px at 76% -14%, rgba(255, 161, 61, 0.24), transparent 64%),
@@ -3246,15 +3246,15 @@ kbd {
     #0B0A09;
   color: #CFC6B9;
 }
-:root[data-theme="totality"] .scope-field::before {
+:root[data-theme="umbra"] .scope-field::before {
   background-image: repeating-linear-gradient(0deg, rgba(255, 227, 179, 0.05) 0 1px, transparent 1px 4px);
 }
-:root[data-theme="totality"] .scope-field::after { border-color: rgba(255, 227, 179, 0.18); }
-:root[data-theme="totality"] .scope-field-top,
-:root[data-theme="totality"] .scope-field-bottom { color: #A79E91; }
-:root[data-theme="totality"] .scope-field-top > span:first-child { color: #F6F4F1; }
-:root[data-theme="totality"] .scope-field #fieldReadout,
-:root[data-theme="totality"] .scope-field #fieldPeak { color: var(--sun-3); }
+:root[data-theme="umbra"] .scope-field::after { border-color: rgba(255, 227, 179, 0.18); }
+:root[data-theme="umbra"] .scope-field-top,
+:root[data-theme="umbra"] .scope-field-bottom { color: #A79E91; }
+:root[data-theme="umbra"] .scope-field-top > span:first-child { color: #F6F4F1; }
+:root[data-theme="umbra"] .scope-field #fieldReadout,
+:root[data-theme="umbra"] .scope-field #fieldPeak { color: var(--sun-3); }
 
 /* ------------------------------------------------------------- corona dial */
 .coverage-top {
@@ -3380,7 +3380,7 @@ kbd {
 .case-card[data-case="0"]::before { background: linear-gradient(90deg, var(--coral), var(--sun-2)); }
 .case-card[data-case="1"]::before { background: linear-gradient(90deg, var(--sun-2), var(--sun-3)); }
 .case-card[data-case="2"]::before { background: linear-gradient(90deg, var(--ink), var(--sun-1)); }
-:root[data-theme="totality"] .case-card[data-case="2"]::before { background: linear-gradient(90deg, var(--paper), var(--sun-1)); }
+:root[data-theme="umbra"] .case-card[data-case="2"]::before { background: linear-gradient(90deg, var(--paper), var(--sun-1)); }
 .case-card h3 {
   font-family: var(--serif);
   font-weight: 500;
@@ -3407,7 +3407,7 @@ kbd {
   height: 4px;
   background: linear-gradient(90deg, var(--coral), var(--sun-1), var(--sun-2), var(--sun-3), var(--sun-4));
 }
-:root[data-theme="totality"] .colophon { background: #080706; color: var(--paper); }
+:root[data-theme="umbra"] .colophon { background: #080706; color: var(--paper); }
 .colophon-brand b {
   color: inherit;
   font: 400 clamp(38px, 4.6vw, 58px)/0.86 var(--serif);
@@ -3494,7 +3494,7 @@ kbd {
   .colophon { background: #fff; color: #000; }
 }
 
-/* ====================================================== UMBRA v3 / CORONA+TOTALITY
+/* ====================================================== PENUMBRA v3 / CORONA+TOTALITY
    Two sides of one eclipse: Corona is the light record, Totality is the dark
    instrument. Instrument Serif, Sora, IBM Plex Mono. More corona, more gradient,
    more of the eclipse as a visible system. */
@@ -3526,7 +3526,7 @@ body { font-family: var(--sans); }
   background-clip: text;
   color: transparent;
 }
-:root[data-theme="totality"] .chapter-no {
+:root[data-theme="umbra"] .chapter-no {
   background: linear-gradient(180deg, #FF8A75, #FFA13D);
   -webkit-background-clip: text;
   background-clip: text;
@@ -3661,8 +3661,8 @@ body { font-family: var(--sans); }
   box-shadow: 0 0 0 5px color-mix(in srgb, var(--sun-2) 18%, transparent);
 }
 .phase-step.is-total b { color: var(--accent); }
-:root[data-theme="totality"] .phase-mark { background: #141210; border-color: #5A4A3A; color: #FFE3B3; }
-:root[data-theme="totality"] .phase-step.is-total .phase-mark { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+:root[data-theme="umbra"] .phase-mark { background: #141210; border-color: #5A4A3A; color: #FFE3B3; }
+:root[data-theme="umbra"] .phase-step.is-total .phase-mark { background: var(--paper); color: var(--ink); border-color: var(--paper); }
 
 /* ------------------------------------------------------- path of totality */
 .interlude {
@@ -3746,18 +3746,18 @@ body { font-family: var(--sans); }
   background: radial-gradient(circle, rgba(20, 18, 16, 0.55) 1.5px, transparent 1.7px) 0 0 / 14px 10px repeat-x;
   opacity: 0.6;
 }
-:root[data-theme="totality"] .interlude {
+:root[data-theme="umbra"] .interlude {
   background:
     radial-gradient(900px 420px at 48% -26%, rgba(255, 161, 61, 0.28), transparent 70%),
     linear-gradient(105deg, #0B0A09 0%, #241008 30%, #5A1E08 58%, #9A3209 82%, #C2490C 100%);
   color: var(--paper);
 }
-:root[data-theme="totality"] .interlude::before {
+:root[data-theme="umbra"] .interlude::before {
   background: repeating-linear-gradient(114deg, rgba(255, 227, 179, 0.05) 0 2px, transparent 2px 11px);
   mix-blend-mode: screen;
 }
-:root[data-theme="totality"] .interlude-kicker { opacity: 0.78; }
-:root[data-theme="totality"] .beads {
+:root[data-theme="umbra"] .interlude-kicker { opacity: 0.78; }
+:root[data-theme="umbra"] .beads {
   background: radial-gradient(circle, rgba(255, 227, 179, 0.5) 1.5px, transparent 1.7px) 0 0 / 14px 10px repeat-x;
 }
 
@@ -3860,13 +3860,13 @@ body { font-family: var(--sans); }
 }
 .cover > * { position: relative; z-index: 1; }
 .btn.primary,
-:root[data-theme="totality"] .btn.primary {
+:root[data-theme="umbra"] .btn.primary {
   background: linear-gradient(105deg, var(--coral), var(--sun-1));
   border-color: var(--coral);
   color: #141210;
 }
 .btn.primary:hover,
-:root[data-theme="totality"] .btn.primary:hover {
+:root[data-theme="umbra"] .btn.primary:hover {
   background: linear-gradient(105deg, var(--sun-1), var(--sun-2));
   border-color: var(--sun-1);
   color: #141210;
@@ -3874,13 +3874,13 @@ body { font-family: var(--sans); }
 .plate-bar {
   background: linear-gradient(90deg, color-mix(in srgb, var(--sun-4) 26%, var(--surface)), var(--surface) 55%, color-mix(in srgb, var(--sun-3) 12%, var(--surface)));
 }
-:root[data-theme="totality"] .plate-bar {
+:root[data-theme="umbra"] .plate-bar {
   background: linear-gradient(90deg, color-mix(in srgb, var(--sun-1) 13%, var(--surface)), var(--surface) 60%, color-mix(in srgb, var(--sun-1) 7%, var(--surface)));
 }
 .case-card {
   background-image: linear-gradient(155deg, color-mix(in srgb, var(--sun-4) 18%, var(--surface)), var(--surface) 44%);
 }
-:root[data-theme="totality"] .case-card {
+:root[data-theme="umbra"] .case-card {
   background-image: linear-gradient(155deg, color-mix(in srgb, var(--sun-1) 7%, var(--surface)), var(--surface) 46%);
 }
 .coverage-dial::before {
@@ -3912,7 +3912,7 @@ body { font-family: var(--sans); }
   background: radial-gradient(circle, var(--coral) 1.4px, transparent 1.6px) 0 0 / 13px 6px repeat-x;
   opacity: 0.65;
 }
-:root[data-theme="totality"] .chapter-head::after {
+:root[data-theme="umbra"] .chapter-head::after {
   background: radial-gradient(circle, var(--sun-3) 1.4px, transparent 1.6px) 0 0 / 13px 6px repeat-x;
   opacity: 0.6;
 }
@@ -3956,7 +3956,7 @@ body { font-family: var(--sans); }
   .beads { display: none !important; }
 }
 
-/* ======================================================= UMBRA v4 / TOTALITY
+/* ======================================================= PENUMBRA v4 / TOTALITY
    Every surface is an eclipse instrument: a sky watermark, corona rings,
    cut-corner plates, bead lines, eclipse nodes, and gradients that move like
    the light around a black disc. */
@@ -4024,20 +4024,20 @@ body { font-family: var(--sans); }
     radial-gradient(720px 480px at 92% 82%, color-mix(in srgb, var(--sun-3) 11%, transparent), transparent 66%),
     linear-gradient(178deg, #FBFAF8 0%, var(--paper) 46%, #F1ECE4 100%);
 }
-:root[data-theme="totality"] body {
+:root[data-theme="umbra"] body {
   background-image:
     radial-gradient(1040px 720px at 82% -16%, color-mix(in srgb, var(--sun-1) 22%, transparent), transparent 58%),
     radial-gradient(900px 620px at -8% 14%, rgba(58, 30, 52, 0.55) 0, transparent 62%),
     radial-gradient(720px 480px at 96% 88%, color-mix(in srgb, var(--sun-2) 10%, transparent), transparent 66%),
     linear-gradient(178deg, #0D0B0A 0%, var(--bg) 54%, #070605 100%);
 }
-:root[data-theme="totality"] .sky-burst {
+:root[data-theme="umbra"] .sky-burst {
   background: repeating-conic-gradient(from 0deg,
     transparent 0 2.1deg,
     rgba(255, 227, 179, 0.16) 2.1deg 2.28deg);
   opacity: 0.7;
 }
-:root[data-theme="totality"] .sky-ring {
+:root[data-theme="umbra"] .sky-ring {
   background:
     radial-gradient(circle, transparent 0 55%, rgba(255, 200, 92, 0.35) 56% 57.5%, transparent 58.5% 63%,
       rgba(249, 92, 75, 0.22) 64% 65%, transparent 66%);
@@ -4109,8 +4109,8 @@ body { font-family: var(--sans); }
   color: var(--sun-4);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--sun-2) 12%, transparent);
 }
-:root[data-theme="totality"] .chip.active,
-:root[data-theme="totality"] .chip[aria-pressed="true"] {
+:root[data-theme="umbra"] .chip.active,
+:root[data-theme="umbra"] .chip[aria-pressed="true"] {
   background: linear-gradient(105deg, var(--sun-3), var(--sun-2));
   border-color: var(--sun-3);
   color: #141210;
@@ -4329,13 +4329,13 @@ body { font-family: var(--sans); }
   border-color: var(--ink);
   color: var(--sun-4);
 }
-:root[data-theme="totality"] .cc-tab.active {
+:root[data-theme="umbra"] .cc-tab.active {
   background: linear-gradient(105deg, var(--sun-3), var(--sun-2));
   border-color: var(--sun-3);
   color: #141210;
 }
 .cc-tab.active b { color: var(--sun-3); }
-:root[data-theme="totality"] .cc-tab.active b { color: #141210; }
+:root[data-theme="umbra"] .cc-tab.active b { color: #141210; }
 #ccProgress { background: linear-gradient(90deg, var(--coral), var(--sun-2), var(--sun-3)); }
 .cc-dot {
   width: 16px;
@@ -4561,7 +4561,7 @@ body { font-family: var(--sans); }
   .tour-card { border-radius: 0; }
 }
 
-/* Cover theme state: Corona / Totality, with a tiny eclipse bead. */
+/* Cover theme state: Corona / Umbra, with a tiny eclipse bead. */
 .cover-status {
   display: inline-flex;
   flex-wrap: wrap;
@@ -4588,7 +4588,7 @@ body { font-family: var(--sans); }
     conic-gradient(from 210deg, var(--coral), var(--sun-2), var(--sun-3), var(--coral));
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--sun-2) 35%, transparent), 0 0 8px color-mix(in srgb, var(--sun-2) 50%, transparent);
 }
-:root[data-theme="totality"] .cover-mode { color: var(--sun-3); }
+:root[data-theme="umbra"] .cover-mode { color: var(--sun-3); }
 @media (max-width: 720px) {
   .cover-status { justify-content: flex-start; }
 }
@@ -4630,7 +4630,7 @@ body { font-family: var(--sans); }
   opacity: 0.55;
   pointer-events: none;
 }
-:root[data-theme="totality"] .chapter-head::before {
+:root[data-theme="umbra"] .chapter-head::before {
   background: repeating-conic-gradient(from 0deg,
     transparent 0 9deg,
     rgba(255, 200, 92, 0.26) 9deg 9.6deg);
@@ -4648,7 +4648,7 @@ body { font-family: var(--sans); }
   letter-spacing: -0.02em;
 }
 
-/* ===================================================== UMBRA v5 / CLEAN SKY
+/* ===================================================== PENUMBRA v5 / CLEAN SKY
    Corona is a sky, not a sheet of paper. The fold and grain are gone; the
    interface is clean light, eclipse geometry, and a type system built on
    Instrument Serif, Sora, and IBM Plex Mono. */
@@ -4676,7 +4676,7 @@ body::after { display: none; }
   -webkit-mask-image: linear-gradient(180deg, #000, transparent 76%);
   mask-image: linear-gradient(180deg, #000, transparent 76%);
 }
-:root[data-theme="totality"] .sky::after { opacity: 0.22; }
+:root[data-theme="umbra"] .sky::after { opacity: 0.22; }
 
 /* Soft light instead of print offsets. */
 .totality-plate {
@@ -4685,7 +4685,7 @@ body::after { display: none; }
     0 0 80px color-mix(in srgb, var(--sun-2) 16%, transparent);
 }
 :root[data-theme="corona"] .ticket,
-:root[data-theme="totality"] .ticket {
+:root[data-theme="umbra"] .ticket {
   box-shadow: 0 18px 44px rgba(20, 18, 16, 0.22);
 }
 
@@ -4920,7 +4920,7 @@ body::after { display: none; }
 .display em { color: #D8432E; }
 .q-field { color: var(--high); }
 
-/* ===================================================== UMBRA v6 / ONE SYSTEM
+/* ===================================================== PENUMBRA v6 / ONE SYSTEM
    A single surface language: paper for records, black for instruments, coral
    for the live edge. Buttons share one hierarchy; the interlude is a paper
    band with a corona arc and a black plate; the chart is a dark instrument. */
@@ -4974,7 +4974,7 @@ body::after { display: none; }
   border-color: var(--coral);
   color: var(--ink);
 }
-:root[data-theme="totality"] .btn:not(.primary):not(.ghost) {
+:root[data-theme="umbra"] .btn:not(.primary):not(.ghost) {
   background: var(--paper);
   border-color: var(--paper);
   color: var(--ink);
@@ -4982,7 +4982,7 @@ body::after { display: none; }
     0 0 0 1px rgba(255, 227, 179, 0.14),
     0 8px 20px rgba(0, 0, 0, 0.25);
 }
-:root[data-theme="totality"] .btn:not(.primary):not(.ghost):hover {
+:root[data-theme="umbra"] .btn:not(.primary):not(.ghost):hover {
   background: linear-gradient(105deg, var(--sun-3), var(--sun-2));
   border-color: var(--sun-3);
   color: var(--ink);
@@ -5045,7 +5045,7 @@ body::after { display: none; }
   background: radial-gradient(circle, var(--coral) 1.5px, transparent 1.7px) 0 0 / 14px 10px repeat-x;
   opacity: 0.55;
 }
-:root[data-theme="totality"] .interlude {
+:root[data-theme="umbra"] .interlude {
   background:
     radial-gradient(920px 460px at 92% -22%, rgba(255, 161, 61, 0.24), transparent 60%),
     radial-gradient(620px 320px at -8% 112%, rgba(249, 92, 75, 0.1), transparent 62%),
@@ -5053,14 +5053,14 @@ body::after { display: none; }
   color: var(--paper);
   border-color: #2A1208;
 }
-:root[data-theme="totality"] .interlude::before {
+:root[data-theme="umbra"] .interlude::before {
   background: repeating-linear-gradient(114deg, rgba(255, 227, 179, 0.05) 0 2px, transparent 2px 11px);
   mix-blend-mode: screen;
 }
-:root[data-theme="totality"] .interlude-kicker { color: var(--sun-3); }
-:root[data-theme="totality"] .interlude-quote { color: var(--paper); }
-:root[data-theme="totality"] .interlude-quote em { color: var(--sun-4); }
-:root[data-theme="totality"] .path-plate {
+:root[data-theme="umbra"] .interlude-kicker { color: var(--sun-3); }
+:root[data-theme="umbra"] .interlude-quote { color: var(--paper); }
+:root[data-theme="umbra"] .interlude-quote em { color: var(--sun-4); }
+:root[data-theme="umbra"] .path-plate {
   background: var(--paper);
   color: var(--ink);
   border-color: var(--paper);
@@ -5068,10 +5068,10 @@ body::after { display: none; }
     0 20px 50px rgba(0, 0, 0, 0.3),
     0 0 50px rgba(248, 143, 34, 0.1);
 }
-:root[data-theme="totality"] .path-cap { color: #6E675D; }
-:root[data-theme="totality"] .path-node circle { stroke: var(--paper); }
-:root[data-theme="totality"] .path-node text { fill: var(--ink); }
-:root[data-theme="totality"] .beads {
+:root[data-theme="umbra"] .path-cap { color: #6E675D; }
+:root[data-theme="umbra"] .path-node circle { stroke: var(--paper); }
+:root[data-theme="umbra"] .path-node text { fill: var(--ink); }
+:root[data-theme="umbra"] .beads {
   background: radial-gradient(circle, rgba(255, 227, 179, 0.5) 1.5px, transparent 1.7px) 0 0 / 14px 10px repeat-x;
   opacity: 0.6;
 }
@@ -5190,7 +5190,7 @@ body::after { display: none; }
 
 /* Warm the last severity step so the data palette belongs to the eclipse. */
 :root { --low: #7A6A57; }
-:root[data-theme="totality"] { --low: #C9B7A2; }
+:root[data-theme="umbra"] { --low: #C9B7A2; }
 #scopePlate .stem .seg-low { fill: var(--low); }
 #scopePlate .ro-btn {
   background: linear-gradient(105deg, var(--coral), var(--sun-1));
@@ -5203,9 +5203,9 @@ body::after { display: none; }
   color: #141210;
 }
 
-/* In Totality, the secondary button is a dark instrument with a paper edge,
+/* In Umbra, the secondary button is a dark instrument with a paper edge,
    not a second white block competing with the ticket. */
-:root[data-theme="totality"] .btn:not(.primary):not(.ghost) {
+:root[data-theme="umbra"] .btn:not(.primary):not(.ghost) {
   background: #141210;
   border-color: color-mix(in srgb, var(--paper) 28%, transparent);
   color: var(--paper);
@@ -5213,13 +5213,13 @@ body::after { display: none; }
     0 0 0 1px rgba(255, 227, 179, 0.08),
     0 8px 20px rgba(0, 0, 0, 0.3);
 }
-:root[data-theme="totality"] .btn:not(.primary):not(.ghost):hover {
+:root[data-theme="umbra"] .btn:not(.primary):not(.ghost):hover {
   background: linear-gradient(105deg, var(--coral), var(--sun-1));
   border-color: var(--coral);
   color: #141210;
 }
 
-/* ======================================================= UMBRA v7 / NIGHT STAGE
+/* ======================================================= PENUMBRA v7 / NIGHT STAGE
    The cover becomes a full-bleed night observatory: a live starfield, a real
    sun+moon eclipse stage, a ghost wordmark, and a paper receipt. The rest of
    the page keeps the paper/black instrument rhythm. */
@@ -5558,7 +5558,7 @@ body::after { display: none; }
     #0B0A09;
 }
 
-/* ======================================================= UMBRA v8 / TOTALITY ACT
+/* ======================================================= PENUMBRA v8 / TOTALITY ACT
    One pinned, scroll-scrubbed eclipse sequence between the night stage and the
    paper record. Native scroll is the source of truth; reduced motion gets a
    static totality frame. */
@@ -5823,3 +5823,187 @@ body::after { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .case-modal.on { animation: none; }
 }
+
+/* ======================================================= PENUMBRA v9 / CALIBRATE
+   Fix the scroll-stage jank, make both eclipse discs richer, and give the
+   totality act a real job: it reports and opens the run's peak hour. */
+
+/* ---- smoother scroll-driven totality ---- */
+.ta-corona,
+.ta-hint { transition: none; }
+.ta-moon,
+.ta-corona,
+.ta-beads,
+.ta-diamond,
+.ta-progress i { will-change: transform, opacity; }
+.ta-word {
+  height: 1.05em;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: clamp(36px, 4.6vw, 72px);
+  letter-spacing: -0.055em;
+}
+.ta-contacts {
+  margin-top: 16px;
+  padding-top: 0;
+  border-top: 0;
+}
+.ta-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 48px;
+  z-index: 4;
+  margin: 0;
+  text-align: center;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.ta-copy { height: auto; }
+
+/* ---- the act now has a data job ---- */
+.ta-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, auto));
+  justify-content: start;
+  gap: 8px 24px;
+  margin-top: 10px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 227, 179, 0.18);
+}
+.ta-metrics > span {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.ta-metrics .lbl {
+  color: rgba(255, 227, 179, 0.62);
+  font: 500 8px/1.2 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ta-metrics b {
+  color: var(--sun-3);
+  font: 700 16px/1 var(--sans);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.ta-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  margin-top: 14px;
+  padding: 0 16px;
+  border: 1px solid var(--coral);
+  border-radius: 999px;
+  background: linear-gradient(105deg, var(--coral), var(--sun-1));
+  color: #141210;
+  font: 600 9px/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--coral) 10%, transparent);
+  transition: transform 0.18s var(--ease), box-shadow 0.18s ease;
+}
+.ta-open:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--sun-2) 16%, transparent);
+}
+
+/* ---- the cover plate gets the same eclipse detail ---- */
+.totality-orbit { filter: none; }
+.hero-sun,
+.hero-moon,
+.totality-disc,
+.hero-beads,
+.diamond-ring { will-change: transform, opacity; }
+.hero-beads {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: var(--beads, 0);
+}
+.hero-beads i {
+  position: absolute;
+  inset: 0;
+  transform: rotate(var(--a));
+}
+.hero-beads i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 6.4%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--sun-4);
+  box-shadow: 0 0 8px rgba(255, 227, 179, 0.9);
+}
+.diamond-ring { opacity: var(--diamond, 1); }
+.hero-sun::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 42%, rgba(80, 30, 10, 0.16) 0 4%, transparent 5%),
+    radial-gradient(circle at 62% 35%, rgba(80, 30, 10, 0.13) 0 3%, transparent 4%),
+    radial-gradient(circle at 54% 64%, rgba(80, 30, 10, 0.1) 0 5%, transparent 6%);
+}
+.totality-disc::before {
+  content: "";
+  position: absolute;
+  inset: -7%;
+  z-index: -1;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg,
+    transparent 0 7deg,
+    rgba(255, 227, 179, 0.1) 7deg 7.6deg);
+  -webkit-mask-image: radial-gradient(circle, transparent 0 39%, #000 44% 62%, transparent 66%);
+  mask-image: radial-gradient(circle, transparent 0 39%, #000 44% 62%, transparent 66%);
+  animation: corona-turn 90s linear infinite;
+  pointer-events: none;
+}
+
+/* ---- mobile safety ---- */
+@media (max-width: 720px) {
+  .ta-word { font-size: clamp(34px, 11vw, 54px); }
+  .ta-metrics { gap: 8px 14px; }
+  .ta-open { margin-top: 12px; }
+  .ta-hint { bottom: 38px; }
+  .ta-orbit { grid-row: 1; }
+  .ta-copy { grid-row: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .totality-disc::before { animation: none; }
+}
+
+/* Clear the fixed field-guide rail so the pinned act centers in the visible stage. */
+@media (min-width: 721px) and (max-width: 1080px) {
+  .ta-stage { padding-top: calc(8vh + 80px); padding-bottom: 6vh; }
+}
+@media (max-width: 720px) {
+  .ta-stage { padding-top: calc(10vh + 72px); padding-bottom: 7vh; }
+  .ta-metrics { gap: 8px 16px; }
+}
+
+.ta-data-note {
+  margin: 18px 0 0;
+  color: rgba(255, 227, 179, 0.5);
+  font: 500 8px/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Contact flashes ease in on the cover plate; the act stays scroll-locked. */
+.hero-beads,
+.diamond-ring { transition: opacity 0.22s linear; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-beads,
+  .diamond-ring { transition: none; }
+}
+
+.ta-data-note span { color: var(--sun-3); font-weight: 600; font-variant-numeric: tabular-nums; }

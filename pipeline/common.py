@@ -1,4 +1,4 @@
-"""Shared paths, configuration and Sigma helpers for Umbra."""
+"""Shared paths, configuration and Sigma helpers for Penumbra."""
 
 from __future__ import annotations
 

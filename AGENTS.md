@@ -1,4 +1,4 @@
-# Working instructions for Umbra
+# Working instructions for Penumbra
 
 ## Website workflow — required
 
@@ -21,7 +21,7 @@ Before building or redesigning a website:
    prompt references below for structure and constraints.
 4. Extract typed values (palette, type, grid, easing, spacing). Write the
    evidence table and one direction before touching code.
-5. Run the rendered audit after building: 390 / 768 / 1440, Corona and Totality,
+5. Run the rendered audit after building: 390 / 768 / 1440, Corona and Umbra,
    console, keyboard, contrast, Lighthouse.
 
 Reference prompts and what they contribute:
@@ -61,7 +61,7 @@ The full skill and the Desktop brief are at:
   → `#FFE3B3`.
 - Type: Instrument Serif for the editorial voice, Sora 800 for one poster word,
   IBM Plex Mono for data. Do not add a fourth family without a reason.
-- Themes: **Corona** is the light record; **Totality** is the dark instrument.
+- Themes: **Corona** is the light record; **Umbra** is the dark instrument.
 - One poster move per page. The cover carries the black totality plate, the
   corona disc, and the paper ticket. Everything else stays readable.
 - Geometry: the page is an eclipse instrument. The sky ring, cut-corner plates,
@@ -96,4 +96,4 @@ node --check dashboard\app.js
 
 Then check the built page at 1440 and at a true 390px iframe, in light and dark,
 with no console errors and Lighthouse accessibility / best practices / SEO at
-100. Refresh `docs/assets/dashboard.png` and `docs/assets/dashboard-totality.png`.
+100. Refresh `docs/assets/dashboard-corona.png` and `docs/assets/dashboard-umbra.png`.

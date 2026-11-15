@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const DATA = JSON.parse(document.getElementById("umbra-data").textContent);
+  const DATA = JSON.parse(document.getElementById("penumbra-data").textContent);
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
   const LEVELS = ["critical", "high", "medium", "low"];
@@ -59,9 +59,9 @@
   /* ------------------------------------------------------------------ theme */
   const themeLabel = $("#themeLabel");
   const themeButton = $("#themeBtn");
-  const THEME_COLOR = { corona: "#F6F4F1", totality: "#0B0A09" };
+  const THEME_COLOR = { corona: "#F6F4F1", umbra: "#0B0A09" };
   function normalizeTheme(value) {
-    if (value === "totality" || value === "umbra" || value === "dark") return "totality";
+    if (value === "umbra" || value === "totality" || value === "dark") return "umbra";
     if (value === "corona" || value === "light") return "corona";
     return "";
   }
@@ -69,21 +69,21 @@
     const root = document.documentElement;
     if (instant) root.classList.add("no-transition");
     root.dataset.theme = theme;
-    const isTotality = theme === "totality";
-    themeLabel.textContent = isTotality ? "Totality / corona" : "Corona / totality";
-    themeButton.setAttribute("aria-label", isTotality ? "Totality / corona: switch to the Corona theme" : "Corona / totality: switch to the Totality theme");
+    const isUmbra = theme === "umbra";
+    themeLabel.textContent = isUmbra ? "Umbra / corona" : "Corona / umbra";
+    themeButton.setAttribute("aria-label", isUmbra ? "Umbra / corona: switch to the Corona theme" : "Corona / umbra: switch to the Umbra theme");
     const coverMode = $("#coverMode");
-    if (coverMode) coverMode.textContent = isTotality ? "Totality" : "Corona";
+    if (coverMode) coverMode.textContent = isUmbra ? "Umbra" : "Corona";
     const meta = $('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", THEME_COLOR[theme] || THEME_COLOR.corona);
-    document.dispatchEvent(new CustomEvent("umbra:theme", { detail: theme }));
-    try { localStorage.setItem("umbra-theme", theme); } catch (error) { /* file:// storage can be blocked */ }
+    document.dispatchEvent(new CustomEvent("penumbra:theme", { detail: theme }));
+    try { localStorage.setItem("penumbra-theme", theme); } catch (error) { /* file:// storage can be blocked */ }
     if (instant) {
       requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("no-transition")));
     }
   }
   function toggleTheme() {
-    const next = document.documentElement.dataset.theme === "totality" ? "corona" : "totality";
+    const next = document.documentElement.dataset.theme === "umbra" ? "corona" : "umbra";
     if (!reduce && document.startViewTransition) {
       const rect = themeButton.getBoundingClientRect();
       const root = document.documentElement;
@@ -97,10 +97,16 @@
   const requestedTheme = normalizeTheme(params.get("theme"));
   let storedTheme = "";
   if (!requestedTheme) {
-    try { storedTheme = normalizeTheme(localStorage.getItem("umbra-theme")); } catch (error) { storedTheme = ""; }
+    try {
+      storedTheme = normalizeTheme(
+        localStorage.getItem("penumbra-theme") ||
+        localStorage.getItem("umbra-theme") ||
+        localStorage.getItem("sf-theme")
+      );
+    } catch (error) { storedTheme = ""; }
   }
-  const prefersTotality = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-  setTheme(requestedTheme || storedTheme || (prefersTotality ? "totality" : "corona"));
+  const prefersUmbra = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  setTheme(requestedTheme || storedTheme || (prefersUmbra ? "umbra" : "corona"));
   themeButton.addEventListener("click", toggleTheme);
 
   const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
@@ -622,8 +628,11 @@
   function setHeroPhase(index) {
     if (!heroPlate) return;
     const n = Math.max(0, Math.min(4, Number(index) || 0));
+    const contact = n === 1 || n === 3;
     heroPlate.style.setProperty("--phase", String(n));
     heroPlate.style.setProperty("--corona", n === 2 ? "1" : "0.45");
+    heroPlate.style.setProperty("--beads", contact ? "1" : "0");
+    heroPlate.style.setProperty("--diamond", contact ? "1" : "0.35");
     if (heroPhaseLabel) heroPhaseLabel.textContent = heroPhaseNames[n];
     if (railPhaseLabel) railPhaseLabel.textContent = heroPhaseNames[n];
   }
@@ -894,6 +903,59 @@
     const taProgress = $("#taProgress");
     const taWords = ["First contact", "Baily's beads", "Second contact", "Totality", "Third contact", "Fourth contact"];
     let taTick = 0;
+    let taWordIndex = -1;
+
+    /* The act is not decoration: it reports the run's peak hour and opens it. */
+    const taPeak = timeline.reduce(
+      (best, row) => (best === null || Number(row.total) > Number(best.total) ? row : best),
+      null
+    );
+    if (taPeak) {
+      const taActive = activeCounts(taPeak.hour);
+      const taPeakTime = $("#taPeakTime");
+      if (taPeakTime) taPeakTime.textContent = taPeak.hour.slice(11, 16) + "Z";
+      const taValues = {
+        "#taEvents": taPeak.total,
+        "#taDetections": taActive.detections,
+        "#taCorrelations": taActive.correlations,
+        "#taCritical": taPeak.critical
+      };
+      Object.entries(taValues).forEach(([selector, value]) => {
+        const node = $(selector);
+        if (node) node.textContent = number(value);
+      });
+      const taLabels = {
+        "#taEventsLabel": taPeak.total === 1 ? "event" : "events",
+        "#taDetectionsLabel": taActive.detections === 1 ? "detection" : "detections",
+        "#taCorrelationsLabel": taActive.correlations === 1 ? "correlation" : "correlations",
+        "#taCriticalLabel": "critical"
+      };
+      Object.entries(taLabels).forEach(([selector, value]) => {
+        const node = $(selector);
+        if (node) node.textContent = value;
+      });
+      const taOpen = $("#taOpen");
+      if (taOpen) {
+        taOpen.textContent = "Open " + taPeak.hour.slice(11, 16) + "Z in the watch floor";
+        taOpen.addEventListener("click", () => {
+          state.pinnedHour = taPeak.hour;
+          state.hour = taPeak.hour;
+          state.level = "all";
+          state.q = "";
+          const search = $("#search");
+          if (search) search.value = "";
+          paintLevelChips();
+          const index = timeline.findIndex((row) => row.hour === taPeak.hour);
+          initScope();
+          if (index >= 0 && geometry) paintHour(index, true);
+          else paintDefault();
+          switchTab("detections");
+          renderLedger();
+          goTo("#ledger");
+          toast("Pinned " + taPeak.hour.slice(11, 16) + "Z / " + unit(taPeak.total, "event", "events") + " in the peak hour");
+        });
+      }
+    }
     function renderTotality(value) {
       const t = Math.min(1, Math.max(0, value));
       totalityAct.style.setProperty("--moon", ((1 - t * 2) * 82).toFixed(1));
@@ -908,7 +970,10 @@
       if (t >= 0.44) word = 3;
       if (t >= 0.62) word = 4;
       if (t >= 0.82) word = 5;
-      if (taPhase) taPhase.textContent = taWords[word];
+      if (taPhase && word !== taWordIndex) {
+        taPhase.textContent = taWords[word];
+        taWordIndex = word;
+      }
       if (taHint) taHint.style.opacity = String(Math.max(0, 1 - t * 5));
       if (taProgress) taProgress.style.transform = "scaleX(" + t.toFixed(4) + ")";
     }
@@ -1080,7 +1145,7 @@
       // Main trace: a warm light curve, not a cyan oscilloscope.
       ctx.save();
       ctx.shadowColor = sun2;
-      ctx.shadowBlur = document.documentElement.dataset.theme === "totality" ? 14 : 9;
+      ctx.shadowBlur = document.documentElement.dataset.theme === "umbra" ? 14 : 9;
       ctx.strokeStyle = traceGrade;
       ctx.lineWidth = 2;
       ctx.lineJoin = "round";
@@ -1265,7 +1330,7 @@
         });
       }, { threshold: 0.15 }).observe(fieldBox);
     }
-    document.addEventListener("umbra:theme", () => {
+    document.addEventListener("penumbra:theme", () => {
       if (!running) drawField(performance.now());
     });
     resizeField();
@@ -2287,7 +2352,7 @@
     { target: "#cover .ticket", title: "A run you can inspect", body: "This is the output of one deterministic run: 9,223 events, a 50-rule Sigma library, and eight correlation specs. The ticket is the receipt." },
     { target: "#scopePlate", title: "Read the light curve", body: "The light curve counts matched events across the full day. Several hours carry bursts; the shadow bands between them are part of the shape. A rule that fires on everything cannot discriminate." },
     { target: "#pathStrip", title: "Follow the chain", body: "Sigma compiles to Elasticsearch EQL and KQL. Detection executes the queries, correlation adds volume logic, and triage turns matches into a queue with evidence." },
-    { target: "#ledger .chapter-head", title: "Enter the umbra", body: "Umbra is the working console. The queue, the evidence inspector, the host lanes, and the coincidence strip all read from the same detection run." },
+    { target: "#ledger .chapter-head", title: "Enter the Umbra", body: "Umbra is the working console. The queue, the evidence inspector, the host lanes, and the coincidence strip all read from the same detection run." },
     { target: "#ledgerPanel", title: "Work the queue", body: "Filter by severity, host, or technique. Select a detection to keep its events and exact EQL beside the queue. J and K move; Enter selects." },
     { target: "#wfLaneList", title: "Read the field", body: "Every mark is a detection against the 24-hour window, one lane per host. The coincidence strip below adds the volume conditions that a single event cannot carry." },
     { target: "#matrix", title: "Read the corona", body: "The corona ring only counts priority techniques. All 45 are closed in this run; the gaps view stays available as a regression check." },
@@ -2432,7 +2497,7 @@
   }
 
   paletteCommands = [
-    { group: "Go", label: "Totality", hint: "00", run: () => goTo("#cover") },
+    { group: "Go", label: "Penumbra", hint: "00", run: () => goTo("#cover") },
     { group: "Go", label: "First light", hint: "01", run: () => goTo("#run") },
     { group: "Go", label: "Instruments", hint: "02", run: () => goTo("#method") },
     { group: "Go", label: "Umbra", hint: "03", run: () => goTo("#ledger") },

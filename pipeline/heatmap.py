@@ -29,7 +29,7 @@ TILE_GAP = 5
 HEADER_H = 92
 LEGEND_H = 34
 
-# Umbra palette: totality black, paper, ember, corona amber, stone.
+# Penumbra palette: totality black, paper, ember, corona amber, stone.
 BG = "#0B0A09"
 PANEL = "#141210"
 TILE = "#1B1612"
@@ -87,7 +87,7 @@ def build_svg(compiled: list[dict[str, Any]], correlations: list[Any] | None = N
     parts.append(f'<rect width="{WIDTH}" height="4" fill="{BRASS}"/>')
     parts.append(
         f'<text x="{PAD}" y="40" fill="{BONE}" font-size="20" font-weight="700" '
-        f'letter-spacing="0.2">Umbra</text>'
+        f'letter-spacing="0.2">Penumbra</text>'
     )
     parts.append(
         f'<text x="{PAD}" y="62" fill="{MUTED}" font-size="11">'

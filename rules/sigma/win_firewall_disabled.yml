@@ -1,4 +1,4 @@
-# Sigma rule generated for Umbra. Edit the rule, not this comment.
+# Sigma rule generated for Penumbra. Edit the rule, not this comment.
 title: Windows Firewall Disabled
 id: 85a3552c-fbb2-4705-84c0-bc44e642d862
 status: experimental

@@ -145,7 +145,7 @@ def test_html_inlines_every_source_and_has_no_placeholders(tmp_path):
     assert source["styles"][:40] in html
     assert source["fonts"][:20] in html
     assert source["icon"] in html
-    assert "Umbra" in html
+    assert "Penumbra" in html
     assert "data:image/svg+xml," in html
     assert "@font-face" in html
     assert "data:font/woff2;base64," in html
@@ -186,5 +186,5 @@ def test_heatmap_is_valid_svg_with_correlations():
     svg = build_svg(compile_all(), load_specs())
     root = ET.fromstring(svg)
     assert root.tag.endswith("svg")
-    assert "Umbra" in svg
+    assert "Penumbra" in svg
     assert "gap" in svg

@@ -1,4 +1,4 @@
-# Sigma rule generated for Umbra. Edit the rule, not this comment.
+# Sigma rule generated for Penumbra. Edit the rule, not this comment.
 title: Systemd Service Unit Created
 id: 278fb8c7-6c30-40a1-9525-85391c1f67f0
 status: experimental

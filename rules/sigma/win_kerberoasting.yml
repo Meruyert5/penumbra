@@ -1,4 +1,4 @@
-# Sigma rule generated for Umbra. Edit the rule, not this comment.
+# Sigma rule generated for Penumbra. Edit the rule, not this comment.
 title: Kerberoasting Service Ticket Request
 id: b86d6650-c739-4d0a-ad66-06d10e9e78a2
 status: experimental

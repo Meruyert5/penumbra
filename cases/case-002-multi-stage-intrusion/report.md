@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Case ID | UMB-2026-002 |
+| Case ID | PNB-2026-002 |
 | Date | 2026-11-11 |
 | Analyst | Meruyert |
 | Severity | Critical |

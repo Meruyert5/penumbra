@@ -108,7 +108,7 @@ Refresh the README hero screenshot after a dashboard change. With the dashboard 
 & "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new `
   --disable-gpu --hide-scrollbars --force-device-scale-factor=1 `
   --user-data-dir="$env:TEMP\sf-chrome" --window-size=1440,2100 `
-  --screenshot="$PWD\docs\assets\dashboard.png" "http://localhost:8765/index.html"
+  --screenshot="$PWD\docs\assets\dashboard-corona.png" "http://localhost:8765/index.html"
 ```
 
 Commit the regenerated files together with the change that caused them.

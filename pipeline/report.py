@@ -331,7 +331,7 @@ def build_html(payload: dict[str, Any], source: dict[str, str]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Render the Umbra dashboard")
+    parser = argparse.ArgumentParser(description="Render the Penumbra dashboard")
     parser.add_argument("--alerts", default=str(ALERTS_DIR / "alerts.json"))
     parser.add_argument("--rules", default=str(COMPILED_DIR / "rules.json"))
     parser.add_argument("--cases", default=str(CASES_DIR / "cases.json"))

@@ -1,36 +1,36 @@
 # Design research: Pinterest first, then the eclipse
 
-This is the working record behind Umbra. Bt is a reference for the next pass,
+This is the working record behind Penumbra. It is a reference for the next pass,
 not a mood board.
 
 ## Method
 
-1. ptart with the supplied Pinterest board. Open every pin at full size; do not
+1. Start with the supplied Pinterest board. Open every pin at full size; do not
    judge from the contact sheet.
 2. Read the pin caption and the creator's source link. The caption is where the
    designer states the rule they are teaching.
 3. Watch the video pins and extract frames at the start, middle, and end. Motion
    and composition cannot be judged from a still.
-4. pearch adjacent terms after the first pass: editorial poster, solar eclipse
+4. Search adjacent terms after the first pass: editorial poster, solar eclipse
    poster, grain texture, halftone, serif grotesque pairing, grid system, color
    psychology, 2026 web design.
 5. Write down what each reference teaches about attention, structure, type,
    color, grid, texture, motion, and UX. Then make one specific decision for the
    product.
-6. Bf Pinterest is login-walled, use the public pin page (Open Graph metadata,
+6. If Pinterest is login-walled, use the public pin page (Open Graph metadata,
    caption, cover image), the creator's live site, and the closest real
    reference set. Record why the substitute was used.
 
-## pources
+## Sources
 
 - The 44 shared Pinterest pins: editorial posters, color-combo cards, grid and
-  layout-rule pins, UB/UX law pins, paper and grain textures, and cinematic
+  layout-rule pins, UI/UX law pins, paper and grain textures, and cinematic
   website reels.
 - Pins studied at full size: 5 Layout Rules, 5 Orange/Milk, 6 Website Effects,
   8 UX Laws, 13 Graphic Design Rules, 19 Grid System, 25 Shadow Ads, 30 Spiced
   Cherry, 39 CLARA, 40 Nature, 43 Woodworking, 44 Newform.
 - The Pinterest pin `893331276113180692` and the enlarged swatches supplied with
-  it: Paper `#F6F4F1`, ptone `#E4DED2`, Coral `#F95C4B`, Black, and the punset
+  it: Paper `#F6F4F1`, Stone `#E4DED2`, Coral `#F95C4B`, Black, and the sunset
   ramp `#EA6113`, `#F88F22`, `#FBB931`, `#FFE3B3`.
 - [Laws of UX](https://lawsofux.com/): Fitts, Hick, Miller, Jakob, proximity,
   common region, aesthetic-usability.
@@ -58,27 +58,27 @@ not a mood board.
   fill every value; the empty space is part of the composition.
 - **Spiced Cherry (pin 30).** Two named colors and a gradient large enough to be
   the subject. The hex labels are the content.
-- **polar eclipse posters.** A black disc, a thin corona ring, a warm gradient,
+- **Solar eclipse posters.** A black disc, a thin corona ring, a warm gradient,
   and grain. The image works because the values are separated: near-black core,
   hot ring, soft dust. The type is small and deferential.
-- **Ultra pcroll.** A hot orange/red poster with an oversized word and a narrow
+- **Ultra Scroll.** A hot orange/red poster with an oversized word and a narrow
   supporting line. The contrast is the layout.
 
 ## The scheme
 
 A warm monochrome record with one hot accent and a four-stop corona:
 
-| Role | Corona | Totality |
+| Role | Corona | Umbra |
 |---|---|---|
 | Paper / desk | `#F6F4F1` | `#0B0A09` |
-| ptone | `#E4DED2` | `#1D1916` |
-| Bnk | `#141210` | `#F6F4F1` |
+| Stone | `#E4DED2` | `#1D1916` |
+| Ink | `#141210` | `#F6F4F1` |
 | Coral (text) | `#C9402C` | `#FF8A75` |
 | Coral (fill) | `#F95C4B` | `#FF7563` |
-| punset 1 | `#EA6113` | `#FF7A1F` |
-| punset 2 | `#F88F22` | `#FFA13D` |
-| punset 3 | `#FBB931` | `#FFC85C` |
-| punset 4 | `#FFE3B3` | `#FFE3B3` |
+| Sunset 1 | `#EA6113` | `#FF7A1F` |
+| Sunset 2 | `#F88F22` | `#FFA13D` |
+| Sunset 3 | `#FBB931` | `#FFC85C` |
+| Sunset 4 | `#FFE3B3` | `#FFE3B3` |
 
 Apply **60-30-10**: paper is about 60% of the field, ink and stone 30%, and the
 coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
@@ -87,21 +87,21 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 
 - **Paper** reads as an observation log: calm, human, and archivable.
 - **Black** reads as totality: the instrument, the terminal, the end band.
-- **Coral** reads as the live edge and the critical case. Bt is warm, not
+- **Coral** reads as the live edge and the critical case. It is warm, not
   alarming.
 - **Amber and ember** read as the corona and as the high/medium severity steps.
-- **Moss** is the only cool note. Bt marks low severity and valid verdicts, so
+- **Moss** is the only cool note. It marks low severity and valid verdicts, so
   the data has a fourth distinguishable step without leaving the natural palette.
 
 ## Typography
 
 - **Instrument Serif** for the editorial voice: cover lyric, chapter titles, case
-  titles, big numerals. Bts high contrast and soft terminals carry the poster.
+  titles, big numerals. Its high contrast and soft terminals carry the poster.
 - **Sora 800** for one poster word per chapter and the `SHADOW.`
   line. The pairing is the 5 Layout Rules move: serif + heavy grotesque.
 - **IBM Plex Mono 400/500** for labels, timestamps, IDs, and commands.
 - Two families do the identity; mono is the instrument. Do not add a fourth.
-- pcale: 8, 9, 9.5, 10.5, 12, 14, 15, 16, 19, 22, 30, 36, 46, 62, 78, 112.
+- Scale: 8, 9, 9.5, 10.5, 12, 14, 15, 16, 19, 22, 30, 36, 46, 62, 78, 112.
 - Display line-height 0.8-0.98; body 1.62; ledes 54-58ch.
 
 ## Texture and surface
@@ -118,8 +118,8 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 
 - One family: 24px grid, 1.5px stroke, round caps and joins.
 - The mark is a black eclipse disc with a coral upper arc, an amber lower arc,
-  and four registration ticks. Bt matches the cover plate.
-- Bcon-only controls always carry an `aria-label`; ambiguous icons get text.
+  and four registration ticks. It matches the cover plate.
+- Icon-only controls always carry an `aria-label`; ambiguous icons get text.
 
 ## Motion
 
@@ -191,10 +191,10 @@ a fixed sky with a corona ring and sunburst, a five-stop contact ribbon that pin
 the chart, a path-of-totality interlude, a diamond ring, Baily's-beads rules,
 cut-corner plates, capsule controls, and eclipse nodes in the pipeline and case
 chain. The final pass removed the paper fold and grain, replaced the orange
-interlude with a paper band and a black path plate (inverted in Totality), turned
+interlude with a paper band and a black path plate (inverted in Umbra), turned
 the chart into a dark instrument with warm stems and a matching readout, made the
 low severity stone instead of green, and unified the buttons into one hierarchy:
-gradient primary, ink-in-Corona / paper-edge-in-Totality secondary, and a
+gradient primary, ink-in-Corona / paper-edge-in-Umbra secondary, and a
 transparent ghost. The scope stays flat and data-readable.
 
 ## v6 reference check
@@ -215,7 +215,7 @@ pass:
 | Observation | Decision |
 |---|---|
 | Three cover buttons had three unrelated fills | One hierarchy: gradient primary, ink/paper secondary, transparent ghost |
-| The orange interlude was a separate visual world | Paper band + corona arc + black path plate; inverted in Totality |
+| The orange interlude was a separate visual world | Paper band + corona arc + black path plate; inverted in Umbra |
 | The chart read as a generic white analytics chart | Black instrument with gold grid, warm stems, dark readout |
 | Green low-severity broke the sunset family | Low severity is stone in both themes |
 | Paper fold, grain, and hard riso shadows remained | Removed; celestial dust and soft light instead |
@@ -256,7 +256,7 @@ grid. The strongest references:
 |---|---|
 | The eclipse is the hero, not a side illustration | Full-bleed dark night stage; the copy and receipt sit over it |
 | A real sun + moon reads better than a painted black center | Separate sun and moon discs; the moon shifts with the selected contact |
-| Giant type can be the image | Ghost `UMBRA` wordmark, oversized `KEEP THE SHADOW`, and a kinetic phase ticker |
+| Giant type can be the image | Ghost `PENUMBRA` wordmark, oversized `KEEP THE SHADOW`, and a kinetic phase ticker |
 | Dark astronomy sites use one horizontal strip | The path plate and the case cards become horizontal reels |
 | Kinetic posters create rhythm with repetition | The phase ticker repeats C1-C4, Saros, and the window |
 | Paper receipts are the human artifact | The run ticket stays a bright paper object on the night stage |

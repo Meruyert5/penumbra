@@ -1,4 +1,4 @@
-# Sigma rule generated for Umbra. Edit the rule, not this comment.
+# Sigma rule generated for Penumbra. Edit the rule, not this comment.
 title: Command Injection Attempt in Web Request
 id: 210b7585-3f4d-4091-a0a2-0849e0183e75
 status: experimental

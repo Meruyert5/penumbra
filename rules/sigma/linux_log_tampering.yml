@@ -1,4 +1,4 @@
-# Sigma rule generated for Umbra. Edit the rule, not this comment.
+# Sigma rule generated for Penumbra. Edit the rule, not this comment.
 title: Linux Log File Tampering
 id: de7c6ec7-2b58-4a2b-88e4-e5a65987b270
 status: experimental

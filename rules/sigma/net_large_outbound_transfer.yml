@@ -1,4 +1,4 @@
-# Sigma rule generated for Umbra. Edit the rule, not this comment.
+# Sigma rule generated for Penumbra. Edit the rule, not this comment.
 title: Large Outbound Network Transfer
 id: 555e497d-29ff-490b-ac62-ca3fb6815853
 status: experimental

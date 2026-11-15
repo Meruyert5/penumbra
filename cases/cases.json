@@ -1,6 +1,6 @@
 [
   {
-    "id": "UMB-2026-001",
+    "id": "PNB-2026-001",
     "slug": "case-001-ssh-bruteforce",
     "title": "SSH brute force followed by a successful login",
     "severity": "high",
@@ -14,7 +14,7 @@
     "path": "cases/case-001-ssh-bruteforce/report.md"
   },
   {
-    "id": "UMB-2026-002",
+    "id": "PNB-2026-002",
     "slug": "case-002-multi-stage-intrusion",
     "title": "Macro to credential theft to persistence",
     "severity": "critical",
@@ -35,7 +35,7 @@
     "path": "cases/case-002-multi-stage-intrusion/report.md"
   },
   {
-    "id": "UMB-2026-003",
+    "id": "PNB-2026-003",
     "slug": "case-003-ransomware",
     "title": "Ransomware pre-encryption sequence on a workstation",
     "severity": "critical",

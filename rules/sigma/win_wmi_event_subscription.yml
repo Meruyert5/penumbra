@@ -1,4 +1,4 @@
-# Sigma rule generated for Umbra. Edit the rule, not this comment.
+# Sigma rule generated for Penumbra. Edit the rule, not this comment.
 title: WMI Event Subscription Persistence
 id: ef58d3ad-a338-419e-bcba-2f0ab6376890
 status: experimental

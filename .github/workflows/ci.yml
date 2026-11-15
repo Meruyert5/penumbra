@@ -1,4 +1,4 @@
-name: umbra-ci
+name: penumbra-ci
 
 on:
   push:

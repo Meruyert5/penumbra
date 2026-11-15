@@ -1,4 +1,4 @@
-# Sigma rule generated for Umbra. Edit the rule, not this comment.
+# Sigma rule generated for Penumbra. Edit the rule, not this comment.
 title: Linux Reverse Shell Command
 id: 69c9802b-a89d-4d98-a699-a5602a40656a
 status: experimental
