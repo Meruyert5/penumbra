@@ -1,5 +1,44 @@
 # Working instructions for Umbra
 
+## Website workflow — required
+
+> Before you design anything, do the Pinterest research. Open the board and the
+> individual pins, read the captions, follow the creators' source links, watch
+> the video pins and extract frames. Search adjacent terms for the style, type,
+> color, texture, grid, motion, and interface. Write an evidence table of what
+> each reference teaches about attention, structure, typography, color, grid,
+> texture, surface, motion, icons, and accents. Then choose one specific
+> direction for this product, list the three moves that prove it, and list what
+> you will not do. Only after that, write the code. If a source is login-walled,
+> say so and use the public pin page or the creator's live site instead.
+
+Before building or redesigning a website:
+
+1. Load `frontend-design-pro` and its `design-research` / `web-interface`
+   catalog skill.
+2. Load `pinterest-reference-first`.
+3. Collect 3–5 current references from Pinterest or Reddit, then check the
+   prompt references below for structure and constraints.
+4. Extract typed values (palette, type, grid, easing, spacing). Write the
+   evidence table and one direction before touching code.
+5. Run the rendered audit after building: 390 / 768 / 1440, Corona and Totality,
+   console, keyboard, contrast, Lighthouse.
+
+Reference prompts and what they contribute:
+
+- [TISA: 40+ best prompts for AI website design](https://www.tisatech.in/blog/best-prompts-for-website-design/)
+  — the six-part brief: what, who, sections, style, colors/fonts, features.
+  Also mobile-first, 44px touch targets, and 320–1440 testing.
+- [AdvertisingBusiness: 25 AI prompts for website design](https://www.advertisingbusiness.org/ai-prompts-for-website-design/)
+  — the master context block, one primary CTA plus at most two secondary
+  actions, compare three directions, and an accessibility/conversion QA pass.
+- [AI UX Playground: prompts for designers](https://aiuxplayground.com/prompts/for-designers)
+  — design briefs, information architecture, visual hierarchy, design tokens,
+  “add taste”, “polish UI”, “grill my design”, and AGENTS/DESIGN.md prompts.
+
+Do not copy a reference. Extract the rule, translate it into this product's
+tokens, and name the source behind the decision.
+
 ## Pinterest first
 
 Before any visual, UI, brand, motion, or layout change:

@@ -4944,6 +4944,305 @@ body::after { display: none; }
 :root { --accent: #B93A27; }
 .display em { color: #D8432E; }
 .q-field { color: var(--high); }
+
+/* ===================================================== UMBRA v6 / ONE SYSTEM
+   A single surface language: paper for records, black for instruments, coral
+   for the live edge. Buttons share one hierarchy; the interlude is a paper
+   band with a corona arc and a black plate; the chart is a dark instrument. */
+
+/* ---------------------------------------------------------- button hierarchy */
+.btn {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--text);
+  box-shadow: none;
+}
+.btn:hover {
+  background: color-mix(in srgb, var(--sun-4) 18%, var(--surface));
+  border-color: var(--sun-1);
+  color: var(--accent);
+}
+.btn.primary {
+  background: linear-gradient(105deg, var(--coral), var(--sun-1) 58%, var(--sun-2));
+  border-color: var(--coral);
+  color: #141210;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--coral) 30%, transparent),
+    0 10px 26px color-mix(in srgb, var(--sun-1) 20%, transparent);
+}
+.btn.primary:hover {
+  background: linear-gradient(105deg, var(--sun-1), var(--sun-2));
+  border-color: var(--sun-1);
+  color: #141210;
+}
+.btn.ghost {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--text) 22%, transparent);
+  color: var(--text-2);
+  box-shadow: none;
+}
+.btn.ghost:hover {
+  background: transparent;
+  border-color: var(--sun-1);
+  color: var(--accent);
+}
+:root[data-theme="corona"] .btn:not(.primary):not(.ghost) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ink) 18%, transparent),
+    0 8px 20px rgba(20, 18, 16, 0.16);
+}
+:root[data-theme="corona"] .btn:not(.primary):not(.ghost):hover {
+  background: linear-gradient(105deg, var(--coral), var(--sun-1));
+  border-color: var(--coral);
+  color: var(--ink);
+}
+:root[data-theme="totality"] .btn:not(.primary):not(.ghost) {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 1px rgba(255, 227, 179, 0.14),
+    0 8px 20px rgba(0, 0, 0, 0.25);
+}
+:root[data-theme="totality"] .btn:not(.primary):not(.ghost):hover {
+  background: linear-gradient(105deg, var(--sun-3), var(--sun-2));
+  border-color: var(--sun-3);
+  color: var(--ink);
+}
+.cc-play {
+  background: linear-gradient(105deg, var(--coral), var(--sun-1));
+  border-color: var(--coral);
+  color: #141210;
+}
+.cc-play:hover {
+  background: linear-gradient(105deg, var(--sun-1), var(--sun-2));
+  border-color: var(--sun-1);
+  color: #141210;
+}
+
+/* --------------------------------------------------------- interlude blending */
+.interlude {
+  background:
+    radial-gradient(920px 460px at 92% -22%, color-mix(in srgb, var(--sun-2) 30%, transparent), transparent 60%),
+    radial-gradient(620px 320px at -8% 112%, color-mix(in srgb, var(--coral) 10%, transparent), transparent 62%),
+    var(--paper);
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.interlude::before {
+  background: repeating-linear-gradient(114deg, rgba(20, 18, 16, 0.045) 0 2px, transparent 2px 11px);
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+.interlude::after {
+  content: "";
+  position: absolute;
+  right: -150px;
+  top: -170px;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--coral) 24%, transparent);
+  box-shadow:
+    0 0 0 18px color-mix(in srgb, var(--sun-2) 5%, transparent),
+    0 0 0 44px color-mix(in srgb, var(--coral) 3%, transparent);
+  pointer-events: none;
+}
+.interlude-kicker { color: var(--accent); opacity: 1; }
+.interlude-quote { color: var(--ink); }
+.interlude-quote em { color: var(--accent); }
+.path-plate {
+  background: #0B0A09;
+  color: var(--sun-4);
+  border-color: #141210;
+  box-shadow:
+    0 20px 50px rgba(20, 18, 16, 0.22),
+    0 0 50px color-mix(in srgb, var(--sun-2) 8%, transparent);
+}
+.path-cap { color: rgba(255, 227, 179, 0.72); }
+.path-node circle { fill: var(--coral); stroke: #0B0A09; }
+.path-node text { fill: #FFE3B3; }
+.beads {
+  background: radial-gradient(circle, var(--coral) 1.5px, transparent 1.7px) 0 0 / 14px 10px repeat-x;
+  opacity: 0.55;
+}
+:root[data-theme="totality"] .interlude {
+  background:
+    radial-gradient(920px 460px at 92% -22%, rgba(255, 161, 61, 0.24), transparent 60%),
+    radial-gradient(620px 320px at -8% 112%, rgba(249, 92, 75, 0.1), transparent 62%),
+    #0B0A09;
+  color: var(--paper);
+  border-color: #2A1208;
+}
+:root[data-theme="totality"] .interlude::before {
+  background: repeating-linear-gradient(114deg, rgba(255, 227, 179, 0.05) 0 2px, transparent 2px 11px);
+  mix-blend-mode: screen;
+}
+:root[data-theme="totality"] .interlude-kicker { color: var(--sun-3); }
+:root[data-theme="totality"] .interlude-quote { color: var(--paper); }
+:root[data-theme="totality"] .interlude-quote em { color: var(--sun-4); }
+:root[data-theme="totality"] .path-plate {
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--paper);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.3),
+    0 0 50px rgba(248, 143, 34, 0.1);
+}
+:root[data-theme="totality"] .path-cap { color: #6E675D; }
+:root[data-theme="totality"] .path-node circle { stroke: var(--paper); }
+:root[data-theme="totality"] .path-node text { fill: var(--ink); }
+:root[data-theme="totality"] .beads {
+  background: radial-gradient(circle, rgba(255, 227, 179, 0.5) 1.5px, transparent 1.7px) 0 0 / 14px 10px repeat-x;
+  opacity: 0.6;
+}
+
+/* ---------------------------------------------------------- chart instrument */
+#scopePlate {
+  background: #0B0A09;
+  border-color: #2A1208;
+  color: var(--paper);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.28),
+    0 0 70px color-mix(in srgb, var(--sun-2) 9%, transparent);
+}
+#scopePlate .plate-bar {
+  background: linear-gradient(90deg, #0B0A09, #2A1208);
+  border-bottom-color: #2A1208;
+  color: rgba(255, 227, 179, 0.72);
+}
+#scopePlate .plate-title { color: var(--paper); }
+#scopePlate .plate-note { color: var(--sun-3); }
+#scopePlate .plate-replay {
+  border-color: #3A2418;
+  background: #141210;
+  color: var(--sun-4);
+}
+#scopePlate .plate-replay:hover {
+  border-color: var(--sun-2);
+  color: var(--paper);
+}
+#scopePlate .chart-wrap {
+  background: radial-gradient(500px 260px at 78% 0%, rgba(248, 143, 34, 0.09), transparent 70%);
+}
+#scopePlate .scope-readout {
+  border-left-color: #2A1208;
+  background:
+    radial-gradient(300px 180px at 100% 0%, rgba(248, 143, 34, 0.12), transparent 70%),
+    linear-gradient(180deg, #141210, #0B0A09);
+}
+#scopePlate .ro-head { color: rgba(255, 227, 179, 0.58); }
+#scopePlate .ro-hour { color: var(--sun-3); }
+#scopePlate .ro-hour small { color: rgba(255, 227, 179, 0.58); }
+#scopePlate .ro-total { color: rgba(255, 227, 179, 0.7); }
+#scopePlate .ro-total b { color: var(--paper); }
+#scopePlate .ro-sub { color: var(--sun-3); }
+#scopePlate .ro-row { color: rgba(255, 227, 179, 0.64); }
+#scopePlate .ro-row b { color: var(--paper); }
+#scopePlate .ro-row i { border-radius: 50%; box-shadow: 0 0 7px currentColor; }
+#scopePlate .ro-note { color: rgba(255, 227, 179, 0.56); }
+#scopePlate .ro-note b { color: var(--sun-4); }
+#scopePlate .ro-active { color: rgba(255, 227, 179, 0.7); }
+#scopePlate .ro-active b { color: #8FD8BC; }
+#scopePlate .ro-btn,
+#scopePlate .mini {
+  border-color: #3A2418;
+  background: #141210;
+  color: var(--sun-4);
+}
+#scopePlate .ro-btn:hover,
+#scopePlate .mini:hover {
+  border-color: var(--sun-2);
+  color: var(--paper);
+}
+#scopePlate .chart-axis text { fill: rgba(255, 227, 179, 0.58); }
+#scopePlate .chart-grid { stroke: rgba(255, 227, 179, 0.1); }
+#scopePlate .chart-base { stroke: rgba(255, 227, 179, 0.24); }
+#scopePlate .chart-envelope {
+  stroke: var(--sun-2);
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--sun-2) 45%, transparent));
+}
+#scopePlate .chart-envelope-fill { fill: rgba(248, 143, 34, 0.1); }
+#scopePlate .chart-quiet-line { stroke: rgba(255, 227, 179, 0.2); }
+#scopePlate .quiet-label { fill: var(--sun-3); }
+#scopePlate .quiet-bracket { stroke: rgba(255, 227, 179, 0.2); }
+#scopePlate .quiet-dot { fill: var(--coral); }
+#scopePlate .crosshair { stroke: var(--sun-3); }
+#scopePlate .col-focus { fill: var(--sun-2); }
+#scopePlate .peak-dot { fill: var(--coral); }
+#scopePlate .peak-halo { stroke: var(--coral); }
+#scopePlate .stem .seg-critical { fill: var(--coral); }
+#scopePlate .stem .seg-high { fill: var(--sun-1); }
+#scopePlate .stem .seg-medium { fill: var(--sun-3); }
+#scopePlate .stem .seg-low { fill: #8FD8BC; }
+#scopePlate .stem-cap { stroke: var(--sun-1); }
+#scopePlate .live-dot { background: var(--coral); box-shadow: 0 0 9px var(--coral); }
+
+/* --------------------------------------------------------- dashboard details */
+.wf-inspector { position: relative; overflow: hidden; }
+.wf-inspector::before {
+  content: "";
+  position: absolute;
+  right: -68px;
+  top: -68px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--coral) 14%, transparent);
+  box-shadow:
+    0 0 0 14px color-mix(in srgb, var(--coral) 4%, transparent),
+    0 0 0 30px color-mix(in srgb, var(--sun-2) 3%, transparent);
+  pointer-events: none;
+}
+.wf-inspector > * { position: relative; z-index: 1; }
+.matrix { position: relative; }
+.matrix::before {
+  content: "";
+  position: absolute;
+  inset: -24px -12px;
+  pointer-events: none;
+  background: radial-gradient(620px 300px at 82% -10%, color-mix(in srgb, var(--sun-2) 8%, transparent), transparent 70%);
+}
+.matrix > * { position: relative; z-index: 1; }
+
+@media (max-width: 720px) {
+  .interlude::after { width: 280px; height: 280px; right: -120px; top: -130px; }
+}
+
+/* Warm the last severity step so the data palette belongs to the eclipse. */
+:root { --low: #7A6A57; }
+:root[data-theme="totality"] { --low: #C9B7A2; }
+#scopePlate .stem .seg-low { fill: var(--low); }
+#scopePlate .ro-btn {
+  background: linear-gradient(105deg, var(--coral), var(--sun-1));
+  border-color: var(--coral);
+  color: #141210;
+}
+#scopePlate .ro-btn:hover {
+  background: linear-gradient(105deg, var(--sun-1), var(--sun-2));
+  border-color: var(--sun-1);
+  color: #141210;
+}
+
+/* In Totality, the secondary button is a dark instrument with a paper edge,
+   not a second white block competing with the ticket. */
+:root[data-theme="totality"] .btn:not(.primary):not(.ghost) {
+  background: #141210;
+  border-color: color-mix(in srgb, var(--paper) 28%, transparent);
+  color: var(--paper);
+  box-shadow:
+    0 0 0 1px rgba(255, 227, 179, 0.08),
+    0 8px 20px rgba(0, 0, 0, 0.3);
+}
+:root[data-theme="totality"] .btn:not(.primary):not(.ghost):hover {
+  background: linear-gradient(105deg, var(--coral), var(--sun-1));
+  border-color: var(--coral);
+  color: #141210;
+}
 </style>
 </head>
 <body>

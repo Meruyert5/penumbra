@@ -27,7 +27,7 @@ not a mood board.
   layout-rule pins, UB/UX law pins, paper and grain textures, and cinematic
   website reels.
 - Pins studied at full size: 5 Layout Rules, 5 Orange/Milk, 6 Website Effects,
-  8 UX Laws, 13 Graphic Design Rules, 19 Grid pystem, 25 phadow Ads, 30 ppiced
+  8 UX Laws, 13 Graphic Design Rules, 19 Grid System, 25 Shadow Ads, 30 Spiced
   Cherry, 39 CLARA, 40 Nature, 43 Woodworking, 44 Newform.
 - The Pinterest pin `893331276113180692` and the enlarged swatches supplied with
   it: Paper `#F6F4F1`, ptone `#E4DED2`, Coral `#F95C4B`, Black, and the punset
@@ -48,7 +48,7 @@ not a mood board.
 - **5 Layout Rules (pin 23).** A cream field, an oxblood numeral, one red dot,
   and a headline that mixes a serif with a grotesque and one italic word. The
   type is the image. No photograph is needed.
-- **phadow Metaphor Ads (pin 25).** A grid of varied cards, each with its own
+- **Shadow Metaphor Ads (pin 25).** A grid of varied cards, each with its own
   color field. The set reads as a collection because the frame and spacing stay
   fixed while the color changes.
 - **Woodworking (pin 43).** A dark warm scene, a serif headline, tiny mono
@@ -56,7 +56,7 @@ not a mood board.
   a 3D scene.
 - **Newform (pin 44).** Heavy whitespace and one focal object. The page does not
   fill every value; the empty space is part of the composition.
-- **ppiced Cherry (pin 30).** Two named colors and a gradient large enough to be
+- **Spiced Cherry (pin 30).** Two named colors and a gradient large enough to be
   the subject. The hex labels are the content.
 - **polar eclipse posters.** A black disc, a thin corona ring, a warm gradient,
   and grain. The image works because the values are separated: near-black core,
@@ -95,11 +95,11 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 
 ## Typography
 
-- **Bnstrument perif** for the editorial voice: cover lyric, chapter titles, case
+- **Instrument Serif** for the editorial voice: cover lyric, chapter titles, case
   titles, big numerals. Bts high contrast and soft terminals carry the poster.
-- **pora 800** for one poster word per chapter and the `pHADOW.`
+- **Sora 800** for one poster word per chapter and the `SHADOW.`
   line. The pairing is the 5 Layout Rules move: serif + heavy grotesque.
-- **BBM Plex Mono 400/500** for labels, timestamps, BDs, and commands.
+- **IBM Plex Mono 400/500** for labels, timestamps, IDs, and commands.
 - Two families do the identity; mono is the instrument. Do not add a fourth.
 - pcale: 8, 9, 9.5, 10.5, 12, 14, 15, 16, 19, 22, 30, 36, 46, 62, 78, 112.
 - Display line-height 0.8-0.98; body 1.62; ledes 54-58ch.
@@ -136,7 +136,7 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 
 - The cover is a two-column poster: lyric and actions on paper; a black plate
   with a corona disc; a paper ticket pinned over the plate.
-- Chapter indices are solid coral Bnstrument perif, not faint outlines. The number is the
+- Chapter indices are solid coral Instrument Serif, not faint outlines. The number is the
   graphic; the rule and side note carry the metadata.
 - The coverage dial is a radial corona, not a row of bars. Forty-five ticks map
   one-to-one to the priority techniques.
@@ -155,7 +155,7 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 - [Realtime Colors](https://realtimecolors.com/) for testing a palette on a
   layout.
 - [Pageflows](https://pageflows.com/) for user flows.
-- [Phosphor Bcons](https://phosphoricons.com/) and
+- [Phosphor Icons](https://phosphoricons.com/) and
   [Lucide](https://lucide.dev/) for a consistent icon family.
 
 ## Do and do not
@@ -177,18 +177,49 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 - Do not use color alone to encode severity.
 - Do not put gradients or glass on every card.
 - Do not fill every empty area. The paper is part of the composition.
-- Do not copy the carousel hooks, the chrome blobs, or the "comment DEpBGN"
+- Do not copy the carousel hooks, the chrome blobs, or the "comment DESIGN"
   marketing copy.
 
 ## Direction chosen
 
 **An eclipse instrument, not a page about an eclipse.** Paper, stone, coral, and
-totality black; Bnstrument perif for the record; pora 800 for the shout; ppace
+totality black; Instrument Serif for the record; Sora 800 for the shout; IBM Plex
 Mono for the instruments. The first pass built the black totality plate, the
 corona disc, the paper run ticket, the radial corona ring, the warm light curve,
-and the sunset footer. The second pass pushed the same language through every
-surface: a fixed sky with a corona ring and sunburst, a five-stop contact ribbon
-that pins the chart, a gradient path-of-totality interlude, a solar prominence
-and diamond ring, Baily's-beads rules, cut-corner plates, capsule controls,
-eclipse nodes in the pipeline and case chain, and a circular eclipse wipe on the
-theme switch. The scope stays flat and data-readable.
+and the sunset footer. The second pass pushed the language through every surface:
+a fixed sky with a corona ring and sunburst, a five-stop contact ribbon that pins
+the chart, a path-of-totality interlude, a diamond ring, Baily's-beads rules,
+cut-corner plates, capsule controls, and eclipse nodes in the pipeline and case
+chain. The final pass removed the paper fold and grain, replaced the orange
+interlude with a paper band and a black path plate (inverted in Totality), turned
+the chart into a dark instrument with warm stems and a matching readout, made the
+low severity stone instead of green, and unified the buttons into one hierarchy:
+gradient primary, ink-in-Corona / paper-edge-in-Totality secondary, and a
+transparent ghost. The scope stays flat and data-readable.
+
+## v6 reference check
+
+The `frontend-design-pro` pack and three prompt sources were checked before this
+pass:
+
+- [TISA: best prompts for website design](https://www.tisatech.in/blog/best-prompts-for-website-design/)
+  — six-part brief; mobile-first; 44px touch targets; test 320–1440.
+- [AdvertisingBusiness: AI prompts for website design](https://www.advertisingbusiness.org/ai-prompts-for-website-design/)
+  — business context, audience, action, proof, constraints; one primary CTA plus
+  at most two secondary; compare three directions; accessibility QA.
+- [AI UX Playground: prompts for designers](https://aiuxplayground.com/prompts/for-designers)
+  — design brief, IA, hierarchy, tokens, “add taste”, “polish UI”, critique.
+
+**Observed → decision:**
+
+| Observation | Decision |
+|---|---|
+| Three cover buttons had three unrelated fills | One hierarchy: gradient primary, ink/paper secondary, transparent ghost |
+| The orange interlude was a separate visual world | Paper band + corona arc + black path plate; inverted in Totality |
+| The chart read as a generic white analytics chart | Black instrument with gold grid, warm stems, dark readout |
+| Green low-severity broke the sunset family | Low severity is stone in both themes |
+| Paper fold, grain, and hard riso shadows remained | Removed; celestial dust and soft light instead |
+| The cover stage had a random red arc | Removed the prominence; kept the diamond ring and streamers |
+
+**Rejected:** the saturated orange band, the white chart plate, the pale
+secondary button, the paper fold, and the green low-severity step.

@@ -62,7 +62,7 @@ the copy still says exactly what the pipeline does.
 | `--critical` | `#BF3A25` | `#FF8A75` |
 | `--high` | `#9A520B` | `#FFB05C` |
 | `--medium` | `#7A5F05` | `#F4D06A` |
-| `--low` | `#3F6B57` | `#8FD8BC` |
+| `--low` | `#7A6A57` | `#C9B7A2` |
 | `--rail` | `#141210` | `#080706` |
 
 The sun ramp is fixed in both themes: `#EA6113`, `#F88F22`, `#FBB931`, and
@@ -81,7 +81,7 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
 - **Paper and stone** carry the record. Cards, tables, and the matrix sit on
   paper; the stone scale carries secondary surfaces and rules.
 - **Severity** keeps four distinct steps: coral for critical, ember for high,
-  amber for medium, moss for low. Every step also has a text label.
+  amber for medium, stone for low. Every step also has a text label.
 - **No color carries meaning alone.** Severity, coverage, and status always
   print a word or a count beside the color.
 
@@ -108,13 +108,15 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
   over the plate. A diamond ring sits on the corona edge; a five-stop contact
   ribbon follows the scope. Under 1080px the columns stack and the ticket keeps
   its overlap.
-- **Interlude.** A full-bleed corona gradient band with a black path-of-totality
-  plate, a five-node contact path, and a Baily's-beads rule.
+- **Interlude.** A paper band with a soft corona arc, a black path-of-totality
+  plate, a five-node contact path, and a Baily's-beads rule. In Totality the
+  band goes dark and the path plate goes paper.
 - **Chapters.** A serif index, a one-word label, a serif title with one Sora
   word, and a 58ch lede. The rule above each chapter is stone, with a small bead
   cluster at the right edge.
 - **Instruments.** The scope is a full-width black plate with a warm light curve.
-  The chart is a paper plate with an ember envelope and four severity stems.
+  The chart is a black instrument with a warm envelope, four severity stems,
+  a gold grid, and a dark readout.
 - **Corona.** A 300px radial dial with 45 ticks, one per priority technique.
   Coral, ember, and amber fill the four quadrants; the score sits in the eye.
 - **Cases.** A chain player above three cards. Each card has a full-width sunset
@@ -137,7 +139,10 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
   progress ends in a small moon, and the case-chain progress is a transform line
   behind the nodes.
 - **Controls.** The contact ribbon is interactive: each contact pins the matching
-  hour, and `P` plays the whole C1-C4 sequence without scrolling.
+  hour, and `P` plays the whole C1-C4 sequence without scrolling. Buttons share
+  one hierarchy: a sunset-gradient primary, an ink secondary in Corona (dark
+  with a paper edge in Totality), and a transparent ghost. Chip, field, and mini
+  controls use the same capsule and mono label.
 - **Gradients.** The sun ramp appears in the cover, ticket, scope, chart,
   interlude, dial halo, case rings, terminal, palette, toast, and footer.
   Gradients are surfaces and instruments, never body text.
