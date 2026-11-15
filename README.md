@@ -427,7 +427,8 @@ The dashboard has no server-side dependencies, so Pages serves it as-is. If you 
 
 ## Roadmap
 
-- [ ] Add false-positive tests for every rule
+- [ ] Replay OTRF Security Datasets, Splunk Attack Data, and Atomic Red Team telemetry; record per-rule precision and recall
+- [ ] Add a per-rule false-positive suite against a larger benign baseline
 - [ ] Add Kibana saved objects so detections and the dashboard deploy as code
 - [ ] Wire `pipeline/detect.py` into a webhook notifier for a simulated on-call flow
 - [ ] Add a Zeek or PCAP source and a beaconing detection with jitter analysis
