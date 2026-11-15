@@ -3,15 +3,15 @@
 The dashboard embeds five latin-subset WOFF2 files so the published page stays
 self-contained and works from `file://`:
 
-- **Archivo** variable, weights 100-900.
-  Copyright 2020 The Archivo Project Authors
-  (https://github.com/Omnibus-Type/Archivo).
-- **Space Mono** 400 and 700.
-  Copyright 2016 The Space Mono Project Authors
-  (https://github.com/googlefonts/spacemono).
-- **Bodoni Moda** variable roman and italic, weights 400-900.
-  Copyright 2020 The Bodoni Moda Project Authors
-  (https://github.com/indestructible-type/Bodoni).
+- **Sora** variable, weights 100-800.
+  Copyright 2019 The Sora Project Authors
+  (https://github.com/sora-xor/sora-font).
+- **IBM Plex Mono** 400 and 500.
+  Copyright 2017 IBM Corp.
+  (https://github.com/IBM/plex).
+- **Instrument Serif** roman and italic, weight 400.
+  Copyright 2022 The Instrument Serif Project Authors
+  (https://github.com/Instrument/instrument-serif).
 
 All three families are licensed under the SIL Open Font License, Version 1.1.
 The full license text is in `OFL.txt`. The files were downloaded from Google

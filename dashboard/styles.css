@@ -1,5 +1,5 @@
-/* Umbra: a forensic case file wired to a SOC console.
-   Warm paper, ink blue, oxblood, signal teal, evidence ochre. */
+/* Umbra: a solar eclipse detection lab.
+   Corona (light) and Totality (dark). Instrument Serif, Sora, IBM Plex Mono. */
 :root {
   color-scheme: light;
   --bg: #f4efe4;
@@ -35,7 +35,7 @@
   --r-md: 12px;
   --r-lg: 16px;
   --r-xl: 22px;
-  --mono: "Space Mono", "Cascadia Mono", "Cascadia Code", Consolas, monospace;
+  --mono: "IBM Plex Mono", "Cascadia Mono", "Cascadia Code", Consolas, monospace;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --scope-trace: #1f4a5c;
   --scope-grid: rgba(31, 74, 92, 0.14);
@@ -2786,8 +2786,8 @@ kbd {
 
 /* ============================================================ UMBRA / ECLIPSE
    Paper, stone, coral, black. The sun ramp runs from ember to corona.
-   Bodoni Moda carries the editorial voice; Archivo carries the poster;
-   Space Mono stays on the instruments. */
+   Instrument Serif carries the editorial voice; Sora carries the poster;
+   IBM Plex Mono stays on the instruments. */
 
 :root {
   --paper: #F6F4F1;
@@ -2801,8 +2801,8 @@ kbd {
   --sun-4: #FFE3B3;
   --totality: #0B0A09;
 
-  --serif: "Bodoni Moda", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  --sans: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --serif: "Instrument Serif", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --sans: "Sora", "Segoe UI", system-ui, sans-serif;
 
   color-scheme: light;
   --bg: var(--paper);
@@ -3067,7 +3067,7 @@ kbd {
   color: #141210;
 }
 
-/* Cover type: Bodoni Moda lyric over an Archivo poster word. */
+/* Cover type: Instrument Serif lyric over a Sora poster word. */
 .cover-top { border-color: var(--line); }
 .cover-top::after { background: linear-gradient(90deg, var(--coral), var(--sun-2), var(--sun-3)); }
 .kicker { color: var(--accent); }
@@ -3496,7 +3496,7 @@ kbd {
 
 /* ====================================================== UMBRA v3 / CORONA+TOTALITY
    Two sides of one eclipse: Corona is the light record, Totality is the dark
-   instrument. Bodoni Moda, Archivo, Space Mono. More corona, more gradient,
+   instrument. Instrument Serif, Sora, IBM Plex Mono. More corona, more gradient,
    more of the eclipse as a visible system. */
 
 .sheet { --sheet-pad: clamp(24px, 4.5vw, 72px); }
@@ -3512,14 +3512,14 @@ body { font-family: var(--sans); }
 }
 .display em {
   font-size: clamp(62px, 7.9vw, 122px);
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: -0.06em;
 }
 .chapter-head h2 {
   font-size: clamp(38px, 4.8vw, 66px);
   line-height: 0.96;
 }
-.chapter-head h2 .sans-word { font-weight: 900; }
+.chapter-head h2 .sans-word { font-weight: 800; }
 .chapter-no {
   background: linear-gradient(180deg, var(--coral), var(--sun-1));
   -webkit-background-clip: text;
@@ -4015,26 +4015,6 @@ body { font-family: var(--sans); }
 }
 @keyframes sky-turn { to { transform: rotate(360deg); } }
 
-/* A solar prominence on the cover disc. */
-.prominence {
-  position: absolute;
-  left: 1%;
-  bottom: 6%;
-  width: 30%;
-  height: 30%;
-  border: 4px solid var(--coral);
-  border-left-color: transparent;
-  border-bottom-color: transparent;
-  border-radius: 50%;
-  transform: rotate(-28deg);
-  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--coral) 70%, transparent));
-  opacity: 0.82;
-  animation: prominence-flicker 6.5s ease-in-out infinite;
-  z-index: 2;
-}
-@keyframes prominence-flicker {
-  50% { opacity: 0.55; transform: rotate(-24deg) scale(1.04); }
-}
 
 /* --------------------------------------------------------------- the field */
 :root[data-theme="corona"] body {
@@ -4248,7 +4228,7 @@ body { font-family: var(--sans); }
     conic-gradient(from 210deg, var(--coral), var(--sun-1), var(--sun-2), var(--sun-3), var(--coral));
   color: var(--sun-4);
   box-shadow: 0 0 0 1px rgba(255, 227, 179, 0.2), 0 0 18px color-mix(in srgb, var(--sun-2) 34%, transparent);
-  font-weight: 700;
+  font-weight: 600;
 }
 .path-step:not(.active) .path-dot {
   background: linear-gradient(180deg, color-mix(in srgb, var(--sun-4) 18%, var(--surface)), var(--surface));
@@ -4454,7 +4434,7 @@ body { font-family: var(--sans); }
   background: linear-gradient(105deg, var(--coral), var(--sun-1) 62%, var(--sun-2));
   color: #141210;
   box-shadow: 0 0 0 5px color-mix(in srgb, var(--sun-2) 14%, transparent), 0 14px 30px rgba(20, 18, 16, 0.28);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.06em;
 }
 
@@ -4544,7 +4524,6 @@ body { font-family: var(--sans); }
 }
 @media (max-width: 720px) {
   .sky { opacity: 0.5; }
-  .prominence { border-width: 3px; }
   .case-card::after { width: 110px; height: 110px; right: -36px; bottom: -44px; }
   .colophon::after { width: 380px; height: 380px; bottom: -150px; }
   .path-phase { font-size: 7px; }
@@ -4563,15 +4542,13 @@ body { font-family: var(--sans); }
   .sky-burst,
   .beads,
   .chapter-head::after,
-  .coverage-dial::before,
-  .prominence { animation: none; }
+  .coverage-dial::before { animation: none; }
   .path-step.active .path-dot::after { animation: none; }
   ::view-transition-old(root),
   ::view-transition-new(root) { animation: none; }
 }
 @media print {
   .sky,
-  .prominence,
   .colophon::after { display: none !important; }
   .plate,
   .ledger,
@@ -4598,7 +4575,7 @@ body { font-family: var(--sans); }
   align-items: center;
   gap: 6px;
   color: var(--accent);
-  font-weight: 700;
+  font-weight: 600;
 }
 .cover-mode::before {
   content: "";
@@ -4670,3 +4647,275 @@ body { font-family: var(--sans); }
   font-weight: 500;
   letter-spacing: -0.02em;
 }
+
+/* ===================================================== UMBRA v5 / CLEAN SKY
+   Corona is a sky, not a sheet of paper. The fold and grain are gone; the
+   interface is clean light, eclipse geometry, and a type system built on
+   Instrument Serif, Sora, and IBM Plex Mono. */
+
+/* Remove the paper artifacts. */
+.sheet::before,
+.sheet::after { display: none; }
+.sheet { --fold: 0px; }
+.cover-top { padding-right: 0; }
+body::before,
+body::after { display: none; }
+
+/* Celestial dust replaces paper grain. */
+.sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(255, 227, 179, 0.5) 0.7px, transparent 0.9px),
+    radial-gradient(circle, rgba(255, 227, 179, 0.32) 0.5px, transparent 0.7px);
+  background-size: 76px 76px, 43px 43px;
+  background-position: 0 0, 21px 17px;
+  opacity: 0.08;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 76%);
+  mask-image: linear-gradient(180deg, #000, transparent 76%);
+}
+:root[data-theme="totality"] .sky::after { opacity: 0.22; }
+
+/* Soft light instead of print offsets. */
+.totality-plate {
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, 0.34),
+    0 0 80px color-mix(in srgb, var(--sun-2) 16%, transparent);
+}
+:root[data-theme="corona"] .ticket,
+:root[data-theme="totality"] .ticket {
+  box-shadow: 0 18px 44px rgba(20, 18, 16, 0.22);
+}
+
+/* A cleaner two-line cover: serif sentence, then one heavy caps sentence. */
+.display-serif > span {
+  font: 400 clamp(52px, 6.4vw, 100px)/0.92 var(--serif);
+  letter-spacing: -0.03em;
+}
+.display-heavy > span {
+  font: 800 clamp(36px, 4.6vw, 66px)/0.9 var(--sans);
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-wrap: balance;
+}
+.display em {
+  display: inline;
+  margin: 0;
+  font: inherit;
+  font-size: 1.02em;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--accent);
+  text-shadow: none;
+  background: none;
+}
+.display em::after {
+  left: 0;
+  right: auto;
+  width: 100%;
+  bottom: 0.02em;
+  height: 0.05em;
+  background: linear-gradient(90deg, var(--coral), var(--sun-2), var(--sun-3));
+  opacity: 0.95;
+}
+
+/* The phase node is a centered eclipse medallion. */
+.path-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--sun-4) 18%, var(--surface)), var(--surface));
+  color: var(--accent);
+  font: 600 11px/1 var(--sans);
+  letter-spacing: 0.02em;
+  text-align: center;
+  box-shadow: none;
+}
+.path-step:not(.active) .path-dot {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--sun-4) 18%, var(--surface)), var(--surface));
+  color: var(--accent);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+.path-step.active .path-dot {
+  background: #050403;
+  border: 2px solid var(--coral);
+  color: var(--sun-4);
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--coral) 12%, transparent),
+    0 0 22px color-mix(in srgb, var(--sun-2) 40%, transparent);
+}
+.path-step.active .path-dot::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  z-index: -1;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg,
+    transparent 0 12%,
+    var(--sun-3) 18%,
+    transparent 30% 55%,
+    var(--coral) 62%,
+    transparent 74%);
+  -webkit-mask-image: radial-gradient(circle, transparent 0 66%, #000 68% 76%, transparent 78%);
+  mask-image: radial-gradient(circle, transparent 0 66%, #000 68% 76%, transparent 78%);
+  animation: dot-orbit 9s linear infinite;
+}
+.path-step.active .path-dot::after {
+  inset: -6px;
+  border-radius: 50%;
+  border-color: var(--sun-2);
+  animation: path-ring 3s ease-out infinite;
+}
+@keyframes dot-orbit { to { transform: rotate(360deg); } }
+.path-step:hover .path-dot { transform: translateY(-2px) scale(1.03); }
+
+/* The case-chain progress is a clean line behind the nodes, not through them. */
+.cc-scroll { position: relative; padding: 0 0 12px; }
+.cc-track {
+  position: relative;
+  z-index: 0;
+  height: 2px;
+  min-width: 520px;
+  margin: 22px 8px 0;
+  background: none;
+}
+.cc-track::before {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 0;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 9px);
+  opacity: 0.65;
+}
+.cc-track i {
+  position: absolute;
+  left: 6%;
+  top: 0;
+  width: 88%;
+  height: 2px;
+  margin: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--coral), var(--sun-2), var(--sun-3));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.55s var(--ease);
+}
+.cc-nodes {
+  position: relative;
+  z-index: 1;
+  height: 64px;
+  min-width: 520px;
+  margin: -24px 8px 0;
+}
+.cc-node { top: 0; }
+
+/* Play the eclipse. */
+.phase-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.phase-note {
+  color: var(--muted);
+  font: 500 8px/1.4 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.phase-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--coral);
+  border-radius: 999px;
+  background: linear-gradient(105deg, var(--coral), var(--sun-1));
+  color: #141210;
+  font: 600 9px/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--coral) 10%, transparent);
+  transition: transform 0.18s var(--ease), box-shadow 0.18s ease, background 0.18s ease;
+}
+.phase-play:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--sun-2) 16%, transparent);
+}
+.phase-play svg { width: 12px; height: 12px; }
+.phase-play.is-running {
+  background: linear-gradient(105deg, var(--ink), #2A1208);
+  border-color: var(--ink);
+  color: var(--sun-4);
+}
+.phase-step.is-active .phase-mark {
+  border-color: var(--sun-1);
+  color: var(--accent);
+  transform: translate(-50%, -50%) scale(1.1);
+}
+.phase-step.is-active .phase-mark::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--sun-2);
+  animation: phase-ping 1.6s ease-out infinite;
+}
+@keyframes phase-ping {
+  to { transform: scale(1.35); opacity: 0; }
+}
+
+/* Type corrections for the new pairing. */
+.chapter-head h2 { line-height: 1; }
+.chapter-no { letter-spacing: -0.02em; }
+.coverage-score b { letter-spacing: -0.03em; }
+.colophon-brand b { letter-spacing: -0.015em; }
+
+@media (max-width: 720px) {
+  .phase-actions { flex-wrap: wrap; }
+  .phase-note { order: 2; width: 100%; }
+  .path-dot { width: 38px; height: 38px; font-size: 10px; }
+  .cc-node { width: 82px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .path-step.active .path-dot::before,
+  .phase-step.is-active .phase-mark::after { animation: none; }
+  .cc-track i { transition: none; }
+}
+
+/* The rail fill ends in a small moon, so scroll progress reads as an eclipse. */
+.rail-track i { position: relative; }
+.rail-track i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #050403 0 43%, transparent 44%),
+    conic-gradient(from 210deg, var(--coral), var(--sun-2), var(--sun-3), var(--coral));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sun-2) 30%, transparent), 0 0 10px color-mix(in srgb, var(--sun-2) 60%, transparent);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* Small coral text needs a slightly deeper value on the light field. */
+:root { --accent: #B93A27; }
+.display em { color: #D8432E; }
+.q-field { color: var(--high); }

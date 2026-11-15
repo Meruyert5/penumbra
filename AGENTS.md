@@ -20,8 +20,8 @@ The full skill and the Desktop brief are at:
 - Palette: Paper `#F6F4F1`, Stone `#E4DED2`, Coral `#F95C4B` (fills) /
   `#C9402C` (text), Black `#141210`, Sunset `#EA6113` → `#F88F22` → `#FBB931`
   → `#FFE3B3`.
-- Type: Bodoni Moda for the editorial voice, Archivo 900 for one poster word,
-  Space Mono for data. Do not add a fourth family without a reason.
+- Type: Instrument Serif for the editorial voice, Sora 800 for one poster word,
+  IBM Plex Mono for data. Do not add a fourth family without a reason.
 - Themes: **Corona** is the light record; **Totality** is the dark instrument.
 - One poster move per page. The cover carries the black totality plate, the
   corona disc, and the paper ticket. Everything else stays readable.

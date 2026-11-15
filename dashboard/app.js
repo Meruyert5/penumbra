@@ -611,22 +611,61 @@
     }, 180);
   });
 
-  /* The contact ribbon is a control: each phase pins its nearest hour. */
+  /* The contact ribbon is a control: each phase pins its nearest hour, and
+     "play the eclipse" walks the contacts without scrolling the page. */
   const phaseSteps = $$(".phase-step");
+  const phasePlay = $("#phasePlay");
+  let phaseTimer = 0;
+  let phaseIndex = 0;
+  const phasePlayIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+  const phaseStopIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
+  function stopPhasePlay(clear) {
+    if (phaseTimer) window.clearInterval(phaseTimer);
+    phaseTimer = 0;
+    phaseIndex = 0;
+    if (phasePlay) {
+      phasePlay.classList.remove("is-running");
+      phasePlay.setAttribute("aria-pressed", "false");
+      phasePlay.innerHTML = phasePlayIcon + " play the eclipse";
+    }
+    if (clear) phaseSteps.forEach((step) => step.classList.remove("is-active"));
+  }
   if (phaseSteps.length && timeline.length) {
     const phaseTotals = timeline.map((row) => Number(row.total || 0));
     const phasePeak = phaseTotals.indexOf(Math.max(...phaseTotals));
+    function activatePhase(step, scroll) {
+      if (!step) return;
+      const offset = Number(step.dataset.phaseOffset || 0);
+      const index = Math.max(0, Math.min(timeline.length - 1, phasePeak + offset));
+      state.pinnedHour = timeline[index].hour;
+      initScope();
+      paintHour(index, true);
+      phaseSteps.forEach((node) => node.classList.toggle("is-active", node === step));
+      if (scroll) $("#run").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      toast("Pinned " + timeline[index].hour.slice(11, 16) + "Z / " + step.dataset.phaseName);
+    }
     phaseSteps.forEach((step) => {
       step.addEventListener("click", () => {
-        const offset = Number(step.dataset.phaseOffset || 0);
-        const index = Math.max(0, Math.min(timeline.length - 1, phasePeak + offset));
-        state.pinnedHour = timeline[index].hour;
-        initScope();
-        paintHour(index, true);
-        $("#run").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-        toast("Pinned " + timeline[index].hour.slice(11, 16) + "Z / " + step.dataset.phaseName);
+        stopPhasePlay(true);
+        activatePhase(step, true);
       });
     });
+    if (phasePlay) {
+      phasePlay.addEventListener("click", () => {
+        if (phaseTimer) { stopPhasePlay(true); return; }
+        phaseIndex = 0;
+        phasePlay.classList.add("is-running");
+        phasePlay.setAttribute("aria-pressed", "true");
+        phasePlay.innerHTML = phaseStopIcon + " stop the eclipse";
+        const tick = () => {
+          if (phaseIndex >= phaseSteps.length) { stopPhasePlay(false); return; }
+          activatePhase(phaseSteps[phaseIndex], false);
+          phaseIndex++;
+        };
+        tick();
+        phaseTimer = window.setInterval(tick, 1100);
+      });
+    }
   }
 
   /* The chart is a signal instrument, not a static figure. It replays while it
@@ -1791,7 +1830,10 @@
     });
     const active = $("#ccStage .cc-node.active");
     const progress = $("#ccProgress");
-    if (active && progress) progress.style.width = active.style.getPropertyValue("--x");
+    if (active && progress) {
+      const p = steps.length > 1 ? ccStep / (steps.length - 1) : 1;
+      progress.style.transform = "scaleX(" + p.toFixed(4) + ")";
+    }
     ccPrev.disabled = ccStep === 0;
     ccNext.disabled = ccStep === steps.length - 1;
     chainDetail(ccStep);
@@ -2272,6 +2314,7 @@
     else if (event.key.toLowerCase() === "k") { event.preventDefault(); focusRow("prev"); }
     else if (event.key.toLowerCase() === "t") toggleTheme();
     else if (event.key.toLowerCase() === "g") startTour();
+    else if (event.key.toLowerCase() === "p") { const play = $("#phasePlay"); if (play) play.click(); }
     else if (event.key === "?") openKeys();
   });
 

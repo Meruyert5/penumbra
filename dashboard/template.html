@@ -59,7 +59,7 @@
     </button>
     <div class="rail-phase" aria-hidden="true">
       <span class="rail-phase-disc"></span>
-      <span class="rail-phase-copy"><b>Totality</b><span>C2 12:02 / C3 12:08</span></span>
+      <span class="rail-phase-copy"><b>Phase / totality</b><span>C2 12:02 / C3 12:08</span></span>
     </div>
     <div class="rail-seal" aria-hidden="true"><span>UM</span><span>EST. 2026</span></div>
   </div>
@@ -106,7 +106,7 @@
       <div class="cover-side">
         <figure class="totality-plate" aria-hidden="true">
           <span class="totality-tag">Plate 00 / totality</span>
-          <span class="totality-orbit"><span class="totality-disc"></span><span class="prominence"></span><span class="diamond-ring"></span></span>
+          <span class="totality-orbit"><span class="totality-disc"></span><span class="diamond-ring"></span></span>
           <span class="totality-foot"><span>Corona / 1.05 R☉</span><span>04:21 UT</span></span>
         </figure>
 
@@ -158,6 +158,14 @@
       <button class="phase-step is-total" type="button" data-phase-offset="0" data-phase-name="totality"><span class="phase-mark">MAX</span><b>Totality</b><em>12:05Z</em><span class="sr-only">pin on the chart</span></button>
       <button class="phase-step" type="button" data-phase-offset="0" data-phase-name="third contact"><span class="phase-mark">C3</span><b>Third contact</b><em>12:08Z</em><span class="sr-only">pin on the chart</span></button>
       <button class="phase-step" type="button" data-phase-offset="1" data-phase-name="fourth contact"><span class="phase-mark">C4</span><b>Fourth contact</b><em>12:12Z</em><span class="sr-only">pin on the chart</span></button>
+    </div>
+
+    <div class="phase-actions">
+      <span class="phase-note">Click a contact to pin the hour on the light curve</span>
+      <button class="phase-play" id="phasePlay" type="button" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        play the eclipse
+      </button>
     </div>
   </header>
 
@@ -488,6 +496,7 @@
     <div class="shortcut-row"><span>Move between rows</span><span><kbd>J</kbd><kbd>K</kbd></span></div>
     <div class="shortcut-row"><span>Open a row</span><span><kbd>Enter</kbd></span></div>
     <div class="shortcut-row"><span>Switch theme</span><span><kbd>T</kbd></span></div>
+    <div class="shortcut-row"><span>Play the eclipse</span><span><kbd>P</kbd></span></div>
     <div class="shortcut-row"><span>Start guided reading</span><span><kbd>G</kbd></span></div>
     <div class="shortcut-row"><span>Open this panel</span><span><kbd>?</kbd></span></div>
     <div class="shortcut-row"><span>Close a panel</span><span><kbd>Esc</kbd></span></div>
