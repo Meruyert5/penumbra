@@ -6360,7 +6360,7 @@ body::after { display: none; }
 
 .coverage-score b {
   font-weight: 500;
-  background: linear-gradient(165deg, var(--coral-deep), var(--sun-1) 43%, var(--sun-2) 76%, var(--sun-3));
+  background-image: linear-gradient(165deg, var(--coral-deep), var(--sun-1) 43%, var(--sun-2) 76%, var(--sun-3));
 }
 
 /* Chapter numerals use the same solar ramp as the corona. */
@@ -6372,6 +6372,125 @@ body::after { display: none; }
     -webkit-background-clip: text;
     background-clip: text;
   }
+}
+
+/* Final stamp: a filled solar impression, not a red rubber stamp. */
+.ticket-stamp,
+:root[data-theme="umbra"] .ticket-stamp {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(135deg, #FFF4DA, #FBB931 55%, #F88F22) padding-box,
+    linear-gradient(120deg, var(--sun-1), var(--sun-2), var(--sun-3)) border-box;
+  color: #2A1207;
+  box-shadow:
+    3px 3px 0 rgba(120, 45, 10, 0.28),
+    0 0 18px rgba(251, 185, 49, 0.16);
+}
+.ticket-stamp b,
+:root[data-theme="umbra"] .ticket-stamp b {
+  color: #2A1207;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: currentColor;
+}
+.ticket-stamp span,
+:root[data-theme="umbra"] .ticket-stamp span { color: #7A2E0B; }
+
+/* Fig. 0 is an interactive contact instrument, not a static illustration. */
+.path-node,
+.path-peak-marker { cursor: pointer; }
+.path-node circle,
+.path-peak-marker circle { transition: fill 0.18s ease, stroke 0.18s ease, transform 0.18s ease; }
+.path-node:hover circle,
+.path-node:focus-visible circle { fill: var(--sun-3); stroke: #FFF6E8; stroke-width: 2.4; }
+.path-node:focus-visible { outline: none; }
+.path-node:focus-visible text { fill: #FFF6E8; }
+.path-peak-halo {
+  fill: rgba(249, 92, 75, 0.18);
+  stroke: rgba(249, 92, 75, 0.5);
+  stroke-width: 1;
+  animation: path-peak-pulse 2.8s ease-in-out infinite;
+}
+.path-peak-dot { fill: var(--coral); stroke: #0B0A09; stroke-width: 1.2; }
+.path-peak-marker:hover .path-peak-dot,
+.path-peak-marker:focus-visible .path-peak-dot { fill: var(--sun-2); }
+.path-peak-marker:focus-visible .path-peak-halo { stroke: #FFF6E8; stroke-width: 2; }
+.path-peak-marker:focus-visible { outline: none; }
+.path-peak-label {
+  fill: var(--sun-3);
+  font: 600 8.5px var(--mono);
+  letter-spacing: 0.12em;
+  text-anchor: middle;
+}
+.path-hint {
+  margin: 10px 2px 0;
+  color: rgba(255, 227, 179, 0.55);
+  font: 500 8px/1.4 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+@keyframes path-peak-pulse {
+  0%, 100% { transform: scale(0.78); opacity: 0.55; }
+  50% { transform: scale(1.18); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .path-peak-halo { animation: none; }
+}
+
+/* The real-data band: a black instrument inside the paper recurrence chapter. */
+.validation-band {
+  margin-top: clamp(26px, 4vw, 46px);
+  padding: 22px 24px 20px;
+  border: 1px solid #2a211b;
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(520px 180px at 82% 0%, rgba(248,143,34,.18), transparent 68%),
+    #0B0A09;
+  color: var(--paper);
+  box-shadow: 8px 8px 0 rgba(20, 18, 16, 0.14);
+}
+.validation-kicker {
+  margin: 0 0 14px;
+  color: var(--sun-3);
+  font: 600 9px/1.2 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.validation-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 30px;
+  align-items: baseline;
+}
+.validation-stats span {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  color: rgba(246, 244, 241, 0.7);
+  font: 500 9px/1.2 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.validation-stats b {
+  color: var(--sun-2);
+  font: 600 26px/1 var(--sans);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.validation-note {
+  max-width: 78ch;
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 227, 179, 0.16);
+  color: rgba(246, 244, 241, 0.55);
+  font-size: 12px;
+  line-height: 1.55;
+}
+@media (max-width: 720px) {
+  .validation-band { padding: 18px 16px; }
+  .validation-stats { gap: 10px 18px; }
+  .validation-stats b { font-size: 22px; }
 }
 </style>
 </head>
@@ -6601,15 +6720,15 @@ body::after { display: none; }
     </div>
   </section>
 
-  <section class="interlude" aria-label="Path of totality">
+  <section class="interlude" id="path" aria-label="Path of totality">
     <div class="interlude-inner">
       <div class="interlude-copy">
         <p class="interlude-kicker">Saros 145 / 2026 November 11</p>
         <p class="interlude-quote">The shadow crosses the disk. <em>The instruments keep the light.</em></p>
       </div>
       <figure class="path-plate">
-        <figcaption class="path-cap"><span>Fig. 0 / Path of totality</span><span>11:58 → 12:12 UTC</span></figcaption>
-        <svg class="path-svg" viewBox="0 0 900 170" role="img" aria-label="Path of totality with contact points C1 through C4">
+        <figcaption class="path-cap"><span>Fig. 0 / Path of totality</span><span id="pathPeakReadout">peak pending</span></figcaption>
+        <svg class="path-svg" viewBox="0 0 900 170" role="group" aria-label="Interactive path of totality. Select a contact to open its hour in the watch floor.">
           <defs>
             <linearGradient id="pathWarm" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="#F95C4B"/>
@@ -6624,15 +6743,21 @@ body::after { display: none; }
             </radialGradient>
           </defs>
           <path d="M36 126 C 150 50, 250 130, 450 92 S 720 34, 864 104" fill="none" stroke="#FFE3B3" stroke-opacity=".16" stroke-width="1"/>
-          <path d="M36 126 C 150 50, 250 130, 450 92 S 720 34, 864 104" fill="none" stroke="url(#pathWarm)" stroke-width="2.2" stroke-linecap="round"/>
+          <path id="pathRoute" d="M36 126 C 150 50, 250 130, 450 92 S 720 34, 864 104" fill="none" stroke="url(#pathWarm)" stroke-width="2.2" stroke-linecap="round"/>
           <ellipse cx="450" cy="92" rx="30" ry="30" fill="url(#penumbraCore)"/>
           <ellipse cx="450" cy="92" rx="10" ry="10" fill="#050403" stroke="#FBB931" stroke-width="1.2"/>
-          <g class="path-node"><circle cx="36" cy="126" r="4"/><text x="36" y="148">C1</text></g>
-          <g class="path-node"><circle cx="238" cy="90" r="4"/><text x="238" y="112">C2</text></g>
-          <g class="path-node is-max"><circle cx="450" cy="92" r="5"/><text x="450" y="58">MAX</text></g>
-          <g class="path-node"><circle cx="664" cy="48" r="4"/><text x="664" y="32">C3</text></g>
-          <g class="path-node"><circle cx="864" cy="104" r="4"/><text x="864" y="130">C4</text></g>
+          <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T11:58:00Z" aria-label="C1, 11:58 UTC. Open this hour in the watch floor."><circle cx="36" cy="126" r="4"/><text x="36" y="148">C1</text></g>
+          <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T12:02:00Z" aria-label="C2, 12:02 UTC. Open this hour in the watch floor."><circle cx="238" cy="90" r="4"/><text x="238" y="112">C2</text></g>
+          <g class="path-node is-max" role="button" tabindex="0" data-hour="2026-11-11T12:05:00Z" aria-label="Maximum eclipse, 12:05 UTC. Open this hour in the watch floor."><circle cx="450" cy="92" r="5"/><text x="450" y="58">MAX</text></g>
+          <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T12:08:00Z" aria-label="C3, 12:08 UTC. Open this hour in the watch floor."><circle cx="664" cy="48" r="4"/><text x="664" y="32">C3</text></g>
+          <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T12:12:00Z" aria-label="C4, 12:12 UTC. Open this hour in the watch floor."><circle cx="864" cy="104" r="4"/><text x="864" y="130">C4</text></g>
+          <g class="path-peak-marker" id="pathPeakMarker" role="button" tabindex="0" aria-label="Peak hour. Open this hour in the watch floor." transform="translate(154 110)">
+            <circle class="path-peak-halo" r="11"/>
+            <circle class="path-peak-dot" r="4"/>
+            <text class="path-peak-label" y="-15">PEAK</text>
+          </g>
         </svg>
+        <p class="path-hint">Select a contact or the peak marker to open that hour in the watch floor.</p>
       </figure>
     </div>
     <div class="beads" aria-hidden="true"></div>
@@ -6872,9 +6997,9 @@ body::after { display: none; }
       <div class="repro-copy">
         <p class="repro-kicker">From zero to a reviewed queue</p>
         <p>
-          Swap the logsource map to point at real data streams when you have them. Until then,
-          every event here is synthetic. The pipeline does not claim production precision from
-          lab telemetry.
+          Swap the logsource map to point at real data streams when you have them. The dashboard
+          run is synthetic; the separate replay band below is real. The pipeline does not claim
+          production precision from lab telemetry.
         </p>
         <div class="repro-marks">
           <span>Python 3.11</span>
@@ -6891,8 +7016,20 @@ body::after { display: none; }
         <div class="cmd"><code><span class="p">PS&gt;</span> docker compose up -d</code><button type="button" data-copy="docker compose up -d">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.ingest --reset</code><button type="button" data-copy="python -m pipeline.ingest --reset">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z</code><button type="button" data-copy="python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z">copy</button></div>
+        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.replay --source otrf.json --file windows --label malicious</code><button type="button" data-copy="python -m pipeline.replay --source otrf.json --file windows --label malicious">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.report</code><button type="button" data-copy="python -m pipeline.report">copy</button></div>
       </div>
+    </div>
+
+    <div class="validation-band" data-reveal aria-label="Real-telemetry validation">
+      <p class="validation-kicker">First real replay / OTRF Security Datasets</p>
+      <div class="validation-stats">
+        <span><b>110</b> real events</span>
+        <span><b>1</b> rule match</span>
+        <span><b>1</b> TP candidate</span>
+        <span><b>28</b> rules not evaluable</span>
+      </div>
+      <p class="validation-note">A separate Windows Security sample, not the synthetic dashboard run. One real 1102 event matched Windows Event Log Cleared. Not a precision or recall measurement.</p>
     </div>
   </section>
 
@@ -7303,6 +7440,25 @@ body::after { display: none; }
       '<div class="ro-note">Hover or tap a column to inspect it. Click to pin the hour.</div>' +
       '<button class="mini ro-btn" type="button" data-hour="' + esc(row.hour) + '">Open the watch floor at this hour</button>';
     $("#scopeHint").textContent = "peak " + number(row.total) + " events at " + row.hour.slice(11, 16) + "Z";
+  }
+
+  function openHourInLedger(hour) {
+    state.pinnedHour = hour;
+    state.hour = hour;
+    state.level = "all";
+    state.q = "";
+    const search = $("#search");
+    if (search) search.value = "";
+    paintLevelChips();
+    const index = timeline.findIndex((row) => row.hour === hour);
+    initScope();
+    if (index >= 0 && geometry) paintHour(index, true);
+    else paintDefault();
+    switchTab("detections");
+    renderLedger();
+    goTo("#ledger");
+    const row = index >= 0 ? timeline[index] : null;
+    toast("Pinned " + hour.slice(11, 16) + "Z" + (row ? " / " + unit(row.total, "event", "events") + " in the hour" : ""));
   }
 
   function buildScope() {
@@ -7921,23 +8077,7 @@ body::after { display: none; }
       const taOpen = $("#taOpen");
       if (taOpen) {
         taOpen.textContent = "Open " + taPeak.hour.slice(11, 16) + "Z in the watch floor";
-        taOpen.addEventListener("click", () => {
-          state.pinnedHour = taPeak.hour;
-          state.hour = taPeak.hour;
-          state.level = "all";
-          state.q = "";
-          const search = $("#search");
-          if (search) search.value = "";
-          paintLevelChips();
-          const index = timeline.findIndex((row) => row.hour === taPeak.hour);
-          initScope();
-          if (index >= 0 && geometry) paintHour(index, true);
-          else paintDefault();
-          switchTab("detections");
-          renderLedger();
-          goTo("#ledger");
-          toast("Pinned " + taPeak.hour.slice(11, 16) + "Z / " + unit(taPeak.total, "event", "events") + " in the peak hour");
-        });
+        taOpen.addEventListener("click", () => openHourInLedger(taPeak.hour));
       }
     }
     function renderTotality(value) {
@@ -7981,6 +8121,46 @@ body::after { display: none; }
       window.addEventListener("resize", updateTotality);
     }
   }
+
+  /* ---------------------------------------------------- Fig. 0 path instrument
+     The path is a contact instrument, not a drawing: each node opens its hour in
+     the watch floor, and the peak marker is placed from the actual peak row. */
+  const pathRoute = $("#pathRoute");
+  const pathPeakMarker = $("#pathPeakMarker");
+  const pathPeakReadout = $("#pathPeakReadout");
+  const pathPeakRow = timeline.reduce(
+    (best, row) => (best === null || Number(row.total) > Number(best.total) ? row : best),
+    null
+  );
+  if (pathRoute && pathPeakMarker && pathPeakRow) {
+    const pathStart = Date.parse("2026-11-11T11:58:00Z");
+    const pathEnd = Date.parse("2026-11-11T12:12:00Z");
+    const fraction = Math.min(1, Math.max(0, (Date.parse(pathPeakRow.hour) - pathStart) / (pathEnd - pathStart)));
+    const point = pathRoute.getPointAtLength(pathRoute.getTotalLength() * fraction);
+    pathPeakMarker.setAttribute("transform", "translate(" + point.x.toFixed(1) + " " + point.y.toFixed(1) + ")");
+    const peakLabel = "Peak " + pathPeakRow.hour.slice(11, 16) + "Z / " + pathPeakRow.total + " events";
+    if (pathPeakReadout) pathPeakReadout.textContent = peakLabel;
+    pathPeakMarker.setAttribute("aria-label", peakLabel + ". Open this hour in the watch floor.");
+    const openPeak = () => openHourInLedger(pathPeakRow.hour);
+    pathPeakMarker.addEventListener("click", openPeak);
+    pathPeakMarker.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openPeak();
+      }
+    });
+  }
+  document.querySelectorAll(".path-node[data-hour]").forEach((node) => {
+    const hour = node.dataset.hour;
+    const open = () => openHourInLedger(hour);
+    node.addEventListener("click", open);
+    node.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        open();
+      }
+    });
+  });
 
   /* -------------------------------------------------------------- live scope
      The cover instrument reads the same hourly payload as Fig. 1, but draws it

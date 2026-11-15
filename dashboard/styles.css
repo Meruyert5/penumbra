@@ -6334,7 +6334,7 @@ body::after { display: none; }
 
 .coverage-score b {
   font-weight: 500;
-  background: linear-gradient(165deg, var(--coral-deep), var(--sun-1) 43%, var(--sun-2) 76%, var(--sun-3));
+  background-image: linear-gradient(165deg, var(--coral-deep), var(--sun-1) 43%, var(--sun-2) 76%, var(--sun-3));
 }
 
 /* Chapter numerals use the same solar ramp as the corona. */
@@ -6346,4 +6346,123 @@ body::after { display: none; }
     -webkit-background-clip: text;
     background-clip: text;
   }
+}
+
+/* Final stamp: a filled solar impression, not a red rubber stamp. */
+.ticket-stamp,
+:root[data-theme="umbra"] .ticket-stamp {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(135deg, #FFF4DA, #FBB931 55%, #F88F22) padding-box,
+    linear-gradient(120deg, var(--sun-1), var(--sun-2), var(--sun-3)) border-box;
+  color: #2A1207;
+  box-shadow:
+    3px 3px 0 rgba(120, 45, 10, 0.28),
+    0 0 18px rgba(251, 185, 49, 0.16);
+}
+.ticket-stamp b,
+:root[data-theme="umbra"] .ticket-stamp b {
+  color: #2A1207;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: currentColor;
+}
+.ticket-stamp span,
+:root[data-theme="umbra"] .ticket-stamp span { color: #7A2E0B; }
+
+/* Fig. 0 is an interactive contact instrument, not a static illustration. */
+.path-node,
+.path-peak-marker { cursor: pointer; }
+.path-node circle,
+.path-peak-marker circle { transition: fill 0.18s ease, stroke 0.18s ease, transform 0.18s ease; }
+.path-node:hover circle,
+.path-node:focus-visible circle { fill: var(--sun-3); stroke: #FFF6E8; stroke-width: 2.4; }
+.path-node:focus-visible { outline: none; }
+.path-node:focus-visible text { fill: #FFF6E8; }
+.path-peak-halo {
+  fill: rgba(249, 92, 75, 0.18);
+  stroke: rgba(249, 92, 75, 0.5);
+  stroke-width: 1;
+  animation: path-peak-pulse 2.8s ease-in-out infinite;
+}
+.path-peak-dot { fill: var(--coral); stroke: #0B0A09; stroke-width: 1.2; }
+.path-peak-marker:hover .path-peak-dot,
+.path-peak-marker:focus-visible .path-peak-dot { fill: var(--sun-2); }
+.path-peak-marker:focus-visible .path-peak-halo { stroke: #FFF6E8; stroke-width: 2; }
+.path-peak-marker:focus-visible { outline: none; }
+.path-peak-label {
+  fill: var(--sun-3);
+  font: 600 8.5px var(--mono);
+  letter-spacing: 0.12em;
+  text-anchor: middle;
+}
+.path-hint {
+  margin: 10px 2px 0;
+  color: rgba(255, 227, 179, 0.55);
+  font: 500 8px/1.4 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+@keyframes path-peak-pulse {
+  0%, 100% { transform: scale(0.78); opacity: 0.55; }
+  50% { transform: scale(1.18); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .path-peak-halo { animation: none; }
+}
+
+/* The real-data band: a black instrument inside the paper recurrence chapter. */
+.validation-band {
+  margin-top: clamp(26px, 4vw, 46px);
+  padding: 22px 24px 20px;
+  border: 1px solid #2a211b;
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(520px 180px at 82% 0%, rgba(248,143,34,.18), transparent 68%),
+    #0B0A09;
+  color: var(--paper);
+  box-shadow: 8px 8px 0 rgba(20, 18, 16, 0.14);
+}
+.validation-kicker {
+  margin: 0 0 14px;
+  color: var(--sun-3);
+  font: 600 9px/1.2 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.validation-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 30px;
+  align-items: baseline;
+}
+.validation-stats span {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  color: rgba(246, 244, 241, 0.7);
+  font: 500 9px/1.2 var(--mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.validation-stats b {
+  color: var(--sun-2);
+  font: 600 26px/1 var(--sans);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.validation-note {
+  max-width: 78ch;
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 227, 179, 0.16);
+  color: rgba(246, 244, 241, 0.55);
+  font-size: 12px;
+  line-height: 1.55;
+}
+@media (max-width: 720px) {
+  .validation-band { padding: 18px 16px; }
+  .validation-stats { gap: 10px 18px; }
+  .validation-stats b { font-size: 22px; }
 }

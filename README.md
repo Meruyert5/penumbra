@@ -61,6 +61,7 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | **Correlation** | Sliding windows with optional distinct-value thresholds, for example 10 attempts across 8 accounts |
 | **Backend** | Elasticsearch 8.15.3 and Kibana 8.15.3, single node, security disabled for lab use |
 | **Tests** | 50 passing: lint, compilation, correlation, lab generation, coverage, publishing, replay mapping, validation table, secret scan, dashboard assembly |
+| **Validation** | 1 real OTRF sample replayed; 110 events, 1 true-positive candidate; synthetic table for 50 rules |
 | **Frontend** | One self-contained HTML file with no build step, CDN, or network request |
 
 ---
@@ -279,7 +280,7 @@ Representative coverage:
 * A full-bleed night stage with a live starfield, a sun/moon eclipse that shifts with the selected contact, and a ghost wordmark
 * A pinned scroll-scrubbed totality act with a giant sun/moon, Baily's beads, a diamond ring, and a progress rail
 * A kinetic phase ticker and a horizontal case reel with previous/next controls
-* A five-stop contact ribbon (C1, C2, totality, C3, C4) and a gradient path-of-totality plate with the observing window on it
+* A five-stop contact ribbon (C1, C2, totality, C3, C4) and a gradient path-of-totality plate with the observing window, a real data-peak marker, and contacts that open the hour in the watch floor
 * A run ticket with contact times, Saros 145, magnitude 1.02, 100% obscuration, and a paper receipt texture
 * Auto-replaying hourly signal chart with a smoothed envelope, quiet-baseline markers, event severity, and an event-versus-detection split
 * A 45-tick radial corona ring for priority coverage, with the score in the eye of the eclipse
@@ -375,7 +376,7 @@ The current evidence is structural and behavioural, not statistical. CI proves t
 | Real-telemetry validation | Not yet; see the external dataset plan |
 | Production precision / recall | Not claimed |
 
-The next evidence step is to replay public real telemetry from [OTRF Security Datasets](https://github.com/OTRF/Security-Datasets), [Splunk Attack Data](https://github.com/splunk/attack_data), and [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team), then record per-rule true positives, false positives, false negatives, and alert volume. The method and source map are in [Evaluation and validation](docs/evaluation.md); the executable runbook is [docs/validation/real-telemetry.md](docs/validation/real-telemetry.md). The current synthetic per-rule table is in [docs/validation/synthetic-run.md](docs/validation/synthetic-run.md); it is a construction-labelled report, not a precision or recall measurement.
+The first real-data step is complete: a 110-event Windows Security sample from OTRF Security Datasets was replayed, and the `Windows Event Log Cleared` rule matched the real 1102 event. That is one true-positive candidate, not a precision or recall measurement. The runbook is [docs/validation/real-telemetry.md](docs/validation/real-telemetry.md); the first result is [docs/validation/real-telemetry-results.md](docs/validation/real-telemetry-results.md). The synthetic per-rule table remains in [docs/validation/synthetic-run.md](docs/validation/synthetic-run.md); it is a construction-labelled report.
 
 ## Limitations
 

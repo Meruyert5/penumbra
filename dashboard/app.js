@@ -342,6 +342,25 @@
     $("#scopeHint").textContent = "peak " + number(row.total) + " events at " + row.hour.slice(11, 16) + "Z";
   }
 
+  function openHourInLedger(hour) {
+    state.pinnedHour = hour;
+    state.hour = hour;
+    state.level = "all";
+    state.q = "";
+    const search = $("#search");
+    if (search) search.value = "";
+    paintLevelChips();
+    const index = timeline.findIndex((row) => row.hour === hour);
+    initScope();
+    if (index >= 0 && geometry) paintHour(index, true);
+    else paintDefault();
+    switchTab("detections");
+    renderLedger();
+    goTo("#ledger");
+    const row = index >= 0 ? timeline[index] : null;
+    toast("Pinned " + hour.slice(11, 16) + "Z" + (row ? " / " + unit(row.total, "event", "events") + " in the hour" : ""));
+  }
+
   function buildScope() {
     chart.innerHTML = "";
     chart.classList.remove("draw");
@@ -958,23 +977,7 @@
       const taOpen = $("#taOpen");
       if (taOpen) {
         taOpen.textContent = "Open " + taPeak.hour.slice(11, 16) + "Z in the watch floor";
-        taOpen.addEventListener("click", () => {
-          state.pinnedHour = taPeak.hour;
-          state.hour = taPeak.hour;
-          state.level = "all";
-          state.q = "";
-          const search = $("#search");
-          if (search) search.value = "";
-          paintLevelChips();
-          const index = timeline.findIndex((row) => row.hour === taPeak.hour);
-          initScope();
-          if (index >= 0 && geometry) paintHour(index, true);
-          else paintDefault();
-          switchTab("detections");
-          renderLedger();
-          goTo("#ledger");
-          toast("Pinned " + taPeak.hour.slice(11, 16) + "Z / " + unit(taPeak.total, "event", "events") + " in the peak hour");
-        });
+        taOpen.addEventListener("click", () => openHourInLedger(taPeak.hour));
       }
     }
     function renderTotality(value) {
@@ -1018,6 +1021,46 @@
       window.addEventListener("resize", updateTotality);
     }
   }
+
+  /* ---------------------------------------------------- Fig. 0 path instrument
+     The path is a contact instrument, not a drawing: each node opens its hour in
+     the watch floor, and the peak marker is placed from the actual peak row. */
+  const pathRoute = $("#pathRoute");
+  const pathPeakMarker = $("#pathPeakMarker");
+  const pathPeakReadout = $("#pathPeakReadout");
+  const pathPeakRow = timeline.reduce(
+    (best, row) => (best === null || Number(row.total) > Number(best.total) ? row : best),
+    null
+  );
+  if (pathRoute && pathPeakMarker && pathPeakRow) {
+    const pathStart = Date.parse("2026-11-11T11:58:00Z");
+    const pathEnd = Date.parse("2026-11-11T12:12:00Z");
+    const fraction = Math.min(1, Math.max(0, (Date.parse(pathPeakRow.hour) - pathStart) / (pathEnd - pathStart)));
+    const point = pathRoute.getPointAtLength(pathRoute.getTotalLength() * fraction);
+    pathPeakMarker.setAttribute("transform", "translate(" + point.x.toFixed(1) + " " + point.y.toFixed(1) + ")");
+    const peakLabel = "Peak " + pathPeakRow.hour.slice(11, 16) + "Z / " + pathPeakRow.total + " events";
+    if (pathPeakReadout) pathPeakReadout.textContent = peakLabel;
+    pathPeakMarker.setAttribute("aria-label", peakLabel + ". Open this hour in the watch floor.");
+    const openPeak = () => openHourInLedger(pathPeakRow.hour);
+    pathPeakMarker.addEventListener("click", openPeak);
+    pathPeakMarker.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openPeak();
+      }
+    });
+  }
+  document.querySelectorAll(".path-node[data-hour]").forEach((node) => {
+    const hour = node.dataset.hour;
+    const open = () => openHourInLedger(hour);
+    node.addEventListener("click", open);
+    node.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        open();
+      }
+    });
+  });
 
   /* -------------------------------------------------------------- live scope
      The cover instrument reads the same hourly payload as Fig. 1, but draws it

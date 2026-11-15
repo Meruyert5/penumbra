@@ -7,7 +7,7 @@ name: penumbra
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION:-8.15.3}
-    container_name: sf-elasticsearch
+    container_name: penumbra-elasticsearch
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -31,7 +31,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION:-8.15.3}
-    container_name: sf-kibana
+    container_name: penumbra-kibana
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - XPACK_SECURITY_ENABLED=false
@@ -44,7 +44,7 @@ services:
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:${STACK_VERSION:-8.15.3}
-    container_name: sf-filebeat
+    container_name: penumbra-filebeat
     # Optional: only starts with `docker compose --profile beats up -d`.
     # The default quickstart indexes telemetry directly with pipeline/ingest.py,
     # which avoids double-loading the same events.

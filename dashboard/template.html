@@ -239,15 +239,15 @@
     </div>
   </section>
 
-  <section class="interlude" aria-label="Path of totality">
+  <section class="interlude" id="path" aria-label="Path of totality">
     <div class="interlude-inner">
       <div class="interlude-copy">
         <p class="interlude-kicker">Saros 145 / 2026 November 11</p>
         <p class="interlude-quote">The shadow crosses the disk. <em>The instruments keep the light.</em></p>
       </div>
       <figure class="path-plate">
-        <figcaption class="path-cap"><span>Fig. 0 / Path of totality</span><span>11:58 → 12:12 UTC</span></figcaption>
-        <svg class="path-svg" viewBox="0 0 900 170" role="img" aria-label="Path of totality with contact points C1 through C4">
+        <figcaption class="path-cap"><span>Fig. 0 / Path of totality</span><span id="pathPeakReadout">peak pending</span></figcaption>
+        <svg class="path-svg" viewBox="0 0 900 170" role="group" aria-label="Interactive path of totality. Select a contact to open its hour in the watch floor.">
           <defs>
             <linearGradient id="pathWarm" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="#F95C4B"/>
@@ -262,15 +262,21 @@
             </radialGradient>
           </defs>
           <path d="M36 126 C 150 50, 250 130, 450 92 S 720 34, 864 104" fill="none" stroke="#FFE3B3" stroke-opacity=".16" stroke-width="1"/>
-          <path d="M36 126 C 150 50, 250 130, 450 92 S 720 34, 864 104" fill="none" stroke="url(#pathWarm)" stroke-width="2.2" stroke-linecap="round"/>
+          <path id="pathRoute" d="M36 126 C 150 50, 250 130, 450 92 S 720 34, 864 104" fill="none" stroke="url(#pathWarm)" stroke-width="2.2" stroke-linecap="round"/>
           <ellipse cx="450" cy="92" rx="30" ry="30" fill="url(#penumbraCore)"/>
           <ellipse cx="450" cy="92" rx="10" ry="10" fill="#050403" stroke="#FBB931" stroke-width="1.2"/>
-          <g class="path-node"><circle cx="36" cy="126" r="4"/><text x="36" y="148">C1</text></g>
-          <g class="path-node"><circle cx="238" cy="90" r="4"/><text x="238" y="112">C2</text></g>
-          <g class="path-node is-max"><circle cx="450" cy="92" r="5"/><text x="450" y="58">MAX</text></g>
-          <g class="path-node"><circle cx="664" cy="48" r="4"/><text x="664" y="32">C3</text></g>
-          <g class="path-node"><circle cx="864" cy="104" r="4"/><text x="864" y="130">C4</text></g>
+          <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T11:58:00Z" aria-label="C1, 11:58 UTC. Open this hour in the watch floor."><circle cx="36" cy="126" r="4"/><text x="36" y="148">C1</text></g>
+          <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T12:02:00Z" aria-label="C2, 12:02 UTC. Open this hour in the watch floor."><circle cx="238" cy="90" r="4"/><text x="238" y="112">C2</text></g>
+          <g class="path-node is-max" role="button" tabindex="0" data-hour="2026-11-11T12:05:00Z" aria-label="Maximum eclipse, 12:05 UTC. Open this hour in the watch floor."><circle cx="450" cy="92" r="5"/><text x="450" y="58">MAX</text></g>
+          <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T12:08:00Z" aria-label="C3, 12:08 UTC. Open this hour in the watch floor."><circle cx="664" cy="48" r="4"/><text x="664" y="32">C3</text></g>
+          <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T12:12:00Z" aria-label="C4, 12:12 UTC. Open this hour in the watch floor."><circle cx="864" cy="104" r="4"/><text x="864" y="130">C4</text></g>
+          <g class="path-peak-marker" id="pathPeakMarker" role="button" tabindex="0" aria-label="Peak hour. Open this hour in the watch floor." transform="translate(154 110)">
+            <circle class="path-peak-halo" r="11"/>
+            <circle class="path-peak-dot" r="4"/>
+            <text class="path-peak-label" y="-15">PEAK</text>
+          </g>
         </svg>
+        <p class="path-hint">Select a contact or the peak marker to open that hour in the watch floor.</p>
       </figure>
     </div>
     <div class="beads" aria-hidden="true"></div>
@@ -510,9 +516,9 @@
       <div class="repro-copy">
         <p class="repro-kicker">From zero to a reviewed queue</p>
         <p>
-          Swap the logsource map to point at real data streams when you have them. Until then,
-          every event here is synthetic. The pipeline does not claim production precision from
-          lab telemetry.
+          Swap the logsource map to point at real data streams when you have them. The dashboard
+          run is synthetic; the separate replay band below is real. The pipeline does not claim
+          production precision from lab telemetry.
         </p>
         <div class="repro-marks">
           <span>Python 3.11</span>
@@ -529,8 +535,20 @@
         <div class="cmd"><code><span class="p">PS&gt;</span> docker compose up -d</code><button type="button" data-copy="docker compose up -d">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.ingest --reset</code><button type="button" data-copy="python -m pipeline.ingest --reset">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z</code><button type="button" data-copy="python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z">copy</button></div>
+        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.replay --source otrf.json --file windows --label malicious</code><button type="button" data-copy="python -m pipeline.replay --source otrf.json --file windows --label malicious">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.report</code><button type="button" data-copy="python -m pipeline.report">copy</button></div>
       </div>
+    </div>
+
+    <div class="validation-band" data-reveal aria-label="Real-telemetry validation">
+      <p class="validation-kicker">First real replay / OTRF Security Datasets</p>
+      <div class="validation-stats">
+        <span><b>110</b> real events</span>
+        <span><b>1</b> rule match</span>
+        <span><b>1</b> TP candidate</span>
+        <span><b>28</b> rules not evaluable</span>
+      </div>
+      <p class="validation-note">A separate Windows Security sample, not the synthetic dashboard run. One real 1102 event matched Windows Event Log Cleared. Not a precision or recall measurement.</p>
     </div>
   </section>
 

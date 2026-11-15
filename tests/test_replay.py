@@ -23,6 +23,8 @@ def test_normalize_sysmon_process_create() -> None:
     assert event["process"]["executable.caseless"].endswith("rundll32.exe")
     assert "comsvcs.dll" in event["process"]["command_line"]
     assert event["process"]["parent"]["name"] == "cmd.exe"
+    assert event["winlog"]["event_data"]["TargetImage"].endswith("lsass.exe")
+    assert event["winlog"]["event_data"]["GrantedAccess"] == "0x1010"
 
 
 def test_normalize_without_timestamp_is_skipped() -> None:

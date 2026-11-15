@@ -9,6 +9,8 @@
     "ParentImage": "C:\\Windows\\System32\\cmd.exe",
     "ParentCommandLine": "cmd.exe /c rundll32 comsvcs.dll MiniDump",
     "User": "LAB\\admin",
-    "ProcessId": "6440"
+    "ProcessId": "6440",
+    "TargetImage": "C:\\Windows\\System32\\lsass.exe",
+    "GrantedAccess": "0x1010"
   }
 ]

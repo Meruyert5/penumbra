@@ -31,6 +31,7 @@ labels, source diversity, and real noise are.
 | The dashboard is assembled from the run data | `tests/test_report.py` and `pipeline.report` | Verified |
 | The page meets the published accessibility contract | Lighthouse and manual review | Verified for the built page |
 | Per-rule synthetic results | [docs/validation/synthetic-run.md](validation/synthetic-run.md) | Generated from the committed run; not precision or recall |
+| Real OTRF sample | [docs/validation/real-telemetry-results.md](validation/real-telemetry-results.md) | 110 real events, 1 rule match, 1 TP candidate |
 
 ## What the current evidence does not prove
 
@@ -81,9 +82,15 @@ teams and research groups and include labelled attack activity or benign data.
 | [Elastic detection rules](https://github.com/elastic/detection-rules) | Production rule and test conventions | Compare rule structure, test expectations, and field assumptions |
 | [Splunk Attack Range](https://github.com/splunk/attack_range) | Instrumented lab orchestration | Use as an alternative to the synthetic path when a full VM range is available |
 
-The executable runbook is [Real-telemetry validation](validation/real-telemetry.md).
-The mapping harness is `pipeline/replay.py`; it is tested but has not been run
-against a real dataset in this repository.
+The first replay is complete: 110 real Windows Security events from OTRF were
+replayed, and one rule matched the real 1102 event. See
+[Real-telemetry replay results](validation/real-telemetry-results.md). The
+mapping harness is `pipeline/replay.py`; it is tested and has now been run end to
+end against one real dataset. The result is one true-positive candidate, not a
+precision or recall measurement.
+
+The next evidence steps are a benign replay, a second source family, and a label
+manifest that records the attack window and expected techniques.
 
 ### Metrics to record
 
@@ -134,14 +141,15 @@ python -m pipeline.heatmap
 | Deterministic synthetic run | Done |
 | Benign baseline | Done, small |
 | Per-rule false-positive suite | Partial |
-| External real-telemetry replay | Not started |
-| Precision / recall table | Not started |
+| External real-telemetry replay | Started: 1 OTRF sample, 110 events, 1 TP candidate |
+| Precision / recall table | Pending; one TP is not a measurement |
+| Field-mapping gap review | Open: 28 rules not evaluable on the first sample |
+| Atomic Red Team Sysmon capture | Not started; needs an isolated Windows VM |
 | Scheduled detection-decay check | Not started |
 
 Roadmap items that close these gaps are tracked in the README. The most valuable
-next change is a small, repeatable replay harness with a labelled positive set and
-a benign set, because that turns the current structural evidence into a measured
-result.
+next change is a benign replay and a label manifest, because that turns the first
+true-positive candidate into a measured result.
 
 ## Sources
 

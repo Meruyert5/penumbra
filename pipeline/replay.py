@@ -150,6 +150,7 @@ def normalize_event(raw: dict[str, Any]) -> dict[str, Any] | None:
             "category": category,
             "type": ["start"] if action == "process_start" else ["info"],
             "action": action,
+            "code": event_id,
         },
         "host": {"name": str(host)} if host else {},
         "user": {"name": str(user)} if user else {},
@@ -160,6 +161,40 @@ def normalize_event(raw: dict[str, Any]) -> dict[str, Any] | None:
             "computer_name": str(host) if host else None,
         },
     }
+    winlog_data: dict[str, str] = {}
+    for key in (
+        "ServiceName",
+        "ImagePath",
+        "TargetImage",
+        "GrantedAccess",
+        "ShareName",
+        "TicketEncryptionType",
+        "Details",
+        "TargetFilename",
+        "QueryName",
+        "ScriptBlockText",
+        "CommandLine",
+        "ParentCommandLine",
+        "Image",
+        "ParentImage",
+        "User",
+        "TargetUserName",
+        "SubjectUserName",
+        "DestinationPort",
+        "SourceIp",
+        "DestinationIp",
+    ):
+        value = _lookup(raw, event_data, key)
+        if value not in (None, ""):
+            winlog_data[key] = str(value)
+    if winlog_data:
+        event["winlog"]["event_data"] = winlog_data
+    provider = _lookup(raw, event_data, "SourceName", "ProviderName", "winlog.provider_name")
+    if provider:
+        event["winlog"]["provider_name"] = str(provider)
+    message = _lookup(raw, event_data, "Message", "message")
+    if message:
+        event["message"] = str(message)
     if image:
         event["process"]["executable"] = str(image)
         event["process"]["executable.caseless"] = str(image).lower()
@@ -207,7 +242,11 @@ def load_events(path: Path) -> list[dict[str, Any]]:
     text = path.read_text(encoding="utf-8")
     if path.suffix.lower() in {".ndjson", ".jsonl"}:
         return [json.loads(line) for line in text.splitlines() if line.strip()]
-    payload = json.loads(text)
+    try:
+        payload = json.loads(text)
+    except json.JSONDecodeError:
+        # Some OTRF files are named .json but contain one JSON object per line.
+        return [json.loads(line) for line in text.splitlines() if line.strip()]
     if isinstance(payload, list):
         return payload
     if isinstance(payload, dict) and isinstance(payload.get("events"), list):

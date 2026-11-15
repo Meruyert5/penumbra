@@ -9,11 +9,16 @@ repository. Do not describe them as completed until the results are recorded.
 | Step | Status |
 |---|---|
 | OTRF/Mordor field mapping | Implemented in `pipeline/replay.py`, covered by `tests/test_replay.py` |
-| OTRF sample replay | Not executed here |
+| OTRF sample replay | **Done for one 110-event Windows Security sample**; see [results](real-telemetry-results.md) |
 | Atomic Red Team Sysmon capture | Not executed here; needs an isolated Windows VM |
-| Per-rule TP/FP/FN table | Template and synthetic table exist; real table pending |
+| Per-rule TP/FP/FN table | One real true-positive candidate; full table pending |
 | Larger benign baseline | Not executed here |
 | Entra ID or Kubernetes source | Not added; only if it matches the target role |
+
+The first sample has been replayed: 110 real Windows Security events, one rule
+match, one true-positive candidate. The result, commands, and the 28 rules that
+were not evaluable are recorded in
+[Real-telemetry replay results](real-telemetry-results.md).
 
 ## 1. Replay a small OTRF sample
 

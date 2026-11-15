@@ -8,6 +8,8 @@ __pycache__/
 # Lab runtime data
 lab/logs/*.ndjson
 lab/logs/*.log
+lab/replay/
+lab/replay-results/
 alerts/
 *.csv
 

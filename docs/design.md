@@ -167,7 +167,7 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
 | Corona disc | 44s linear rotation |
 | Corona streamers | 68s counter-rotation |
 | Diamond ring | 4.2s pulse |
-| Path of totality | Static path; the marker rides the line |
+| Path of totality | Interactive: contacts and the data-peak marker open the hour in the watch floor |
 | Phase ribbon | Reveal with the cover; `P` plays C1-C4 |
 | Ticket stamp | 460ms press to a 2.5-degree settle |
 | Scope | 9s scan column; pings on loud hours |
@@ -190,7 +190,9 @@ switch is instant, the chain does not autoplay, and the scope draws once.
   sunset gradient; the peak is a black disc with a coral ring, an amber halo, and
   a diamond flare. It pauses offscreen and re-draws on theme change.
 - **Fig. 0.** The path of totality: a black plate inside the gradient interlude,
-  with a warm path, five contact nodes, and the observing window.
+  a five-node contact path, a data-peak marker placed from the actual peak hour,
+  and a caption that reports the peak. Selecting a contact or the peak marker
+  opens that hour in the watch floor.
 - **Fig. 1.** An SVG chart of matched events by hour. The envelope is ember; the
   stems are critical/high/medium/low. Hover, keyboard arrows, and click pin an
   hour.

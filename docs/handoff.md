@@ -18,6 +18,7 @@ account.
 | Public host | GitHub Pages (after the first upload) |
 | Permanent target | `https://penumbra.is-a.dev` (pending registration and Pages setup) |
 | Tests | 50 passing |
+| Real validation | 1 OTRF sample: 110 real events, 1 true-positive candidate |
 | Lighthouse | 100 accessibility / 100 best practices / 100 SEO |
 
 The local server can serve `site/` for review. GitHub Pages is the only public
