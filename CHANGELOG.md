@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Published the public dashboard to GitHub Pages at
+  <https://meruyert5.github.io/penumbra/> and wired the live URL into the README
+  and handoff notes.
 - Replayed a combined five-index corpus: 1,381 real events from Windows Security,
   Sysmon, service/Kerberos/SMB XML, Linux auditd and auth, nginx, AWS CloudTrail,
   and Zeek. All 50 rules were evaluable; five matched.

@@ -16,11 +16,13 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 
 > **Project status: portfolio lab, not a production detection product.** The telemetry is synthetic and generated to exercise this rule set. The repository demonstrates detection-as-code, validation, triage, and reporting; it does not claim production precision or recall. The evidence boundary is documented in [Evaluation and validation](docs/evaluation.md).
 
+**Live dashboard:** <https://meruyert5.github.io/penumbra/>
+
 ## Reviewer path
 
 | Time | Open | Why it matters |
 |---|---|---|
-| 2 minutes | [The dashboard](docs/index.html) | See the run, the peak hour, the coverage ring, and the triage queue |
+| 2 minutes | [The live dashboard](https://meruyert5.github.io/penumbra/) | See the run, the peak hour, the coverage ring, and the triage queue |
 | 5 minutes | [`rules/sigma/`](rules/sigma) and [`rules/compiled/`](rules/compiled) | Read the source rule and the EQL/KQL that Elasticsearch actually runs |
 | 5 minutes | [`cases/case-002-multi-stage-intrusion/report.md`](cases/case-002-multi-stage-intrusion/report.md) | Follow one investigation from alert to verdict |
 | 5 minutes | [`docs/attck-coverage.md`](docs/attck-coverage.md) and [`docs/tuning.md`](docs/tuning.md) | Check coverage and the tuning record |
@@ -426,6 +428,8 @@ scripts/                Convenience scripts
 ## Publish the dashboard
 
 [`.github/workflows/pages.yml`](.github/workflows/pages.yml) publishes a filtered public site on every push to `main`:
+
+The current deployment is <https://meruyert5.github.io/penumbra/>.
 
 ```powershell
 python -m pipeline.report

@@ -15,8 +15,8 @@ account.
 | Built dashboard | `docs/index.html` |
 | Public site | `site/` (generated, gitignored) |
 | Public surface | `index.html`, `assets/`, `cases/`, `.nojekyll`; optionally `CNAME` |
-| Public host | GitHub Pages (after the first upload) |
-| Permanent target | `https://penumbra.is-a.dev` (pending registration and Pages setup) |
+| Public host | GitHub Pages, live at `https://meruyert5.github.io/penumbra/` |
+| Permanent target | `https://penumbra.is-a.dev` (domain still available; registration pending) |
 | Tests | 63 passing |
 | Real validation | 1,381 events across five indices and 16 labelled windows; 6 TP / 0 FP / 1 FN; 0 not evaluable; 89,704-event benign baseline |
 | Lighthouse | 100 accessibility / 100 best practices / 100 SEO |
