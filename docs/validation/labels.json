@@ -1,0 +1,160 @@
+{
+  "samples": [
+    {
+      "id": "otrf-sysmon-lsass",
+      "label": "malicious",
+      "start": "2020-10-18T10:56:05Z",
+      "end": "2020-10-19T02:56:14Z",
+      "techniques": ["T1003.001", "T1070.001"],
+      "expected_rules": [
+        "Suspicious Process Access to LSASS",
+        "Windows Event Log Cleared"
+      ],
+      "source": "OTRF Security-Datasets cmd_lsass_memory_dumpert_syscalls"
+    },
+    {
+      "id": "otrf-security-log-cleared",
+      "label": "malicious",
+      "start": "2020-11-02T04:12:58Z",
+      "end": "2020-11-02T04:13:05Z",
+      "techniques": ["T1070.001"],
+      "expected_rules": ["Windows Event Log Cleared"],
+      "source": "OTRF Security-Datasets psh_powershell_httplistener"
+    },
+    {
+      "id": "splunk-krbrelayup-service",
+      "label": "malicious",
+      "start": "2024-03-04T04:37:35Z",
+      "end": "2024-03-04T10:11:25Z",
+      "techniques": ["T1543.003"],
+      "expected_rules": ["Suspicious Service Installed From User-Writable Path"],
+      "source": "Splunk attack_data T1543.003 windows_krbrelayup_service_creation"
+    },
+    {
+      "id": "splunk-kerberoasting",
+      "label": "malicious",
+      "start": "2024-04-08T23:56:13Z",
+      "end": "2024-04-08T23:56:13Z",
+      "techniques": ["T1558.003"],
+      "expected_rules": ["Kerberoasting Service Ticket Request"],
+      "source": "Splunk attack_data T1558.003 kerberoasting_spn_request_with_rc4_encryption"
+    },
+    {
+      "id": "splunk-smb-admin-share",
+      "label": "malicious",
+      "start": "2024-01-29T13:14:26Z",
+      "end": "2024-01-29T13:14:26Z",
+      "techniques": ["T1021.002"],
+      "expected_rules": ["SMB Administrative Share Access"],
+      "source": "Splunk attack_data T1021.002 executable_in_share",
+      "note": "Security 5145 (Detailed File Share) records ADMIN$ access; the rule only queries 5140, so this is a counted false negative."
+    },
+    {
+      "id": "otrf-aws-exfiltration",
+      "label": "malicious",
+      "start": "2020-09-14T00:44:20Z",
+      "end": "2020-09-14T01:13:20Z",
+      "techniques": ["T1530", "T1567"],
+      "expected_rules": [],
+      "source": "OTRF Security-Datasets ec2_proxy_s3_exfiltration",
+      "note": "Cloud rules target CreateAccessKey and root ConsoleLogin; this capture contains neither, so they are true negatives for this window."
+    },
+    {
+      "id": "otrf-linux-auditd-dd",
+      "label": "malicious",
+      "start": "2020-11-10T08:19:44Z",
+      "end": "2020-11-10T08:19:44Z",
+      "techniques": ["T1027.001"],
+      "expected_rules": [],
+      "source": "OTRF Security-Datasets sh_binary_padding_dd",
+      "note": "The library has no binary-padding rule; this is a documented coverage gap, not a counted false negative."
+    },
+    {
+      "id": "splunk-linux-auditd-setuid",
+      "label": "malicious",
+      "start": "2024-08-06T14:02:19Z",
+      "end": "2024-08-06T14:02:19Z",
+      "techniques": ["T1548.001"],
+      "expected_rules": [],
+      "source": "Splunk attack_data T1548.001 linux_auditd_setuid",
+      "note": "The library has no auditd setuid rule; coverage gap."
+    },
+    {
+      "id": "splunk-linux-auditd-crontab",
+      "label": "malicious",
+      "start": "2025-04-16T10:15:30Z",
+      "end": "2025-04-16T10:15:35Z",
+      "techniques": ["T1053.003"],
+      "expected_rules": [],
+      "source": "Splunk attack_data T1053.003 linux_auditd_crontab_edit_new",
+      "note": "The library has no auditd crontab rule; coverage gap."
+    },
+    {
+      "id": "splunk-linux-auditd-sshconfig",
+      "label": "malicious",
+      "start": "2025-11-20T16:57:48Z",
+      "end": "2025-11-20T16:57:48Z",
+      "techniques": ["T1098.004"],
+      "expected_rules": [],
+      "source": "Splunk attack_data T1098.004 auditd_path_ssh_config",
+      "note": "Capture changes ssh_config, not authorized_keys; no rule targets this path."
+    },
+    {
+      "id": "rhel7-ssh-bruteforce",
+      "label": "malicious",
+      "start": "2026-02-22T16:45:20Z",
+      "end": "2026-02-22T17:04:51Z",
+      "techniques": ["T1110.001"],
+      "expected_rules": ["SSH Failed Password Authentication"],
+      "source": "Elastic Beats filebeat/module/system/auth/test/secure-rhel7.log",
+      "note": "The fixture has no year; the replay anchors it to 2026 for ordering only."
+    },
+    {
+      "id": "nginx-benign",
+      "label": "benign",
+      "start": "2016-10-25T12:49:33Z",
+      "end": "2016-12-07T10:05:07Z",
+      "techniques": [],
+      "expected_rules": [],
+      "source": "Elastic Beats filebeat/module/nginx/access/test/access.log"
+    },
+    {
+      "id": "splunk-log4j-exfiltration",
+      "label": "malicious",
+      "start": "2021-12-13T23:51:17Z",
+      "end": "2021-12-14T00:41:27Z",
+      "techniques": ["T1190"],
+      "expected_rules": [],
+      "source": "Splunk attack_data T1190 log4j_proxy_logs",
+      "note": "Log4Shell JNDI payload; the library has no JNDI rule, so this is a coverage gap."
+    },
+    {
+      "id": "splunk-bricks-sqli",
+      "label": "malicious",
+      "start": "2024-02-22T17:34:56Z",
+      "end": "2024-02-22T17:34:56Z",
+      "techniques": ["T1190"],
+      "expected_rules": [],
+      "source": "Splunk attack_data T1190 wordpress bricks_cve_2024_25600",
+      "note": "SQL injection is in the request body; the library only inspects url.query, so this is a coverage gap."
+    },
+    {
+      "id": "zeek-benign-2019",
+      "label": "benign",
+      "start": "2019-01-11T06:33:35Z",
+      "end": "2019-03-01T00:10:00Z",
+      "techniques": [],
+      "expected_rules": [],
+      "source": "Elastic Beats x-pack/filebeat/module/zeek/connection/test/connection-json.log"
+    },
+    {
+      "id": "zeek-benign-2021",
+      "label": "benign",
+      "start": "2021-06-09T20:55:13Z",
+      "end": "2021-06-09T20:55:13Z",
+      "techniques": [],
+      "expected_rules": [],
+      "source": "Elastic Beats x-pack/filebeat/module/zeek/connection/test/connection-json.log"
+    }
+  ]
+}

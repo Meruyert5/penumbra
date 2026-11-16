@@ -17,8 +17,8 @@ account.
 | Public surface | `index.html`, `assets/`, `cases/`, `.nojekyll`; optionally `CNAME` |
 | Public host | GitHub Pages (after the first upload) |
 | Permanent target | `https://penumbra.is-a.dev` (pending registration and Pages setup) |
-| Tests | 54 passing |
-| Real validation | 2 OTRF samples: 228 events, 2 rules, 4 real matches; 89,704-event benign baseline |
+| Tests | 63 passing |
+| Real validation | 1,381 events across five indices and 16 labelled windows; 6 TP / 0 FP / 1 FN; 0 not evaluable; 89,704-event benign baseline |
 | Lighthouse | 100 accessibility / 100 best practices / 100 SEO |
 
 The local server can serve `site/` for review. GitHub Pages is the only public
@@ -38,7 +38,7 @@ node --check dashboard\app.js
 .\.venv\Scripts\python.exe -m pipeline.heatmap
 .\.venv\Scripts\python.exe -m pipeline.validation
 .\.venv\Scripts\python.exe -m pipeline.validation_results --write-results
-.\.venv\Scripts\python.exe -m pipeline.benchmark --labels docs\validation\labels.example.json
+.\.venv\Scripts\python.exe -m pipeline.benchmark --labels docs\validation\labels.json
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
@@ -137,9 +137,9 @@ Read [`docs/custom-domain.md`](custom-domain.md). The short version:
 2. **Name.** Penumbra collides with Penumbra Security, Inc. and other products.
    Keep it for a portfolio with the disclaimer, or choose a more distinctive name
    before a commercial launch.
-3. **Validation.** The current evidence is structural, not statistical. The next
-   substantive change is a real-telemetry replay harness; see
-   [`docs/evaluation.md`](evaluation.md).
+3. **Validation.** The small-sample benchmark is real but narrow: 16 labelled
+   windows, 6 TP, 0 FP, 1 FN. Extend the corpus before treating precision and
+   recall as stable. See [`docs/validation/benchmark.md`](validation/benchmark.md).
 
 ## Do not
 

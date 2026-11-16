@@ -10,6 +10,12 @@ lab/logs/*.ndjson
 lab/logs/*.log
 lab/replay/
 lab/replay-results/
+lab/corpus/
+lab/corpus-results/
+lab/replay-rich/
+lab/replay-rich-results/
+lab/replay-aws/
+lab/replay-aws-results/
 alerts/
 *.csv
 

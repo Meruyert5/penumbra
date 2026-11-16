@@ -544,27 +544,44 @@
       <div class="validation-head">
         <p class="validation-kicker">Fig. 4 / Validation</p>
         <h3 id="validationTitle">What the rules did on real and benign data.</h3>
-        <p class="validation-lede">A separate replay, not the dashboard run. The scenario corpus stays at 9,223 events; the validation set adds 228 real events and an 89,704-event benign baseline.</p>
+        <p class="validation-lede">A separate replay, not the dashboard run. The scenario corpus stays at 9,223 events; the validation set adds 1,381 real events across five indices, with 16 labelled windows and an 89,704-event benign baseline.</p>
       </div>
       <div class="validation-stats" id="validationStats"></div>
       <div class="validation-body">
         <figure class="validation-plate">
           <figcaption class="validation-cap"><span>Rule status / 50</span><span id="validationCount">loading</span></figcaption>
           <div class="validation-matrix" id="validationMatrix" role="group" aria-label="Per-rule validation status"></div>
-          <p class="validation-legend"><span class="is-matched"></span> matched <span class="is-no-match"></span> evaluated, no match <span class="is-not-evaluable"></span> not evaluable</p>
+          <p class="validation-legend"><span class="is-matched"></span> matched <span class="is-false-negative"></span> false negative <span class="is-no-match"></span> no match <span class="is-not-evaluable"></span> not evaluable</p>
         </figure>
         <div class="validation-side">
           <div class="validation-samples" id="validationSamples"></div>
           <div class="validation-breakdown" id="validationBreakdown"></div>
         </div>
       </div>
+      <div class="validation-benchmark" id="validationBenchmark">
+        <div class="validation-benchmark-head">
+          <div>
+            <p class="validation-kicker">Fig. 4 / Per-rule benchmark</p>
+            <h4>TP / FP / FN, precision, recall, and alert volume</h4>
+          </div>
+          <p class="validation-benchmark-score" id="validationBenchmarkScore">loading</p>
+        </div>
+        <div class="validation-table-wrap">
+          <table class="validation-table validation-benchmark-table">
+            <thead><tr><th>Rule</th><th>TP</th><th>FP</th><th>FN</th><th>Precision</th><th>Recall</th><th>Alert volume</th></tr></thead>
+            <tbody id="validationBenchmarkRows"></tbody>
+          </table>
+        </div>
+        <p class="validation-benchmark-note" id="validationBenchmarkNote"></p>
+      </div>
+      <h4 class="validation-subhead">Rules that fired</h4>
       <div class="validation-table-wrap">
         <table class="validation-table">
           <thead><tr><th>Rule</th><th>Level</th><th>Technique</th><th>Matches</th><th>Sample</th><th>Verdict</th></tr></thead>
           <tbody id="validationRows"></tbody>
         </table>
       </div>
-      <p class="validation-note">These are candidate results from small public samples and a synthetic benign baseline. The scenario corpus remains the dashboard run; the validation panel is a separate comparison, not a precision or recall benchmark.</p>
+      <p class="validation-note">These are sample-level results from 16 labelled windows across five indices. Six rules had signal: five true positives and one false negative. The scenario corpus remains the dashboard run; this panel is a small-sample comparison, not an enterprise precision or recall benchmark.</p>
       <details class="validation-proof" id="validationProof">
         <summary>Proof and provenance</summary>
         <div class="validation-proof-body" id="validationProofBody"></div>

@@ -88,3 +88,39 @@ def test_benchmark_derives_expected_rules_from_techniques() -> None:
     row = results["rules"][0]
     assert row["rule"] == "LSASS rule"
     assert row["fn"] == 1
+
+
+def test_benchmark_does_not_double_count_volume_for_overlapping_samples() -> None:
+    rules = [{"title": "Rule A", "techniques": []}]
+    alerts = {
+        "alerts": [
+            {
+                "title": "Rule A",
+                "count": 5,
+                "first_seen": "2026-11-11T12:00:00Z",
+                "last_seen": "2026-11-11T14:00:00Z",
+            }
+        ]
+    }
+    labels = {
+        "samples": [
+            {
+                "id": "first",
+                "label": "malicious",
+                "start": "2026-11-11T12:00:00Z",
+                "end": "2026-11-11T13:00:00Z",
+                "expected_rules": ["Rule A"],
+            },
+            {
+                "id": "second",
+                "label": "malicious",
+                "start": "2026-11-11T13:00:00Z",
+                "end": "2026-11-11T14:00:00Z",
+                "expected_rules": ["Rule A"],
+            },
+        ]
+    }
+    results = run_benchmark(alerts, rules, labels)
+    row = results["rules"][0]
+    assert row["tp"] == 2
+    assert row["alert_volume"] == 5

@@ -1,8 +1,8 @@
 # Real-telemetry validation
 
-This is the runbook for moving beyond the synthetic corpus. The mapping harness is
-implemented and tested; the replay and VM steps have **not** been executed in this
-repository. Do not describe them as completed until the results are recorded.
+This is the runbook for the real-telemetry replay. The mapping harness is
+implemented and tested, and the combined five-index replay has been executed.
+The results are recorded; this page stays as the reproduction guide.
 
 > **Treat public attack datasets as untrusted.** Some OTRF archives contain real
 > attack tooling or binaries, not just telemetry. Download telemetry JSON only,
@@ -17,17 +17,19 @@ repository. Do not describe them as completed until the results are recorded.
 | Step | Status |
 |---|---|
 | OTRF/Mordor field mapping | Implemented in `pipeline/replay.py`, covered by `tests/test_replay.py` |
-| OTRF sample replay | **Done for two samples**: 110 Security events + 118 richer Sysmon events; see [results](real-telemetry-results.md) |
+| OTRF sample replay | **Done**: 1,381 events across five indices; see [results](real-telemetry-results.md) |
 | Atomic Red Team Sysmon capture | Not executed here; needs an isolated Windows VM |
-| Per-rule TP/FP/FN table | 4 real TP candidate matches across 2 rules; full table pending |
-| Larger benign baseline | Done: 89,704 synthetic events; see [large benign](large-benign-results.md) |
+| Per-rule TP/FP/FN table | **Done**: 6 TP, 0 FP, 1 FN; see [benchmark](benchmark.md) |
+| Larger benign baseline | Done: 89,704 synthetic events, 17 real benign events; see [large benign](large-benign-results.md) |
 | Entra ID or Kubernetes source | Not added; only if it matches the target role |
 
-Two samples have been replayed: 110 Windows Security events and 118 richer
-Sysmon/Security events. The results, commands, and the 25 rules that were not
-evaluable are recorded in
-[Real-telemetry replay results](real-telemetry-results.md). The 10× synthetic
-benign run is in [Large benign baseline](large-benign-results.md).
+The combined run replayed Windows Security, Sysmon, service/Kerberos/SMB XML,
+Linux auditd and auth, nginx, AWS CloudTrail, and Zeek into five indices. All 50
+rules were evaluable; five rules matched, and one SMB rule missed a 5145 event.
+The results, commands, and labels are recorded in
+[Real-telemetry replay results](real-telemetry-results.md) and
+[Benchmark metrics](benchmark.md). The 10× synthetic benign run is in
+[Large benign baseline](large-benign-results.md).
 
 ## 1. Replay a small OTRF sample
 

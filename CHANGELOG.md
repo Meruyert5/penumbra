@@ -2,10 +2,21 @@
 
 ## Unreleased
 
+- Replayed a combined five-index corpus: 1,381 real events from Windows Security,
+  Sysmon, service/Kerberos/SMB XML, Linux auditd and auth, nginx, AWS CloudTrail,
+  and Zeek. All 50 rules were evaluable; five matched.
+- Added a sample-level benchmark: 6 TP, 0 FP, 1 FN across 16 labelled windows;
+  precision 1.000, recall 0.857. The one miss is the SMB rule querying Security
+  5140 while the capture logged 5145.
+- Added Windows XML, auditd, syslog auth, nginx, and Zeek replay parsers and
+  tests; added the CloudTrail mapper and tests.
+- Added `docs/validation/labels.json`, the per-rule benchmark results, and the
+  Fig. 4 TP/FP/FN, precision, recall, and alert-volume table.
 - Replayed two real OTRF samples: 110 Windows Security events (one `Windows
   Event Log Cleared` match) and 118 richer Sysmon/Security events (two LSASS
   process-access matches and one event-log-cleared match). Recorded the first
-  real true-positive candidates and the 25 rules that were not evaluable.
+  real true-positive candidates and the 25 rules that were not evaluable at the
+  time.
 - Added a 10× benign baseline run: 89,704 synthetic events, one low-severity SSH
   match, zero correlation alerts.
 - Added `pipeline.replay` for OTRF/Mordor-style telemetry and a tested field

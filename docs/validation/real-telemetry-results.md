@@ -5,6 +5,41 @@ detect path as the synthetic run. They are deliberately small and are not a
 benchmark. A separate 89,704-event synthetic benign baseline is recorded in
 [Large benign baseline](large-benign-results.md).
 
+## Combined multi-source run
+
+A later run replayed 16 labelled windows into all five lab indices:
+
+| Index | Samples | Events | Rules with signal |
+|---|---|---:|---|
+| Windows | OTRF Security and Sysmon; Splunk service, Kerberos, and SMB XML | 234 | 4 |
+| Linux | OTRF auditd; Splunk auditd; Elastic RHEL auth | 1,021 | 1 |
+| Web | Elastic nginx access; Splunk Log4Shell and Bricks SQLi | 18 | 0 |
+| Cloud | OTRF AWS CloudTrail S3 exfiltration | 103 | 0 |
+| Network | Elastic Zeek connection log | 5 | 0 |
+
+The combined run evaluated all 50 rules with **0 missing-index, 0 missing-field,
+and 0 correlation-fetch errors**. Five rules fired:
+
+| Rule | Matches | Verdict |
+|---|---:|---|
+| Suspicious Process Access to LSASS | 2 | TP |
+| Windows Event Log Cleared | 2 | TP |
+| Kerberoasting Service Ticket Request | 1 | TP |
+| Suspicious Service Installed From User-Writable Path | 2 | TP |
+| SSH Failed Password Authentication | 352 | TP |
+| SMB Administrative Share Access | 0 | FN (5145 logged, 5140 queried) |
+
+That is 6 sample-level true positives, 0 false positives, and 1 false negative
+across the six rules with signal. Five rules scored precision 1.000 and recall
+1.000; the SMB rule scored recall 0.000. The per-rule table and method are in
+[Benchmark metrics](benchmark.md). This is a small-sample benchmark, not an
+enterprise measurement.
+
+Seven malicious windows exercised techniques with no matching rule: binary
+padding, auditd setuid, auditd crontab edit, `ssh_config` change, S3
+exfiltration, Log4Shell, and body SQLi. They are recorded as coverage gaps, not
+as per-rule false negatives.
+
 ## Sample A — Windows Security 110 events
 
 | Field | Value |
@@ -92,8 +127,9 @@ as untrusted. The dashboard reads the committed summary in
 
 ## What these runs do not prove
 
-- **Precision:** the samples are labelled malicious; there is no benign real-data
-  set in these runs. The 89,704-event benign baseline is synthetic.
+- **Precision:** the two Windows samples are labelled malicious and contain no
+  benign real data. The combined run adds 17 real benign web and network events;
+  the 89,704-event benign baseline remains synthetic.
 - **Recall:** the datasets do not contain a complete expected-rule manifest, so
   missed detections cannot be counted.
 - **Coverage of the rule library:** 25 rules were not evaluable because the
@@ -108,7 +144,8 @@ as untrusted. The dashboard reads the committed summary in
 
 1. Predefine the common `winlog.event_data.*` fields in the index template, or
    treat a missing mapped field as “not evaluable” rather than a rule error.
-2. Add a real benign sample and record false positives against it.
+2. A real benign sample is now present: 12 nginx requests and 5 Zeek flows in the
+   combined run. Extend it before treating precision as stable.
 3. Replay one dataset per source family (Windows Security, Sysmon, Linux, AWS)
    before claiming cross-source validation.
 4. Build a label manifest with the attack window and expected techniques so

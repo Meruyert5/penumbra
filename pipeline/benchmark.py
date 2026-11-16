@@ -70,9 +70,10 @@ def _overlaps(alert: dict[str, Any], start: datetime, end: datetime) -> bool:
 
 
 def _expected_rules(sample: dict[str, Any], rules: list[dict[str, Any]]) -> set[str]:
-    explicit = sample.get("expected_rules")
-    if explicit:
-        return set(explicit)
+    if "expected_rules" in sample:
+        # An explicit empty list means "no rule is expected" (a coverage gap),
+        # not "derive expected rules from techniques".
+        return set(sample.get("expected_rules") or [])
     techniques = {str(item).upper() for item in sample.get("techniques", [])}
     if not techniques:
         return set()
@@ -96,6 +97,7 @@ def run_benchmark(
         for title in titles
     }
     sample_results: list[dict[str, Any]] = []
+    seen_alerts: set[tuple[Any, ...]] = set()
 
     for sample in labels.get("samples", []):
         start = _ts(sample.get("start"))
@@ -105,7 +107,21 @@ def run_benchmark(
         expected = _expected_rules(sample, rules)
         in_window = [alert for alert in alerts if _overlaps(alert, start, end)]
         fired = {alert.get("title", "") for alert in in_window}
-        volume = sum(int(alert.get("count", 0)) for alert in in_window)
+        volume = 0
+        for alert in in_window:
+            key = (
+                alert.get("title"),
+                alert.get("first_seen"),
+                alert.get("last_seen"),
+                alert.get("count"),
+            )
+            if key in seen_alerts:
+                continue
+            seen_alerts.add(key)
+            count = int(alert.get("count", 0))
+            volume += count
+            if alert.get("title") in stats:
+                stats[alert["title"]]["alert_volume"] += count
 
         if sample.get("label") == "benign":
             fp = fired
@@ -134,12 +150,6 @@ def run_benchmark(
                 if title in stats:
                     stats[title]["fp"] += 1
                     stats[title]["samples"].append({"id": sample.get("id"), "result": "FP"})
-
-        for title in fired:
-            if title in stats:
-                stats[title]["alert_volume"] += sum(
-                    int(alert.get("count", 0)) for alert in in_window if alert.get("title") == title
-                )
 
         sample_results.append(
             {
@@ -172,6 +182,8 @@ def run_benchmark(
         "rules_with_signal": len(rule_rows),
         "rules_total": len(titles),
     }
+    totals["precision"] = round(totals["tp"] / (totals["tp"] + totals["fp"]), 4) if totals["tp"] + totals["fp"] else None
+    totals["recall"] = round(totals["tp"] / (totals["tp"] + totals["fn"]), 4) if totals["tp"] + totals["fn"] else None
     return {"summary": totals, "samples": sample_results, "rules": rule_rows}
 
 
@@ -184,6 +196,8 @@ def to_markdown(results: dict[str, Any]) -> str:
         f"| True positives | {results['summary']['tp']} |",
         f"| False positives | {results['summary']['fp']} |",
         f"| False negatives | {results['summary']['fn']} |",
+        f"| Precision | {results['summary'].get('precision') if results['summary'].get('precision') is not None else '-'} |",
+        f"| Recall | {results['summary'].get('recall') if results['summary'].get('recall') is not None else '-'} |",
         f"| Alert volume | {results['summary']['alert_volume']} |",
         f"| Rules with signal | {results['summary']['rules_with_signal']} |",
         "",

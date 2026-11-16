@@ -45,7 +45,7 @@ def run_eql(
     query: str,
     hours: int,
     end: datetime | None = None,
-) -> list[dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], int]:
     body = {
         "query": query,
         "size": MAX_EVENTS_PER_RULE,
@@ -62,7 +62,39 @@ def run_eql(
         # Surface the Elasticsearch reason: field mapping errors are the usual cause.
         raise RuntimeError(f"EQL failed ({response.status_code}): {response.text[:500]}")
     payload = response.json()
-    return [event["_source"] for event in payload.get("hits", {}).get("events", [])]
+    hits = payload.get("hits", {})
+    events = [event["_source"] for event in hits.get("events", [])]
+    total = hits.get("total", len(events))
+    if isinstance(total, dict):
+        total = total.get("value", len(events))
+    return events, int(total or 0)
+
+
+def count_matches(
+    url: str,
+    index: list[str],
+    query_kql: str | None,
+    hours: int,
+    end: datetime | None = None,
+    fallback: int = 0,
+) -> int:
+    """Return the exact match count. EQL caps total at the requested size."""
+    if not query_kql:
+        return fallback
+    body = {
+        "query": {
+            "bool": {
+                "must": [{"query_string": {"query": query_kql}}],
+                "filter": {"range": {"@timestamp": _range(hours, end)}},
+            }
+        },
+    }
+    try:
+        response = requests.post(f"{url}/{','.join(index)}/_count", json=body, timeout=60)
+        response.raise_for_status()
+        return int(response.json().get("count", fallback))
+    except (requests.RequestException, ValueError):
+        return fallback
 
 
 def fetch_events(
@@ -203,13 +235,14 @@ def main() -> int:
     matched: list[tuple[str, str, str, str]] = []
     for rule in rules:
         try:
-            events = run_eql(args.url, rule["index"], rule["query"], args.hours, end)
+            events, total = run_eql(args.url, rule["index"], rule["query"], args.hours, end)
         except RuntimeError as exc:
             errors.append(f"{rule['title']}: {exc}")
             continue
         if not events:
             continue
         hosts = Counter((event.get("host") or {}).get("name", "-") for event in events)
+        exact_count = count_matches(args.url, rule["index"], rule.get("query_kql"), args.hours, end, total)
         for event in events:
             matched.append(
                 (
@@ -229,7 +262,7 @@ def main() -> int:
                 "index": rule["index"],
                 "query": rule["query"],
                 "query_kql": rule["query_kql"],
-                "count": len(events),
+                "count": exact_count,
                 "host": ", ".join(f"{name} ({count})" for name, count in hosts.most_common()),
                 "hosts": sorted(hosts),
                 "first_seen": min(event["@timestamp"] for event in events),

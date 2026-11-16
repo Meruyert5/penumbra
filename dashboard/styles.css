@@ -6562,6 +6562,11 @@ body::after { display: none; }
   box-shadow: 0 0 9px rgba(251,185,49,.35);
 }
 .validation-cell.is-no-match { background: #2a211b; }
+.validation-cell.is-false-negative {
+  border-color: var(--coral);
+  background: repeating-linear-gradient(135deg, rgba(249,92,75,.92) 0 2px, #2a1512 2px 5px);
+  box-shadow: 0 0 9px rgba(249,92,75,.28);
+}
 .validation-cell.is-not-evaluable {
   border-style: dashed;
   border-color: #5b4a3a;
@@ -6586,6 +6591,7 @@ body::after { display: none; }
   vertical-align: -1px;
 }
 .validation-legend .is-matched { background: var(--sun-2); }
+.validation-legend .is-false-negative { background: var(--coral); }
 .validation-legend .is-no-match { background: #2a211b; }
 .validation-legend .is-not-evaluable { border: 1px dashed #5b4a3a; background: transparent; }
 .validation-side { display: grid; gap: 10px; }
@@ -6667,6 +6673,49 @@ body::after { display: none; }
 .validation-table td:nth-child(2) { color: var(--sun-2); text-transform: uppercase; }
 .validation-table td:nth-child(4) { color: var(--paper); font-weight: 600; }
 .validation-table .v-verdict { color: var(--sun-3); }
+.validation-benchmark {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid rgba(255,227,179,.16);
+  border-radius: 2px 16px 2px 2px;
+  background:
+    linear-gradient(180deg, rgba(255,227,179,.035), transparent 42%),
+    #080706;
+}
+.validation-benchmark-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 18px;
+  align-items: end;
+}
+.validation-benchmark-head h4 {
+  margin: 2px 0 0;
+  color: var(--paper);
+  font: 500 clamp(16px, 1.8vw, 22px)/1.1 var(--serif);
+  letter-spacing: -0.02em;
+}
+.validation-benchmark-score {
+  margin: 0;
+  color: var(--sun-3);
+  font: 600 9px/1.4 var(--mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.validation-benchmark-note {
+  margin: 10px 0 0;
+  color: rgba(246,244,241,.46);
+  font: 500 8.5px/1.45 var(--mono);
+}
+.validation-subhead {
+  margin: 16px 0 0;
+  color: var(--sun-3);
+  font: 500 8px/1.2 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.validation-table tr.is-miss td { background: rgba(249,92,75,.06); }
+.validation-table tr.is-miss td:nth-child(4) { color: var(--coral); }
 .validation-note {
   max-width: 82ch;
   margin: 16px 0 0;

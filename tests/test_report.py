@@ -108,7 +108,9 @@ def test_payload_has_every_dashboard_field(tmp_path):
     for key in ("meta", "severity", "alerts", "correlations", "timeline", "hosts", "sources", "coverage", "cases", "validation", "pipeline"):
         assert key in payload
     assert payload["validation"]["totals"]["rules_total"] == 50
-    assert payload["validation"]["totals"]["real_matches"] == 4
+    assert payload["validation"]["totals"]["real_matches"] == 5
+    assert payload["validation"]["totals"]["not_evaluable"] == 0
+    assert payload["validation"]["benchmark"]["summary"]["fn"] == 1
     assert len(payload["validation"]["rules"]) == 50
 
     assert payload["severity"] == {"critical": 1, "high": 1, "medium": 0, "low": 0}

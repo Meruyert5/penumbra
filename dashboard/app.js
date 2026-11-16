@@ -223,9 +223,9 @@
     const totals = validation.totals || {};
     const stats = [
       [totals.real_events, "real events"],
-      [totals.real_matches, "real matches"],
       [totals.rules_matched, "rules matched"],
-      [totals.benign_events, "benign events"],
+      [totals.alert_volume, "alert events"],
+      [totals.labelled_samples, "labelled windows"],
       [totals.not_evaluable, "not evaluable"]
     ];
     $("#validationStats").innerHTML = stats.map(([value, label]) => (
@@ -242,8 +242,10 @@
     }).join("");
     const matched = rules.filter((rule) => rule.status === "matched").length;
     const notEvaluable = rules.filter((rule) => rule.status === "not_evaluable").length;
+    const falseNegative = rules.filter((rule) => rule.status === "false_negative").length;
     const noMatch = rules.filter((rule) => rule.status === "no_match").length;
-    $("#validationCount").textContent = matched + " matched / " + notEvaluable + " not evaluable / " + noMatch + " no match";
+    $("#validationCount").textContent = matched + " matched / " + falseNegative + " missed / " +
+      noMatch + " no match / " + notEvaluable + " not evaluable";
 
     $("#validationSamples").innerHTML = (validation.samples || []).map((sample) => (
       '<div class="validation-sample"><div class="validation-sample-head"><span>' + esc(sample.name) +
@@ -253,36 +255,65 @@
       "</b> correlations</span></div></div>"
     )).join("");
 
+    const coverage = validation.coverage || validation.not_evaluable_breakdown || [];
     $("#validationBreakdown").innerHTML =
-      '<h4>Why rules were not evaluable</h4><ul>' +
-      (validation.not_evaluable_breakdown || []).map((item) => (
+      "<h4>Coverage ledger</h4><ul>" +
+      coverage.map((item) => (
         "<li><span>" + esc(item.reason) + " <small>" + esc(item.detail) + "</small></span><b>" + esc(number(item.count)) + "</b></li>"
       )).join("") +
       "</ul>";
 
-    $("#validationRows").innerHTML = (validation.matched || []).map((row) => (
-      "<tr><td>" + esc(row.title) + "</td><td>" + esc(row.level) + "</td><td>" + esc(row.technique) +
-      "</td><td>" + esc(number(row.matches)) + "</td><td>" + esc(row.sample) + '</td><td class="v-verdict">' +
-      esc(row.verdict) + "</td></tr>"
+    const fired = (validation.matched || []).concat(validation.missed || []);
+    $("#validationRows").innerHTML = fired.map((row) => (
+      "<tr" + (row.verdict === "FN" ? ' class="is-miss"' : "") + "><td>" + esc(row.title) + "</td><td>" + esc(row.level) +
+      "</td><td>" + esc(row.technique) + "</td><td>" + esc(number(row.matches)) + "</td><td>" + esc(row.sample) +
+      '</td><td class="v-verdict">' + esc(row.verdict) + "</td></tr>"
     )).join("");
+
+    const benchmark = validation.benchmark || {};
+    const benchmarkSummary = benchmark.summary || {};
+    const benchmarkRows = benchmark.rules || [];
+    const budget = (value) => value === null || value === undefined ? "–" : Number(value).toFixed(3);
+    if (benchmarkRows.length) {
+      $("#validationBenchmarkScore").textContent =
+        (benchmarkSummary.tp || 0) + " TP · " + (benchmarkSummary.fp || 0) + " FP · " +
+        (benchmarkSummary.fn || 0) + " FN · precision " + budget(benchmarkSummary.precision) +
+        " · recall " + budget(benchmarkSummary.recall);
+      $("#validationBenchmarkRows").innerHTML = benchmarkRows.map((row) => (
+        "<tr" + (Number(row.fn) > 0 ? ' class="is-miss"' : "") + "><td>" + esc(row.rule) + "</td><td>" +
+        esc(number(row.tp)) + "</td><td>" + esc(number(row.fp)) + "</td><td>" + esc(number(row.fn)) +
+        "</td><td>" + esc(budget(row.precision)) + "</td><td>" + esc(budget(row.recall)) +
+        "</td><td>" + esc(number(row.alert_volume)) + "</td></tr>"
+      )).join("");
+      $("#validationBenchmarkNote").textContent = (benchmark.note || "") +
+        " Alert volume is the exact count from the compiled KQL query, not the 100-event EQL sample cap.";
+    } else {
+      $("#validationBenchmark").hidden = true;
+    }
 
     const provenance = validation.provenance || {};
     const realSamples = (validation.samples || []).filter((sample) => sample.kind === "real");
-    $("#validationProofBody").innerHTML =
-      "<p><b>Engine:</b> " + esc(provenance.engine || "Elasticsearch") +
-      ". <b>Parser:</b> " + esc(provenance.parser || "pipeline.replay") +
-      ". <b>Raw data committed:</b> " + (provenance.raw_data_committed ? "yes" : "no") + ".</p>" +
-      "<p>" + esc(provenance.note || "") + "</p>" +
-      "<p><b>Metrics engine:</b> <code>pipeline.benchmark</code> computes TP/FP/FN, precision, recall, and alert volume once a reviewed labels manifest is supplied.</p>" +
-      '<div class="validation-proof-samples">' +
-      realSamples.map((sample) => (
+    const sources = provenance.sources || [];
+    const sourceRows = sources.length
+      ? sources.map((source) => (
+        '<div class="validation-proof-row"><span>' + esc(source.name) + " — " + esc(source.detail) + "</span>" +
+        '<span class="validation-proof-links"><a href="' + esc(source.url || "#") +
+        '" target="_blank" rel="noreferrer">source</a></span></div>'
+      )).join("")
+      : realSamples.map((sample) => (
         '<div class="validation-proof-row"><span>' + esc(sample.name) + " · " + esc(number(sample.events)) +
         " events · " + esc(sample.window || "") + " · " + esc(number(sample.matches)) + " matches</span>" +
         '<span class="validation-proof-links"><a href="' + esc(sample.source_url || "#") +
         '" target="_blank" rel="noreferrer">source</a><code>' + esc(sample.git_blob_sha || "") +
         "</code><span>" + esc(number(sample.archive_bytes)) + " bytes</span></span></div>"
-      )).join("") +
-      "</div>" +
+      )).join("");
+    $("#validationProofBody").innerHTML =
+      "<p><b>Engine:</b> " + esc(provenance.engine || "Elasticsearch") +
+      ". <b>Parser:</b> " + esc(provenance.parser || "pipeline.replay") +
+      ". <b>Raw data committed:</b> " + (provenance.raw_data_committed ? "yes" : "no") + ".</p>" +
+      "<p>" + esc(provenance.note || "") + "</p>" +
+      "<p><b>Metrics engine:</b> <code>pipeline.benchmark</code> computed TP/FP/FN, precision, recall, and alert volume from the reviewed labels manifest.</p>" +
+      '<div class="validation-proof-samples">' + sourceRows + "</div>" +
       '<pre class="validation-commands"><code>' + esc((provenance.commands || []).join("\n")) + "</code></pre>" +
       '<div class="validation-fixes"><b>How to close the gaps</b><ul>' +
       (validation.gaps || []).map((gap) => (

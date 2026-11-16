@@ -1,0 +1,305 @@
+{
+  "summary": {
+    "tp": 6,
+    "fp": 0,
+    "fn": 1,
+    "alert_volume": 359,
+    "rules_with_signal": 6,
+    "rules_total": 50,
+    "precision": 1.0,
+    "recall": 0.8571
+  },
+  "samples": [
+    {
+      "id": "otrf-sysmon-lsass",
+      "label": "malicious",
+      "start": "2020-10-18T10:56:05Z",
+      "end": "2020-10-19T02:56:14Z",
+      "alerts": 2,
+      "alert_volume": 4,
+      "tp": [
+        "Suspicious Process Access to LSASS",
+        "Windows Event Log Cleared"
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "otrf-security-log-cleared",
+      "label": "malicious",
+      "start": "2020-11-02T04:12:58Z",
+      "end": "2020-11-02T04:13:05Z",
+      "alerts": 1,
+      "alert_volume": 0,
+      "tp": [
+        "Windows Event Log Cleared"
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "splunk-krbrelayup-service",
+      "label": "malicious",
+      "start": "2024-03-04T04:37:35Z",
+      "end": "2024-03-04T10:11:25Z",
+      "alerts": 1,
+      "alert_volume": 2,
+      "tp": [
+        "Suspicious Service Installed From User-Writable Path"
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "splunk-kerberoasting",
+      "label": "malicious",
+      "start": "2024-04-08T23:56:13Z",
+      "end": "2024-04-08T23:56:13Z",
+      "alerts": 1,
+      "alert_volume": 1,
+      "tp": [
+        "Kerberoasting Service Ticket Request"
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "splunk-smb-admin-share",
+      "label": "malicious",
+      "start": "2024-01-29T13:14:26Z",
+      "end": "2024-01-29T13:14:26Z",
+      "alerts": 0,
+      "alert_volume": 0,
+      "tp": [],
+      "fp": [],
+      "fn": [
+        "SMB Administrative Share Access"
+      ]
+    },
+    {
+      "id": "otrf-aws-exfiltration",
+      "label": "malicious",
+      "start": "2020-09-14T00:44:20Z",
+      "end": "2020-09-14T01:13:20Z",
+      "alerts": 0,
+      "alert_volume": 0,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "otrf-linux-auditd-dd",
+      "label": "malicious",
+      "start": "2020-11-10T08:19:44Z",
+      "end": "2020-11-10T08:19:44Z",
+      "alerts": 0,
+      "alert_volume": 0,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "splunk-linux-auditd-setuid",
+      "label": "malicious",
+      "start": "2024-08-06T14:02:19Z",
+      "end": "2024-08-06T14:02:19Z",
+      "alerts": 0,
+      "alert_volume": 0,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "splunk-linux-auditd-crontab",
+      "label": "malicious",
+      "start": "2025-04-16T10:15:30Z",
+      "end": "2025-04-16T10:15:35Z",
+      "alerts": 0,
+      "alert_volume": 0,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "splunk-linux-auditd-sshconfig",
+      "label": "malicious",
+      "start": "2025-11-20T16:57:48Z",
+      "end": "2025-11-20T16:57:48Z",
+      "alerts": 0,
+      "alert_volume": 0,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "rhel7-ssh-bruteforce",
+      "label": "malicious",
+      "start": "2026-02-22T16:45:20Z",
+      "end": "2026-02-22T17:04:51Z",
+      "alerts": 1,
+      "alert_volume": 352,
+      "tp": [
+        "SSH Failed Password Authentication"
+      ],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "nginx-benign",
+      "label": "benign",
+      "start": "2016-10-25T12:49:33Z",
+      "end": "2016-12-07T10:05:07Z",
+      "alerts": 0,
+      "alert_volume": 0,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "splunk-log4j-exfiltration",
+      "label": "malicious",
+      "start": "2021-12-13T23:51:17Z",
+      "end": "2021-12-14T00:41:27Z",
+      "alerts": 0,
+      "alert_volume": 0,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "splunk-bricks-sqli",
+      "label": "malicious",
+      "start": "2024-02-22T17:34:56Z",
+      "end": "2024-02-22T17:34:56Z",
+      "alerts": 0,
+      "alert_volume": 0,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "zeek-benign-2019",
+      "label": "benign",
+      "start": "2019-01-11T06:33:35Z",
+      "end": "2019-03-01T00:10:00Z",
+      "alerts": 0,
+      "alert_volume": 0,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    },
+    {
+      "id": "zeek-benign-2021",
+      "label": "benign",
+      "start": "2021-06-09T20:55:13Z",
+      "end": "2021-06-09T20:55:13Z",
+      "alerts": 0,
+      "alert_volume": 0,
+      "tp": [],
+      "fp": [],
+      "fn": []
+    }
+  ],
+  "rules": [
+    {
+      "rule": "Windows Event Log Cleared",
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "alert_volume": 2,
+      "samples": [
+        {
+          "id": "otrf-sysmon-lsass",
+          "result": "TP"
+        },
+        {
+          "id": "otrf-security-log-cleared",
+          "result": "TP"
+        }
+      ],
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    {
+      "rule": "Kerberoasting Service Ticket Request",
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "alert_volume": 1,
+      "samples": [
+        {
+          "id": "splunk-kerberoasting",
+          "result": "TP"
+        }
+      ],
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    {
+      "rule": "SSH Failed Password Authentication",
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "alert_volume": 352,
+      "samples": [
+        {
+          "id": "rhel7-ssh-bruteforce",
+          "result": "TP"
+        }
+      ],
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    {
+      "rule": "Suspicious Process Access to LSASS",
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "alert_volume": 2,
+      "samples": [
+        {
+          "id": "otrf-sysmon-lsass",
+          "result": "TP"
+        }
+      ],
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    {
+      "rule": "Suspicious Service Installed From User-Writable Path",
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "alert_volume": 2,
+      "samples": [
+        {
+          "id": "splunk-krbrelayup-service",
+          "result": "TP"
+        }
+      ],
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    {
+      "rule": "SMB Administrative Share Access",
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "tn": 3,
+      "alert_volume": 0,
+      "samples": [
+        {
+          "id": "splunk-smb-admin-share",
+          "result": "FN"
+        }
+      ],
+      "precision": null,
+      "recall": 0.0
+    }
+  ]
+}

@@ -1,32 +1,188 @@
 {
   "generated": "2026-11-16",
-  "source": "Recorded from the OTRF replay and 10x benign runs; raw data is not committed.",
+  "source": "Combined five-index replay and reviewed labels; raw data is not committed.",
   "provenance": {
     "engine": "Elasticsearch 8.15.3, single node, local Docker",
     "parser": "pipeline.replay",
     "rules": 50,
     "correlations": 8,
     "raw_data_committed": false,
-    "note": "Each sample was normalized, indexed into lab-* indices, and evaluated with the same compiled EQL rules. Missing indices and fields are marked not evaluable, not false negatives. Public attack datasets are untrusted; raw data is not committed and was deleted after the replay.",
+    "note": "Sixteen labelled windows were replayed into five indices with the same compiled EQL rules. Raw public attack telemetry is untrusted and is not committed. The benchmark counts are sample-level over those windows, not enterprise precision or recall.",
     "commands": [
-      "python -m pipeline.replay --source <sample.json> --file windows --label malicious",
-      "python -m pipeline.ingest --logs lab/replay-rich --reset",
-      "python -m pipeline.detect --hours 24 --end 2020-10-19T03:00:00Z --out lab/replay-rich-results"
+      "python -m pipeline.replay --source <sample> --format <parser> --file <index> --append",
+      "python -m pipeline.ingest --logs lab/corpus --reset",
+      "python -m pipeline.detect --hours 90000 --end 2026-11-16T00:00:00Z --out lab/corpus-results",
+      "python -m pipeline.benchmark --alerts lab/corpus-results/alerts.json --labels docs/validation/labels.json"
+    ],
+    "sources": [
+      {
+        "name": "OTRF Security-Datasets",
+        "url": "https://github.com/OTRF/Security-Datasets",
+        "detail": "Windows Security, Sysmon, AWS CloudTrail, and Linux auditd captures."
+      },
+      {
+        "name": "Splunk attack_data",
+        "url": "https://github.com/splunk/attack_data",
+        "detail": "Service creation, Kerberos, SMB, auditd, Log4Shell, and Bricks SQLi telemetry."
+      },
+      {
+        "name": "Elastic Beats fixtures",
+        "url": "https://github.com/elastic/beats",
+        "detail": "nginx access, RHEL auth, and Zeek connection logs."
+      }
     ]
   },
   "totals": {
-    "real_events": 228,
-    "real_matches": 4,
-    "rules_matched": 2,
-    "tp_candidates": 4,
+    "real_events": 1381,
+    "real_matches": 5,
+    "alert_volume": 359,
+    "rules_matched": 5,
+    "tp_candidates": 6,
     "benign_events": 89704,
-    "benign_matches": 1,
-    "not_evaluable": 25,
-    "no_match": 23,
+    "real_benign_events": 17,
+    "not_evaluable": 0,
+    "no_match": 44,
+    "false_negative": 1,
+    "false_positive": 0,
     "rules_total": 50,
-    "missing_index": 20,
-    "missing_field": 5,
-    "correlation_fetch": 3
+    "missing_index": 0,
+    "missing_field": 0,
+    "correlation_fetch": 0,
+    "labelled_samples": 16,
+    "tp": 6,
+    "fp": 0,
+    "fn": 1,
+    "precision": 1.0,
+    "recall": 0.8571
+  },
+  "benchmark": {
+    "summary": {
+      "tp": 6,
+      "fp": 0,
+      "fn": 1,
+      "alert_volume": 359,
+      "rules_with_signal": 6,
+      "rules_total": 50,
+      "precision": 1.0,
+      "recall": 0.8571
+    },
+    "rules": [
+      {
+        "rule": "Windows Event Log Cleared",
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "tn": 3,
+        "alert_volume": 2,
+        "samples": [
+          {
+            "id": "otrf-sysmon-lsass",
+            "result": "TP"
+          },
+          {
+            "id": "otrf-security-log-cleared",
+            "result": "TP"
+          }
+        ],
+        "precision": 1.0,
+        "recall": 1.0,
+        "level": "high",
+        "technique": "T1070.001"
+      },
+      {
+        "rule": "Kerberoasting Service Ticket Request",
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "tn": 3,
+        "alert_volume": 1,
+        "samples": [
+          {
+            "id": "splunk-kerberoasting",
+            "result": "TP"
+          }
+        ],
+        "precision": 1.0,
+        "recall": 1.0,
+        "level": "high",
+        "technique": "T1558.003"
+      },
+      {
+        "rule": "SSH Failed Password Authentication",
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "tn": 3,
+        "alert_volume": 352,
+        "samples": [
+          {
+            "id": "rhel7-ssh-bruteforce",
+            "result": "TP"
+          }
+        ],
+        "precision": 1.0,
+        "recall": 1.0,
+        "level": "low",
+        "technique": "T1110.001"
+      },
+      {
+        "rule": "Suspicious Process Access to LSASS",
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "tn": 3,
+        "alert_volume": 2,
+        "samples": [
+          {
+            "id": "otrf-sysmon-lsass",
+            "result": "TP"
+          }
+        ],
+        "precision": 1.0,
+        "recall": 1.0,
+        "level": "critical",
+        "technique": "T1003.001"
+      },
+      {
+        "rule": "Suspicious Service Installed From User-Writable Path",
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "tn": 3,
+        "alert_volume": 2,
+        "samples": [
+          {
+            "id": "splunk-krbrelayup-service",
+            "result": "TP"
+          }
+        ],
+        "precision": 1.0,
+        "recall": 1.0,
+        "level": "high",
+        "technique": "T1543.003"
+      },
+      {
+        "rule": "SMB Administrative Share Access",
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "tn": 3,
+        "alert_volume": 0,
+        "samples": [
+          {
+            "id": "splunk-smb-admin-share",
+            "result": "FN"
+          }
+        ],
+        "precision": null,
+        "recall": 0.0,
+        "level": "high",
+        "technique": "T1021.002"
+      }
+    ],
+    "labels": "validation/labels.json",
+    "results": "validation/benchmark-results.json",
+    "note": "Sample-level counts over 16 labelled windows across five indices."
   },
   "samples": [
     {
@@ -48,49 +204,54 @@
       "note": "10x baseline; one low-severity SSH match"
     },
     {
-      "id": "otrf-security",
-      "name": "OTRF Windows Security",
-      "events": 110,
-      "matches": 1,
+      "id": "windows",
+      "name": "Windows Security, Sysmon, service, Kerberos, SMB",
+      "events": 234,
+      "matches": 7,
       "correlations": 0,
       "kind": "real",
-      "window": "2020-11-02T04:12:58Z to 04:13:05Z",
-      "errors": 28,
-      "note": "Real event 1102; one rule matched",
-      "source_url": "https://github.com/OTRF/Security-Datasets/tree/master/datasets/atomic/windows/execution/host",
-      "git_blob_sha": "ac23774536c98d7b45460fe860c95eb673b9f75d",
-      "archive_bytes": 10491
+      "window": "2020-10-18 to 2024-04-08",
+      "note": "OTRF and Splunk attack_data; four rules fired"
     },
     {
-      "id": "otrf-sysmon",
-      "name": "OTRF Sysmon/Security",
-      "events": 118,
-      "matches": 3,
+      "id": "linux",
+      "name": "Linux auditd and auth",
+      "events": 1021,
+      "matches": 352,
+      "correlations": 3,
+      "kind": "real",
+      "window": "2020-11-10 to 2026-02-22",
+      "note": "1000 auth lines plus 21 auditd records; one rule fired"
+    },
+    {
+      "id": "web",
+      "name": "nginx access and attack logs",
+      "events": 18,
+      "matches": 0,
       "correlations": 0,
       "kind": "real",
-      "window": "2020-10-18T10:56:18Z to 2020-10-19T02:56:05Z",
-      "errors": 28,
-      "note": "Two LSASS process-access matches plus event log cleared",
-      "source_url": "https://github.com/OTRF/Security-Datasets/tree/master/datasets/atomic/windows/credential_access/host",
-      "git_blob_sha": "62238d3cf2a67ca6dac5cd11746a20ef21eb50dc",
-      "archive_bytes": 12915
-    }
-  ],
-  "gaps": [
-    {
-      "reason": "Missing index",
-      "count": 20,
-      "fix": "Replay one Linux, one web, one cloud, and one network sample into the same run."
+      "window": "2016-10-25 to 2024-02-22",
+      "note": "Benign access log plus Log4Shell and Bricks SQLi requests"
     },
     {
-      "reason": "Missing field",
-      "count": 5,
-      "fix": "Use a capture that contains service creation, Kerberos, SMB, or registry events."
+      "id": "cloud",
+      "name": "AWS CloudTrail",
+      "events": 103,
+      "matches": 0,
+      "correlations": 0,
+      "kind": "real",
+      "window": "2020-09-14T00:44:20Z to 01:13:20Z",
+      "note": "S3 exfiltration capture; neither cloud rule applies"
     },
     {
-      "reason": "No match",
-      "count": 23,
-      "fix": "No match is not automatically a failure; add technique coverage and labels."
+      "id": "network",
+      "name": "Zeek connection flows",
+      "events": 5,
+      "matches": 0,
+      "correlations": 0,
+      "kind": "real",
+      "window": "2019-01-11 to 2021-06-09",
+      "note": "Benign connection records; one large-transfer rule evaluated"
     }
   ],
   "matched": [
@@ -99,33 +260,121 @@
       "level": "critical",
       "technique": "T1003.001",
       "matches": 2,
-      "sample": "OTRF Sysmon/Security",
-      "verdict": "TP candidate"
+      "sample": "Combined real corpus",
+      "verdict": "TP"
+    },
+    {
+      "title": "Kerberoasting Service Ticket Request",
+      "level": "high",
+      "technique": "T1558.003",
+      "matches": 1,
+      "sample": "Combined real corpus",
+      "verdict": "TP"
+    },
+    {
+      "title": "Suspicious Service Installed From User-Writable Path",
+      "level": "high",
+      "technique": "T1543.003",
+      "matches": 2,
+      "sample": "Combined real corpus",
+      "verdict": "TP"
     },
     {
       "title": "Windows Event Log Cleared",
       "level": "high",
       "technique": "T1070.001",
       "matches": 2,
-      "sample": "OTRF Windows Security + Sysmon",
-      "verdict": "TP candidate"
+      "sample": "Combined real corpus",
+      "verdict": "TP"
+    },
+    {
+      "title": "SSH Failed Password Authentication",
+      "level": "low",
+      "technique": "T1110.001",
+      "matches": 352,
+      "sample": "Combined real corpus",
+      "verdict": "TP"
+    }
+  ],
+  "missed": [
+    {
+      "title": "SMB Administrative Share Access",
+      "level": "high",
+      "technique": "T1021.002",
+      "matches": 0,
+      "sample": "splunk-smb-admin-share",
+      "verdict": "FN"
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "False negative",
+      "count": 1,
+      "fix": "The SMB rule queries Security 5140; the capture logged ADMIN$ access as 5145. Add 5145 or normalize the event code."
+    },
+    {
+      "reason": "Coverage gap",
+      "count": 7,
+      "fix": "Seven malicious windows exercise techniques with no matching rule: binary padding, setuid, crontab, ssh_config, S3 exfiltration, Log4Shell, and body SQLi."
+    },
+    {
+      "reason": "No signal",
+      "count": 44,
+      "fix": "Evaluated on all five indices with no match and no expected rule. These are true negatives, not failures."
+    },
+    {
+      "reason": "Missing index",
+      "count": 0,
+      "fix": "All five indices were present in the combined run."
+    },
+    {
+      "reason": "Missing field",
+      "count": 0,
+      "fix": "Service, Kerberos, and SMB fields were mapped by the XML capture."
+    }
+  ],
+  "coverage": [
+    {
+      "reason": "Indices exercised",
+      "count": 5,
+      "detail": "windows, linux, web, cloud, network"
+    },
+    {
+      "reason": "Rules evaluated",
+      "count": 50,
+      "detail": "0 missing-index, 0 missing-field, 0 correlation-fetch errors"
+    },
+    {
+      "reason": "Labelled windows",
+      "count": 16,
+      "detail": "13 malicious, 3 benign"
+    },
+    {
+      "reason": "False negatives",
+      "count": 1,
+      "detail": "SMB rule sees 5140; sample logged 5145"
+    },
+    {
+      "reason": "Coverage gaps",
+      "count": 7,
+      "detail": "Malicious techniques without a matching rule"
     }
   ],
   "not_evaluable_breakdown": [
     {
       "reason": "Missing index",
-      "count": 20,
-      "detail": "The Windows sample did not contain lab-linux, lab-web, lab-cloud, or lab-network."
+      "count": 0,
+      "detail": "All five indices were present."
     },
     {
       "reason": "Missing field",
-      "count": 5,
-      "detail": "The sample did not contain the service, Kerberos, SMB, or registry fields."
+      "count": 0,
+      "detail": "Service, Kerberos, SMB, and registry fields were present."
     },
     {
       "reason": "Correlation fetch",
-      "count": 3,
-      "detail": "Linux, web, and network correlations could not fetch missing indices."
+      "count": 0,
+      "detail": "All correlation indices were present."
     }
   ],
   "rules": [
@@ -134,350 +383,350 @@
       "level": "critical",
       "technique": "T1003.001",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Linux Reverse Shell Command",
       "level": "critical",
       "technique": "T1059.004",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-linux"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Ransomware Note Dropped on Disk",
       "level": "critical",
       "technique": "T1486",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "SAM or SECURITY Hive Dumped with Reg.exe",
       "level": "critical",
       "technique": "T1003.002",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Suspicious Process Access to LSASS",
       "level": "critical",
       "technique": "T1003.001",
       "status": "matched",
-      "reason": "Matched the real sample."
+      "reason": "True positive: TP 1, FP 0, FN 0 across labelled windows."
     },
     {
       "title": "AMSI Bypass via Reflection",
       "level": "high",
       "technique": "T1562.001",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Boot Recovery Disabled via BCDEdit",
       "level": "high",
       "technique": "T1490",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Certutil Used to Download or Decode a Payload",
       "level": "high",
       "technique": "T1105, T1140",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Cloud Access Key Created",
       "level": "high",
       "technique": "T1098.001",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-cloud"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Cloud Root Account Console Login",
       "level": "high",
       "technique": "T1078.004",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-cloud"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Command Injection Attempt in Web Request",
       "level": "high",
       "technique": "T1059",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-web"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Critical Service Stopped Before Impact",
       "level": "high",
       "technique": "T1489",
-      "status": "not_evaluable",
-      "reason": "Missing field: winlog.event_data.ServiceName"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Cron Job Executing Remote Content",
       "level": "high",
       "technique": "T1053.003",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-linux"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Kerberoasting Service Ticket Request",
       "level": "high",
       "technique": "T1558.003",
-      "status": "not_evaluable",
-      "reason": "Missing field: winlog.event_data.TicketEncryptionType"
+      "status": "matched",
+      "reason": "True positive: TP 1, FP 0, FN 0 across labelled windows."
     },
     {
       "title": "Large Outbound Network Transfer",
       "level": "high",
       "technique": "T1041",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-network"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Linux Log File Tampering",
       "level": "high",
       "technique": "T1070.002",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-linux"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Mshta Executing Remote or Script Content",
       "level": "high",
       "technique": "T1218.005",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Office Application Spawns a Shell",
       "level": "high",
       "technique": "T1566.001",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "PHP File Uploaded to Web Accessible Directory",
       "level": "high",
       "technique": "T1505.003",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-web"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Periodic Web Beacon to a Command Endpoint",
       "level": "high",
       "technique": "T1071.001",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-web"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "PowerShell Download Cradle",
       "level": "high",
       "technique": "T1059.001, T1105",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "PowerShell Encoded Command Execution",
       "level": "high",
       "technique": "T1027, T1059.001",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "PsExec Service Creation",
       "level": "high",
       "technique": "T1569.002",
-      "status": "not_evaluable",
-      "reason": "Missing field: winlog.event_data.ImagePath"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Registry Run Key Persistence",
       "level": "high",
       "technique": "T1547.001",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Remote Thread Created by a User-Writable Binary",
       "level": "high",
       "technique": "T1055",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Root SSH Login from an External Address",
       "level": "high",
       "technique": "T1021.004",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-linux"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Rundll32 or Regsvr32 Remote Payload",
       "level": "high",
       "technique": "T1218.011",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "SMB Administrative Share Access",
       "level": "high",
       "technique": "T1021.002",
-      "status": "not_evaluable",
-      "reason": "Missing field: winlog.event_data.ShareName"
+      "status": "false_negative",
+      "reason": "Expected but missed: TP 0, FP 0, FN 1 across labelled windows."
     },
     {
       "title": "SSH Authorized Keys Modified",
       "level": "high",
       "technique": "T1098.004",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-linux"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Shadow Copy Deletion via VSSAdmin or WMIC",
       "level": "high",
       "technique": "T1490",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Sudoers File Modified",
       "level": "high",
       "technique": "T1548.003",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-linux"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Suspicious Service Installed From User-Writable Path",
       "level": "high",
       "technique": "T1543.003",
-      "status": "not_evaluable",
-      "reason": "Missing field: winlog.event_data.ImagePath, winlog.event_data.ServiceName"
+      "status": "matched",
+      "reason": "True positive: TP 1, FP 0, FN 0 across labelled windows."
     },
     {
       "title": "Systemd Service Unit Created",
       "level": "high",
       "technique": "T1543.002",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-linux"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "UAC Bypass via Auto-Elevating Binary",
       "level": "high",
       "technique": "T1548.002",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Valid Service Account Login from an External Address",
       "level": "high",
       "technique": "T1078",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-linux"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "WMI Event Subscription Persistence",
       "level": "high",
       "technique": "T1546.003",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Windows Command Shell Spawning a Remote Payload",
       "level": "high",
       "technique": "T1059.003",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Windows Defender Real-Time Protection Disabled",
       "level": "high",
       "technique": "T1562.001",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Windows Event Log Cleared",
       "level": "high",
       "technique": "T1070.001",
       "status": "matched",
-      "reason": "Matched the real sample."
+      "reason": "True positive: TP 2, FP 0, FN 0 across labelled windows."
     },
     {
       "title": "DNS Query to Exfiltration Domain",
       "level": "medium",
       "technique": "T1071.004",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Data Staged with Archive Utility",
       "level": "medium",
       "technique": "T1560.001",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "New Local User Account Created",
       "level": "medium",
       "technique": "T1136.001",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-linux"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Path Traversal Attempt in Web Request",
       "level": "medium",
       "technique": "T1190",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-web"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "SQL Injection Attempt in Web Request",
       "level": "medium",
       "technique": "T1190",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-web"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Scheduled Task Created via Schtasks",
       "level": "medium",
       "technique": "T1053.005",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Web Request to Common Web Shell Parameter",
       "level": "medium",
       "technique": "T1505.003",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-web"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Windows Firewall Disabled",
       "level": "medium",
       "technique": "T1562.004",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "Host and Account Discovery Command",
       "level": "low",
       "technique": "T1087",
       "status": "no_match",
-      "reason": "Evaluated on the real samples; no match."
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     },
     {
       "title": "SSH Failed Password Authentication",
       "level": "low",
       "technique": "T1110.001",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-linux"
+      "status": "matched",
+      "reason": "True positive: TP 1, FP 0, FN 0 across labelled windows."
     },
     {
       "title": "Web Scanner User Agent",
       "level": "low",
       "technique": "T1595.002",
-      "status": "not_evaluable",
-      "reason": "Missing index: lab-web"
+      "status": "no_match",
+      "reason": "Evaluated on 16 labelled windows; no signal and no expected rule."
     }
   ]
 }

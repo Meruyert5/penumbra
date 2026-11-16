@@ -24,7 +24,7 @@ labels, source diversity, and real noise are.
 |---|---|---|
 | 9,223-event scenario run | Main dashboard and case corpus | Deterministic, fast, contains 33 labelled attack scenarios plus baseline |
 | 89,704-event benign baseline | False-positive and scale test | 10× baseline; no attack scenarios; cannot replace the case corpus |
-| 228 real OTRF events | Field-behaviour validation | Real Security and Sysmon events; small and not a scale benchmark |
+| 1,381 real multi-source events | Field-behaviour and small-sample benchmark | Windows, Linux, web, cloud, and network telemetry across 16 labelled windows |
 
 The 9,223 run is not pointless. It is the only corpus with attack scenarios,
 case narratives, and a deterministic dashboard. The 89,704 run is better for
@@ -44,14 +44,16 @@ investigations. The dashboard now shows both separately.
 | The dashboard is assembled from the run data | `tests/test_report.py` and `pipeline.report` | Verified |
 | The page meets the published accessibility contract | Lighthouse and manual review | Verified for the built page |
 | Per-rule synthetic results | [docs/validation/synthetic-run.md](validation/synthetic-run.md) | Generated from the committed run; not precision or recall |
-| Real OTRF samples | [docs/validation/real-telemetry-results.md](validation/real-telemetry-results.md) | 228 real events across 2 samples, 2 rules, 4 real matches |
+| Real multi-source samples | [docs/validation/real-telemetry-results.md](validation/real-telemetry-results.md) | 1,381 real events across five indices; 5 rules matched |
+| Per-rule benchmark | [docs/validation/benchmark.md](validation/benchmark.md) | 6 TP, 0 FP, 1 FN across 16 labelled windows; precision 1.000, recall 0.857 |
 | Large benign baseline | [docs/validation/large-benign-results.md](validation/large-benign-results.md) | 89,704 synthetic benign events, 1 low-severity match, 0 correlations |
 
 ## What the current evidence does not prove
 
-* **Precision and recall.** No per-rule false-positive or false-negative rate is
-  measured against real telemetry. The rules fire on scenarios written to
-  exercise them, so the corpus is partly circular by construction.
+* **Stable precision and recall.** A small-sample benchmark now exists: 6 true
+  positives, 0 false positives, and 1 false negative across 16 labelled windows.
+  But 44 rules had no signal, one false negative is too few for a stable recall
+  estimate, and the samples were selected opportunistically rather than randomly.
 * **Production noise tolerance.** The benign baseline is intentionally small. It
   does not model shift changes, software deployment, administrative scripts,
   scanners, backup jobs, or the long tail of enterprise activity.
@@ -96,16 +98,16 @@ teams and research groups and include labelled attack activity or benign data.
 | [Elastic detection rules](https://github.com/elastic/detection-rules) | Production rule and test conventions | Compare rule structure, test expectations, and field assumptions |
 | [Splunk Attack Range](https://github.com/splunk/attack_range) | Instrumented lab orchestration | Use as an alternative to the synthetic path when a full VM range is available |
 
-The first real-data step is complete: two OTRF samples were replayed. A
-110-event Windows Security sample matched `Windows Event Log Cleared`; a richer
-118-event Sysmon/Security sample matched that rule and `Suspicious Process Access
-to LSASS` twice. That is four real matches across two rules, not a
-precision or recall measurement. See
-[Real-telemetry replay results](validation/real-telemetry-results.md). A separate
-89,704-event synthetic benign baseline produced one low-severity SSH match and
-zero correlation alerts; see
-[Large benign baseline](validation/large-benign-results.md). The labels-to-metrics
-engine is documented in [Benchmark metrics](validation/benchmark.md).
+The combined real-data step is complete: 1,381 events from Windows Security,
+Sysmon, service/Kerberos/SMB XML, Linux auditd and auth, nginx, AWS CloudTrail,
+and Zeek were replayed into five indices. Sixteen reviewed windows produced 6
+sample-level true positives, 0 false positives, and 1 false negative. The SMB
+rule queries Security 5140 while the capture logged ADMIN$ access as 5145. Five
+rules scored precision 1.000 and recall 1.000; the SMB rule scored recall 0.000.
+See [Real-telemetry replay results](validation/real-telemetry-results.md) and the
+[Benchmark metrics](validation/benchmark.md). A separate 89,704-event synthetic
+benign baseline produced one low-severity SSH match; see
+[Large benign baseline](validation/large-benign-results.md).
 
 ### Metrics to record
 
@@ -156,10 +158,10 @@ python -m pipeline.heatmap
 | Deterministic synthetic run | Done |
 | Benign baseline | Done, small |
 | Per-rule false-positive suite | Partial |
-| External real-telemetry replay | 2 OTRF samples, 228 events, 2 rules, 4 real matches |
+| External real-telemetry replay | Done: 1,381 events across five indices, 16 labelled windows |
 | Larger benign baseline | Done: 89,704 synthetic events, 1 low-severity match |
-| Precision / recall table | Pending; four real matches are not a measurement |
-| Field-mapping gap review | Open: 25 rules not evaluable (28 errors incl. 3 correlation fetches) |
+| Precision / recall table | Done: 6 TP, 0 FP, 1 FN; precision 1.000, recall 0.857 |
+| Field-mapping gap review | Done: 0 not evaluable, 0 missing-index, 0 missing-field errors |
 | Atomic Red Team Sysmon capture | Not started; needs an isolated Windows VM |
 | Scheduled detection-decay check | Not started |
 
