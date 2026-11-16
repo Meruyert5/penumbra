@@ -94,3 +94,17 @@ Correlation output:
 .\.venv\Scripts\python.exe -m pipeline.labgen --scenario ssh-bruteforce
 .\.venv\Scripts\python.exe -m pipeline.correlate --input lab/logs/linux.ndjson
 ```
+
+## IR close-out
+
+| Metric | Value |
+|---|---|
+| Observed window | 2026-11-11T10:50:21Z to 2026-11-11T10:54:51Z (270s) |
+| Detection span | 2026-11-11T10:50:21Z to 2026-11-11T10:52:27Z (126s) |
+| Alerts | 2 |
+| Containment status | escalated; containment recommended |
+| Response timing | not measured in the synthetic lab |
+
+The full close-out, with containment, eradication, recovery, communication,
+evidence handling, lessons, and open questions, is in the
+[IR casebook](../IR.md#pnb-2026-001).

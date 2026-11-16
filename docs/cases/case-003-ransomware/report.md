@@ -81,3 +81,17 @@ The service-stop rule watches `VSS`, `BackupExecAgentBrowser`, `SQLSERVERAGENT`,
 .\.venv\Scripts\python.exe -m pipeline.ingest --reset
 .\.venv\Scripts\python.exe -m pipeline.detect --hours 24
 ```
+
+## IR close-out
+
+| Metric | Value |
+|---|---|
+| Observed window | 2026-11-11T11:25:00Z to 2026-11-11T11:26:56Z (116s) |
+| Detection span | 2026-11-11T11:25:00Z to 2026-11-11T11:26:56Z (116s) |
+| Alerts | 5 |
+| Containment status | contained; host rebuilt |
+| Response timing | not measured in the synthetic lab |
+
+The full close-out, with containment, eradication, recovery, communication,
+evidence handling, lessons, and open questions, is in the
+[IR casebook](../IR.md#pnb-2026-003).

@@ -15,9 +15,9 @@ account.
 | Built dashboard | `docs/index.html` |
 | Public site | `site/` (generated, gitignored) |
 | Public surface | `index.html`, `assets/`, `cases/`, `.nojekyll`; optionally `CNAME` |
-| Public host | GitHub Pages, live at `https://meruyert5.github.io/penumbra/` |
+| Public host | Private repository; GitHub Pages offline during the integration pass |
 | Permanent target | `https://penumbra.is-a.dev` (domain still available; registration pending) |
-| Tests | 68 passing |
+| Tests | 79 passing |
 | Real validation | 1,381 events across five indices and 16 labelled windows; 6 TP / 0 FP / 1 FN; 0 not evaluable; 89,704-event benign baseline |
 | Lighthouse | 100 accessibility / 100 best practices / 100 SEO |
 
@@ -40,6 +40,9 @@ node --check dashboard\app.js
 .\.venv\Scripts\python.exe -m pipeline.validation_results --write-results
 .\.venv\Scripts\python.exe -m pipeline.benchmark --labels docs\validation\labels.json
 .\.venv\Scripts\python.exe -m pipeline.hunts
+.\.venv\Scripts\python.exe -m pipeline.cloud_pack
+.\.venv\Scripts\python.exe -m pipeline.triage
+.\.venv\Scripts\python.exe -m pipeline.casebook
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
@@ -66,10 +69,11 @@ design notes, runbook, and tuning log. Do not point a public tunnel at `docs/`.
 
 ## Public hosting
 
-GitHub Pages is the public host. The workflow uploads `site/`, never `docs/`.
-The Cloudflare Quick Tunnel is not used for this project. If you need a temporary
-preview, serve `site/` on localhost and keep it private; do not publish a tunnel
-that exposes the working tree.
+GitHub Pages is the intended public host. The workflow uploads `site/`, never
+`docs/`. The repository is currently private, so Pages is offline; re-enable it
+when the repository is public again. The Cloudflare Quick Tunnel is not used for
+this project. If you need a temporary preview, serve `site/` on localhost and
+keep it private; do not publish a tunnel that exposes the working tree.
 
 ## Upload to GitHub
 

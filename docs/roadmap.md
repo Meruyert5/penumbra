@@ -21,10 +21,11 @@ performed.
 |---|---|---|
 | Detection library | Done | 50 Sigma rules compiled to EQL and KQL, with ATT&CK coverage |
 | Validation benchmark | Done | 16 labelled windows across five indices; 6 TP, 0 FP, 1 FN |
-| Threat hunting | Active | Four hypothesis-driven hunts with queries, evidence, verdicts, and detection changes |
-| IR casebook | Next | Expand the three case reports into full timelines, containment, eradication, and lessons |
-| Triage automation | Planned | Enrichment, deduplication, containment, and MTTD/MTTR metrics |
-| Cloud detection pack | Planned | CloudTrail detections that complement Apsis |
+| Threat hunting | Done | Four hypothesis-driven hunts with queries, evidence, verdicts, and detection changes |
+| IR casebook | Done | Three structured close-outs with metrics, containment, eradication, recovery, communication, evidence, lessons, and open questions |
+| Triage automation | Done | Dry-run enrichment, incident grouping, playbook selection, and 78 recommended actions; no external API calls |
+| Cloud detection pack | Done | Three CloudTrail detections; two fired on the synthetic corpus, one is awaiting telemetry |
+| Dashboard integration | Active | Rework the new sections, compact where needed, and keep every extension interactive and consistent with the rest of the page |
 
 **Done means:** a reviewer can follow a hunt or a case from telemetry to verdict
 without reading the source code.
@@ -66,8 +67,8 @@ traffic is benign or malicious.
 ## Sequence
 
 1. Finish Apsis: observed paths, guardrails, and the attack-path case study.
-2. Extend Penumbra: hunting is active; next are the IR casebook, triage
-   automation, and the cloud detection pack.
+2. Penumbra extensions: hunting, IR casebook, triage automation, and the cloud
+   pack are done; next is the dashboard integration pass.
 3. Build the network threat-hunting lab after the two existing projects are
    complete.
 

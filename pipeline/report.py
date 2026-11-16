@@ -147,6 +147,12 @@ def copy_case_reports(cases: list[dict[str, Any]], docs_dir: Path) -> int:
         ensure_dir(target.parent)
         shutil.copy2(source, target)
         copied += 1
+    ir_report = CASES_DIR / "IR.md"
+    if ir_report.exists():
+        target = docs_dir / "cases" / "IR.md"
+        ensure_dir(target.parent)
+        shutil.copy2(ir_report, target)
+        copied += 1
     return copied
 
 
@@ -305,6 +311,15 @@ def build_payload(
     roadmap_path = DOCS_DIR / "roadmap.json"
     roadmap = json.loads(roadmap_path.read_text(encoding="utf-8")) if roadmap_path.is_file() else None
 
+    response_path = ROOT / "response" / "results.json"
+    response = json.loads(response_path.read_text(encoding="utf-8")) if response_path.is_file() else None
+
+    cloud_path = ROOT / "cloud" / "results.json"
+    cloud_pack = json.loads(cloud_path.read_text(encoding="utf-8")) if cloud_path.is_file() else None
+
+    ir_path = ROOT / "cases" / "ir.json"
+    ir = json.loads(ir_path.read_text(encoding="utf-8")) if ir_path.is_file() else None
+
     return {
         "meta": meta,
         "severity": severity_counts,
@@ -318,6 +333,9 @@ def build_payload(
         "validation": validation,
         "hunts": hunts,
         "roadmap": roadmap,
+        "response": response,
+        "cloud_pack": cloud_pack,
+        "ir": ir,
         "pipeline": pipeline_payload(meta, alerts, correlations, cases, events),
     }
 

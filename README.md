@@ -16,13 +16,13 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 
 > **Project status: portfolio lab, not a production detection product.** The telemetry is synthetic and generated to exercise this rule set. The repository demonstrates detection-as-code, validation, triage, and reporting; it does not claim production precision or recall. The evidence boundary is documented in [Evaluation and validation](docs/evaluation.md).
 
-**Live dashboard:** <https://meruyert5.github.io/penumbra/>
+**Repository status:** private while the dashboard integration pass is in progress. Run the site locally from `site/` after `python -m pipeline.report` and `python -m pipeline.publish`.
 
 ## Reviewer path
 
 | Time | Open | Why it matters |
 |---|---|---|
-| 2 minutes | [The live dashboard](https://meruyert5.github.io/penumbra/) | See the run, the peak hour, the coverage ring, and the triage queue |
+| 2 minutes | [The dashboard](docs/index.html) | See the run, the peak hour, the coverage ring, and the triage queue |
 | 5 minutes | [`rules/sigma/`](rules/sigma) and [`rules/compiled/`](rules/compiled) | Read the source rule and the EQL/KQL that Elasticsearch actually runs |
 | 5 minutes | [`cases/case-002-multi-stage-intrusion/report.md`](cases/case-002-multi-stage-intrusion/report.md) | Follow one investigation from alert to verdict |
 | 5 minutes | [`docs/attck-coverage.md`](docs/attck-coverage.md) and [`docs/tuning.md`](docs/tuning.md) | Check coverage and the tuning record |
@@ -46,6 +46,9 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | Threshold and distinct-value correlation, tested without a SIEM | [`correlations/`](correlations), [`pipeline/correlate.py`](pipeline/correlate.py) |
 | Analyst-quality incident write-ups | [`cases/`](cases) |
 | Hypothesis-driven hunts with evidence and verdicts | [`hunts/`](hunts) |
+| Dry-run triage, incident grouping, and response playbooks | [`response/`](response) |
+| CloudTrail detections for the Apsis hand-off | [`cloud/`](cloud) |
+| IR close-outs with metrics, recovery, and lessons | [`cases/IR.md`](cases/IR.md) |
 | The three-project roadmap | [`docs/roadmap.md`](docs/roadmap.md) |
 | ATT&CK coverage with an explicit gap view | [`docs/attck-coverage.md`](docs/attck-coverage.md) |
 | Detection tuning with recorded false positives | [`docs/tuning.md`](docs/tuning.md) |
@@ -63,9 +66,10 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | **Scenarios** | 33 attack scenarios plus a benign baseline, spread across a 24-hour window |
 | **Coverage** | 48 ATT&CK techniques, 13 tactics, 45 of 45 priority techniques, 0 gaps |
 | **Hunts** | 4 hypothesis-driven hunts over 9,223 events, with evidence and detection changes |
+| **Response** | 27 dry-run incidents, 6 playbooks, 78 recommended actions, 85% containment coverage |
 | **Correlation** | Sliding windows with optional distinct-value thresholds, for example 10 attempts across 8 accounts |
 | **Backend** | Elasticsearch 8.15.3 and Kibana 8.15.3, single node, security disabled for lab use |
-| **Tests** | 68 passing: lint, compilation, correlation, lab generation, coverage, publishing, replay mapping, benchmark metrics, hunts, validation table, secret scan, dashboard assembly |
+| **Tests** | 79 passing: lint, compilation, correlation, lab generation, coverage, publishing, replay mapping, benchmark metrics, hunts, validation table, secret scan, dashboard assembly |
 | **Validation** | 1,381 real events across five indices and 16 labelled windows; 5 rules matched; 6 TP / 0 FP / 1 FN; 0 not evaluable; 89,704-event benign baseline |
 | **Frontend** | One self-contained HTML file with no build step, CDN, or network request |
 
@@ -204,6 +208,9 @@ python -m pipeline.correlate --input lab/logs/linux.ndjson
 | `python -m pipeline.detect --hours 24` | Runs every rule and correlation, writes `alerts/` |
 | `python -m pipeline.detect --dry-run` | Prints the queries without running them |
 | `python -m pipeline.hunts` | Runs four hypothesis-driven hunts over the lab corpus |
+| `python -m pipeline.cloud_pack` | Evaluates the cloud detection pack |
+| `python -m pipeline.triage` | Runs dry-run enrichment, grouping, and playbooks |
+| `python -m pipeline.casebook` | Renders the IR close-outs into `cases/IR.md` |
 | `python -m pipeline.replay --source FILE` | Normalizes an OTRF/Mordor sample into lab NDJSON |
 | `python -m pipeline.validation` | Writes the synthetic per-rule results table |
 | `python -m pipeline.validation_results --write-results` | Writes the dashboard validation manifest |
@@ -342,7 +349,7 @@ The `.caseless` fields come from the Winlogbeat processors. Without them, rules 
 python -m pytest -q
 ```
 
-The 68 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, public-site publishing, OTRF/Mordor, auditd, auth, nginx, Zeek, and Windows XML replay mapping, the synthetic per-rule table, benchmark metrics, hypothesis-driven hunts, a high-confidence secret-pattern scan, and dashboard assembly.
+The 79 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, public-site publishing, OTRF/Mordor, auditd, auth, nginx, Zeek, and Windows XML replay mapping, the synthetic per-rule table, benchmark metrics, hypothesis-driven hunts, cloud detections, triage, the IR casebook, a high-confidence secret-pattern scan, and dashboard assembly.
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request:
 
@@ -406,9 +413,26 @@ tunneling patterns, and LSASS access from user-writable paths. Each hunt records
 the question, the query, the evidence, the verdict, and the detection change it
 recommends. See [hunts/README.md](hunts/README.md).
 
-Fig. 5 in the dashboard shows the hunts. Fig. 6 shows the three-project roadmap:
+Fig. 5 in the dashboard shows the hunts. Fig. 7 shows the three-project roadmap:
 Penumbra, Apsis (formerly Overpass), and a network threat-hunting lab. The
 roadmap is also in [docs/roadmap.md](docs/roadmap.md).
+
+## Response and IR
+
+`pipeline.triage` turns the detection run into 27 incidents, enriches each one,
+and selects a playbook from six options. It recommends 78 actions and reaches
+85% containment coverage. No EDR, cloud, or ticketing API is called; the output
+is a response design, not a claim that a host was isolated. See
+[response/README.md](response/README.md).
+
+`pipeline.cloud_pack` evaluates three CloudTrail detections that complement
+Apsis: root policy attachment, root user creation, and CloudTrail tampering.
+Two fire on the synthetic corpus; one is waiting for telemetry. See
+[cloud/README.md](cloud/README.md).
+
+The three cases now have a structured close-out layer: observed window, detection
+span, containment, eradication, recovery, communication, evidence, lessons, and
+open questions. See [cases/IR.md](cases/IR.md).
 
 
 ## Limitations
@@ -446,7 +470,7 @@ scripts/                Convenience scripts
 
 [`.github/workflows/pages.yml`](.github/workflows/pages.yml) publishes a filtered public site on every push to `main`:
 
-The current deployment is <https://meruyert5.github.io/penumbra/>.
+The repository is private during the dashboard integration pass, so GitHub Pages is offline. The deployment target remains `https://meruyert5.github.io/penumbra/`; re-enable Pages when the repository is public again.
 
 ```powershell
 python -m pipeline.report
@@ -467,12 +491,22 @@ See [Publishing checklist](docs/publishing.md) for repository metadata, the desi
 
 ## Roadmap
 
-- [ ] Replay OTRF Security Datasets, Splunk Attack Data, and Atomic Red Team telemetry; record per-rule precision and recall
-- [ ] Add a per-rule false-positive suite against a larger benign baseline
-- [ ] Add Kibana saved objects so detections and the dashboard deploy as code
+The full three-project roadmap is in [docs/roadmap.md](docs/roadmap.md) and
+Fig. 7.
+
+- **Penumbra:** detection library, validation, hunting, IR casebook, triage
+  automation, and the cloud detection pack are done. Next is the dashboard
+  integration pass.
+- **Apsis (formerly Overpass):** finish observed CloudTrail paths, guardrails, and
+  the attack-path case study.
+- **Network threat hunting:** build after the two existing projects are complete.
+
+Other backlog items:
+
+- [ ] Add a larger real benign baseline
+- [ ] Add Kibana saved objects so detections and dashboards deploy as code
 - [ ] Wire `pipeline/detect.py` into a webhook notifier for a simulated on-call flow
 - [ ] Add a Zeek or PCAP source and a beaconing detection with jitter analysis
-- [ ] Publish a write-up of case 003
 
 ---
 

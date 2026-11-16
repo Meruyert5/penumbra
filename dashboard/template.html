@@ -610,6 +610,31 @@
     <p class="hunts-note" id="huntsNote"></p>
   </section>
 
+  <section class="ops-panel" id="opsPanel" data-reveal aria-labelledby="opsTitle">
+    <div class="ops-head">
+      <p class="validation-kicker">Fig. 6 / Operations</p>
+      <h3 id="opsTitle">From alert to action.</h3>
+      <p class="ops-lede">Triage, cloud detections, and the IR close-out. The response engine is a dry run: it enriches, groups, and recommends, but no real EDR or cloud API is called.</p>
+    </div>
+    <div class="ops-tabs" role="tablist" aria-label="Operations views">
+      <button class="ops-tab" type="button" role="tab" id="opsTabResponse" aria-controls="opsResponse" aria-selected="true">Response</button>
+      <button class="ops-tab" type="button" role="tab" id="opsTabCloud" aria-controls="opsCloud" aria-selected="false">Cloud pack</button>
+      <button class="ops-tab" type="button" role="tab" id="opsTabIr" aria-controls="opsIr" aria-selected="false">IR casebook</button>
+    </div>
+    <div class="ops-view" id="opsResponse" role="tabpanel" aria-labelledby="opsTabResponse">
+      <div class="validation-stats ops-stats" id="opsResponseStats"></div>
+      <div class="ops-grid" id="opsIncidents"></div>
+    </div>
+    <div class="ops-view" id="opsCloud" role="tabpanel" aria-labelledby="opsTabCloud" hidden>
+      <div class="validation-stats ops-stats" id="opsCloudStats"></div>
+      <div class="ops-grid" id="opsCloudCards"></div>
+    </div>
+    <div class="ops-view" id="opsIr" role="tabpanel" aria-labelledby="opsTabIr" hidden>
+      <div class="ops-grid ops-grid-three" id="opsIrCards"></div>
+    </div>
+    <p class="ops-note" id="opsNote"></p>
+  </section>
+
   <section class="roadmap-panel" id="roadmapPanel" data-reveal aria-labelledby="roadmapTitle">
     <div class="roadmap-head">
       <p class="validation-kicker" id="roadmapKicker">Fig. 6 / Portfolio roadmap</p>

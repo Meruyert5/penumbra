@@ -105,7 +105,7 @@ def test_payload_has_every_dashboard_field(tmp_path):
         RULES,
         CASES,
     )
-    for key in ("meta", "severity", "alerts", "correlations", "timeline", "hosts", "sources", "coverage", "cases", "validation", "hunts", "roadmap", "pipeline"):
+    for key in ("meta", "severity", "alerts", "correlations", "timeline", "hosts", "sources", "coverage", "cases", "validation", "hunts", "roadmap", "response", "cloud_pack", "ir", "pipeline"):
         assert key in payload
     assert payload["validation"]["totals"]["rules_total"] == 50
     assert payload["validation"]["totals"]["real_matches"] == 5
@@ -114,6 +114,9 @@ def test_payload_has_every_dashboard_field(tmp_path):
     assert len(payload["validation"]["rules"]) == 50
     assert payload["hunts"]["summary"]["hunts"] == 4
     assert payload["roadmap"]["projects"][0]["name"] == "Penumbra"
+    assert payload["response"]["summary"]["incidents"] >= 1
+    assert payload["cloud_pack"]["summary"]["detections"] == 3
+    assert len(payload["ir"]["cases"]) == 3
 
     assert payload["severity"] == {"critical": 1, "high": 1, "medium": 0, "low": 0}
     assert payload["meta"]["sigma_rules"] == len(compile_all())
@@ -184,9 +187,10 @@ def test_html_embeds_watch_floor(tmp_path):
 def test_case_reports_are_published(tmp_path):
     cases = load_cases(CASES)
     copied = copy_case_reports(cases, tmp_path)
-    assert copied == len(cases)
+    assert copied == len(cases) + 1
     for case in cases:
         assert (tmp_path / "cases" / case["slug"] / "report.md").exists()
+    assert (tmp_path / "cases" / "IR.md").exists()
 
 
 def test_heatmap_is_valid_svg_with_correlations():

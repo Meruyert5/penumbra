@@ -57,3 +57,15 @@ jobs:
 
       - name: Verify hunt output is committed
         run: git diff --exit-code hunts/results.json hunts/README.md
+
+      - name: Evaluate cloud pack
+        run: python -m pipeline.cloud_pack
+
+      - name: Verify cloud pack is committed
+        run: git diff --exit-code cloud/results.json cloud/README.md
+
+      - name: Render IR casebook
+        run: python -m pipeline.casebook
+
+      - name: Verify IR casebook is committed
+        run: git diff --exit-code cases/IR.md

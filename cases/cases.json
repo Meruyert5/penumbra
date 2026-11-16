@@ -7,11 +7,31 @@
     "status": "Escalated to IR",
     "verdict": "True positive",
     "opened": "2026-11-11",
-    "hosts": ["linux01"],
-    "techniques": ["T1110.001", "T1021.004"],
-    "detections": ["corr-ssh-bruteforce", "linux_ssh_failed_password"],
+    "hosts": [
+      "linux01"
+    ],
+    "techniques": [
+      "T1110.001",
+      "T1021.004"
+    ],
+    "detections": [
+      "corr-ssh-bruteforce",
+      "linux_ssh_failed_password"
+    ],
     "summary": "Fourteen failures across six usernames, then a successful login as deploy from the same address 36 seconds later.",
-    "path": "cases/case-001-ssh-bruteforce/report.md"
+    "path": "cases/case-001-ssh-bruteforce/report.md",
+    "ir_path": "cases/IR.md",
+    "containment_status": "escalated; containment recommended",
+    "metrics": {
+      "observed_start": "2026-11-11T10:50:21Z",
+      "observed_end": "2026-11-11T10:54:51Z",
+      "observed_seconds": 270,
+      "first_detection": "2026-11-11T10:50:21Z",
+      "last_detection": "2026-11-11T10:52:27Z",
+      "detection_span_seconds": 126,
+      "alert_count": 2,
+      "response_timing": "not measured in the synthetic lab"
+    }
   },
   {
     "id": "PNB-2026-002",
@@ -21,8 +41,16 @@
     "status": "Escalated, host isolation recommended",
     "verdict": "True positive",
     "opened": "2026-11-11",
-    "hosts": ["WIN10-LAB"],
-    "techniques": ["T1566.001", "T1059.001", "T1105", "T1003.001", "T1543.003"],
+    "hosts": [
+      "WIN10-LAB"
+    ],
+    "techniques": [
+      "T1566.001",
+      "T1059.001",
+      "T1105",
+      "T1003.001",
+      "T1543.003"
+    ],
     "detections": [
       "win_powershell_encoded_command",
       "win_certutil_download",
@@ -32,7 +60,19 @@
       "win_schtasks_create"
     ],
     "summary": "A document spawned hidden PowerShell, downloaded a payload with certutil, dumped LSASS, then installed a service and a scheduled task.",
-    "path": "cases/case-002-multi-stage-intrusion/report.md"
+    "path": "cases/case-002-multi-stage-intrusion/report.md",
+    "ir_path": "cases/IR.md",
+    "containment_status": "host isolation recommended",
+    "metrics": {
+      "observed_start": "2026-11-11T10:38:18Z",
+      "observed_end": "2026-11-11T10:47:48Z",
+      "observed_seconds": 570,
+      "first_detection": "2026-11-11T10:38:18Z",
+      "last_detection": "2026-11-11T10:47:48Z",
+      "detection_span_seconds": 570,
+      "alert_count": 6,
+      "response_timing": "not measured in the synthetic lab"
+    }
   },
   {
     "id": "PNB-2026-003",
@@ -42,8 +82,14 @@
     "status": "Contained, host rebuilt",
     "verdict": "True positive",
     "opened": "2026-11-11",
-    "hosts": ["WIN10-LAB"],
-    "techniques": ["T1490", "T1489", "T1486"],
+    "hosts": [
+      "WIN10-LAB"
+    ],
+    "techniques": [
+      "T1490",
+      "T1489",
+      "T1486"
+    ],
     "detections": [
       "win_shadow_copy_deletion",
       "win_bcdedit_recovery_disabled",
@@ -52,6 +98,18 @@
       "corr-ransomware-file-burst"
     ],
     "summary": "Recovery deletion, two service stops, ransom notes, and 24 encrypted files in 46 seconds. Contained before the share was fully encrypted.",
-    "path": "cases/case-003-ransomware/report.md"
+    "path": "cases/case-003-ransomware/report.md",
+    "ir_path": "cases/IR.md",
+    "containment_status": "contained; host rebuilt",
+    "metrics": {
+      "observed_start": "2026-11-11T11:25:00Z",
+      "observed_end": "2026-11-11T11:26:56Z",
+      "observed_seconds": 116,
+      "first_detection": "2026-11-11T11:25:00Z",
+      "last_detection": "2026-11-11T11:26:56Z",
+      "detection_span_seconds": 116,
+      "alert_count": 5,
+      "response_timing": "not measured in the synthetic lab"
+    }
   }
 ]

@@ -1,5 +1,5 @@
 {
-  "kicker": "After the eclipse",
+  "kicker": "Fig. 7 / Portfolio roadmap",
   "title": "Three complete projects, no connector.",
   "intro": "Penumbra, Apsis, and a network threat-hunting lab each own one question. They share evidence formats and case studies, not a separate integration layer.",
   "principles": [
@@ -29,23 +29,28 @@
         },
         {
           "name": "Threat hunting",
-          "state": "active",
+          "state": "done",
           "detail": "Four hypothesis-driven hunts with queries, evidence, verdicts, and detection changes."
         },
         {
           "name": "IR casebook",
-          "state": "next",
-          "detail": "Expand the three case reports into full timelines, containment, eradication, and lessons."
+          "state": "done",
+          "detail": "Three structured close-outs with metrics, containment, eradication, recovery, communication, evidence, lessons, and open questions."
         },
         {
           "name": "Triage automation",
-          "state": "planned",
-          "detail": "Enrichment, deduplication, containment, and MTTD/MTTR metrics."
+          "state": "done",
+          "detail": "Dry-run enrichment, incident grouping, playbook selection, and 78 recommended actions; no external API calls."
         },
         {
           "name": "Cloud detection pack",
-          "state": "planned",
-          "detail": "CloudTrail detections that complement Apsis and export findings in the shared alert schema."
+          "state": "done",
+          "detail": "Three CloudTrail detections; two fired on the synthetic corpus, one is awaiting telemetry."
+        },
+        {
+          "name": "Dashboard integration",
+          "state": "active",
+          "detail": "Rework the new sections, compact where needed, and keep every extension interactive and consistent with the rest of the page."
         }
       ],
       "done": "A reviewer can follow a hunt or a case from telemetry to verdict without reading the source code."
@@ -125,7 +130,7 @@
   ],
   "sequence": [
     "Finish Apsis: observed paths, guardrails, and the attack-path case study.",
-    "Extend Penumbra: hunting is active; next are the IR casebook, triage automation, and the cloud detection pack.",
+    "Penumbra extensions: hunting, IR casebook, triage automation, and the cloud pack are done; next is the dashboard integration pass.",
     "Build the network threat-hunting lab after the two existing projects are complete."
   ],
   "shared": [

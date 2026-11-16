@@ -2,12 +2,26 @@
 
 ## Unreleased
 
+- Made the GitHub repository private while the dashboard integration pass is in
+  progress.
+- Added the Penumbra response layer: `pipeline.triage` turns 50 alerts into 27
+  incidents, selects one of six playbooks, and records 78 recommended actions
+  with 85% containment coverage. The engine is a dry run with no external API
+  calls.
+- Added the cloud detection pack for Apsis: root policy attachment, root user
+  creation, and CloudTrail tampering. Two detections fire on the synthetic
+  corpus; one is waiting for telemetry.
+- Added `cases/ir.json` and `pipeline.casebook` to render three structured IR
+  close-outs with metrics, containment, eradication, recovery, communication,
+  evidence, lessons, and open questions.
+- Added an interactive Operations section (Fig. 6) for response, cloud pack, and
+  IR casebook views; renumbered the roadmap to Fig. 7.
 - Added the first Penumbra extension: four hypothesis-driven hunts over the
   deterministic corpus, with queries, evidence, verdicts, and detection changes.
   Added `pipeline.hunts`, `hunts/README.md`, `hunts/results.json`, and tests.
 - Added the three-project roadmap to the dashboard: Penumbra, Apsis (formerly
   Overpass), and a network threat-hunting lab. Added `docs/roadmap.json`,
-  `docs/roadmap.md`, and Fig. 5 / Fig. 6.
+  `docs/roadmap.md`, and Fig. 5 / Fig. 7.
 - Published the public dashboard to GitHub Pages at
   <https://meruyert5.github.io/penumbra/> and wired the live URL into the README
   and handoff notes.

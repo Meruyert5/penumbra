@@ -1,0 +1,1561 @@
+{
+  "summary": {
+    "alerts_ingested": 50,
+    "incidents": 27,
+    "alerts_grouped": 23,
+    "critical_alerts": 5,
+    "high_alerts": 34,
+    "playbooks": 6,
+    "actions": 78,
+    "containment_coverage": 0.8519,
+    "timing": "dry run; external API latency is not measured"
+  },
+  "playbooks": [
+    {
+      "name": "Standard triage",
+      "incidents": 19
+    },
+    {
+      "name": "Persistence response",
+      "incidents": 8
+    },
+    {
+      "name": "Authentication response",
+      "incidents": 3
+    },
+    {
+      "name": "Ransomware containment",
+      "incidents": 1
+    },
+    {
+      "name": "Credential theft response",
+      "incidents": 1
+    },
+    {
+      "name": "Cloud identity response",
+      "incidents": 1
+    }
+  ],
+  "incidents": [
+    {
+      "id": "INC-001",
+      "host": "linux01",
+      "window_start": "2026-11-11T09:11:00.000Z",
+      "window_end": "2026-11-11T09:13:00.000Z",
+      "highest_level": "critical",
+      "alert_count": 5,
+      "playbooks": [
+        "Authentication response",
+        "Persistence response",
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "linux01",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        },
+        {
+          "action": "block_source",
+          "mode": "dry_run",
+          "reason": "Stop the login attempts"
+        },
+        {
+          "action": "reset_password",
+          "mode": "dry_run",
+          "reason": "Secure the targeted account"
+        },
+        {
+          "action": "review_sessions",
+          "mode": "dry_run",
+          "reason": "Check for post-login activity"
+        },
+        {
+          "action": "collect_binary",
+          "mode": "dry_run",
+          "reason": "Hash and detonate safely"
+        },
+        {
+          "action": "disable_persistence",
+          "mode": "dry_run",
+          "reason": "Remove service or task"
+        },
+        {
+          "action": "hunt_service_name",
+          "mode": "dry_run",
+          "reason": "Find the same name on other hosts"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Linux Reverse Shell Command",
+          "level": "critical",
+          "techniques": [
+            "T1059.004"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T09:12:00.000Z",
+          "last_seen": "2026-11-11T09:12:00.000Z"
+        },
+        {
+          "title": "Sudoers File Modified",
+          "level": "high",
+          "techniques": [
+            "T1548.003"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T09:11:00.000Z",
+          "last_seen": "2026-11-11T09:11:00.000Z"
+        },
+        {
+          "title": "SSH Authorized Keys Modified",
+          "level": "high",
+          "techniques": [
+            "T1098.004"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T09:11:20.000Z",
+          "last_seen": "2026-11-11T09:11:20.000Z"
+        },
+        {
+          "title": "Systemd Service Unit Created",
+          "level": "high",
+          "techniques": [
+            "T1543.002"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T09:11:40.000Z",
+          "last_seen": "2026-11-11T09:11:40.000Z"
+        },
+        {
+          "title": "Linux Log File Tampering",
+          "level": "high",
+          "techniques": [
+            "T1070.002"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T09:13:00.000Z",
+          "last_seen": "2026-11-11T09:13:20.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-002",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-11T11:55:00.000Z",
+      "window_end": "2026-11-11T11:56:00.000Z",
+      "highest_level": "critical",
+      "alert_count": 4,
+      "playbooks": [
+        "Persistence response",
+        "Ransomware containment",
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "isolate_host",
+          "mode": "dry_run",
+          "reason": "Stop encryption spread"
+        },
+        {
+          "action": "preserve_memory",
+          "mode": "dry_run",
+          "reason": "Capture volatile evidence"
+        },
+        {
+          "action": "snapshot_share",
+          "mode": "dry_run",
+          "reason": "Preserve the file share before restore"
+        },
+        {
+          "action": "notify_ir_lead",
+          "mode": "dry_run",
+          "reason": "Critical impact"
+        },
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        },
+        {
+          "action": "collect_binary",
+          "mode": "dry_run",
+          "reason": "Hash and detonate safely"
+        },
+        {
+          "action": "disable_persistence",
+          "mode": "dry_run",
+          "reason": "Remove service or task"
+        },
+        {
+          "action": "hunt_service_name",
+          "mode": "dry_run",
+          "reason": "Find the same name on other hosts"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Ransomware Note Dropped on Disk",
+          "level": "critical",
+          "techniques": [
+            "T1486"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T11:56:00.000Z",
+          "last_seen": "2026-11-11T11:56:05.000Z"
+        },
+        {
+          "title": "Shadow Copy Deletion via VSSAdmin or WMIC",
+          "level": "high",
+          "techniques": [
+            "T1490"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T11:55:00.000Z",
+          "last_seen": "2026-11-11T11:55:20.000Z"
+        },
+        {
+          "title": "Boot Recovery Disabled via BCDEdit",
+          "level": "high",
+          "techniques": [
+            "T1490"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T11:55:40.000Z",
+          "last_seen": "2026-11-11T11:55:40.000Z"
+        },
+        {
+          "title": "Critical Service Stopped Before Impact",
+          "level": "high",
+          "techniques": [
+            "T1489"
+          ],
+          "count": 4,
+          "first_seen": "2026-11-11T11:55:50.000Z",
+          "last_seen": "2026-11-11T12:17:10.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-003",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-11T12:10:08.000Z",
+      "window_end": "2026-11-11T12:14:30.000Z",
+      "highest_level": "critical",
+      "alert_count": 9,
+      "playbooks": [
+        "Credential theft response",
+        "Persistence response",
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": true,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "isolate_host",
+          "mode": "dry_run",
+          "reason": "Prevent credential reuse"
+        },
+        {
+          "action": "reset_credentials",
+          "mode": "dry_run",
+          "reason": "Assume cached secrets are compromised"
+        },
+        {
+          "action": "collect_memory",
+          "mode": "dry_run",
+          "reason": "Preserve LSASS evidence"
+        },
+        {
+          "action": "hunt_hashes",
+          "mode": "dry_run",
+          "reason": "Find the payload on other hosts"
+        },
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        },
+        {
+          "action": "collect_binary",
+          "mode": "dry_run",
+          "reason": "Hash and detonate safely"
+        },
+        {
+          "action": "disable_persistence",
+          "mode": "dry_run",
+          "reason": "Remove service or task"
+        },
+        {
+          "action": "hunt_service_name",
+          "mode": "dry_run",
+          "reason": "Find the same name on other hosts"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Suspicious Process Access to LSASS",
+          "level": "critical",
+          "techniques": [
+            "T1003.001"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:10:08.000Z",
+          "last_seen": "2026-11-11T12:10:08.000Z"
+        },
+        {
+          "title": "LSASS Memory Dumped via Comsvcs",
+          "level": "critical",
+          "techniques": [
+            "T1003.001"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:10:40.000Z",
+          "last_seen": "2026-11-11T12:10:40.000Z"
+        },
+        {
+          "title": "SAM or SECURITY Hive Dumped with Reg.exe",
+          "level": "critical",
+          "techniques": [
+            "T1003.002"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:11:00.000Z",
+          "last_seen": "2026-11-11T12:11:00.000Z"
+        },
+        {
+          "title": "Windows Defender Real-Time Protection Disabled",
+          "level": "high",
+          "techniques": [
+            "T1562.001"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:12:00.000Z",
+          "last_seen": "2026-11-11T12:12:00.000Z"
+        },
+        {
+          "title": "AMSI Bypass via Reflection",
+          "level": "high",
+          "techniques": [
+            "T1562.001"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:13:00.000Z",
+          "last_seen": "2026-11-11T12:13:00.000Z"
+        },
+        {
+          "title": "Windows Event Log Cleared",
+          "level": "high",
+          "techniques": [
+            "T1070.001"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:13:50.000Z",
+          "last_seen": "2026-11-11T12:13:50.000Z"
+        },
+        {
+          "title": "Suspicious Service Installed From User-Writable Path",
+          "level": "high",
+          "techniques": [
+            "T1543.003"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:14:00.000Z",
+          "last_seen": "2026-11-11T12:14:00.000Z"
+        },
+        {
+          "title": "Windows Firewall Disabled",
+          "level": "medium",
+          "techniques": [
+            "T1562.004"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:13:20.000Z",
+          "last_seen": "2026-11-11T12:13:20.000Z"
+        },
+        {
+          "title": "Scheduled Task Created via Schtasks",
+          "level": "medium",
+          "techniques": [
+            "T1053.005"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:14:30.000Z",
+          "last_seen": "2026-11-11T12:14:30.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-004",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-10T16:24:00.000Z",
+      "window_end": "2026-11-10T16:24:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Windows Command Shell Spawning a Remote Payload",
+          "level": "high",
+          "techniques": [
+            "T1059.003"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-10T16:24:00.000Z",
+          "last_seen": "2026-11-10T16:24:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-005",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-10T18:22:00.000Z",
+      "window_end": "2026-11-10T18:22:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Remote Thread Created by a User-Writable Binary",
+          "level": "high",
+          "techniques": [
+            "T1055"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-10T18:22:00.000Z",
+          "last_seen": "2026-11-10T18:22:30.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-006",
+      "host": "web01",
+      "window_start": "2026-11-10T19:20:00.000Z",
+      "window_end": "2026-11-10T19:20:20.000Z",
+      "highest_level": "high",
+      "alert_count": 2,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "web01",
+        "asset_criticality": "medium",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "PHP File Uploaded to Web Accessible Directory",
+          "level": "high",
+          "techniques": [
+            "T1505.003"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-10T19:20:00.000Z",
+          "last_seen": "2026-11-10T19:20:00.000Z"
+        },
+        {
+          "title": "Web Request to Common Web Shell Parameter",
+          "level": "medium",
+          "techniques": [
+            "T1505.003"
+          ],
+          "count": 10,
+          "first_seen": "2026-11-10T19:20:20.000Z",
+          "last_seen": "2026-11-11T06:16:32.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-007",
+      "host": "linux01",
+      "window_start": "2026-11-10T20:25:00.000Z",
+      "window_end": "2026-11-10T20:25:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Persistence response"
+      ],
+      "enrichment": {
+        "host": "linux01",
+        "asset_criticality": "high",
+        "privileged_technique": true,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "collect_binary",
+          "mode": "dry_run",
+          "reason": "Hash and detonate safely"
+        },
+        {
+          "action": "disable_persistence",
+          "mode": "dry_run",
+          "reason": "Remove service or task"
+        },
+        {
+          "action": "hunt_service_name",
+          "mode": "dry_run",
+          "reason": "Find the same name on other hosts"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Valid Service Account Login from an External Address",
+          "level": "high",
+          "techniques": [
+            "T1078"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-10T20:25:00.000Z",
+          "last_seen": "2026-11-10T20:25:20.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-008",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-10T21:01:00.000Z",
+      "window_end": "2026-11-10T21:01:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Persistence response"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "collect_binary",
+          "mode": "dry_run",
+          "reason": "Hash and detonate safely"
+        },
+        {
+          "action": "disable_persistence",
+          "mode": "dry_run",
+          "reason": "Remove service or task"
+        },
+        {
+          "action": "hunt_service_name",
+          "mode": "dry_run",
+          "reason": "Find the same name on other hosts"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "PsExec Service Creation",
+          "level": "high",
+          "techniques": [
+            "T1569.002"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-10T21:01:00.000Z",
+          "last_seen": "2026-11-10T21:01:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-009",
+      "host": "web01",
+      "window_start": "2026-11-10T22:21:00.000Z",
+      "window_end": "2026-11-10T22:21:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "web01",
+        "asset_criticality": "medium",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Periodic Web Beacon to a Command Endpoint",
+          "level": "high",
+          "techniques": [
+            "T1071.001"
+          ],
+          "count": 12,
+          "first_seen": "2026-11-10T22:21:00.000Z",
+          "last_seen": "2026-11-10T22:24:40.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-010",
+      "host": "linux01",
+      "window_start": "2026-11-10T22:47:00.000Z",
+      "window_end": "2026-11-10T22:47:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "linux01",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Cron Job Executing Remote Content",
+          "level": "high",
+          "techniques": [
+            "T1053.003"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-10T22:47:00.000Z",
+          "last_seen": "2026-11-10T22:47:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-011",
+      "host": "linux01",
+      "window_start": "2026-11-11T00:26:00.000Z",
+      "window_end": "2026-11-11T00:26:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Authentication response"
+      ],
+      "enrichment": {
+        "host": "linux01",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "block_source",
+          "mode": "dry_run",
+          "reason": "Stop the login attempts"
+        },
+        {
+          "action": "reset_password",
+          "mode": "dry_run",
+          "reason": "Secure the targeted account"
+        },
+        {
+          "action": "review_sessions",
+          "mode": "dry_run",
+          "reason": "Check for post-login activity"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Root SSH Login from an External Address",
+          "level": "high",
+          "techniques": [
+            "T1021.004"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T00:26:00.000Z",
+          "last_seen": "2026-11-11T00:26:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-012",
+      "host": "aws-prod",
+      "window_start": "2026-11-11T00:35:00.000Z",
+      "window_end": "2026-11-11T00:35:30.000Z",
+      "highest_level": "high",
+      "alert_count": 2,
+      "playbooks": [
+        "Cloud identity response"
+      ],
+      "enrichment": {
+        "host": "aws-prod",
+        "asset_criticality": "critical",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "disable_access_key",
+          "mode": "dry_run",
+          "reason": "Stop key abuse"
+        },
+        {
+          "action": "review_cloudtrail",
+          "mode": "dry_run",
+          "reason": "Scope the principal activity"
+        },
+        {
+          "action": "export_to_apsis",
+          "mode": "dry_run",
+          "reason": "Check reachable IAM paths"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Cloud Root Account Console Login",
+          "level": "high",
+          "techniques": [
+            "T1078.004"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T00:35:00.000Z",
+          "last_seen": "2026-11-11T00:35:00.000Z"
+        },
+        {
+          "title": "Cloud Access Key Created",
+          "level": "high",
+          "techniques": [
+            "T1098.001"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T00:35:30.000Z",
+          "last_seen": "2026-11-11T00:35:30.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-013",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-11T00:57:00.000Z",
+      "window_end": "2026-11-11T00:57:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Persistence response"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "collect_binary",
+          "mode": "dry_run",
+          "reason": "Hash and detonate safely"
+        },
+        {
+          "action": "disable_persistence",
+          "mode": "dry_run",
+          "reason": "Remove service or task"
+        },
+        {
+          "action": "hunt_service_name",
+          "mode": "dry_run",
+          "reason": "Find the same name on other hosts"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Registry Run Key Persistence",
+          "level": "high",
+          "techniques": [
+            "T1547.001"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T00:57:00.000Z",
+          "last_seen": "2026-11-11T00:57:25.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-014",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-11T01:59:00.000Z",
+      "window_end": "2026-11-11T01:59:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Persistence response"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "collect_binary",
+          "mode": "dry_run",
+          "reason": "Hash and detonate safely"
+        },
+        {
+          "action": "disable_persistence",
+          "mode": "dry_run",
+          "reason": "Remove service or task"
+        },
+        {
+          "action": "hunt_service_name",
+          "mode": "dry_run",
+          "reason": "Find the same name on other hosts"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "WMI Event Subscription Persistence",
+          "level": "high",
+          "techniques": [
+            "T1546.003"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T01:59:00.000Z",
+          "last_seen": "2026-11-11T01:59:20.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-015",
+      "host": "DC01",
+      "window_start": "2026-11-11T02:23:00.000Z",
+      "window_end": "2026-11-11T02:23:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "DC01",
+        "asset_criticality": "medium",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "SMB Administrative Share Access",
+          "level": "high",
+          "techniques": [
+            "T1021.002"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T02:23:00.000Z",
+          "last_seen": "2026-11-11T02:23:40.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-016",
+      "host": "edge-fw01",
+      "window_start": "2026-11-11T05:12:00.000Z",
+      "window_end": "2026-11-11T05:12:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "edge-fw01",
+        "asset_criticality": "medium",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Large Outbound Network Transfer",
+          "level": "high",
+          "techniques": [
+            "T1041"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T05:12:00.000Z",
+          "last_seen": "2026-11-11T05:12:40.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-017",
+      "host": "web01",
+      "window_start": "2026-11-11T06:16:00.000Z",
+      "window_end": "2026-11-11T06:16:26.000Z",
+      "highest_level": "high",
+      "alert_count": 4,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "web01",
+        "asset_criticality": "medium",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Command Injection Attempt in Web Request",
+          "level": "high",
+          "techniques": [
+            "T1059"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T06:16:26.000Z",
+          "last_seen": "2026-11-11T06:16:26.000Z"
+        },
+        {
+          "title": "SQL Injection Attempt in Web Request",
+          "level": "medium",
+          "techniques": [
+            "T1190"
+          ],
+          "count": 5,
+          "first_seen": "2026-11-11T06:16:05.000Z",
+          "last_seen": "2026-11-11T06:16:17.000Z"
+        },
+        {
+          "title": "Path Traversal Attempt in Web Request",
+          "level": "medium",
+          "techniques": [
+            "T1190"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T06:16:20.000Z",
+          "last_seen": "2026-11-11T06:16:23.000Z"
+        },
+        {
+          "title": "Web Scanner User Agent",
+          "level": "low",
+          "techniques": [
+            "T1595.002"
+          ],
+          "count": 20,
+          "first_seen": "2026-11-11T06:16:00.000Z",
+          "last_seen": "2026-11-11T06:17:06.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-018",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-11T07:06:00.000Z",
+      "window_end": "2026-11-11T07:06:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "UAC Bypass via Auto-Elevating Binary",
+          "level": "high",
+          "techniques": [
+            "T1548.002"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T07:06:00.000Z",
+          "last_seen": "2026-11-11T07:06:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-019",
+      "host": "DC01",
+      "window_start": "2026-11-11T08:09:00.000Z",
+      "window_end": "2026-11-11T08:09:00.000Z",
+      "highest_level": "high",
+      "alert_count": 1,
+      "playbooks": [
+        "Persistence response"
+      ],
+      "enrichment": {
+        "host": "DC01",
+        "asset_criticality": "medium",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "collect_binary",
+          "mode": "dry_run",
+          "reason": "Hash and detonate safely"
+        },
+        {
+          "action": "disable_persistence",
+          "mode": "dry_run",
+          "reason": "Remove service or task"
+        },
+        {
+          "action": "hunt_service_name",
+          "mode": "dry_run",
+          "reason": "Find the same name on other hosts"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Kerberoasting Service Ticket Request",
+          "level": "high",
+          "techniques": [
+            "T1558.003"
+          ],
+          "count": 12,
+          "first_seen": "2026-11-11T08:09:00.000Z",
+          "last_seen": "2026-11-11T08:10:39.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-020",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-11T11:19:00.000Z",
+      "window_end": "2026-11-11T11:19:40.000Z",
+      "highest_level": "high",
+      "alert_count": 2,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Rundll32 or Regsvr32 Remote Payload",
+          "level": "high",
+          "techniques": [
+            "T1218.011"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T11:19:00.000Z",
+          "last_seen": "2026-11-11T11:19:20.000Z"
+        },
+        {
+          "title": "Mshta Executing Remote or Script Content",
+          "level": "high",
+          "techniques": [
+            "T1218.005"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T11:19:40.000Z",
+          "last_seen": "2026-11-11T12:04:45.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-021",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-11T12:04:00.000Z",
+      "window_end": "2026-11-11T12:04:00.000Z",
+      "highest_level": "high",
+      "alert_count": 2,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Office Application Spawns a Shell",
+          "level": "high",
+          "techniques": [
+            "T1566.001"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T12:04:00.000Z",
+          "last_seen": "2026-11-11T12:05:00.000Z"
+        },
+        {
+          "title": "PowerShell Download Cradle",
+          "level": "high",
+          "techniques": [
+            "T1059.001",
+            "T1105"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:04:00.000Z",
+          "last_seen": "2026-11-11T12:04:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-022",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-11T12:05:00.000Z",
+      "window_end": "2026-11-11T12:07:00.000Z",
+      "highest_level": "high",
+      "alert_count": 2,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 2,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        },
+        {
+          "action": "collect_evidence",
+          "mode": "dry_run",
+          "reason": "Preserve context"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "PowerShell Encoded Command Execution",
+          "level": "high",
+          "techniques": [
+            "T1027",
+            "T1059.001"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:05:00.000Z",
+          "last_seen": "2026-11-11T12:05:00.000Z"
+        },
+        {
+          "title": "Certutil Used to Download or Decode a Payload",
+          "level": "high",
+          "techniques": [
+            "T1105",
+            "T1140"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-11T12:07:00.000Z",
+          "last_seen": "2026-11-11T12:07:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-023",
+      "host": "linux01",
+      "window_start": "2026-11-10T20:45:00.000Z",
+      "window_end": "2026-11-10T20:45:00.000Z",
+      "highest_level": "medium",
+      "alert_count": 1,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "linux01",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "New Local User Account Created",
+          "level": "medium",
+          "techniques": [
+            "T1136.001"
+          ],
+          "count": 1,
+          "first_seen": "2026-11-10T20:45:00.000Z",
+          "last_seen": "2026-11-10T20:45:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-024",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-11T04:08:00.000Z",
+      "window_end": "2026-11-11T04:08:00.000Z",
+      "highest_level": "medium",
+      "alert_count": 1,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "DNS Query to Exfiltration Domain",
+          "level": "medium",
+          "techniques": [
+            "T1071.004"
+          ],
+          "count": 25,
+          "first_seen": "2026-11-11T04:08:00.000Z",
+          "last_seen": "2026-11-11T04:10:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-025",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-11T10:15:00.000Z",
+      "window_end": "2026-11-11T10:15:00.000Z",
+      "highest_level": "medium",
+      "alert_count": 1,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Data Staged with Archive Utility",
+          "level": "medium",
+          "techniques": [
+            "T1560.001"
+          ],
+          "count": 2,
+          "first_seen": "2026-11-11T10:15:00.000Z",
+          "last_seen": "2026-11-11T10:15:30.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-026",
+      "host": "linux01",
+      "window_start": "2026-11-10T16:40:00.000Z",
+      "window_end": "2026-11-10T16:40:00.000Z",
+      "highest_level": "low",
+      "alert_count": 1,
+      "playbooks": [
+        "Authentication response"
+      ],
+      "enrichment": {
+        "host": "linux01",
+        "asset_criticality": "high",
+        "privileged_technique": true,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "block_source",
+          "mode": "dry_run",
+          "reason": "Stop the login attempts"
+        },
+        {
+          "action": "reset_password",
+          "mode": "dry_run",
+          "reason": "Secure the targeted account"
+        },
+        {
+          "action": "review_sessions",
+          "mode": "dry_run",
+          "reason": "Check for post-login activity"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "SSH Failed Password Authentication",
+          "level": "low",
+          "techniques": [
+            "T1110.001"
+          ],
+          "count": 39,
+          "first_seen": "2026-11-10T16:40:00.000Z",
+          "last_seen": "2026-11-11T12:21:54.000Z"
+        }
+      ]
+    },
+    {
+      "id": "INC-027",
+      "host": "WIN10-LAB",
+      "window_start": "2026-11-10T23:03:00.000Z",
+      "window_end": "2026-11-10T23:03:00.000Z",
+      "highest_level": "low",
+      "alert_count": 1,
+      "playbooks": [
+        "Standard triage"
+      ],
+      "enrichment": {
+        "host": "WIN10-LAB",
+        "asset_criticality": "high",
+        "privileged_technique": false,
+        "technique_count": 1,
+        "source": "local lab corpus",
+        "threat_intel": "not queried in the dry run"
+      },
+      "actions": [
+        {
+          "action": "open_case",
+          "mode": "dry_run",
+          "reason": "Analyst review"
+        }
+      ],
+      "alerts": [
+        {
+          "title": "Host and Account Discovery Command",
+          "level": "low",
+          "techniques": [
+            "T1087"
+          ],
+          "count": 8,
+          "first_seen": "2026-11-10T23:03:00.000Z",
+          "last_seen": "2026-11-10T23:04:36.000Z"
+        }
+      ]
+    }
+  ]
+}

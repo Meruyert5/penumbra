@@ -8,6 +8,10 @@ Each folder is one investigation, written the way a SOC ticket is written: summa
 | [002: Multi-stage intrusion](case-002-multi-stage-intrusion/report.md) | Macro, encoded PowerShell, certutil, LSASS, persistence | True positive, credential theft and persistence |
 | [003: Ransomware sequence](case-003-ransomware/report.md) | Recovery deletion, service stops, notes, 24 encrypted files | True positive, contained before the share was lost |
 
+The close-out layer — metrics, containment, eradication, recovery, communication,
+evidence handling, lessons, and open questions — is in
+[the IR casebook](IR.md).
+
 ## Report template
 
 ```markdown

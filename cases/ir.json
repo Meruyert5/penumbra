@@ -1,0 +1,160 @@
+{
+  "cases": [
+    {
+      "id": "PNB-2026-001",
+      "slug": "case-001-ssh-bruteforce",
+      "severity": "high",
+      "verdict": "true positive",
+      "containment_status": "escalated; containment recommended",
+      "metrics": {
+        "observed_start": "2026-11-11T10:50:21Z",
+        "observed_end": "2026-11-11T10:54:51Z",
+        "observed_seconds": 270,
+        "first_detection": "2026-11-11T10:50:21Z",
+        "last_detection": "2026-11-11T10:52:27Z",
+        "detection_span_seconds": 126,
+        "alert_count": 2,
+        "response_timing": "not measured in the synthetic lab"
+      },
+      "containment": [
+        "Block 203.0.113.44 at the perimeter and on linux01.",
+        "Disable deploy, reset its password, and rotate keys in ~deploy/.ssh/.",
+        "Review sudoers, authorized_keys, crontab, and shell history for the account."
+      ],
+      "eradication": [
+        "Remove any unauthorized key or cron entry created during the session.",
+        "Confirm there is no second successful login from the same source.",
+        "Add MFA and SSH rate limiting so a password guess is not enough."
+      ],
+      "recovery": [
+        "Return deploy to service only after credential rotation and owner approval.",
+        "Monitor linux01 for outbound connections for 24 hours.",
+        "Close the case only after the account owner confirms the session activity."
+      ],
+      "communication": [
+        "Notify the linux01 owner and the identity team.",
+        "Share the source IP and the successful-login timestamp with the perimeter team.",
+        "Record the password-rotation decision in the case timeline."
+      ],
+      "evidence": [
+        "linux.ndjson authentication events for 203.0.113.44.",
+        "corr-ssh-bruteforce output with threshold and window.",
+        "The accepted-login event and the absence of post-login host activity."
+      ],
+      "lessons": [
+        "A success after a failure burst should be one sequence alert, not two unrelated alerts.",
+        "Add ASN and geo enrichment so a hosting-provider source is visible.",
+        "Add password spraying coverage for distributed low-and-slow attempts."
+      ],
+      "open_questions": [
+        "Is deploy in sudoers, and with which commands?",
+        "Was the successful password reused on another host?",
+        "Did the source IP appear in any other authentication log?"
+      ]
+    },
+    {
+      "id": "PNB-2026-002",
+      "slug": "case-002-multi-stage-intrusion",
+      "severity": "critical",
+      "verdict": "true positive",
+      "containment_status": "host isolation recommended",
+      "metrics": {
+        "observed_start": "2026-11-11T10:38:18Z",
+        "observed_end": "2026-11-11T10:47:48Z",
+        "observed_seconds": 570,
+        "first_detection": "2026-11-11T10:38:18Z",
+        "last_detection": "2026-11-11T10:47:48Z",
+        "detection_span_seconds": 570,
+        "alert_count": 6,
+        "response_timing": "not measured in the synthetic lab"
+      },
+      "containment": [
+        "Isolate WIN10-LAB from the network without powering it off.",
+        "Disable and reset LAB\\analyst; assume cached credentials are compromised.",
+        "Block 203.0.113.44 at egress and DNS."
+      ],
+      "eradication": [
+        "Remove UpdaterSvc and the Updater scheduled task.",
+        "Collect p.exe, svc.exe, upd.exe, and mimikatz.exe for hashing.",
+        "Hunt the hashes, service name, and task name across the estate."
+      ],
+      "recovery": [
+        "Rebuild the host from a trusted image after memory capture.",
+        "Rotate every credential that could have been cached on the host.",
+        "Monitor the rebuilt host for the same parent-child and LSASS patterns."
+      ],
+      "communication": [
+        "Notify the endpoint owner and the identity team.",
+        "Tell the email team to search for invoice.docm delivery to other recipients.",
+        "Brief the IR lead on the six-alert chain and the isolation decision."
+      ],
+      "evidence": [
+        "Sysmon EID 1, 10, 11, 12, and 13 events for WIN10-LAB.",
+        "Windows Defender EID 5001 and System EID 7045.",
+        "The decoded PowerShell download cradle and the LSASS access event."
+      ],
+      "lessons": [
+        "Six alerts in nine minutes should become one incident automatically.",
+        "Decode -enc PowerShell at ingestion so the URL is visible at T+00:00.",
+        "Add 4688 and 4624 telemetry to rule out lateral movement instead of marking it unobserved."
+      ],
+      "open_questions": [
+        "What is the document hash and who else received it?",
+        "Did the payload run under a second account?",
+        "Was the finance share reachable from this host?"
+      ]
+    },
+    {
+      "id": "PNB-2026-003",
+      "slug": "case-003-ransomware",
+      "severity": "critical",
+      "verdict": "true positive",
+      "containment_status": "contained; host rebuilt",
+      "metrics": {
+        "observed_start": "2026-11-11T11:25:00Z",
+        "observed_end": "2026-11-11T11:26:56Z",
+        "observed_seconds": 116,
+        "first_detection": "2026-11-11T11:25:00Z",
+        "last_detection": "2026-11-11T11:26:56Z",
+        "detection_span_seconds": 116,
+        "alert_count": 5,
+        "response_timing": "not measured in the synthetic lab"
+      },
+      "containment": [
+        "Isolate WIN10-LAB and revoke the logged-on user's sessions.",
+        "Snapshot the finance share and check for .locked files before restoring.",
+        "Stop outbound access from the host while memory is captured."
+      ],
+      "eradication": [
+        "Remove the encryptor and any scheduled task or service it created.",
+        "Block shadow-copy deletion for non-approved service accounts.",
+        "Hunt the same recovery-deletion sequence across every host."
+      ],
+      "recovery": [
+        "Restore from an offline backup that predates T+00:00.",
+        "Verify the finance share file count and integrity after restore.",
+        "Monitor restored hosts for re-infection and repeated service stops."
+      ],
+      "communication": [
+        "Notify the finance share owner and the backup team.",
+        "Brief leadership on the confirmed host scope and the share exposure.",
+        "Record the restore point and the verification result in the case."
+      ],
+      "evidence": [
+        "Sysmon EID 1 and 11 events for the recovery commands and .locked writes.",
+        "System EID 7036 service-stop events for VSS and BackupExecAgentBrowser.",
+        "The file-write correlation output and the two ransom-note paths."
+      ],
+      "lessons": [
+        "The service-stop list caught the backup agent stop that a VSS-only rule would miss.",
+        "File-write volume is more durable than a file-extension match.",
+        "Backup isolation and restore testing matter more than another alert."
+      ],
+      "open_questions": [
+        "Was the finance share encrypted beyond the two notes?",
+        "Did the encryptor reach any other host before isolation?",
+        "When was the last successful offline backup verified?"
+      ]
+    }
+  ]
+}

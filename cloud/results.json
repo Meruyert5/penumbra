@@ -1,0 +1,62 @@
+{
+  "summary": {
+    "detections": 3,
+    "fired": 2,
+    "events": 2,
+    "not_exercised": 1
+  },
+  "detections": [
+    {
+      "id": "CLOUD-001",
+      "title": "Root policy attachment",
+      "level": "critical",
+      "technique": "T1098",
+      "query": "any where cloud.provider:\"aws\" and user.name:\"root\" and event.action in (\"AttachUserPolicy\", \"PutUserPolicy\", \"AttachRolePolicy\", \"PutRolePolicy\")",
+      "description": "A root principal attached or changed a policy. Root should not be doing routine IAM administration.",
+      "detection_change": "Alert on any root policy change, require a break-glass ticket, and export the finding to Apsis so the graph shows the new reachable paths.",
+      "status": "fired",
+      "event_count": 1,
+      "evidence": [
+        {
+          "time": "2026-11-11T00:35:45.000Z",
+          "host": "aws-prod",
+          "user": "root",
+          "source": "203.0.113.44",
+          "detail": "AttachUserPolicy -> success"
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-002",
+      "title": "Root user creation",
+      "level": "critical",
+      "technique": "T1136.003",
+      "query": "any where cloud.provider:\"aws\" and user.name:\"root\" and event.action:\"CreateUser\"",
+      "description": "A root principal created a new IAM user. That user is a persistence candidate and needs immediate review.",
+      "detection_change": "Alert on root-created IAM users, disable the new principal pending review, and add it to the Apsis inventory.",
+      "status": "fired",
+      "event_count": 1,
+      "evidence": [
+        {
+          "time": "2026-11-11T00:36:00.000Z",
+          "host": "aws-prod",
+          "user": "root",
+          "source": "203.0.113.44",
+          "detail": "CreateUser -> success"
+        }
+      ]
+    },
+    {
+      "id": "CLOUD-003",
+      "title": "CloudTrail tampering",
+      "level": "critical",
+      "technique": "T1562.008",
+      "query": "any where cloud.provider:\"aws\" and event.action in (\"StopLogging\", \"DeleteTrail\", \"UpdateTrail\")",
+      "description": "A principal stopped, deleted, or changed a CloudTrail trail. This is a defense-evasion lead and a visibility emergency.",
+      "detection_change": "Alert on trail changes, verify the trail with an independent account-level control, and require a change ticket.",
+      "status": "no_match",
+      "event_count": 0,
+      "evidence": []
+    }
+  ]
+}
