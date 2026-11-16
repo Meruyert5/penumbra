@@ -299,6 +299,12 @@ def build_payload(
     validation_path = DOCS_DIR / "validation" / "results.json"
     validation = json.loads(validation_path.read_text(encoding="utf-8")) if validation_path.is_file() else None
 
+    hunts_path = ROOT / "hunts" / "results.json"
+    hunts = json.loads(hunts_path.read_text(encoding="utf-8")) if hunts_path.is_file() else None
+
+    roadmap_path = DOCS_DIR / "roadmap.json"
+    roadmap = json.loads(roadmap_path.read_text(encoding="utf-8")) if roadmap_path.is_file() else None
+
     return {
         "meta": meta,
         "severity": severity_counts,
@@ -310,6 +316,8 @@ def build_payload(
         "coverage": coverage,
         "cases": cases,
         "validation": validation,
+        "hunts": hunts,
+        "roadmap": roadmap,
         "pipeline": pipeline_payload(meta, alerts, correlations, cases, events),
     }
 

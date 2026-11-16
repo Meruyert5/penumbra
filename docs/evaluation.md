@@ -46,6 +46,8 @@ investigations. The dashboard now shows both separately.
 | Per-rule synthetic results | [docs/validation/synthetic-run.md](validation/synthetic-run.md) | Generated from the committed run; not precision or recall |
 | Real multi-source samples | [docs/validation/real-telemetry-results.md](validation/real-telemetry-results.md) | 1,381 real events across five indices; 5 rules matched |
 | Per-rule benchmark | [docs/validation/benchmark.md](validation/benchmark.md) | 6 TP, 0 FP, 1 FN across 16 labelled windows; precision 1.000, recall 0.857 |
+| Threat hunts | [hunts/README.md](../hunts/README.md) | 4 hypothesis-driven hunts, 4 findings, evidence and detection changes |
+| Portfolio roadmap | [docs/roadmap.md](roadmap.md) | Penumbra, Apsis, and network hunting; no connector project |
 | Large benign baseline | [docs/validation/large-benign-results.md](validation/large-benign-results.md) | 89,704 synthetic benign events, 1 low-severity match, 0 correlations |
 
 ## What the current evidence does not prove

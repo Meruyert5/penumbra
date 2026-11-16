@@ -50,4 +50,10 @@ jobs:
         run: python -m pytest
 
       - name: Generate telemetry (smoke test)
-        run: python -m pipeline.labgen --scenario all --out lab/logs
+        run: python -m pipeline.labgen --scenario all --base-time 2026-11-11T12:30:00Z --out lab/logs
+
+      - name: Run hunts
+        run: python -m pipeline.hunts
+
+      - name: Verify hunt output is committed
+        run: git diff --exit-code hunts/results.json hunts/README.md

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Added the first Penumbra extension: four hypothesis-driven hunts over the
+  deterministic corpus, with queries, evidence, verdicts, and detection changes.
+  Added `pipeline.hunts`, `hunts/README.md`, `hunts/results.json`, and tests.
+- Added the three-project roadmap to the dashboard: Penumbra, Apsis (formerly
+  Overpass), and a network threat-hunting lab. Added `docs/roadmap.json`,
+  `docs/roadmap.md`, and Fig. 5 / Fig. 6.
 - Published the public dashboard to GitHub Pages at
   <https://meruyert5.github.io/penumbra/> and wired the live URL into the README
   and handoff notes.

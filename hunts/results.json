@@ -1,0 +1,218 @@
+{
+  "summary": {
+    "hunts": 4,
+    "events_reviewed": 9223,
+    "findings": 4,
+    "confirmed": 4
+  },
+  "sources": [
+    {
+      "name": "windows.sysmon_operational",
+      "events": 2159
+    },
+    {
+      "name": "nginx.access",
+      "events": 2116
+    },
+    {
+      "name": "network.flow",
+      "events": 1419
+    },
+    {
+      "name": "aws.cloudtrail",
+      "events": 1384
+    },
+    {
+      "name": "system.auth",
+      "events": 735
+    },
+    {
+      "name": "system.syslog",
+      "events": 693
+    },
+    {
+      "name": "system.cron",
+      "events": 691
+    },
+    {
+      "name": "windows.security",
+      "events": 16
+    },
+    {
+      "name": "windows.system",
+      "events": 6
+    },
+    {
+      "name": "system.audit",
+      "events": 3
+    },
+    {
+      "name": "windows.defender",
+      "events": 1
+    }
+  ],
+  "hunts": [
+    {
+      "id": "HUNT-001",
+      "title": "Root identity activity in AWS",
+      "hypothesis": "A root principal should not create access keys, create users, or attach policies. Any root action outside a known break-glass window is worth an investigation.",
+      "query": "any where cloud.provider:\"aws\" and user.name:\"root\" and event.action in (\"ConsoleLogin\", \"CreateAccessKey\", \"CreateUser\", \"AttachUserPolicy\")",
+      "finding": "4 root events across 4 actions: ConsoleLogin x1, CreateAccessKey x1, AttachUserPolicy x1, CreateUser x1.",
+      "verdict": "true_positive",
+      "confidence": "high",
+      "event_count": 4,
+      "first_seen": "2026-11-11T00:35:00.000Z",
+      "last_seen": "2026-11-11T00:36:00.000Z",
+      "evidence": [
+        {
+          "time": "2026-11-11T00:35:00.000Z",
+          "host": "aws-prod",
+          "user": "root",
+          "source": "203.0.113.44",
+          "detail": "ConsoleLogin -> success"
+        },
+        {
+          "time": "2026-11-11T00:35:30.000Z",
+          "host": "aws-prod",
+          "user": "root",
+          "source": "203.0.113.44",
+          "detail": "CreateAccessKey -> success"
+        },
+        {
+          "time": "2026-11-11T00:35:45.000Z",
+          "host": "aws-prod",
+          "user": "root",
+          "source": "203.0.113.44",
+          "detail": "AttachUserPolicy -> success"
+        },
+        {
+          "time": "2026-11-11T00:36:00.000Z",
+          "host": "aws-prod",
+          "user": "root",
+          "source": "203.0.113.44",
+          "detail": "CreateUser -> success"
+        }
+      ],
+      "detection_change": "Alert on root CreateAccessKey, CreateUser, AttachUserPolicy, and ConsoleLogin. Require a break-glass ticket, and export the finding to Apsis so the IAM graph can show which paths the new principal can reach.",
+      "limitations": "Synthetic root-compromise scenario. A production rule needs a break-glass allowlist and an approved source-IP or identity-provider context."
+    },
+    {
+      "id": "HUNT-002",
+      "title": "Service binary outside a trusted path",
+      "hypothesis": "A new service should run from a signed system or application path. A service binary in a user-writable directory, or a shell command as the service image, is a persistence lead.",
+      "query": "any where event.code:\"7045\" and winlog.event_data.ImagePath like~ (\"*\\\\Users\\\\Public\\\\*\", \"*\\\\AppData\\\\*\", \"*\\\\Temp\\\\*\", \"*\\\\ProgramData\\\\*\", \"*cmd.exe*\", \"*powershell*\")",
+      "finding": "1 service installs matched the heuristic: UpdaterSvc.",
+      "verdict": "true_positive",
+      "confidence": "high",
+      "event_count": 1,
+      "first_seen": "2026-11-11T12:14:00.000Z",
+      "last_seen": "2026-11-11T12:14:00.000Z",
+      "evidence": [
+        {
+          "time": "2026-11-11T12:14:00.000Z",
+          "host": "WIN10-LAB",
+          "user": null,
+          "source": null,
+          "detail": "UpdaterSvc -> C:\\Users\\Public\\svc.exe"
+        }
+      ],
+      "detection_change": "The existing rule covers user-writable service paths. Add a software-inventory allowlist, alert on 7045 from non-admin users, and compare the service name with the installed product.",
+      "limitations": "PSEXESVC is not flagged by the path heuristic because it runs from C:\\Windows. The existing rule catches it by name, which is why hunts and rules are complementary."
+    },
+    {
+      "id": "HUNT-003",
+      "title": "DNS tunneling pattern",
+      "hypothesis": "A high volume of unique, long subdomains under one parent domain can indicate data encoded in DNS queries.",
+      "query": "any where event.action:\"dns_query\" and dns.question.name like~ \"*.tunnel.example\"",
+      "finding": "25 queries under tunnel.example, 25 unique subdomains, longest label 38 characters.",
+      "verdict": "true_positive",
+      "confidence": "high",
+      "event_count": 25,
+      "first_seen": "2026-11-11T04:08:00.000Z",
+      "last_seen": "2026-11-11T04:10:00.000Z",
+      "evidence": [
+        {
+          "time": "2026-11-11T04:08:00.000Z",
+          "host": "WIN10-LAB",
+          "user": null,
+          "source": null,
+          "detail": "0000-aaaaaaaaaaaaaaaaaaaaaaaaaa-000000.tunnel.example"
+        },
+        {
+          "time": "2026-11-11T04:08:04.000Z",
+          "host": "WIN10-LAB",
+          "user": null,
+          "source": null,
+          "detail": "0001-aaaaaaaaaaaaaaaaaaaaaaaaaa-000007.tunnel.example"
+        },
+        {
+          "time": "2026-11-11T04:08:08.000Z",
+          "host": "WIN10-LAB",
+          "user": null,
+          "source": null,
+          "detail": "0002-aaaaaaaaaaaaaaaaaaaaaaaaaa-000014.tunnel.example"
+        },
+        {
+          "time": "2026-11-11T04:08:12.000Z",
+          "host": "WIN10-LAB",
+          "user": null,
+          "source": null,
+          "detail": "0003-aaaaaaaaaaaaaaaaaaaaaaaaaa-000021.tunnel.example"
+        },
+        {
+          "time": "2026-11-11T04:08:16.000Z",
+          "host": "WIN10-LAB",
+          "user": null,
+          "source": null,
+          "detail": "0004-aaaaaaaaaaaaaaaaaaaaaaaaaa-000028.tunnel.example"
+        },
+        {
+          "time": "2026-11-11T04:08:20.000Z",
+          "host": "WIN10-LAB",
+          "user": null,
+          "source": null,
+          "detail": "0005-aaaaaaaaaaaaaaaaaaaaaaaaaa-000035.tunnel.example"
+        },
+        {
+          "time": "2026-11-11T04:08:24.000Z",
+          "host": "WIN10-LAB",
+          "user": null,
+          "source": null,
+          "detail": "0006-aaaaaaaaaaaaaaaaaaaaaaaaaa-000042.tunnel.example"
+        },
+        {
+          "time": "2026-11-11T04:08:28.000Z",
+          "host": "WIN10-LAB",
+          "user": null,
+          "source": null,
+          "detail": "0007-aaaaaaaaaaaaaaaaaaaaaaaaaa-000049.tunnel.example"
+        }
+      ],
+      "detection_change": "Add a DNS tunneling rule that scores parent-domain rarity, unique subdomain count, and label length. Exclude known CDN, telemetry, and mail domains.",
+      "limitations": "Synthetic labels are regular and deliberately easy to spot. A production hunt needs entropy estimates, baseline parent-domain frequency, and resolver context."
+    },
+    {
+      "id": "HUNT-004",
+      "title": "LSASS access from a user-writable path",
+      "hypothesis": "A process outside System32 or SysWOW64 should not open LSASS with credential-dumping access. This is a hunt for credential theft that is independent of the existing rule.",
+      "query": "any where event.code:\"10\" and winlog.event_data.TargetImage:\"*lsass.exe\" and not winlog.event_data.SourceImage like~ (\"C:\\\\Windows\\\\System32\\\\*\", \"C:\\\\Windows\\\\SysWOW64\\\\*\")",
+      "finding": "1 LSASS access events came from a user-writable path.",
+      "verdict": "true_positive",
+      "confidence": "high",
+      "event_count": 1,
+      "first_seen": "2026-11-11T12:10:08.000Z",
+      "last_seen": "2026-11-11T12:10:08.000Z",
+      "evidence": [
+        {
+          "time": "2026-11-11T12:10:08.000Z",
+          "host": "WIN10-LAB",
+          "user": null,
+          "source": null,
+          "detail": "C:\\Users\\Public\\mimikatz.exe -> lsass.exe, access 0x1010"
+        }
+      ],
+      "detection_change": "The existing rule catches this path. Add a hunt for LSASS access from user-writable directories, and compare the process signer and parent with the rule verdict.",
+      "limitations": "Security products and diagnostic tools may legitimately access LSASS. Require signer, parent, and change-ticket context before calling it malicious."
+    }
+  ]
+}

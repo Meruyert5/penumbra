@@ -390,6 +390,81 @@
     validationPanel.hidden = true;
   }
 
+  /* ------------------------------------------------------------- hunts */
+  const huntsPanel = $("#huntsPanel");
+  const hunts = DATA.hunts;
+  if (huntsPanel && hunts && (hunts.hunts || []).length) {
+    const summary = hunts.summary || {};
+    $("#huntsStats").innerHTML = [
+      [summary.hunts, "hunts"],
+      [summary.events_reviewed, "events reviewed"],
+      [summary.findings, "hunts with findings"],
+      [summary.confirmed, "confirmed true positives"]
+    ].map(([value, label]) => (
+      '<div class="validation-stat"><b>' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
+    )).join("");
+
+    $("#huntGrid").innerHTML = hunts.hunts.map((hunt) => {
+      const verdict = hunt.verdict === "true_positive" ? "True positive" : "No finding";
+      const evidence = (hunt.evidence || []).slice(0, 8).map((row) => (
+        "<tr><td>" + esc(row.time || "") + "</td><td>" + esc(row.host || "") + "</td><td>" +
+        esc(row.user || "") + "</td><td>" + esc(row.source || "") + "</td><td>" +
+        esc(row.detail || "") + "</td></tr>"
+      )).join("");
+      return '<article class="hunt-card ' + (hunt.verdict === "true_positive" ? "is-positive" : "is-empty") + '">' +
+        '<div class="hunt-card-head"><span class="hunt-id">' + esc(hunt.id) + "</span>" +
+        '<span class="hunt-verdict">' + esc(verdict) + "</span></div>" +
+        "<h4>" + esc(hunt.title) + "</h4>" +
+        '<p class="hunt-hypothesis">' + esc(hunt.hypothesis) + "</p>" +
+        '<p class="hunt-finding">' + esc(hunt.finding) + "</p>" +
+        '<div class="hunt-meta"><span><b>' + esc(number(hunt.event_count)) + "</b> events</span>" +
+        "<span>" + esc(hunt.first_seen || "") + " → " + esc(hunt.last_seen || "") + "</span>" +
+        "<span>" + esc(hunt.confidence || "") + " confidence</span></div>" +
+        '<details class="hunt-evidence"><summary>Query, evidence, and detection change</summary>' +
+        '<p class="hunt-label">Query</p><pre class="hunt-query"><code>' + esc(hunt.query) + "</code></pre>" +
+        '<p class="hunt-label">Detection change</p><p class="hunt-copy">' + esc(hunt.detection_change) + "</p>" +
+        '<p class="hunt-label">Limitations</p><p class="hunt-copy">' + esc(hunt.limitations) + "</p>" +
+        (evidence ? '<div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>Host</th><th>User</th><th>Source</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>" : "") +
+        "</details></article>";
+    }).join("");
+    $("#huntsNote").innerHTML = "Hunts read the same deterministic corpus as the dashboard. Full reports: " +
+      '<a href="https://github.com/Meruyert5/penumbra/blob/main/hunts/README.md" target="_blank" rel="noreferrer">hunts/README.md</a>.';
+  } else if (huntsPanel) {
+    huntsPanel.hidden = true;
+  }
+
+  /* ------------------------------------------------------------- roadmap */
+  const roadmapPanel = $("#roadmapPanel");
+  const roadmap = DATA.roadmap;
+  if (roadmapPanel && roadmap && (roadmap.projects || []).length) {
+    $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
+    $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
+    $("#roadmapIntro").innerHTML = esc(roadmap.intro || "") +
+      ' <a class="roadmap-link" href="https://github.com/Meruyert5/penumbra/blob/main/docs/roadmap.md" target="_blank" rel="noreferrer">Read the full roadmap</a>.';
+    $("#roadmapProjects").innerHTML = roadmap.projects.map((project) => {
+      const modules = (project.modules || []).map((module) => (
+        '<li><span class="roadmap-module-name">' + esc(module.name) + "</span>" +
+        '<span class="roadmap-state is-' + esc(module.state) + '">' + esc(module.state) + "</span>" +
+        "<small>" + esc(module.detail) + "</small></li>"
+      )).join("");
+      return '<article class="roadmap-card is-' + esc(project.status) + '">' +
+        '<div class="roadmap-card-head"><div><p class="roadmap-role">' + esc(project.role) + "</p>" +
+        "<h4>" + esc(project.name) + "</h4>" +
+        (project.former_name ? '<span class="roadmap-former">formerly ' + esc(project.former_name) + "</span>" : "") +
+        '</div><span class="roadmap-status">' + esc(project.status) + "</span></div>" +
+        '<p class="roadmap-thesis">' + esc(project.thesis) + "</p>" +
+        '<ul class="roadmap-modules">' + modules + "</ul>" +
+        '<p class="roadmap-done"><b>Done means</b> ' + esc(project.done) + "</p></article>";
+    }).join("");
+    $("#roadmapSequence").innerHTML = (roadmap.sequence || []).map((item) => "<li>" + esc(item) + "</li>").join("");
+    $("#roadmapPrinciples").innerHTML = (roadmap.principles || []).map((item) => "<li>" + esc(item) + "</li>").join("");
+    $("#roadmapShared").innerHTML = (roadmap.shared || []).map((item) => (
+      "<li><b>" + esc(item.name) + "</b><span>" + esc(item.detail) + "</span></li>"
+    )).join("");
+  } else if (roadmapPanel) {
+    roadmapPanel.hidden = true;
+  }
+
   /* ------------------------------------------------------------- scope chart */
   const chart = $("#scopeChart");
   const readout = $("#scopeReadout");

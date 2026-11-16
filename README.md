@@ -45,6 +45,8 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | SIEM operations on Elasticsearch and Kibana | [`docker-compose.yml`](docker-compose.yml), [`config/`](config) |
 | Threshold and distinct-value correlation, tested without a SIEM | [`correlations/`](correlations), [`pipeline/correlate.py`](pipeline/correlate.py) |
 | Analyst-quality incident write-ups | [`cases/`](cases) |
+| Hypothesis-driven hunts with evidence and verdicts | [`hunts/`](hunts) |
+| The three-project roadmap | [`docs/roadmap.md`](docs/roadmap.md) |
 | ATT&CK coverage with an explicit gap view | [`docs/attck-coverage.md`](docs/attck-coverage.md) |
 | Detection tuning with recorded false positives | [`docs/tuning.md`](docs/tuning.md) |
 | Tests and CI that treat rules like software | [`tests/`](tests), [`.github/workflows/ci.yml`](.github/workflows/ci.yml) |
@@ -60,9 +62,10 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | **Telemetry** | 9,223 deterministic events across Windows, Linux, web, AWS, and network flows |
 | **Scenarios** | 33 attack scenarios plus a benign baseline, spread across a 24-hour window |
 | **Coverage** | 48 ATT&CK techniques, 13 tactics, 45 of 45 priority techniques, 0 gaps |
+| **Hunts** | 4 hypothesis-driven hunts over 9,223 events, with evidence and detection changes |
 | **Correlation** | Sliding windows with optional distinct-value thresholds, for example 10 attempts across 8 accounts |
 | **Backend** | Elasticsearch 8.15.3 and Kibana 8.15.3, single node, security disabled for lab use |
-| **Tests** | 63 passing: lint, compilation, correlation, lab generation, coverage, publishing, replay mapping, benchmark metrics, validation table, secret scan, dashboard assembly |
+| **Tests** | 68 passing: lint, compilation, correlation, lab generation, coverage, publishing, replay mapping, benchmark metrics, hunts, validation table, secret scan, dashboard assembly |
 | **Validation** | 1,381 real events across five indices and 16 labelled windows; 5 rules matched; 6 TP / 0 FP / 1 FN; 0 not evaluable; 89,704-event benign baseline |
 | **Frontend** | One self-contained HTML file with no build step, CDN, or network request |
 
@@ -200,6 +203,7 @@ python -m pipeline.correlate --input lab/logs/linux.ndjson
 | `python -m pipeline.compile` | Compiles Sigma to EQL and KQL under `rules/compiled/` |
 | `python -m pipeline.detect --hours 24` | Runs every rule and correlation, writes `alerts/` |
 | `python -m pipeline.detect --dry-run` | Prints the queries without running them |
+| `python -m pipeline.hunts` | Runs four hypothesis-driven hunts over the lab corpus |
 | `python -m pipeline.replay --source FILE` | Normalizes an OTRF/Mordor sample into lab NDJSON |
 | `python -m pipeline.validation` | Writes the synthetic per-rule results table |
 | `python -m pipeline.validation_results --write-results` | Writes the dashboard validation manifest |
@@ -338,7 +342,7 @@ The `.caseless` fields come from the Winlogbeat processors. Without them, rules 
 python -m pytest -q
 ```
 
-The 63 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, public-site publishing, OTRF/Mordor, auditd, auth, nginx, Zeek, and Windows XML replay mapping, the synthetic per-rule table, benchmark metrics, a high-confidence secret-pattern scan, and dashboard assembly.
+The 68 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, public-site publishing, OTRF/Mordor, auditd, auth, nginx, Zeek, and Windows XML replay mapping, the synthetic per-rule table, benchmark metrics, hypothesis-driven hunts, a high-confidence secret-pattern scan, and dashboard assembly.
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request:
 
@@ -393,6 +397,19 @@ low-severity SSH match. See
 [Real-telemetry replay results](docs/validation/real-telemetry-results.md),
 [Benchmark metrics](docs/validation/benchmark.md), and
 [Large benign baseline](docs/validation/large-benign-results.md).
+
+## Threat hunting
+
+`pipeline.hunts` runs four hypothesis-driven hunts over the deterministic corpus:
+root identity activity in AWS, service binaries outside trusted paths, DNS
+tunneling patterns, and LSASS access from user-writable paths. Each hunt records
+the question, the query, the evidence, the verdict, and the detection change it
+recommends. See [hunts/README.md](hunts/README.md).
+
+Fig. 5 in the dashboard shows the hunts. Fig. 6 shows the three-project roadmap:
+Penumbra, Apsis (formerly Overpass), and a network threat-hunting lab. The
+roadmap is also in [docs/roadmap.md](docs/roadmap.md).
+
 
 ## Limitations
 
