@@ -7,6 +7,10 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    ignore:
+      # pysigma 2.x conflicts with pysigma-backend-elasticsearch <2.0.0.
+      - dependency-name: "pysigma"
+        update-types: ["version-update:semver-major"]
     groups:
       python:
         patterns:
