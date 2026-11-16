@@ -18,6 +18,19 @@ correlation specs, and three case reports. About 8,280 of the events come from t
 benign baseline loop; raw volume is therefore not the main gap. Independent
 labels, source diversity, and real noise are.
 
+### Corpus roles
+
+| Corpus | Role | Why it exists |
+|---|---|---|
+| 9,223-event scenario run | Main dashboard and case corpus | Deterministic, fast, contains 33 labelled attack scenarios plus baseline |
+| 89,704-event benign baseline | False-positive and scale test | 10× baseline; no attack scenarios; cannot replace the case corpus |
+| 228 real OTRF events | Field-behaviour validation | Real Security and Sysmon events; small and not a scale benchmark |
+
+The 9,223 run is not pointless. It is the only corpus with attack scenarios,
+case narratives, and a deterministic dashboard. The 89,704 run is better for
+volume and benign-noise comparison, but it has no attacks and cannot drive the
+investigations. The dashboard now shows both separately.
+
 ## What the current evidence proves
 
 | Claim | Evidence | Status |
@@ -31,7 +44,7 @@ labels, source diversity, and real noise are.
 | The dashboard is assembled from the run data | `tests/test_report.py` and `pipeline.report` | Verified |
 | The page meets the published accessibility contract | Lighthouse and manual review | Verified for the built page |
 | Per-rule synthetic results | [docs/validation/synthetic-run.md](validation/synthetic-run.md) | Generated from the committed run; not precision or recall |
-| Real OTRF samples | [docs/validation/real-telemetry-results.md](validation/real-telemetry-results.md) | 228 real events across 2 samples, 2 rules, 3 TP candidates |
+| Real OTRF samples | [docs/validation/real-telemetry-results.md](validation/real-telemetry-results.md) | 228 real events across 2 samples, 2 rules, 4 real matches |
 | Large benign baseline | [docs/validation/large-benign-results.md](validation/large-benign-results.md) | 89,704 synthetic benign events, 1 low-severity match, 0 correlations |
 
 ## What the current evidence does not prove
@@ -86,7 +99,7 @@ teams and research groups and include labelled attack activity or benign data.
 The first real-data step is complete: two OTRF samples were replayed. A
 110-event Windows Security sample matched `Windows Event Log Cleared`; a richer
 118-event Sysmon/Security sample matched that rule and `Suspicious Process Access
-to LSASS` twice. That is three true-positive candidates across two rules, not a
+to LSASS` twice. That is four real matches across two rules, not a
 precision or recall measurement. See
 [Real-telemetry replay results](validation/real-telemetry-results.md). A separate
 89,704-event synthetic benign baseline produced one low-severity SSH match and
@@ -142,9 +155,9 @@ python -m pipeline.heatmap
 | Deterministic synthetic run | Done |
 | Benign baseline | Done, small |
 | Per-rule false-positive suite | Partial |
-| External real-telemetry replay | 2 OTRF samples, 228 events, 2 rules, 3 TP candidates |
+| External real-telemetry replay | 2 OTRF samples, 228 events, 2 rules, 4 real matches |
 | Larger benign baseline | Done: 89,704 synthetic events, 1 low-severity match |
-| Precision / recall table | Pending; three TP candidates are not a measurement |
+| Precision / recall table | Pending; four real matches are not a measurement |
 | Field-mapping gap review | Open: 25 rules not evaluable (28 errors incl. 3 correlation fetches) |
 | Atomic Red Team Sysmon capture | Not started; needs an isolated Windows VM |
 | Scheduled detection-decay check | Not started |

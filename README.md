@@ -61,7 +61,7 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | **Correlation** | Sliding windows with optional distinct-value thresholds, for example 10 attempts across 8 accounts |
 | **Backend** | Elasticsearch 8.15.3 and Kibana 8.15.3, single node, security disabled for lab use |
 | **Tests** | 51 passing: lint, compilation, correlation, lab generation, coverage, publishing, replay mapping, validation table, secret scan, dashboard assembly |
-| **Validation** | 2 real OTRF samples (110 + 118 events, 2 rules, 3 TP candidates); 89,704-event benign baseline; synthetic table for 50 rules |
+| **Validation** | 2 real OTRF samples (110 + 118 events, 2 rules, 4 real matches); 89,704-event benign baseline; synthetic table for 50 rules |
 | **Frontend** | One self-contained HTML file with no build step, CDN, or network request |
 
 ---
@@ -200,6 +200,7 @@ python -m pipeline.correlate --input lab/logs/linux.ndjson
 | `python -m pipeline.detect --dry-run` | Prints the queries without running them |
 | `python -m pipeline.replay --source FILE` | Normalizes an OTRF/Mordor sample into lab NDJSON |
 | `python -m pipeline.validation` | Writes the synthetic per-rule results table |
+| `python -m pipeline.validation_results --write-results` | Writes the dashboard validation manifest |
 | `python -m pipeline.correlate --input FILE` | Runs correlation over an exported NDJSON file |
 | `python -m pipeline.report --open` | Builds and opens `docs/index.html` |
 | `python -m pipeline.publish` | Copies only the dashboard, assets, and cases into `site/` for Pages |
@@ -279,6 +280,7 @@ Representative coverage:
 * A dark corona scope on the cover that scans the same hourly run as the chart, with pings where volume crosses the peak threshold; click it to pin that hour on the chart. It is a warm sunset light curve in both Corona and Umbra, with a black-disc peak marker.
 * A full-bleed night stage with a live starfield, a sun/moon eclipse that shifts with the selected contact, and a ghost wordmark
 * A pinned scroll-scrubbed totality act with a giant sun/moon, Baily's beads, a diamond ring, and a progress rail
+* A data-driven validation panel (Fig. 4) with a 50-rule status matrix, real sample cards, and a match table
 * A kinetic phase ticker and a horizontal case reel with previous/next controls
 * A five-stop contact ribbon (C1, C2, totality, C3, C4) and a gradient path-of-totality plate with the observing window, a real data-peak marker, and contacts that open the hour in the watch floor
 * A run ticket with contact times, Saros 145, magnitude 1.02, 100% obscuration, and a paper receipt texture
@@ -379,7 +381,7 @@ The current evidence is structural and behavioural, not statistical. CI proves t
 The first real-data step is complete: two public OTRF samples were replayed. A
 110-event Windows Security sample matched `Windows Event Log Cleared`; a richer
 118-event Sysmon/Security sample matched that rule and `Suspicious Process Access
-to LSASS` twice. That is three true-positive candidates across two rules, not a
+to LSASS` twice. That is four real matches across two rules, not a
 precision or recall measurement. A separate 89,704-event synthetic benign
 baseline produced one low-severity SSH match and zero correlation alerts. See
 [Real-telemetry replay results](docs/validation/real-telemetry-results.md) and

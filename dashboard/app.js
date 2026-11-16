@@ -216,6 +216,59 @@
     '<div class="fact"><b' + (fact.tone ? ' class="tone-' + fact.tone + '"' : "") + '>' + esc(fact.value) + "</b><span>" + esc(fact.label) + "</span></div>"
   )).join("");
 
+  /* ------------------------------------------------------------- validation */
+  const validationPanel = $("#validationPanel");
+  const validation = DATA.validation;
+  if (validationPanel && validation) {
+    const totals = validation.totals || {};
+    const stats = [
+      [totals.real_events, "real events"],
+      [totals.real_matches, "real matches"],
+      [totals.rules_matched, "rules matched"],
+      [totals.benign_events, "benign events"],
+      [totals.not_evaluable, "not evaluable"]
+    ];
+    $("#validationStats").innerHTML = stats.map(([value, label]) => (
+      '<div class="validation-stat"><b>' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
+    )).join("");
+
+    const rules = validation.rules || [];
+    $("#validationMatrix").innerHTML = rules.map((rule) => {
+      const status = String(rule.status || "no_match").replace(/_/g, "-");
+      const statusLabel = String(rule.status || "no_match").replace(/_/g, " ");
+      return '<span class="validation-cell is-' + esc(status) + '" role="img" title="' +
+        esc(rule.title) + " — " + esc(rule.reason) + '" aria-label="' +
+        esc(rule.title + ": " + statusLabel + ". " + rule.reason) + '"></span>';
+    }).join("");
+    const matched = rules.filter((rule) => rule.status === "matched").length;
+    const notEvaluable = rules.filter((rule) => rule.status === "not_evaluable").length;
+    const noMatch = rules.filter((rule) => rule.status === "no_match").length;
+    $("#validationCount").textContent = matched + " matched / " + notEvaluable + " not evaluable / " + noMatch + " no match";
+
+    $("#validationSamples").innerHTML = (validation.samples || []).map((sample) => (
+      '<div class="validation-sample"><div class="validation-sample-head"><span>' + esc(sample.name) +
+      '</span><span class="validation-sample-kind">' + esc(sample.kind) + "</span></div>" +
+      '<div class="validation-sample-stats"><span><b>' + esc(number(sample.events)) + "</b> events</span><span><b>" +
+      esc(number(sample.matches)) + "</b> matches</span><span><b>" + esc(number(sample.correlations)) +
+      "</b> correlations</span></div></div>"
+    )).join("");
+
+    $("#validationBreakdown").innerHTML =
+      '<h4>Why rules were not evaluable</h4><ul>' +
+      (validation.not_evaluable_breakdown || []).map((item) => (
+        "<li><span>" + esc(item.reason) + " <small>" + esc(item.detail) + "</small></span><b>" + esc(number(item.count)) + "</b></li>"
+      )).join("") +
+      "</ul>";
+
+    $("#validationRows").innerHTML = (validation.matched || []).map((row) => (
+      "<tr><td>" + esc(row.title) + "</td><td>" + esc(row.level) + "</td><td>" + esc(row.technique) +
+      "</td><td>" + esc(number(row.matches)) + "</td><td>" + esc(row.sample) + '</td><td class="v-verdict">' +
+      esc(row.verdict) + "</td></tr>"
+    )).join("");
+  } else if (validationPanel) {
+    validationPanel.hidden = true;
+  }
+
   /* ------------------------------------------------------------- scope chart */
   const chart = $("#scopeChart");
   const readout = $("#scopeReadout");
@@ -1040,7 +1093,7 @@
     pathPeakMarker.setAttribute("transform", "translate(" + point.x.toFixed(1) + " " + point.y.toFixed(1) + ")");
     const peakLabel = "Peak " + pathPeakRow.hour.slice(11, 16) + "Z / " + pathPeakRow.total + " events";
     if (pathPeakReadout) pathPeakReadout.textContent = peakLabel;
-    pathPeakMarker.setAttribute("aria-label", peakLabel + ". Open this hour in the watch floor.");
+    pathPeakMarker.setAttribute("aria-label", "PEAK hour. " + peakLabel + ". Open this hour in the watch floor.");
     const openPeak = () => openHourInLedger(pathPeakRow.hour);
     pathPeakMarker.addEventListener("click", openPeak);
     pathPeakMarker.addEventListener("keydown", (event) => {

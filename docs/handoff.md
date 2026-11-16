@@ -18,7 +18,7 @@ account.
 | Public host | GitHub Pages (after the first upload) |
 | Permanent target | `https://penumbra.is-a.dev` (pending registration and Pages setup) |
 | Tests | 51 passing |
-| Real validation | 2 OTRF samples: 228 events, 2 rules, 3 TP candidates; 89,704-event benign baseline |
+| Real validation | 2 OTRF samples: 228 events, 2 rules, 4 real matches; 89,704-event benign baseline |
 | Lighthouse | 100 accessibility / 100 best practices / 100 SEO |
 
 The local server can serve `site/` for review. GitHub Pages is the only public
@@ -37,6 +37,7 @@ node --check dashboard\app.js
 .\.venv\Scripts\python.exe -m pipeline.coverage --check
 .\.venv\Scripts\python.exe -m pipeline.heatmap
 .\.venv\Scripts\python.exe -m pipeline.validation
+.\.venv\Scripts\python.exe -m pipeline.validation_results --write-results
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 

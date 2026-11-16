@@ -296,6 +296,9 @@ def build_payload(
         counts = Counter(str(alert.get("index", ["unknown"])[0]) for alert in alerts)
         sources = [{"name": name, "count": count} for name, count in counts.most_common()]
 
+    validation_path = DOCS_DIR / "validation" / "results.json"
+    validation = json.loads(validation_path.read_text(encoding="utf-8")) if validation_path.is_file() else None
+
     return {
         "meta": meta,
         "severity": severity_counts,
@@ -306,6 +309,7 @@ def build_payload(
         "sources": sources,
         "coverage": coverage,
         "cases": cases,
+        "validation": validation,
         "pipeline": pipeline_payload(meta, alerts, correlations, cases, events),
     }
 

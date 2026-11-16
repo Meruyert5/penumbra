@@ -19,7 +19,7 @@ repository. Do not describe them as completed until the results are recorded.
 | OTRF/Mordor field mapping | Implemented in `pipeline/replay.py`, covered by `tests/test_replay.py` |
 | OTRF sample replay | **Done for two samples**: 110 Security events + 118 richer Sysmon events; see [results](real-telemetry-results.md) |
 | Atomic Red Team Sysmon capture | Not executed here; needs an isolated Windows VM |
-| Per-rule TP/FP/FN table | 3 real TP candidates across 2 rules; full table pending |
+| Per-rule TP/FP/FN table | 4 real TP candidate matches across 2 rules; full table pending |
 | Larger benign baseline | Done: 89,704 synthetic events; see [large benign](large-benign-results.md) |
 | Entra ID or Kubernetes source | Not added; only if it matches the target role |
 

@@ -267,7 +267,7 @@
           <ellipse cx="450" cy="92" rx="10" ry="10" fill="#050403" stroke="#FBB931" stroke-width="1.2"/>
           <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T11:58:00Z" aria-label="C1, 11:58 UTC. Open this hour in the watch floor."><circle cx="36" cy="126" r="4"/><text x="36" y="148">C1</text></g>
           <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T12:02:00Z" aria-label="C2, 12:02 UTC. Open this hour in the watch floor."><circle cx="238" cy="90" r="4"/><text x="238" y="112">C2</text></g>
-          <g class="path-node is-max" role="button" tabindex="0" data-hour="2026-11-11T12:05:00Z" aria-label="Maximum eclipse, 12:05 UTC. Open this hour in the watch floor."><circle cx="450" cy="92" r="5"/><text x="450" y="58">MAX</text></g>
+          <g class="path-node is-max" role="button" tabindex="0" data-hour="2026-11-11T12:05:00Z" aria-label="MAX, maximum eclipse, 12:05 UTC. Open this hour in the watch floor."><circle cx="450" cy="92" r="5"/><text x="450" y="58">MAX</text></g>
           <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T12:08:00Z" aria-label="C3, 12:08 UTC. Open this hour in the watch floor."><circle cx="664" cy="48" r="4"/><text x="664" y="32">C3</text></g>
           <g class="path-node" role="button" tabindex="0" data-hour="2026-11-11T12:12:00Z" aria-label="C4, 12:12 UTC. Open this hour in the watch floor."><circle cx="864" cy="104" r="4"/><text x="864" y="130">C4</text></g>
           <g class="path-peak-marker" id="pathPeakMarker" role="button" tabindex="0" aria-label="Peak hour. Open this hour in the watch floor." transform="translate(154 110)">
@@ -540,17 +540,32 @@
       </div>
     </div>
 
-    <div class="validation-band" data-reveal aria-label="Real-telemetry validation">
-      <p class="validation-kicker">Real replay / OTRF + 10× benign baseline</p>
-      <div class="validation-stats">
-        <span><b>228</b> real events</span>
-        <span><b>2</b> rules matched</span>
-        <span><b>3</b> TP candidates</span>
-        <span><b>89,704</b> benign events</span>
-        <span><b>25</b> rules not evaluable</span>
+    <section class="validation-panel" id="validationPanel" data-reveal aria-labelledby="validationTitle">
+      <div class="validation-head">
+        <p class="validation-kicker">Fig. 4 / Validation</p>
+        <h3 id="validationTitle">What the rules did on real and benign data.</h3>
+        <p class="validation-lede">A separate replay, not the dashboard run. The scenario corpus stays at 9,223 events; the validation set adds 228 real events and an 89,704-event benign baseline.</p>
       </div>
-      <p class="validation-note">Two public OTRF samples matched Windows Event Log Cleared and Suspicious Process Access to LSASS. A 10× benign baseline produced one low-severity SSH match and zero correlation alerts. 28 evaluation errors include 3 correlation fetches. Not a precision or recall measurement.</p>
-    </div>
+      <div class="validation-stats" id="validationStats"></div>
+      <div class="validation-body">
+        <figure class="validation-plate">
+          <figcaption class="validation-cap"><span>Rule status / 50</span><span id="validationCount">loading</span></figcaption>
+          <div class="validation-matrix" id="validationMatrix" role="group" aria-label="Per-rule validation status"></div>
+          <p class="validation-legend"><span class="is-matched"></span> matched <span class="is-no-match"></span> evaluated, no match <span class="is-not-evaluable"></span> not evaluable</p>
+        </figure>
+        <div class="validation-side">
+          <div class="validation-samples" id="validationSamples"></div>
+          <div class="validation-breakdown" id="validationBreakdown"></div>
+        </div>
+      </div>
+      <div class="validation-table-wrap">
+        <table class="validation-table">
+          <thead><tr><th>Rule</th><th>Level</th><th>Technique</th><th>Matches</th><th>Sample</th><th>Verdict</th></tr></thead>
+          <tbody id="validationRows"></tbody>
+        </table>
+      </div>
+      <p class="validation-note">These are candidate results from small public samples and a synthetic benign baseline. The scenario corpus remains the dashboard run; the validation panel is a separate comparison, not a precision or recall benchmark.</p>
+    </section>
   </section>
 
   <footer class="colophon" data-reveal>
