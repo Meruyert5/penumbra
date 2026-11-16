@@ -1,0 +1,31 @@
+{
+  "samples": [
+    {
+      "id": "otrf-sysmon",
+      "label": "malicious",
+      "start": "2020-10-18T10:56:18Z",
+      "end": "2020-10-19T02:56:05Z",
+      "techniques": ["T1003.001", "T1070.001"],
+      "expected_rules": [
+        "Suspicious Process Access to LSASS",
+        "Windows Event Log Cleared"
+      ]
+    },
+    {
+      "id": "otrf-security",
+      "label": "malicious",
+      "start": "2020-11-02T04:12:58Z",
+      "end": "2020-11-02T04:13:05Z",
+      "techniques": ["T1070.001"],
+      "expected_rules": ["Windows Event Log Cleared"]
+    },
+    {
+      "id": "large-benign",
+      "label": "benign",
+      "start": "2026-11-10T13:30:00Z",
+      "end": "2026-11-11T12:30:00Z",
+      "techniques": [],
+      "expected_rules": []
+    }
+  ]
+}

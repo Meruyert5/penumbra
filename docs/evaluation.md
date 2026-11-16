@@ -104,7 +104,8 @@ precision or recall measurement. See
 [Real-telemetry replay results](validation/real-telemetry-results.md). A separate
 89,704-event synthetic benign baseline produced one low-severity SSH match and
 zero correlation alerts; see
-[Large benign baseline](validation/large-benign-results.md).
+[Large benign baseline](validation/large-benign-results.md). The labels-to-metrics
+engine is documented in [Benchmark metrics](validation/benchmark.md).
 
 ### Metrics to record
 

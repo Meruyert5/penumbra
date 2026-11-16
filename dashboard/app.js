@@ -273,6 +273,7 @@
       ". <b>Parser:</b> " + esc(provenance.parser || "pipeline.replay") +
       ". <b>Raw data committed:</b> " + (provenance.raw_data_committed ? "yes" : "no") + ".</p>" +
       "<p>" + esc(provenance.note || "") + "</p>" +
+      "<p><b>Metrics engine:</b> <code>pipeline.benchmark</code> computes TP/FP/FN, precision, recall, and alert volume once a reviewed labels manifest is supplied.</p>" +
       '<div class="validation-proof-samples">' +
       realSamples.map((sample) => (
         '<div class="validation-proof-row"><span>' + esc(sample.name) + " · " + esc(number(sample.events)) +

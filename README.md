@@ -5,7 +5,7 @@
 [![Python 3.11](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
 [![Elasticsearch 8.15](https://img.shields.io/badge/Elasticsearch-8.15-005571?logo=elasticsearch&logoColor=white)](docker-compose.yml)
 [![Sigma](https://img.shields.io/badge/rules-50%20Sigma-1f6feb)](rules/sigma)
-[![Tests](https://img.shields.io/badge/tests-51%20passing-2ea043)](tests)
+[![Tests](https://img.shields.io/badge/tests-54%20passing-2ea043)](tests)
 [![ATT&CK](https://img.shields.io/badge/MITRE%20ATT%26CK-48%20techniques-ff5d5d)](docs/attck-coverage.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea043)](LICENSE)
 [![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2ea043)](.github/workflows/ci.yml)
@@ -60,7 +60,7 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | **Coverage** | 48 ATT&CK techniques, 13 tactics, 45 of 45 priority techniques, 0 gaps |
 | **Correlation** | Sliding windows with optional distinct-value thresholds, for example 10 attempts across 8 accounts |
 | **Backend** | Elasticsearch 8.15.3 and Kibana 8.15.3, single node, security disabled for lab use |
-| **Tests** | 51 passing: lint, compilation, correlation, lab generation, coverage, publishing, replay mapping, validation table, secret scan, dashboard assembly |
+| **Tests** | 54 passing: lint, compilation, correlation, lab generation, coverage, publishing, replay mapping, validation table, secret scan, dashboard assembly |
 | **Validation** | 2 real OTRF samples (110 + 118 events, 2 rules, 4 real matches); 89,704-event benign baseline; synthetic table for 50 rules |
 | **Frontend** | One self-contained HTML file with no build step, CDN, or network request |
 
@@ -201,6 +201,7 @@ python -m pipeline.correlate --input lab/logs/linux.ndjson
 | `python -m pipeline.replay --source FILE` | Normalizes an OTRF/Mordor sample into lab NDJSON |
 | `python -m pipeline.validation` | Writes the synthetic per-rule results table |
 | `python -m pipeline.validation_results --write-results` | Writes the dashboard validation manifest |
+| `python -m pipeline.benchmark --labels FILE` | Computes per-rule TP/FP/FN, precision, recall, and volume |
 | `python -m pipeline.correlate --input FILE` | Runs correlation over an exported NDJSON file |
 | `python -m pipeline.report --open` | Builds and opens `docs/index.html` |
 | `python -m pipeline.publish` | Copies only the dashboard, assets, and cases into `site/` for Pages |
@@ -335,7 +336,7 @@ The `.caseless` fields come from the Winlogbeat processors. Without them, rules 
 python -m pytest -q
 ```
 
-The 51 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, public-site publishing, OTRF replay mapping, the synthetic per-rule table, a high-confidence secret-pattern scan, and dashboard assembly.
+The 54 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, public-site publishing, OTRF replay mapping, the synthetic per-rule table, benchmark metrics, a high-confidence secret-pattern scan, and dashboard assembly.
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request:
 
@@ -384,8 +385,9 @@ The first real-data step is complete: two public OTRF samples were replayed. A
 to LSASS` twice. That is four real matches across two rules, not a
 precision or recall measurement. A separate 89,704-event synthetic benign
 baseline produced one low-severity SSH match and zero correlation alerts. See
-[Real-telemetry replay results](docs/validation/real-telemetry-results.md) and
-[Large benign baseline](docs/validation/large-benign-results.md).
+[Real-telemetry replay results](docs/validation/real-telemetry-results.md),
+[Large benign baseline](docs/validation/large-benign-results.md), and the
+[Benchmark metrics](docs/validation/benchmark.md) engine for labels → TP/FP/FN.
 
 ## Limitations
 

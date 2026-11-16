@@ -17,7 +17,7 @@ account.
 | Public surface | `index.html`, `assets/`, `cases/`, `.nojekyll`; optionally `CNAME` |
 | Public host | GitHub Pages (after the first upload) |
 | Permanent target | `https://penumbra.is-a.dev` (pending registration and Pages setup) |
-| Tests | 51 passing |
+| Tests | 54 passing |
 | Real validation | 2 OTRF samples: 228 events, 2 rules, 4 real matches; 89,704-event benign baseline |
 | Lighthouse | 100 accessibility / 100 best practices / 100 SEO |
 
@@ -38,6 +38,7 @@ node --check dashboard\app.js
 .\.venv\Scripts\python.exe -m pipeline.heatmap
 .\.venv\Scripts\python.exe -m pipeline.validation
 .\.venv\Scripts\python.exe -m pipeline.validation_results --write-results
+.\.venv\Scripts\python.exe -m pipeline.benchmark --labels docs\validation\labels.example.json
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
