@@ -121,17 +121,30 @@ def normalize_event(raw: dict[str, Any]) -> dict[str, Any] | None:
     if isinstance(host, dict):
         host = host.get("name")
 
-    image = _lookup(raw, event_data, "Image", "ProcessPath", "NewProcessName", "process.executable")
+    image = _lookup(
+        raw,
+        event_data,
+        "Image",
+        "SourceImage",
+        "ProcessPath",
+        "NewProcessName",
+        "Application",
+        "process.executable",
+    )
     command = _lookup(raw, event_data, "CommandLine", "ProcessCommandLine", "command_line", "process.command_line")
     parent_image = _lookup(raw, event_data, "ParentImage", "ParentProcessName", "process.parent.executable")
     parent_command = _lookup(raw, event_data, "ParentCommandLine", "process.parent.command_line")
     user = _lookup(raw, event_data, "User", "SubjectUserName", "TargetUserName", "user.name")
-    pid = _lookup(raw, event_data, "ProcessId", "NewProcessId", "process.pid")
+    pid = _lookup(raw, event_data, "ProcessId", "SourceProcessId", "NewProcessId", "process.pid")
 
     category = "process"
     action = "process_start"
     if event_id in {"3", "5156"}:
         category, action = "network", "network_connection"
+    elif event_id in {"8"}:
+        category, action = "process", "remote_thread"
+    elif event_id in {"10"}:
+        category, action = "process", "process_access"
     elif event_id in {"11"}:
         category, action = "file", "file_create"
     elif event_id in {"12", "13", "14"}:
@@ -171,6 +184,17 @@ def normalize_event(raw: dict[str, Any]) -> dict[str, Any] | None:
         "TicketEncryptionType",
         "Details",
         "TargetFilename",
+        "TargetObject",
+        "SourceImage",
+        "SourceProcessId",
+        "TargetProcessId",
+        "NewThreadId",
+        "StartAddress",
+        "StartModule",
+        "StartFunction",
+        "Hashes",
+        "Signed",
+        "Signature",
         "QueryName",
         "ScriptBlockText",
         "CommandLine",
@@ -212,9 +236,13 @@ def normalize_event(raw: dict[str, Any]) -> dict[str, Any] | None:
     if pid is not None:
         event["process"]["pid"] = _as_int(pid)
 
-    source_ip = _first_ip(_lookup(raw, event_data, "SourceIp", "SourceIP", "source.ip", "src_ip"))
-    dest_ip = _first_ip(_lookup(raw, event_data, "DestinationIp", "DestinationIP", "destination.ip", "dest_ip"))
-    dest_port = _as_int(_lookup(raw, event_data, "DestinationPort", "destination.port", "dest_port"))
+    source_ip = _first_ip(_lookup(raw, event_data, "SourceIp", "SourceAddress", "SourceIP", "source.ip", "src_ip"))
+    dest_ip = _first_ip(
+        _lookup(raw, event_data, "DestinationIp", "DestAddress", "DestinationIP", "destination.ip", "dest_ip")
+    )
+    dest_port = _as_int(
+        _lookup(raw, event_data, "DestinationPort", "DestPort", "destination.port", "dest_port")
+    )
     if source_ip or dest_ip:
         event["source"] = {"ip": source_ip} if source_ip else {}
         event["destination"] = {"ip": dest_ip, "port": dest_port} if dest_ip or dest_port else {}
@@ -222,6 +250,9 @@ def normalize_event(raw: dict[str, Any]) -> dict[str, Any] | None:
     target_file = _lookup(raw, event_data, "TargetFilename", "file.path")
     if target_file:
         event["file"] = {"path": str(target_file)}
+    registry_path = _lookup(raw, event_data, "TargetObject", "registry.path")
+    if registry_path:
+        event["registry"] = {"path": str(registry_path)}
     query = _lookup(raw, event_data, "QueryName", "dns.question.name")
     if query:
         event["dns"] = {"question": {"name": str(query)}}

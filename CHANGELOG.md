@@ -2,9 +2,12 @@
 
 ## Unreleased
 
-- Replayed a real 110-event OTRF Windows Security sample; `Windows Event Log
-  Cleared` fired on the real 1102 event. Recorded the first true-positive
-  candidate and the 28 rules that were not evaluable.
+- Replayed two real OTRF samples: 110 Windows Security events (one `Windows
+  Event Log Cleared` match) and 118 richer Sysmon/Security events (two LSASS
+  process-access matches and one event-log-cleared match). Recorded the first
+  real true-positive candidates and the 25 rules that were not evaluable.
+- Added a 10× benign baseline run: 89,704 synthetic events, one low-severity SSH
+  match, zero correlation alerts.
 - Added `pipeline.replay` for OTRF/Mordor-style telemetry and a tested field
   mapping fixture.
 - Added `pipeline.validation` and the synthetic per-rule results table.

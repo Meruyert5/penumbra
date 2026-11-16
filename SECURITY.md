@@ -10,6 +10,14 @@ Penumbra ships a deliberately insecure Elasticsearch/Kibana stack:
 
 **Never expose this stack to an untrusted network.** If you adapt it, put it behind a firewall and enable Elasticsearch security before loading anything sensitive.
 
+## Handling public attack datasets
+
+Public detection datasets such as OTRF Security-Datasets and Splunk Attack Data
+are untrusted input. Some archives contain real attack tooling, not only logs.
+Use telemetry JSON where possible, scan every download with your own endpoint
+protection, keep the data outside this repository, and delete it after the replay.
+Never disable real-time protection or commit raw datasets.
+
 ## Supported versions
 
 Only the current `main` branch is maintained. There are no supported release branches.

@@ -31,7 +31,8 @@ labels, source diversity, and real noise are.
 | The dashboard is assembled from the run data | `tests/test_report.py` and `pipeline.report` | Verified |
 | The page meets the published accessibility contract | Lighthouse and manual review | Verified for the built page |
 | Per-rule synthetic results | [docs/validation/synthetic-run.md](validation/synthetic-run.md) | Generated from the committed run; not precision or recall |
-| Real OTRF sample | [docs/validation/real-telemetry-results.md](validation/real-telemetry-results.md) | 110 real events, 1 rule match, 1 TP candidate |
+| Real OTRF samples | [docs/validation/real-telemetry-results.md](validation/real-telemetry-results.md) | 228 real events across 2 samples, 2 rules, 3 TP candidates |
+| Large benign baseline | [docs/validation/large-benign-results.md](validation/large-benign-results.md) | 89,704 synthetic benign events, 1 low-severity match, 0 correlations |
 
 ## What the current evidence does not prove
 
@@ -82,15 +83,15 @@ teams and research groups and include labelled attack activity or benign data.
 | [Elastic detection rules](https://github.com/elastic/detection-rules) | Production rule and test conventions | Compare rule structure, test expectations, and field assumptions |
 | [Splunk Attack Range](https://github.com/splunk/attack_range) | Instrumented lab orchestration | Use as an alternative to the synthetic path when a full VM range is available |
 
-The first replay is complete: 110 real Windows Security events from OTRF were
-replayed, and one rule matched the real 1102 event. See
-[Real-telemetry replay results](validation/real-telemetry-results.md). The
-mapping harness is `pipeline/replay.py`; it is tested and has now been run end to
-end against one real dataset. The result is one true-positive candidate, not a
-precision or recall measurement.
-
-The next evidence steps are a benign replay, a second source family, and a label
-manifest that records the attack window and expected techniques.
+The first real-data step is complete: two OTRF samples were replayed. A
+110-event Windows Security sample matched `Windows Event Log Cleared`; a richer
+118-event Sysmon/Security sample matched that rule and `Suspicious Process Access
+to LSASS` twice. That is three true-positive candidates across two rules, not a
+precision or recall measurement. See
+[Real-telemetry replay results](validation/real-telemetry-results.md). A separate
+89,704-event synthetic benign baseline produced one low-severity SSH match and
+zero correlation alerts; see
+[Large benign baseline](validation/large-benign-results.md).
 
 ### Metrics to record
 
@@ -141,9 +142,10 @@ python -m pipeline.heatmap
 | Deterministic synthetic run | Done |
 | Benign baseline | Done, small |
 | Per-rule false-positive suite | Partial |
-| External real-telemetry replay | Started: 1 OTRF sample, 110 events, 1 TP candidate |
-| Precision / recall table | Pending; one TP is not a measurement |
-| Field-mapping gap review | Open: 28 rules not evaluable on the first sample |
+| External real-telemetry replay | 2 OTRF samples, 228 events, 2 rules, 3 TP candidates |
+| Larger benign baseline | Done: 89,704 synthetic events, 1 low-severity match |
+| Precision / recall table | Pending; three TP candidates are not a measurement |
+| Field-mapping gap review | Open: 25 rules not evaluable (28 errors incl. 3 correlation fetches) |
 | Atomic Red Team Sysmon capture | Not started; needs an isolated Windows VM |
 | Scheduled detection-decay check | Not started |
 

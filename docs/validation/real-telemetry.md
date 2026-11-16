@@ -4,21 +4,30 @@ This is the runbook for moving beyond the synthetic corpus. The mapping harness 
 implemented and tested; the replay and VM steps have **not** been executed in this
 repository. Do not describe them as completed until the results are recorded.
 
+> **Treat public attack datasets as untrusted.** Some OTRF archives contain real
+> attack tooling or binaries, not just telemetry. Download telemetry JSON only,
+> keep it outside the repository, scan it with your own endpoint protection, and
+> delete it after the replay. Never disable real-time protection to force a
+> download, and never commit the raw dataset. The two samples replayed here were
+> JSON event logs; a 44 MB archive that expanded from a 1 MB zip was removed
+> rather than forced open.
+
 ## Current status
 
 | Step | Status |
 |---|---|
 | OTRF/Mordor field mapping | Implemented in `pipeline/replay.py`, covered by `tests/test_replay.py` |
-| OTRF sample replay | **Done for one 110-event Windows Security sample**; see [results](real-telemetry-results.md) |
+| OTRF sample replay | **Done for two samples**: 110 Security events + 118 richer Sysmon events; see [results](real-telemetry-results.md) |
 | Atomic Red Team Sysmon capture | Not executed here; needs an isolated Windows VM |
-| Per-rule TP/FP/FN table | One real true-positive candidate; full table pending |
-| Larger benign baseline | Not executed here |
+| Per-rule TP/FP/FN table | 3 real TP candidates across 2 rules; full table pending |
+| Larger benign baseline | Done: 89,704 synthetic events; see [large benign](large-benign-results.md) |
 | Entra ID or Kubernetes source | Not added; only if it matches the target role |
 
-The first sample has been replayed: 110 real Windows Security events, one rule
-match, one true-positive candidate. The result, commands, and the 28 rules that
-were not evaluable are recorded in
-[Real-telemetry replay results](real-telemetry-results.md).
+Two samples have been replayed: 110 Windows Security events and 118 richer
+Sysmon/Security events. The results, commands, and the 25 rules that were not
+evaluable are recorded in
+[Real-telemetry replay results](real-telemetry-results.md). The 10× synthetic
+benign run is in [Large benign baseline](large-benign-results.md).
 
 ## 1. Replay a small OTRF sample
 

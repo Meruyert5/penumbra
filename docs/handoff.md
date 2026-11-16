@@ -17,8 +17,8 @@ account.
 | Public surface | `index.html`, `assets/`, `cases/`, `.nojekyll`; optionally `CNAME` |
 | Public host | GitHub Pages (after the first upload) |
 | Permanent target | `https://penumbra.is-a.dev` (pending registration and Pages setup) |
-| Tests | 50 passing |
-| Real validation | 1 OTRF sample: 110 real events, 1 true-positive candidate |
+| Tests | 51 passing |
+| Real validation | 2 OTRF samples: 228 events, 2 rules, 3 TP candidates; 89,704-event benign baseline |
 | Lighthouse | 100 accessibility / 100 best practices / 100 SEO |
 
 The local server can serve `site/` for review. GitHub Pages is the only public

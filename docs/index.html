@@ -7022,14 +7022,15 @@ body::after { display: none; }
     </div>
 
     <div class="validation-band" data-reveal aria-label="Real-telemetry validation">
-      <p class="validation-kicker">First real replay / OTRF Security Datasets</p>
+      <p class="validation-kicker">Real replay / OTRF + 10× benign baseline</p>
       <div class="validation-stats">
-        <span><b>110</b> real events</span>
-        <span><b>1</b> rule match</span>
-        <span><b>1</b> TP candidate</span>
-        <span><b>28</b> rules not evaluable</span>
+        <span><b>228</b> real events</span>
+        <span><b>2</b> rules matched</span>
+        <span><b>3</b> TP candidates</span>
+        <span><b>89,704</b> benign events</span>
+        <span><b>25</b> rules not evaluable</span>
       </div>
-      <p class="validation-note">A separate Windows Security sample, not the synthetic dashboard run. One real 1102 event matched Windows Event Log Cleared. Not a precision or recall measurement.</p>
+      <p class="validation-note">Two public OTRF samples matched Windows Event Log Cleared and Suspicious Process Access to LSASS. A 10× benign baseline produced one low-severity SSH match and zero correlation alerts. 28 evaluation errors include 3 correlation fetches. Not a precision or recall measurement.</p>
     </div>
   </section>
 

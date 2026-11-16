@@ -5,7 +5,7 @@
 [![Python 3.11](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
 [![Elasticsearch 8.15](https://img.shields.io/badge/Elasticsearch-8.15-005571?logo=elasticsearch&logoColor=white)](docker-compose.yml)
 [![Sigma](https://img.shields.io/badge/rules-50%20Sigma-1f6feb)](rules/sigma)
-[![Tests](https://img.shields.io/badge/tests-50%20passing-2ea043)](tests)
+[![Tests](https://img.shields.io/badge/tests-51%20passing-2ea043)](tests)
 [![ATT&CK](https://img.shields.io/badge/MITRE%20ATT%26CK-48%20techniques-ff5d5d)](docs/attck-coverage.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea043)](LICENSE)
 [![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2ea043)](.github/workflows/ci.yml)
@@ -60,8 +60,8 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | **Coverage** | 48 ATT&CK techniques, 13 tactics, 45 of 45 priority techniques, 0 gaps |
 | **Correlation** | Sliding windows with optional distinct-value thresholds, for example 10 attempts across 8 accounts |
 | **Backend** | Elasticsearch 8.15.3 and Kibana 8.15.3, single node, security disabled for lab use |
-| **Tests** | 50 passing: lint, compilation, correlation, lab generation, coverage, publishing, replay mapping, validation table, secret scan, dashboard assembly |
-| **Validation** | 1 real OTRF sample replayed; 110 events, 1 true-positive candidate; synthetic table for 50 rules |
+| **Tests** | 51 passing: lint, compilation, correlation, lab generation, coverage, publishing, replay mapping, validation table, secret scan, dashboard assembly |
+| **Validation** | 2 real OTRF samples (110 + 118 events, 2 rules, 3 TP candidates); 89,704-event benign baseline; synthetic table for 50 rules |
 | **Frontend** | One self-contained HTML file with no build step, CDN, or network request |
 
 ---
@@ -333,7 +333,7 @@ The `.caseless` fields come from the Winlogbeat processors. Without them, rules 
 python -m pytest -q
 ```
 
-The 50 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, public-site publishing, OTRF replay mapping, the synthetic per-rule table, a high-confidence secret-pattern scan, and dashboard assembly.
+The 51 tests cover rule metadata, Sigma compilation, correlation windows and distinct counts, telemetry generation, coverage accounting, public-site publishing, OTRF replay mapping, the synthetic per-rule table, a high-confidence secret-pattern scan, and dashboard assembly.
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request:
 
@@ -376,7 +376,14 @@ The current evidence is structural and behavioural, not statistical. CI proves t
 | Real-telemetry validation | Not yet; see the external dataset plan |
 | Production precision / recall | Not claimed |
 
-The first real-data step is complete: a 110-event Windows Security sample from OTRF Security Datasets was replayed, and the `Windows Event Log Cleared` rule matched the real 1102 event. That is one true-positive candidate, not a precision or recall measurement. The runbook is [docs/validation/real-telemetry.md](docs/validation/real-telemetry.md); the first result is [docs/validation/real-telemetry-results.md](docs/validation/real-telemetry-results.md). The synthetic per-rule table remains in [docs/validation/synthetic-run.md](docs/validation/synthetic-run.md); it is a construction-labelled report.
+The first real-data step is complete: two public OTRF samples were replayed. A
+110-event Windows Security sample matched `Windows Event Log Cleared`; a richer
+118-event Sysmon/Security sample matched that rule and `Suspicious Process Access
+to LSASS` twice. That is three true-positive candidates across two rules, not a
+precision or recall measurement. A separate 89,704-event synthetic benign
+baseline produced one low-severity SSH match and zero correlation alerts. See
+[Real-telemetry replay results](docs/validation/real-telemetry-results.md) and
+[Large benign baseline](docs/validation/large-benign-results.md).
 
 ## Limitations
 

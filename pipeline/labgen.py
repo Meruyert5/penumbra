@@ -140,6 +140,7 @@ class Lab:
         self.web: list[dict[str, Any]] = []
         self.cloud: list[dict[str, Any]] = []
         self.network: list[dict[str, Any]] = []
+        self.baseline_loops = 690
 
     # ---------------------------------------------------------------- windows
     def process_creation(
@@ -707,8 +708,10 @@ def scenario_baseline(lab: Lab) -> None:
     """Benign activity that should NOT trigger a detection."""
     start = lab.base - timedelta(hours=23)
     users = ["analyst", "j.tan", "m.okafor", "s.reyes"]
-    for index in range(690):
-        ts = start + timedelta(minutes=index * 2 + lab.rng.randint(0, 2))
+    loops = max(1, int(lab.baseline_loops))
+    step_seconds = (23 * 3600) / loops
+    for index in range(loops):
+        ts = start + timedelta(seconds=index * step_seconds + lab.rng.randint(0, 2))
         user = users[index % len(users)]
         lab.process_creation(
             ts,
@@ -1340,9 +1343,15 @@ BUILDERS = {
 }
 
 
-def generate(scenario: str, seed: int = 1337, base_time: datetime | None = None) -> dict[str, list[dict[str, Any]]]:
+def generate(
+    scenario: str,
+    seed: int = 1337,
+    base_time: datetime | None = None,
+    baseline_loops: int = 690,
+) -> dict[str, list[dict[str, Any]]]:
     base_time = base_time or datetime.now(timezone.utc)
     lab = Lab(base_time, seed=seed)
+    lab.baseline_loops = max(1, int(baseline_loops))
     selected = SCENARIOS if scenario == "all" else (scenario,)
 
     if scenario == "all":
@@ -1391,11 +1400,12 @@ def main() -> int:
     parser.add_argument("--out", default=str(LAB_LOGS_DIR))
     parser.add_argument("--seed", type=int, default=1337)
     parser.add_argument("--base-time", help="ISO-8601 anchor time, defaults to now")
+    parser.add_argument("--baseline-loops", type=int, default=690, help="Benign baseline repetitions (default 690)")
     parser.add_argument("--append", action="store_true", help="append instead of overwriting")
     args = parser.parse_args()
 
     base_time = datetime.fromisoformat(args.base_time) if args.base_time else None
-    data = generate(args.scenario, seed=args.seed, base_time=base_time)
+    data = generate(args.scenario, seed=args.seed, base_time=base_time, baseline_loops=args.baseline_loops)
     counts = write_files(data, Path(args.out), append=args.append)
     total = sum(counts.values())
     print(f"Wrote {total} synthetic events to {args.out}: " + ", ".join(f"{k}={v}" for k, v in counts.items()))

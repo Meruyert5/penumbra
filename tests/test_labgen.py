@@ -58,6 +58,14 @@ def test_baseline_is_benign():
     assert all(event.get("event", {}).get("outcome") != "failure" for event in data["web"])
 
 
+def test_baseline_can_scale():
+    small = generate("baseline", seed=1, base_time=BASE, baseline_loops=10)
+    large = generate("baseline", seed=1, base_time=BASE, baseline_loops=100)
+    small_count = sum(len(events) for events in small.values())
+    large_count = sum(len(events) for events in large.values())
+    assert large_count > small_count * 8
+
+
 def test_scenario_catalogue_is_large_and_unique():
     assert len(SCENARIOS) >= 34
     assert len(set(SCENARIOS)) == len(SCENARIOS)
