@@ -20,6 +20,7 @@ from pipeline.common import DOCS_DIR, ROOT
 SITE_DIR = ROOT / "site"
 PUBLIC_FILES = ("index.html", "CNAME")
 PUBLIC_DIRS = ("assets", "cases")
+PUBLIC_NESTED = ("validation/results.json",)
 
 
 def publish(docs_dir: Path = DOCS_DIR, site_dir: Path = SITE_DIR) -> dict[str, int]:
@@ -46,6 +47,14 @@ def publish(docs_dir: Path = DOCS_DIR, site_dir: Path = SITE_DIR) -> dict[str, i
         source = docs_dir / name
         if source.is_file():
             shutil.copy2(source, site_dir / name)
+            copied_files += 1
+
+    for name in PUBLIC_NESTED:
+        source = docs_dir / name
+        if source.is_file():
+            target = site_dir / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
             copied_files += 1
 
     copied_dirs = 0

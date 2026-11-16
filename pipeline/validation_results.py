@@ -105,6 +105,19 @@ def build_results(rules_path: Path = COMPILED_DIR / "rules.json") -> dict[str, A
     return {
         "generated": "2026-11-16",
         "source": "Recorded from the OTRF replay and 10x benign runs; raw data is not committed.",
+        "provenance": {
+            "engine": "Elasticsearch 8.15.3, single node, local Docker",
+            "parser": "pipeline.replay",
+            "rules": 50,
+            "correlations": 8,
+            "raw_data_committed": False,
+            "note": "Each sample was normalized, indexed into lab-* indices, and evaluated with the same compiled EQL rules. Missing indices and fields are marked not evaluable, not false negatives. Public attack datasets are untrusted; raw data is not committed and was deleted after the replay.",
+            "commands": [
+                "python -m pipeline.replay --source <sample.json> --file windows --label malicious",
+                "python -m pipeline.ingest --logs lab/replay-rich --reset",
+                "python -m pipeline.detect --hours 24 --end 2020-10-19T03:00:00Z --out lab/replay-rich-results",
+            ],
+        },
         "totals": {
             "real_events": 228,
             "real_matches": 4,
@@ -145,7 +158,12 @@ def build_results(rules_path: Path = COMPILED_DIR / "rules.json") -> dict[str, A
                 "matches": 1,
                 "correlations": 0,
                 "kind": "real",
+                "window": "2020-11-02T04:12:58Z to 04:13:05Z",
+                "errors": 28,
                 "note": "Real event 1102; one rule matched",
+                "source_url": "https://github.com/OTRF/Security-Datasets/tree/master/datasets/atomic/windows/execution/host",
+                "git_blob_sha": "ac23774536c98d7b45460fe860c95eb673b9f75d",
+                "archive_bytes": 10491,
             },
             {
                 "id": "otrf-sysmon",
@@ -154,7 +172,29 @@ def build_results(rules_path: Path = COMPILED_DIR / "rules.json") -> dict[str, A
                 "matches": 3,
                 "correlations": 0,
                 "kind": "real",
+                "window": "2020-10-18T10:56:18Z to 2020-10-19T02:56:05Z",
+                "errors": 28,
                 "note": "Two LSASS process-access matches plus event log cleared",
+                "source_url": "https://github.com/OTRF/Security-Datasets/tree/master/datasets/atomic/windows/credential_access/host",
+                "git_blob_sha": "62238d3cf2a67ca6dac5cd11746a20ef21eb50dc",
+                "archive_bytes": 12915,
+            },
+        ],
+        "gaps": [
+            {
+                "reason": "Missing index",
+                "count": len(MISSING_INDEX),
+                "fix": "Replay one Linux, one web, one cloud, and one network sample into the same run.",
+            },
+            {
+                "reason": "Missing field",
+                "count": len(MISSING_FIELD),
+                "fix": "Use a capture that contains service creation, Kerberos, SMB, or registry events.",
+            },
+            {
+                "reason": "No match",
+                "count": sum(1 for row in rows if row["status"] == "no_match"),
+                "fix": "No match is not automatically a failure; add technique coverage and labels.",
             },
         ],
         "matched": MATCHED_ROWS,

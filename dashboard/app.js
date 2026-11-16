@@ -265,6 +265,37 @@
       "</td><td>" + esc(number(row.matches)) + "</td><td>" + esc(row.sample) + '</td><td class="v-verdict">' +
       esc(row.verdict) + "</td></tr>"
     )).join("");
+
+    const provenance = validation.provenance || {};
+    const realSamples = (validation.samples || []).filter((sample) => sample.kind === "real");
+    $("#validationProofBody").innerHTML =
+      "<p><b>Engine:</b> " + esc(provenance.engine || "Elasticsearch") +
+      ". <b>Parser:</b> " + esc(provenance.parser || "pipeline.replay") +
+      ". <b>Raw data committed:</b> " + (provenance.raw_data_committed ? "yes" : "no") + ".</p>" +
+      "<p>" + esc(provenance.note || "") + "</p>" +
+      '<div class="validation-proof-samples">' +
+      realSamples.map((sample) => (
+        '<div class="validation-proof-row"><span>' + esc(sample.name) + " · " + esc(number(sample.events)) +
+        " events · " + esc(sample.window || "") + " · " + esc(number(sample.matches)) + " matches</span>" +
+        '<span class="validation-proof-links"><a href="' + esc(sample.source_url || "#") +
+        '" target="_blank" rel="noreferrer">source</a><code>' + esc(sample.git_blob_sha || "") +
+        "</code><span>" + esc(number(sample.archive_bytes)) + " bytes</span></span></div>"
+      )).join("") +
+      "</div>" +
+      '<pre class="validation-commands"><code>' + esc((provenance.commands || []).join("\n")) + "</code></pre>" +
+      '<div class="validation-fixes"><b>How to close the gaps</b><ul>' +
+      (validation.gaps || []).map((gap) => (
+        "<li>" + esc(gap.reason) + " (" + esc(number(gap.count)) + "): " + esc(gap.fix) + "</li>"
+      )).join("") +
+      "</ul></div>" +
+      '<div class="validation-proof-foot"><a class="validation-download" href="validation/results.json" download>Download results.json</a>' +
+      '<span>' + esc(validation.generated || "") + " · " + esc(provenance.rules || 50) + " rules · " +
+      esc(provenance.correlations || 8) + " correlations</span></div>";
+
+    $("#validationAllRows").innerHTML = rules.map((rule) => (
+      "<tr><td>" + esc(rule.title) + "</td><td>" + esc(rule.level) + "</td><td>" +
+      esc(String(rule.status || "").replace(/_/g, " ")) + "</td><td>" + esc(rule.reason) + "</td></tr>"
+    )).join("");
   } else if (validationPanel) {
     validationPanel.hidden = true;
   }

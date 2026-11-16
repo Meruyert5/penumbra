@@ -66,6 +66,18 @@ python -m pipeline.detect --hours 24 --end 2020-10-19T03:00:00Z --out lab\replay
 The data was not committed. The replay alerts stay in `lab/replay-rich-results/`,
 which is gitignored.
 
+## Proof and provenance
+
+| Sample | Archive | Git blob SHA-1 | Bytes |
+|---|---|---|---:|
+| Sample A | `psh_powershell_httplistener.zip` | `ac23774536c98d7b45460fe860c95eb673b9f75d` | 10,491 |
+| Sample B | `cmd_lsass_memory_dumpert_syscalls.zip` | `62238d3cf2a67ca6dac5cd11746a20ef21eb50dc` | 12,915 |
+
+The source directories are linked in the dashboard proof drawer. The raw archives
+were deleted after the replay; they are public attack datasets and must be treated
+as untrusted. The dashboard reads the committed summary in
+[`docs/validation/results.json`](results.json), not raw telemetry.
+
 ## What these runs prove
 
 - The OTRF/Mordor normalizer works end to end on real Windows Security and Sysmon
