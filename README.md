@@ -294,7 +294,7 @@ Representative coverage:
 * A dark corona scope on the cover that scans the same hourly run as the chart, with pings where volume crosses the peak threshold; click it to pin that hour on the chart. It is a warm sunset light curve in both Corona and Umbra, with a black-disc peak marker.
 * A full-bleed night stage with a live starfield, a sun/moon eclipse that shifts with the selected contact, and a ghost wordmark
 * A pinned scroll-scrubbed totality act with a giant sun/moon, Baily's beads, a diamond ring, and a progress rail
-* A single Evidence chapter (Fig. 4-7) with tabs for Validation, Hunting, Operations, and Roadmap. The validation view has a 50-rule status matrix, source cards, a click-to-expand per-rule TP/FP/FN table, a proof drawer, and a downloadable manifest
+* Validation, hunting, response, IR, and roadmap distributed across the chapters. The validation view has a 50-rule status matrix, source cards, a click-to-expand per-rule TP/FP/FN table, a proof drawer, and a downloadable manifest
 * A kinetic phase ticker and a horizontal case reel with previous/next controls
 * A five-stop contact ribbon (C1, C2, totality, C3, C4) and a gradient path-of-totality plate with the observing window, a real data-peak marker, and contacts that open the hour in the watch floor
 * A run ticket with contact times, Saros 145, magnitude 1.02, 100% obscuration, and a paper receipt texture
@@ -413,9 +413,10 @@ tunneling patterns, and LSASS access from user-writable paths. Each hunt records
 the question, the query, the evidence, the verdict, and the detection change it
 recommends. See [hunts/README.md](hunts/README.md).
 
-Fig. 5 in the dashboard shows the hunts. Fig. 7 shows the three-project roadmap:
-Penumbra, Apsis (formerly Overpass), and a network threat-hunting lab. The
-roadmap is also in [docs/roadmap.md](docs/roadmap.md).
+Hunting sits in Umbra, validation in Corona, response in Instruments, and the IR
+close-outs in Eclipses. The three-project roadmap and the Apsis cloud hand-off
+are in the final After chapter. The roadmap is also in
+[docs/roadmap.md](docs/roadmap.md).
 
 ## Response and IR
 
@@ -492,7 +493,7 @@ See [Publishing checklist](docs/publishing.md) for repository metadata, the desi
 ## Roadmap
 
 The full three-project roadmap is in [docs/roadmap.md](docs/roadmap.md) and
-Fig. 7.
+the After chapter.
 
 - **Penumbra:** detection library, validation, hunting, IR casebook, triage
   automation, and the cloud detection pack are done. Next is the dashboard

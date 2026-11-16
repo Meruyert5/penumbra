@@ -43,7 +43,7 @@
       <a href="#coverage" data-chapter="coverage"><span class="n">04</span><span class="t">Corona</span></a>
       <a href="#cases" data-chapter="cases"><span class="n">05</span><span class="t">Eclipses</span></a>
       <a href="#reproduce" data-chapter="reproduce"><span class="n">06</span><span class="t">Recurrence</span></a>
-      <a href="#evidence" data-chapter="evidence"><span class="n">07</span><span class="t">Evidence</span></a>
+      <a href="#after" data-chapter="after"><span class="n">07</span><span class="t">After</span></a>
     </nav>
   </div>
 
@@ -334,6 +334,18 @@
 
     <div class="path" id="pathStrip" role="tablist" aria-label="Pipeline stages" data-reveal></div>
     <div class="path-detail" id="pathDetail" aria-live="polite" data-reveal></div>
+
+    <section class="ops-panel response-panel" id="responsePanel" aria-labelledby="responseTitle">
+      <div class="ops-head">
+        <p class="validation-kicker">Fig. 2 / Response</p>
+        <h3 id="responseTitle">From alert to action.</h3>
+        <p class="ops-lede">A dry-run response engine enriches 50 alerts, groups them into 27 incidents, and recommends 78 actions. No EDR, cloud, or ticketing API is called.</p>
+      </div>
+      <div class="validation-stats ops-stats" id="responseStats"></div>
+      <div class="ops-grid" id="responseIncidents"></div>
+      <div class="ops-more"><button class="mini" type="button" id="responseShowAll">Show all incidents</button></div>
+      <p class="ops-note" id="responseNote"></p>
+    </section>
   </section>
 
   <section class="chapter" id="ledger">
@@ -344,8 +356,9 @@
         <h2>The queue, with the query <span class="sans-word">attached.</span></h2>
         <p class="chapter-lede">
           Filter by severity, host, or technique. Select a detection to keep its events and
-          exact EQL beside the queue. Host lanes show where the hour landed, and the
-          coincidence strip shows what single events miss.
+          exact EQL beside the queue. Host lanes show where the hour landed, the
+          coincidence strip shows what single events miss, and the hunts below show
+          what the queue did not catch.
         </p>
       </div>
     </header>
@@ -415,7 +428,17 @@
         <div class="wf-corr-grid" id="wfCorrGrid"></div>
       </div>
     </div>
-  </section>
+
+<section class="hunts-panel" id="huntsPanel" aria-labelledby="huntsTitle">
+    <div class="hunts-head">
+      <p class="validation-kicker">Fig. 3 / Hunting</p>
+      <h3 id="huntsTitle">Hypothesis first, alert second.</h3>
+      <p class="hunts-lede">Four hunts over the deterministic corpus. Each records the question, the query, the evidence, the verdict, and the detection change it recommends.</p>
+    </div>
+    <div class="hunts-stats" id="huntsStats"></div>
+    <div class="hunt-grid" id="huntGrid"></div>
+    <p class="hunts-note" id="huntsNote"></p>
+  </section>  </section>
 
   <section class="chapter" id="coverage">
     <header class="chapter-head" data-reveal>
@@ -426,7 +449,8 @@
         <p class="chapter-lede">
           All 45 priority techniques are covered. Each filled tick in the corona ring names
           the rule or correlation that closes it; the gaps view stays available as a
-          regression check.
+          regression check. The validation panel below tests the claim against real
+          labelled windows.
         </p>
       </div>
     </header>
@@ -455,111 +479,8 @@
     <div class="matrix" id="matrix" data-reveal></div>
     <p class="matrix-note" id="matrixNote">Click a tile to filter the watch floor by that technique.</p>
     <div class="tech-tip" id="techTip" role="tooltip" hidden></div>
-  </section>
 
-  <section class="chapter" id="cases">
-    <header class="chapter-head" data-reveal>
-      <span class="chapter-no" aria-hidden="true">05</span>
-      <div class="chapter-intro">
-        <p class="chapter-label">Eclipses</p>
-        <h2>Three investigations, one <span class="sans-word">shadow.</span></h2>
-        <p class="chapter-lede">
-          Each case follows the same file: summary, timeline, evidence, analysis, verdict,
-          containment, and the detection improvement that came out of it.
-        </p>
-      </div>
-    </header>
-
-    <div class="casechain" id="caseChain" data-reveal>
-      <div class="cc-head">
-        <div class="cc-heading">
-          <p class="chapter-label">Eclipse chain</p>
-          <h3 id="ccTitle">Case 002 / Multi-stage intrusion</h3>
-        </div>
-        <div class="cc-tabs" id="ccTabs" role="tablist" aria-label="Choose a case"></div>
-        <div class="cc-controls">
-          <button class="mini cc-step" id="ccPrev" type="button" aria-label="prev step">prev</button>
-          <button class="mini cc-play" id="ccPlay" type="button">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            play chain
-          </button>
-          <button class="mini cc-step" id="ccNext" type="button" aria-label="next step">next</button>
-        </div>
-      </div>
-      <div class="cc-stage" id="ccStage" aria-label="Case detection chain"></div>
-      <div class="cc-detail" id="ccDetail" aria-live="polite"></div>
-    </div>
-
-    <div class="case-reel-bar" data-reveal>
-      <span class="case-reel-hint">Three eclipses / drag or scroll</span>
-      <div class="case-reel-controls">
-        <button class="mini" id="casePrev" type="button" aria-label="Previous case">&#8592;</button>
-        <button class="mini" id="caseNext" type="button" aria-label="Next case">&#8594;</button>
-      </div>
-    </div>
-    <div class="case-grid" id="caseGrid" data-reveal></div>
-  </section>
-
-  <section class="chapter" id="reproduce">
-    <header class="chapter-head" data-reveal>
-      <span class="chapter-no" aria-hidden="true">06</span>
-      <div class="chapter-intro">
-        <p class="chapter-label">Recurrence</p>
-        <h2>Same seed. Same <span class="sans-word">orbit.</span></h2>
-        <p class="chapter-lede">
-          The lab needs Python 3.11 and Docker. Generation is deterministic, so the same
-          commands produce the same event field, the same detections, and this same page.
-        </p>
-      </div>
-    </header>
-
-    <div class="repro-grid" data-reveal>
-      <div class="repro-copy">
-        <p class="repro-kicker">From zero to a reviewed queue</p>
-        <p>
-          Swap the logsource map to point at real data streams when you have them. The dashboard
-          run is synthetic; the separate replay band below is real. The pipeline does not claim
-          production precision from lab telemetry.
-        </p>
-        <div class="repro-marks">
-          <span>Python 3.11</span>
-          <span>Docker Compose</span>
-          <span>Elasticsearch 8</span>
-          <span>No build step</span>
-        </div>
-      </div>
-
-      <div class="terminal">
-        <div class="terminal-bar"><i></i><i></i><i></i><span>penumbra / powershell</span><button type="button" id="copyAll" class="mini">copy all</button></div>
-        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.labgen --scenario all --base-time 2026-11-11T12:30:00Z</code><button type="button" data-copy="python -m pipeline.labgen --scenario all --base-time 2026-11-11T12:30:00Z">copy</button></div>
-        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.compile</code><button type="button" data-copy="python -m pipeline.compile">copy</button></div>
-        <div class="cmd"><code><span class="p">PS&gt;</span> docker compose up -d</code><button type="button" data-copy="docker compose up -d">copy</button></div>
-        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.ingest --reset</code><button type="button" data-copy="python -m pipeline.ingest --reset">copy</button></div>
-        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z</code><button type="button" data-copy="python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z">copy</button></div>
-        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.replay --source otrf.json --file windows --label malicious</code><button type="button" data-copy="python -m pipeline.replay --source otrf.json --file windows --label malicious">copy</button></div>
-        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.report</code><button type="button" data-copy="python -m pipeline.report">copy</button></div>
-      </div>
-    </div>
-
-  </section>
-
-  <section class="chapter evidence-chapter" id="evidence" aria-labelledby="evidenceTitle">
-    <header class="chapter-head" data-reveal>
-      <span class="chapter-no" aria-hidden="true">07</span>
-      <div class="chapter-intro">
-        <p class="chapter-label">Evidence</p>
-        <h2>Read the <span class="sans-word">light.</span></h2>
-        <p class="chapter-lede">Four views of the same run: what the rules proved, what hunting found, what response recommended, and where the portfolio goes next.</p>
-      </div>
-    </header>
-    <div class="evidence-tabs" role="tablist" aria-label="Evidence views">
-      <button class="evidence-tab" type="button" role="tab" id="evidenceTabValidation" aria-controls="validationPanel" aria-selected="true">Validation <span class="evidence-count" id="evidenceCountValidation">—</span></button>
-      <button class="evidence-tab" type="button" role="tab" id="evidenceTabHunting" aria-controls="huntsPanel" aria-selected="false">Hunting <span class="evidence-count" id="evidenceCountHunting">—</span></button>
-      <button class="evidence-tab" type="button" role="tab" id="evidenceTabOperations" aria-controls="opsPanel" aria-selected="false">Operations <span class="evidence-count" id="evidenceCountOperations">—</span></button>
-      <button class="evidence-tab" type="button" role="tab" id="evidenceTabRoadmap" aria-controls="roadmapPanel" aria-selected="false">Roadmap <span class="evidence-count" id="evidenceCountRoadmap">—</span></button>
-    </div>
-    <div class="evidence-panels">
-    <section class="validation-panel" id="validationPanel" aria-labelledby="validationTitle">
+<section class="validation-panel" id="validationPanel" aria-labelledby="validationTitle">
       <div class="validation-head">
         <p class="validation-kicker">Fig. 4 / Validation</p>
         <h3 id="validationTitle">What the rules did on real and benign data.</h3>
@@ -617,48 +538,118 @@
           </div>
         </details>
       </details>
+    </section>  </section>
+
+  <section class="chapter" id="cases">
+    <header class="chapter-head" data-reveal>
+      <span class="chapter-no" aria-hidden="true">05</span>
+      <div class="chapter-intro">
+        <p class="chapter-label">Eclipses</p>
+        <h2>Three investigations, one <span class="sans-word">shadow.</span></h2>
+        <p class="chapter-lede">
+          Each case follows the same file: summary, timeline, evidence, analysis, verdict,
+          containment, and the detection improvement that came out of it. The close-out
+          layer adds recovery, communication, metrics, and the open questions.
+        </p>
+      </div>
+    </header>
+
+    <div class="casechain" id="caseChain" data-reveal>
+      <div class="cc-head">
+        <div class="cc-heading">
+          <p class="chapter-label">Eclipse chain</p>
+          <h3 id="ccTitle">Case 002 / Multi-stage intrusion</h3>
+        </div>
+        <div class="cc-tabs" id="ccTabs" role="tablist" aria-label="Choose a case"></div>
+        <div class="cc-controls">
+          <button class="mini cc-step" id="ccPrev" type="button" aria-label="prev step">prev</button>
+          <button class="mini cc-play" id="ccPlay" type="button">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            play chain
+          </button>
+          <button class="mini cc-step" id="ccNext" type="button" aria-label="next step">next</button>
+        </div>
+      </div>
+      <div class="cc-stage" id="ccStage" aria-label="Case detection chain"></div>
+      <div class="cc-detail" id="ccDetail" aria-live="polite"></div>
+    </div>
+
+    <div class="case-reel-bar" data-reveal>
+      <span class="case-reel-hint">Three eclipses / drag or scroll</span>
+      <div class="case-reel-controls">
+        <button class="mini" id="casePrev" type="button" aria-label="Previous case">&#8592;</button>
+        <button class="mini" id="caseNext" type="button" aria-label="Next case">&#8594;</button>
+      </div>
+    </div>
+    <div class="case-grid" id="caseGrid" data-reveal></div>
+
+    <section class="ops-panel ir-panel" id="irPanel" aria-labelledby="irTitle">
+      <div class="ops-head">
+        <p class="validation-kicker">Fig. 5 / Casebook</p>
+        <h3 id="irTitle">Close the loop.</h3>
+        <p class="ops-lede">Three structured close-outs: observed window, detection span, containment, eradication, recovery, communication, evidence, lessons, and open questions.</p>
+      </div>
+      <div class="ops-grid ops-grid-three" id="irCards"></div>
+      <p class="ops-note" id="irNote"></p>
     </section>
-
-  <section class="hunts-panel" id="huntsPanel" aria-labelledby="huntsTitle" hidden>
-    <div class="hunts-head">
-      <p class="validation-kicker">Fig. 5 / Hunting</p>
-      <h3 id="huntsTitle">Hypothesis first, alert second.</h3>
-      <p class="hunts-lede">Four hunts over the deterministic corpus. Each records the question, the query, the evidence, the verdict, and the detection change it recommends.</p>
-    </div>
-    <div class="hunts-stats" id="huntsStats"></div>
-    <div class="hunt-grid" id="huntGrid"></div>
-    <p class="hunts-note" id="huntsNote"></p>
   </section>
 
-  <section class="ops-panel" id="opsPanel" aria-labelledby="opsTitle" hidden>
-    <div class="ops-head">
-      <p class="validation-kicker">Fig. 6 / Operations</p>
-      <h3 id="opsTitle">From alert to action.</h3>
-      <p class="ops-lede">Triage, cloud detections, and the IR close-out. The response engine is a dry run: it enriches, groups, and recommends, but no real EDR or cloud API is called.</p>
+  <section class="chapter" id="reproduce">
+    <header class="chapter-head" data-reveal>
+      <span class="chapter-no" aria-hidden="true">06</span>
+      <div class="chapter-intro">
+        <p class="chapter-label">Recurrence</p>
+        <h2>Same seed. Same <span class="sans-word">orbit.</span></h2>
+        <p class="chapter-lede">
+          The lab needs Python 3.11 and Docker. Generation is deterministic, so the same
+          commands produce the same event field, the same detections, and this same page.
+        </p>
+      </div>
+    </header>
+
+    <div class="repro-grid" data-reveal>
+      <div class="repro-copy">
+        <p class="repro-kicker">From zero to a reviewed queue</p>
+        <p>
+          Swap the logsource map to point at real data streams when you have them. The dashboard
+          run is synthetic; the separate replay band below is real. The pipeline does not claim
+          production precision from lab telemetry.
+        </p>
+        <div class="repro-marks">
+          <span>Python 3.11</span>
+          <span>Docker Compose</span>
+          <span>Elasticsearch 8</span>
+          <span>No build step</span>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-bar"><i></i><i></i><i></i><span>penumbra / powershell</span><button type="button" id="copyAll" class="mini">copy all</button></div>
+        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.labgen --scenario all --base-time 2026-11-11T12:30:00Z</code><button type="button" data-copy="python -m pipeline.labgen --scenario all --base-time 2026-11-11T12:30:00Z">copy</button></div>
+        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.compile</code><button type="button" data-copy="python -m pipeline.compile">copy</button></div>
+        <div class="cmd"><code><span class="p">PS&gt;</span> docker compose up -d</code><button type="button" data-copy="docker compose up -d">copy</button></div>
+        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.ingest --reset</code><button type="button" data-copy="python -m pipeline.ingest --reset">copy</button></div>
+        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z</code><button type="button" data-copy="python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z">copy</button></div>
+        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.replay --source otrf.json --file windows --label malicious</code><button type="button" data-copy="python -m pipeline.replay --source otrf.json --file windows --label malicious">copy</button></div>
+        <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.report</code><button type="button" data-copy="python -m pipeline.report">copy</button></div>
+      </div>
     </div>
-    <div class="ops-tabs" role="tablist" aria-label="Operations views">
-      <button class="ops-tab" type="button" role="tab" id="opsTabResponse" aria-controls="opsResponse" aria-selected="true">Response</button>
-      <button class="ops-tab" type="button" role="tab" id="opsTabCloud" aria-controls="opsCloud" aria-selected="false">Cloud pack</button>
-      <button class="ops-tab" type="button" role="tab" id="opsTabIr" aria-controls="opsIr" aria-selected="false">IR casebook</button>
-    </div>
-    <div class="ops-view" id="opsResponse" role="tabpanel" aria-labelledby="opsTabResponse">
-      <div class="validation-stats ops-stats" id="opsResponseStats"></div>
-      <div class="ops-grid" id="opsIncidents"></div>
-      <div class="ops-more"><button class="mini" type="button" id="opsShowAll">Show all incidents</button></div>
-    </div>
-    <div class="ops-view" id="opsCloud" role="tabpanel" aria-labelledby="opsTabCloud" hidden>
-      <div class="validation-stats ops-stats" id="opsCloudStats"></div>
-      <div class="ops-grid" id="opsCloudCards"></div>
-    </div>
-    <div class="ops-view" id="opsIr" role="tabpanel" aria-labelledby="opsTabIr" hidden>
-      <div class="ops-grid ops-grid-three" id="opsIrCards"></div>
-    </div>
-    <p class="ops-note" id="opsNote"></p>
+
   </section>
 
-  <section class="roadmap-panel" id="roadmapPanel" aria-labelledby="roadmapTitle" hidden>
+    <section class="chapter" id="after">
+    <header class="chapter-head" data-reveal>
+      <span class="chapter-no" aria-hidden="true">07</span>
+      <div class="chapter-intro">
+        <p class="chapter-label">After</p>
+        <h2>Keep the <span class="sans-word">shadow.</span></h2>
+        <p class="chapter-lede">What Penumbra hands to Apsis, and where the portfolio goes next. Three complete projects, one shared evidence shape.</p>
+      </div>
+    </header>
+
+<section class="roadmap-panel" id="roadmapPanel" aria-labelledby="roadmapTitle">
     <div class="roadmap-head">
-      <p class="validation-kicker" id="roadmapKicker">Fig. 7 / Portfolio roadmap</p>
+      <p class="validation-kicker" id="roadmapKicker">After / Portfolio roadmap</p>
       <h3 id="roadmapTitle">Three complete projects, no connector.</h3>
       <p class="roadmap-lede" id="roadmapIntro"></p>
     </div>
@@ -678,10 +669,20 @@
       </div>
     </div>
   </section>
-    </div>
+
+    <section class="ops-panel cloud-panel" id="cloudPanel" aria-labelledby="cloudTitle">
+      <div class="ops-head">
+        <p class="validation-kicker">After / Cloud pack</p>
+        <h3 id="cloudTitle">What Penumbra hands to Apsis.</h3>
+        <p class="ops-lede">Three CloudTrail detections that complement the IAM graph: root policy attachment, root user creation, and CloudTrail tampering. Two fire; one is waiting for telemetry.</p>
+      </div>
+      <div class="validation-stats ops-stats" id="cloudStats"></div>
+      <div class="ops-grid" id="cloudCards"></div>
+      <p class="ops-note" id="cloudNote"></p>
+    </section>
   </section>
 
-  <footer class="colophon" data-reveal>
+<footer class="colophon" data-reveal>
     <div class="colophon-brand">
       <b>Penumbra</b>
       <span>A solar eclipse detection lab. Read the light, keep the shadow.</span>
@@ -694,7 +695,7 @@
       <a href="#coverage">Corona</a>
       <a href="#cases">Eclipses</a>
       <a href="#reproduce">Recurrence</a>
-      <a href="#evidence">Evidence</a>
+      <a href="#after">After</a>
     </nav>
     <span class="colophon-dot" aria-hidden="true"></span>
   </footer>

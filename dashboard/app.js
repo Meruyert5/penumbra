@@ -433,49 +433,24 @@
     huntsPanel.hidden = true;
   }
 
-  /* ------------------------------------------------------------- operations */
-  const opsPanel = $("#opsPanel");
+  /* ------------------------------------------------------------- response */
   const response = DATA.response;
-  const cloudPack = DATA.cloud_pack;
-  const ir = DATA.ir;
-  if (opsPanel && (response || cloudPack || ir)) {
-    const tabs = Array.from(document.querySelectorAll(".ops-tab"));
-    const views = tabs.map((tab) => document.getElementById(tab.getAttribute("aria-controls")));
-    const activate = (index) => {
-      tabs.forEach((tab, position) => {
-        const selected = position === index;
-        tab.setAttribute("aria-selected", String(selected));
-        tab.tabIndex = selected ? 0 : -1;
-        views[position].hidden = !selected;
-      });
-    };
-    tabs.forEach((tab, index) => {
-      tab.addEventListener("click", () => activate(index));
-      tab.addEventListener("keydown", (event) => {
-        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
-        event.preventDefault();
-        const step = event.key === "ArrowRight" ? 1 : -1;
-        const next = (index + step + tabs.length) % tabs.length;
-        tabs[next].focus();
-        activate(next);
-      });
-    });
-    activate(0);
+  const responsePanel = $("#responsePanel");
+  if (responsePanel && response && (response.incidents || []).length) {
+    const summary = response.summary || {};
+    $("#responseStats").innerHTML = [
+      [summary.alerts_ingested, "alerts ingested"],
+      [summary.incidents, "incidents"],
+      [summary.actions, "recommended actions"],
+      [Number(summary.containment_coverage || 0) * 100, "containment coverage", true]
+    ].map(([value, label, percent]) => (
+      '<div class="validation-stat"><b>' + esc(percent ? number(Math.round(value)) + "%" : number(value)) +
+      "</b><span>" + esc(label) + "</span></div>"
+    )).join("");
 
-    if (response) {
-      const summary = response.summary || {};
-      $("#opsResponseStats").innerHTML = [
-        [summary.alerts_ingested, "alerts ingested"],
-        [summary.incidents, "incidents"],
-        [summary.actions, "recommended actions"],
-        [Number(summary.containment_coverage || 0) * 100, "containment coverage", true]
-      ].map(([value, label, percent]) => (
-        '<div class="validation-stat"><b>' + esc(percent ? number(Math.round(value)) + "%" : number(value)) +
-        "</b><span>" + esc(label) + "</span></div>"
-      )).join("");
-      const incidents = response.incidents || [];
-      const renderIncidents = (limit) => {
-        $("#opsIncidents").innerHTML = incidents.slice(0, limit).map((incident) => {
+    const incidents = response.incidents || [];
+    const renderIncidents = (limit) => {
+      $("#responseIncidents").innerHTML = incidents.slice(0, limit).map((incident) => {
         const alerts = (incident.alerts || []).map((alert) => (
           "<li><b>" + esc(alert.level) + "</b> " + esc(alert.title) +
           " <small>" + esc((alert.techniques || []).join(", ")) + "</small></li>"
@@ -490,80 +465,90 @@
           '<div class="ops-metrics"><span><b>' + esc(number(incident.alert_count)) + "</b> alerts</span>" +
           "<span><b>" + esc(number((incident.actions || []).length)) + "</b> actions</span>" +
           "<span>" + esc(incident.window_start || "") + "</span></div>" +
-          '<p class="ops-playbooks">' + esc((incident.playbooks || []).join(" · ")) + "</p>" +
+          '<p class="ops-playbooks">' + esc((incident.playbooks || []).join(" / ")) + "</p>" +
           '<details class="ops-details"><summary>Alerts and actions</summary>' +
           '<p class="hunt-label">Alerts</p><ul class="ops-list">' + alerts + "</ul>" +
           '<p class="hunt-label">Recommended actions</p><ul class="ops-list ops-actions">' + actions + "</ul>" +
           "</details></article>";
-        }).join("");
-        const button = $("#opsShowAll");
-        if (button) {
-          button.hidden = incidents.length <= 8;
-          button.textContent = limit >= incidents.length ? "Show fewer incidents" : "Show all " + incidents.length + " incidents";
-        }
-      };
-      renderIncidents(8);
-      const showAll = $("#opsShowAll");
-      if (showAll) {
-        showAll.addEventListener("click", () => {
-          const expanded = showAll.textContent.startsWith("Show fewer");
-          renderIncidents(expanded ? 8 : incidents.length);
-        });
+      }).join("");
+      const button = $("#responseShowAll");
+      if (button) {
+        button.hidden = incidents.length <= 8;
+        button.textContent = limit >= incidents.length ? "Show fewer incidents" : "Show all " + incidents.length + " incidents";
       }
+    };
+    renderIncidents(8);
+    const showAll = $("#responseShowAll");
+    if (showAll) {
+      showAll.addEventListener("click", () => {
+        const expanded = showAll.textContent.startsWith("Show fewer");
+        renderIncidents(expanded ? 8 : incidents.length);
+      });
     }
+    $("#responseNote").innerHTML = "Dry-run response: no EDR, cloud, or ticketing API was called. " +
+      'Full data: <a href="https://github.com/Meruyert5/penumbra/blob/main/response/README.md" target="_blank" rel="noreferrer">response/README.md</a>.';
+  } else if (responsePanel) {
+    responsePanel.hidden = true;
+  }
 
-    if (cloudPack) {
-      const summary = cloudPack.summary || {};
-      $("#opsCloudStats").innerHTML = [
-        [summary.detections, "detections"],
-        [summary.fired, "fired"],
-        [summary.events, "matched events"],
-        [summary.not_exercised, "not exercised"]
-      ].map(([value, label]) => (
-        '<div class="validation-stat"><b>' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
+  /* ------------------------------------------------------------- cloud pack */
+  const cloudPack = DATA.cloud_pack;
+  const cloudPanel = $("#cloudPanel");
+  if (cloudPanel && cloudPack && (cloudPack.detections || []).length) {
+    const summary = cloudPack.summary || {};
+    $("#cloudStats").innerHTML = [
+      [summary.detections, "detections"],
+      [summary.fired, "fired"],
+      [summary.events, "matched events"],
+      [summary.not_exercised, "not exercised"]
+    ].map(([value, label]) => (
+      '<div class="validation-stat"><b>' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
+    )).join("");
+    $("#cloudCards").innerHTML = (cloudPack.detections || []).map((detection) => {
+      const evidence = (detection.evidence || []).slice(0, 8).map((row) => (
+        "<tr><td>" + esc(row.time || "") + "</td><td>" + esc(row.user || "") + "</td><td>" +
+        esc(row.source || "") + "</td><td>" + esc(row.detail || "") + "</td></tr>"
       )).join("");
-      $("#opsCloudCards").innerHTML = (cloudPack.detections || []).map((detection) => {
-        const evidence = (detection.evidence || []).slice(0, 8).map((row) => (
-          "<tr><td>" + esc(row.time || "") + "</td><td>" + esc(row.user || "") + "</td><td>" +
-          esc(row.source || "") + "</td><td>" + esc(row.detail || "") + "</td></tr>"
-        )).join("");
-        return '<article class="ops-card is-' + (detection.status === "fired" ? "critical" : "empty") + '">' +
-          '<div class="ops-card-head"><span class="ops-id">' + esc(detection.id) + "</span>" +
-          '<span class="ops-chip">' + esc(detection.status) + "</span></div>" +
-          "<h4>" + esc(detection.title) + "</h4>" +
-          '<div class="ops-metrics"><span><b>' + esc(number(detection.event_count)) + "</b> events</span>" +
-          "<span>" + esc(detection.technique) + "</span><span>" + esc(detection.level) + "</span></div>" +
-          '<p class="ops-copy">' + esc(detection.description) + "</p>" +
-          '<details class="ops-details"><summary>Query and evidence</summary>' +
-          '<pre class="hunt-query"><code>' + esc(detection.query) + "</code></pre>" +
-          '<p class="hunt-label">Response hand-off</p><p class="ops-copy">' + esc(detection.detection_change) + "</p>" +
-          (evidence ? '<div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>User</th><th>Source</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>" : "") +
-          "</details></article>";
-      }).join("");
-    }
+      return '<article class="ops-card is-' + (detection.status === "fired" ? "critical" : "empty") + '">' +
+        '<div class="ops-card-head"><span class="ops-id">' + esc(detection.id) + "</span>" +
+        '<span class="ops-chip">' + esc(detection.status) + "</span></div>" +
+        "<h4>" + esc(detection.title) + "</h4>" +
+        '<div class="ops-metrics"><span><b>' + esc(number(detection.event_count)) + "</b> events</span>" +
+        "<span>" + esc(detection.technique) + "</span><span>" + esc(detection.level) + "</span></div>" +
+        '<p class="ops-copy">' + esc(detection.description) + "</p>" +
+        '<details class="ops-details"><summary>Query and evidence</summary>' +
+        '<pre class="hunt-query"><code>' + esc(detection.query) + "</code></pre>" +
+        '<p class="hunt-label">Response hand-off</p><p class="ops-copy">' + esc(detection.detection_change) + "</p>" +
+        (evidence ? '<div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>User</th><th>Source</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>" : "") +
+        "</details></article>";
+    }).join("");
+    $("#cloudNote").innerHTML = "The cloud pack is separate from the 50-rule Sigma core. " +
+      'Full data: <a href="https://github.com/Meruyert5/penumbra/blob/main/cloud/README.md" target="_blank" rel="noreferrer">cloud/README.md</a>.';
+  } else if (cloudPanel) {
+    cloudPanel.hidden = true;
+  }
 
-    if (ir) {
-      $("#opsIrCards").innerHTML = (ir.cases || []).map((item) => {
-        const metrics = item.metrics || {};
-        return '<article class="ops-card ops-case is-' + esc(item.severity) + '">' +
-          '<div class="ops-card-head"><span class="ops-id">' + esc(item.id) + "</span>" +
-          '<span class="ops-chip">' + esc(item.verdict) + "</span></div>" +
-          "<h4>" + esc(item.slug) + "</h4>" +
-          '<p class="ops-copy">' + esc(item.containment_status) + "</p>" +
-          '<div class="ops-metrics"><span><b>' + esc(number(metrics.observed_seconds)) + "</b> observed seconds</span>" +
-          "<span><b>" + esc(number(metrics.alert_count)) + "</b> alerts</span>" +
-          "<span><b>" + esc(number(metrics.detection_span_seconds)) + "</b> detection seconds</span></div>" +
-          '<p class="ops-case-links"><a href="cases/' + esc(item.slug) + '/report.md">Report</a>' +
-          '<a href="cases/IR.md">Close-out</a></p></article>';
-      }).join("");
-    }
-
-    $("#opsNote").innerHTML = "Dry-run response: no EDR, cloud, or ticketing API was called. " +
-      'Full data: <a href="https://github.com/Meruyert5/penumbra/blob/main/response/README.md" target="_blank" rel="noreferrer">response</a>, ' +
-      '<a href="https://github.com/Meruyert5/penumbra/blob/main/cloud/README.md" target="_blank" rel="noreferrer">cloud pack</a>, ' +
-      '<a href="https://github.com/Meruyert5/penumbra/blob/main/cases/IR.md" target="_blank" rel="noreferrer">IR casebook</a>.';
-  } else if (opsPanel) {
-    opsPanel.hidden = true;
+  /* ------------------------------------------------------------- IR casebook */
+  const ir = DATA.ir;
+  const irPanel = $("#irPanel");
+  if (irPanel && ir && (ir.cases || []).length) {
+    $("#irCards").innerHTML = (ir.cases || []).map((item) => {
+      const metrics = item.metrics || {};
+      return '<article class="ops-card ops-case is-' + esc(item.severity) + '">' +
+        '<div class="ops-card-head"><span class="ops-id">' + esc(item.id) + "</span>" +
+        '<span class="ops-chip">' + esc(item.verdict) + "</span></div>" +
+        "<h4>" + esc(item.slug) + "</h4>" +
+        '<p class="ops-copy">' + esc(item.containment_status) + "</p>" +
+        '<div class="ops-metrics"><span><b>' + esc(number(metrics.observed_seconds)) + "</b> observed seconds</span>" +
+        "<span><b>" + esc(number(metrics.alert_count)) + "</b> alerts</span>" +
+        "<span><b>" + esc(number(metrics.detection_span_seconds)) + "</b> detection seconds</span></div>" +
+        '<p class="ops-case-links"><a href="cases/' + esc(item.slug) + '/report.md">Report</a>' +
+        '<a href="cases/IR.md">Close-out</a></p></article>';
+    }).join("");
+    $("#irNote").innerHTML = "Full close-outs: " +
+      '<a href="cases/IR.md">cases/IR.md</a>.';
+  } else if (irPanel) {
+    irPanel.hidden = true;
   }
 
   /* ------------------------------------------------------------- roadmap */
@@ -596,50 +581,6 @@
     )).join("");
   } else if (roadmapPanel) {
     roadmapPanel.hidden = true;
-  }
-
-  /* ------------------------------------------------------------- evidence tabs */
-  const evidenceTabs = Array.from(document.querySelectorAll(".evidence-tab"));
-  if (evidenceTabs.length) {
-    const evidencePanels = evidenceTabs.map((tab) => document.getElementById(tab.getAttribute("aria-controls")));
-    const validationTotals = (DATA.validation && DATA.validation.totals) || {};
-    const huntSummary = (DATA.hunts && DATA.hunts.summary) || {};
-    const responseSummary = (DATA.response && DATA.response.summary) || {};
-    const roadmapProjects = (DATA.roadmap && DATA.roadmap.projects) || [];
-    const counts = {
-      evidenceCountValidation: validationTotals.rules_total ? validationTotals.rules_total + " rules" : "rules",
-      evidenceCountHunting: huntSummary.hunts ? huntSummary.hunts + " hunts" : "hunts",
-      evidenceCountOperations: responseSummary.incidents ? responseSummary.incidents + " incidents" : "incidents",
-      evidenceCountRoadmap: roadmapProjects.length ? roadmapProjects.length + " projects" : "projects"
-    };
-    Object.entries(counts).forEach(([id, value]) => {
-      const node = document.getElementById(id);
-      if (node) node.textContent = value;
-    });
-
-    const activateEvidence = (index) => {
-      evidenceTabs.forEach((tab, position) => {
-        const selected = position === index;
-        tab.setAttribute("aria-selected", String(selected));
-        tab.tabIndex = selected ? 0 : -1;
-        if (evidencePanels[position]) evidencePanels[position].hidden = !selected;
-      });
-    };
-    evidenceTabs.forEach((tab, index) => {
-      tab.addEventListener("click", () => activateEvidence(index));
-      tab.addEventListener("keydown", (event) => {
-        if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) return;
-        event.preventDefault();
-        let next = index;
-        if (event.key === "Home") next = 0;
-        else if (event.key === "End") next = evidenceTabs.length - 1;
-        else next = (index + (event.key === "ArrowRight" ? 1 : -1) + evidenceTabs.length) % evidenceTabs.length;
-        evidenceTabs[next].focus();
-        activateEvidence(next);
-      });
-    });
-    const initial = Math.max(0, evidencePanels.findIndex((panel) => panel && !panel.hidden));
-    activateEvidence(initial);
   }
 
   /* ------------------------------------------------------------- scope chart */
