@@ -50,7 +50,7 @@
         {
           "name": "Dashboard integration",
           "state": "active",
-          "detail": "Rework the new sections, compact where needed, and keep every extension interactive and consistent with the rest of the page."
+          "detail": "Evidence workspace with four tabs, compact validation, expandable incidents, and interactive roadmap; further visual polish can follow."
         }
       ],
       "done": "A reviewer can follow a hunt or a case from telemetry to verdict without reading the source code."

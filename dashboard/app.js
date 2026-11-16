@@ -473,7 +473,9 @@
         '<div class="validation-stat"><b>' + esc(percent ? number(Math.round(value)) + "%" : number(value)) +
         "</b><span>" + esc(label) + "</span></div>"
       )).join("");
-      $("#opsIncidents").innerHTML = (response.incidents || []).map((incident) => {
+      const incidents = response.incidents || [];
+      const renderIncidents = (limit) => {
+        $("#opsIncidents").innerHTML = incidents.slice(0, limit).map((incident) => {
         const alerts = (incident.alerts || []).map((alert) => (
           "<li><b>" + esc(alert.level) + "</b> " + esc(alert.title) +
           " <small>" + esc((alert.techniques || []).join(", ")) + "</small></li>"
@@ -493,7 +495,21 @@
           '<p class="hunt-label">Alerts</p><ul class="ops-list">' + alerts + "</ul>" +
           '<p class="hunt-label">Recommended actions</p><ul class="ops-list ops-actions">' + actions + "</ul>" +
           "</details></article>";
-      }).join("");
+        }).join("");
+        const button = $("#opsShowAll");
+        if (button) {
+          button.hidden = incidents.length <= 8;
+          button.textContent = limit >= incidents.length ? "Show fewer incidents" : "Show all " + incidents.length + " incidents";
+        }
+      };
+      renderIncidents(8);
+      const showAll = $("#opsShowAll");
+      if (showAll) {
+        showAll.addEventListener("click", () => {
+          const expanded = showAll.textContent.startsWith("Show fewer");
+          renderIncidents(expanded ? 8 : incidents.length);
+        });
+      }
     }
 
     if (cloudPack) {
@@ -580,6 +596,50 @@
     )).join("");
   } else if (roadmapPanel) {
     roadmapPanel.hidden = true;
+  }
+
+  /* ------------------------------------------------------------- evidence tabs */
+  const evidenceTabs = Array.from(document.querySelectorAll(".evidence-tab"));
+  if (evidenceTabs.length) {
+    const evidencePanels = evidenceTabs.map((tab) => document.getElementById(tab.getAttribute("aria-controls")));
+    const validationTotals = (DATA.validation && DATA.validation.totals) || {};
+    const huntSummary = (DATA.hunts && DATA.hunts.summary) || {};
+    const responseSummary = (DATA.response && DATA.response.summary) || {};
+    const roadmapProjects = (DATA.roadmap && DATA.roadmap.projects) || [];
+    const counts = {
+      evidenceCountValidation: validationTotals.rules_total ? validationTotals.rules_total + " rules" : "rules",
+      evidenceCountHunting: huntSummary.hunts ? huntSummary.hunts + " hunts" : "hunts",
+      evidenceCountOperations: responseSummary.incidents ? responseSummary.incidents + " incidents" : "incidents",
+      evidenceCountRoadmap: roadmapProjects.length ? roadmapProjects.length + " projects" : "projects"
+    };
+    Object.entries(counts).forEach(([id, value]) => {
+      const node = document.getElementById(id);
+      if (node) node.textContent = value;
+    });
+
+    const activateEvidence = (index) => {
+      evidenceTabs.forEach((tab, position) => {
+        const selected = position === index;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        if (evidencePanels[position]) evidencePanels[position].hidden = !selected;
+      });
+    };
+    evidenceTabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activateEvidence(index));
+      tab.addEventListener("keydown", (event) => {
+        if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        let next = index;
+        if (event.key === "Home") next = 0;
+        else if (event.key === "End") next = evidenceTabs.length - 1;
+        else next = (index + (event.key === "ArrowRight" ? 1 : -1) + evidenceTabs.length) % evidenceTabs.length;
+        evidenceTabs[next].focus();
+        activateEvidence(next);
+      });
+    });
+    const initial = Math.max(0, evidencePanels.findIndex((panel) => panel && !panel.hidden));
+    activateEvidence(initial);
   }
 
   /* ------------------------------------------------------------- scope chart */

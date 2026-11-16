@@ -13,6 +13,7 @@ account.
 | Latest commit | use `git log -1 --oneline`; the repository is clean after each handoff |
 | Local repo | the repository checkout |
 | Built dashboard | `docs/index.html` |
+| Evidence workspace | Fig. 4-7 tabs: Validation, Hunting, Operations, Roadmap |
 | Public site | `site/` (generated, gitignored) |
 | Public surface | `index.html`, `assets/`, `cases/`, `.nojekyll`; optionally `CNAME` |
 | Public host | Private repository; GitHub Pages offline during the integration pass |

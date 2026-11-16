@@ -43,6 +43,7 @@
       <a href="#coverage" data-chapter="coverage"><span class="n">04</span><span class="t">Corona</span></a>
       <a href="#cases" data-chapter="cases"><span class="n">05</span><span class="t">Eclipses</span></a>
       <a href="#reproduce" data-chapter="reproduce"><span class="n">06</span><span class="t">Recurrence</span></a>
+      <a href="#evidence" data-chapter="evidence"><span class="n">07</span><span class="t">Evidence</span></a>
     </nav>
   </div>
 
@@ -540,7 +541,25 @@
       </div>
     </div>
 
-    <section class="validation-panel" id="validationPanel" data-reveal aria-labelledby="validationTitle">
+  </section>
+
+  <section class="chapter evidence-chapter" id="evidence" aria-labelledby="evidenceTitle">
+    <header class="chapter-head" data-reveal>
+      <span class="chapter-no" aria-hidden="true">07</span>
+      <div class="chapter-intro">
+        <p class="chapter-label">Evidence</p>
+        <h2>Read the <span class="sans-word">light.</span></h2>
+        <p class="chapter-lede">Four views of the same run: what the rules proved, what hunting found, what response recommended, and where the portfolio goes next.</p>
+      </div>
+    </header>
+    <div class="evidence-tabs" role="tablist" aria-label="Evidence views">
+      <button class="evidence-tab" type="button" role="tab" id="evidenceTabValidation" aria-controls="validationPanel" aria-selected="true">Validation <span class="evidence-count" id="evidenceCountValidation">—</span></button>
+      <button class="evidence-tab" type="button" role="tab" id="evidenceTabHunting" aria-controls="huntsPanel" aria-selected="false">Hunting <span class="evidence-count" id="evidenceCountHunting">—</span></button>
+      <button class="evidence-tab" type="button" role="tab" id="evidenceTabOperations" aria-controls="opsPanel" aria-selected="false">Operations <span class="evidence-count" id="evidenceCountOperations">—</span></button>
+      <button class="evidence-tab" type="button" role="tab" id="evidenceTabRoadmap" aria-controls="roadmapPanel" aria-selected="false">Roadmap <span class="evidence-count" id="evidenceCountRoadmap">—</span></button>
+    </div>
+    <div class="evidence-panels">
+    <section class="validation-panel" id="validationPanel" aria-labelledby="validationTitle">
       <div class="validation-head">
         <p class="validation-kicker">Fig. 4 / Validation</p>
         <h3 id="validationTitle">What the rules did on real and benign data.</h3>
@@ -549,7 +568,7 @@
       <div class="validation-stats" id="validationStats"></div>
       <div class="validation-body">
         <figure class="validation-plate">
-          <figcaption class="validation-cap"><span>Rule status / 50</span><span id="validationCount">loading</span></figcaption>
+          <figcaption class="validation-cap"><span>Rule status</span><span id="validationCount">loading</span></figcaption>
           <div class="validation-matrix" id="validationMatrix" role="group" aria-label="Per-rule validation status"></div>
           <p class="validation-legend"><span class="is-matched"></span> matched <span class="is-false-negative"></span> false negative <span class="is-no-match"></span> no match <span class="is-not-evaluable"></span> not evaluable</p>
         </figure>
@@ -575,19 +594,21 @@
         <div class="validation-benchmark-detail" id="validationBenchmarkDetail" aria-live="polite"></div>
         <p class="validation-benchmark-note" id="validationBenchmarkNote"></p>
       </div>
-      <h4 class="validation-subhead">Rules that fired</h4>
-      <div class="validation-table-wrap">
-        <table class="validation-table">
-          <thead><tr><th>Rule</th><th>Level</th><th>Technique</th><th>Matches</th><th>Sample</th><th>Verdict</th></tr></thead>
-          <tbody id="validationRows"></tbody>
-        </table>
-      </div>
+      <details class="validation-fired">
+        <summary>Rules that fired and verdicts</summary>
+        <div class="validation-table-wrap">
+          <table class="validation-table">
+            <thead><tr><th>Rule</th><th>Level</th><th>Technique</th><th>Matches</th><th>Sample</th><th>Verdict</th></tr></thead>
+            <tbody id="validationRows"></tbody>
+          </table>
+        </div>
+      </details>
       <p class="validation-note">These are sample-level results from 16 labelled windows across five indices. Six rules had signal: five true positives and one false negative. The scenario corpus remains the dashboard run; this panel is a small-sample comparison, not an enterprise precision or recall benchmark.</p>
       <details class="validation-proof" id="validationProof">
         <summary>Proof and provenance</summary>
         <div class="validation-proof-body" id="validationProofBody"></div>
         <details class="validation-all">
-          <summary>All 50 rule statuses</summary>
+          <summary>All rule statuses</summary>
           <div class="validation-all-wrap">
             <table class="validation-table validation-all-table">
               <thead><tr><th>Rule</th><th>Level</th><th>Status</th><th>Reason</th></tr></thead>
@@ -597,9 +618,8 @@
         </details>
       </details>
     </section>
-  </section>
 
-  <section class="hunts-panel" id="huntsPanel" data-reveal aria-labelledby="huntsTitle">
+  <section class="hunts-panel" id="huntsPanel" aria-labelledby="huntsTitle" hidden>
     <div class="hunts-head">
       <p class="validation-kicker">Fig. 5 / Hunting</p>
       <h3 id="huntsTitle">Hypothesis first, alert second.</h3>
@@ -610,7 +630,7 @@
     <p class="hunts-note" id="huntsNote"></p>
   </section>
 
-  <section class="ops-panel" id="opsPanel" data-reveal aria-labelledby="opsTitle">
+  <section class="ops-panel" id="opsPanel" aria-labelledby="opsTitle" hidden>
     <div class="ops-head">
       <p class="validation-kicker">Fig. 6 / Operations</p>
       <h3 id="opsTitle">From alert to action.</h3>
@@ -624,6 +644,7 @@
     <div class="ops-view" id="opsResponse" role="tabpanel" aria-labelledby="opsTabResponse">
       <div class="validation-stats ops-stats" id="opsResponseStats"></div>
       <div class="ops-grid" id="opsIncidents"></div>
+      <div class="ops-more"><button class="mini" type="button" id="opsShowAll">Show all incidents</button></div>
     </div>
     <div class="ops-view" id="opsCloud" role="tabpanel" aria-labelledby="opsTabCloud" hidden>
       <div class="validation-stats ops-stats" id="opsCloudStats"></div>
@@ -635,9 +656,9 @@
     <p class="ops-note" id="opsNote"></p>
   </section>
 
-  <section class="roadmap-panel" id="roadmapPanel" data-reveal aria-labelledby="roadmapTitle">
+  <section class="roadmap-panel" id="roadmapPanel" aria-labelledby="roadmapTitle" hidden>
     <div class="roadmap-head">
-      <p class="validation-kicker" id="roadmapKicker">Fig. 6 / Portfolio roadmap</p>
+      <p class="validation-kicker" id="roadmapKicker">Fig. 7 / Portfolio roadmap</p>
       <h3 id="roadmapTitle">Three complete projects, no connector.</h3>
       <p class="roadmap-lede" id="roadmapIntro"></p>
     </div>
@@ -657,6 +678,8 @@
       </div>
     </div>
   </section>
+    </div>
+  </section>
 
   <footer class="colophon" data-reveal>
     <div class="colophon-brand">
@@ -671,6 +694,7 @@
       <a href="#coverage">Corona</a>
       <a href="#cases">Eclipses</a>
       <a href="#reproduce">Recurrence</a>
+      <a href="#evidence">Evidence</a>
     </nav>
     <span class="colophon-dot" aria-hidden="true"></span>
   </footer>

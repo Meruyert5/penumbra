@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Reworked the end of the dashboard into a single Evidence chapter with tabs for
+  Validation, Hunting, Operations, and Roadmap. The four figures now share one
+  workspace instead of four stacked panels; the validation view is more compact
+  and the incident list can show all 27 incidents on demand.
 - Made the GitHub repository private while the dashboard integration pass is in
   progress.
 - Added the Penumbra response layer: `pipeline.triage` turns 50 alerts into 27

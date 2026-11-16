@@ -6467,6 +6467,75 @@ body::after { display: none; }
   .validation-stats b { font-size: 22px; }
 }
 
+/* Fig. 4-7: one evidence workspace. */
+.evidence-chapter { padding-bottom: clamp(40px, 6vw, 80px); }
+.evidence-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin: 18px 0 0;
+}
+.evidence-tab {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border: 1px solid rgba(255,227,179,.14);
+  border-radius: 2px 12px 2px 2px;
+  background: rgba(255,227,179,.025);
+  color: rgba(246,244,241,.62);
+  cursor: pointer;
+  font: 500 10px/1.2 var(--sans);
+  text-align: left;
+  transition: border-color .2s, background .2s, color .2s;
+}
+.evidence-tab:hover { border-color: rgba(251,185,49,.45); color: var(--paper); }
+.evidence-tab[aria-selected="true"] {
+  border-color: var(--sun-2);
+  background: linear-gradient(135deg, rgba(248,143,34,.14), rgba(255,227,179,.04));
+  color: var(--paper);
+  box-shadow: inset 0 -2px 0 var(--sun-2);
+}
+.evidence-tab:focus-visible { outline: 2px solid var(--sun-3); outline-offset: 3px; }
+.evidence-count {
+  color: var(--sun-3);
+  font: 500 8px/1.2 var(--mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.evidence-panels {
+  margin-top: 12px;
+  padding: clamp(16px, 2.6vw, 28px);
+  border: 1px solid #2a211b;
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(620px 260px at 84% -8%, rgba(248,143,34,.18), transparent 66%),
+    radial-gradient(420px 240px at 4% 112%, rgba(249,92,75,.08), transparent 70%),
+    #0B0A09;
+  color: var(--paper);
+  box-shadow: 8px 8px 0 rgba(20,18,16,.16);
+}
+.evidence-panels > .validation-panel,
+.evidence-panels > .hunts-panel,
+.evidence-panels > .ops-panel,
+.evidence-panels > .roadmap-panel {
+  margin-top: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+@media (max-width: 980px) {
+  .evidence-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .evidence-tabs { grid-template-columns: 1fr; }
+}
+
 /* Fig. 4: the validation panel is data-driven from docs/validation/results.json. */
 .validation-panel {
   margin-top: clamp(30px, 5vw, 56px);
@@ -6673,6 +6742,19 @@ body::after { display: none; }
 .validation-table td:nth-child(2) { color: var(--sun-2); text-transform: uppercase; }
 .validation-table td:nth-child(4) { color: var(--paper); font-weight: 600; }
 .validation-table .v-verdict { color: var(--sun-3); }
+.validation-fired {
+  margin-top: 16px;
+  border-top: 1px solid rgba(255,227,179,.14);
+  padding-top: 12px;
+}
+.validation-fired summary {
+  cursor: pointer;
+  color: var(--sun-3);
+  font: 500 8px/1.4 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.validation-fired[open] summary { margin-bottom: 10px; }
 .validation-benchmark {
   margin-top: 18px;
   padding: 14px;
@@ -7085,6 +7167,7 @@ body::after { display: none; }
   font: 500 8.5px/1.5 var(--mono);
 }
 .ops-note a { color: var(--sun-3); text-decoration: underline; text-underline-offset: 3px; }
+.ops-more { display: flex; justify-content: flex-end; margin-top: 10px; }
 
 /* Fig. 7: the three-project roadmap. */
 .roadmap-grid {
