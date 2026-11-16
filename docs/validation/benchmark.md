@@ -69,6 +69,9 @@ Counts are **sample-level**, not event-level. A rule that fires in a labelled
 window counts once for that window. Alert volume is the exact count from the
 compiled KQL query, not the 100-event EQL sample stored in `alerts.json`.
 
+In Fig. 4, click a rule name to open the labelled windows behind its counts,
+including each window's result, date range, expected rule, and note.
+
 ## The false negative
 
 The SMB capture contains two Security **5145** records for `\\*\ADMIN$`. The

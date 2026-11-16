@@ -279,12 +279,70 @@
         (benchmarkSummary.tp || 0) + " TP · " + (benchmarkSummary.fp || 0) + " FP · " +
         (benchmarkSummary.fn || 0) + " FN · precision " + budget(benchmarkSummary.precision) +
         " · recall " + budget(benchmarkSummary.recall);
-      $("#validationBenchmarkRows").innerHTML = benchmarkRows.map((row) => (
-        "<tr" + (Number(row.fn) > 0 ? ' class="is-miss"' : "") + "><td>" + esc(row.rule) + "</td><td>" +
-        esc(number(row.tp)) + "</td><td>" + esc(number(row.fp)) + "</td><td>" + esc(number(row.fn)) +
-        "</td><td>" + esc(budget(row.precision)) + "</td><td>" + esc(budget(row.recall)) +
-        "</td><td>" + esc(number(row.alert_volume)) + "</td></tr>"
+      const labelById = new Map((validation.labels || []).map((sample) => [sample.id, sample]));
+      const detail = $("#validationBenchmarkDetail");
+      const emptyDetail = '<p class="validation-detail-empty">Select a rule to see the labelled windows behind its counts.</p>';
+      const renderDetail = (row) => {
+        if (!row) {
+          detail.innerHTML = emptyDetail;
+          return;
+        }
+        const windows = (row.samples || []).map((result) => {
+          const label = labelById.get(result.id) || {};
+          const note = label.note ? '<p class="validation-detail-note">' + esc(label.note) + "</p>" : "";
+          const expected = (label.expected_rules || []).length
+            ? '<p class="validation-detail-expected">Expected: ' + esc(label.expected_rules.join(", ")) + "</p>"
+            : '<p class="validation-detail-expected">Expected: no rule (coverage gap)</p>';
+          return '<li class="is-' + esc(String(result.result || "").toLowerCase()) + '">' +
+            "<b>" + esc(result.result || "") + "</b>" +
+            "<span>" + esc(result.id || "") + "</span>" +
+            "<small>" + esc(label.start || "") + " - " + esc(label.end || "") + "</small>" +
+            note + expected + "</li>";
+        }).join("");
+        detail.innerHTML =
+          '<div class="validation-detail-head"><b>' + esc(row.rule) + "</b>" +
+          '<span class="validation-detail-level">' + esc(row.level || "") + "</span>" +
+          '<span class="validation-detail-tech">' + esc(row.technique || "") + "</span></div>" +
+          '<div class="validation-detail-metrics">' +
+          "<span><b>" + esc(number(row.tp)) + "</b> TP</span>" +
+          "<span><b>" + esc(number(row.fp)) + "</b> FP</span>" +
+          "<span><b>" + esc(number(row.fn)) + "</b> FN</span>" +
+          "<span><b>" + esc(budget(row.precision)) + "</b> precision</span>" +
+          "<span><b>" + esc(budget(row.recall)) + "</b> recall</span>" +
+          "<span><b>" + esc(number(row.alert_volume)) + "</b> " +
+          (Number(row.alert_volume) === 1 ? "alert" : "alerts") + "</span></div>" +
+          '<ul class="validation-detail-windows">' + windows + "</ul>";
+      };
+
+      $("#validationBenchmarkRows").innerHTML = benchmarkRows.map((row, index) => (
+        "<tr" + (Number(row.fn) > 0 ? ' class="is-miss"' : "") + "><td>" +
+        '<button type="button" class="validation-rule-button" data-index="' + index +
+        '" aria-expanded="false" aria-controls="validationBenchmarkDetail">' + esc(row.rule) + "</button></td>" +
+        "<td>" + esc(number(row.tp)) + "</td><td>" + esc(number(row.fp)) + "</td><td>" +
+        esc(number(row.fn)) + "</td><td>" + esc(budget(row.precision)) + "</td><td>" +
+        esc(budget(row.recall)) + "</td><td>" + esc(number(row.alert_volume)) + "</td></tr>"
       )).join("");
+      detail.innerHTML = emptyDetail;
+      const buttons = Array.from(document.querySelectorAll("#validationBenchmarkRows .validation-rule-button"));
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = Number(button.dataset.index);
+          const wasOpen = button.getAttribute("aria-expanded") === "true";
+          buttons.forEach((item) => {
+            item.setAttribute("aria-expanded", "false");
+            const parent = item.closest("tr");
+            if (parent) parent.classList.remove("is-open");
+          });
+          if (wasOpen) {
+            renderDetail(null);
+            return;
+          }
+          button.setAttribute("aria-expanded", "true");
+          const parent = button.closest("tr");
+          if (parent) parent.classList.add("is-open");
+          renderDetail(benchmarkRows[index]);
+        });
+      });
       $("#validationBenchmarkNote").textContent = (benchmark.note || "") +
         " Alert volume is the exact count from the compiled KQL query, not the 100-event EQL sample cap.";
     } else {

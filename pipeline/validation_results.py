@@ -267,6 +267,7 @@ def build_results(
             "results": "validation/benchmark-results.json",
             "note": "Sample-level counts over 16 labelled windows across five indices.",
         },
+        "labels": labels.get("samples", []),
         "samples": SAMPLE_ROWS,
         "matched": matched_rows,
         "missed": missed_rows,

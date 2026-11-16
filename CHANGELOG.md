@@ -11,7 +11,8 @@
 - Added Windows XML, auditd, syslog auth, nginx, and Zeek replay parsers and
   tests; added the CloudTrail mapper and tests.
 - Added `docs/validation/labels.json`, the per-rule benchmark results, and the
-  Fig. 4 TP/FP/FN, precision, recall, and alert-volume table.
+  Fig. 4 TP/FP/FN, precision, recall, and alert-volume table. Each rule name
+  expands to the labelled windows behind its counts.
 - Replayed two real OTRF samples: 110 Windows Security events (one `Windows
   Event Log Cleared` match) and 118 richer Sysmon/Security events (two LSASS
   process-access matches and one event-log-cleared match). Recorded the first
