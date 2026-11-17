@@ -343,6 +343,13 @@
         </div>
         <div class="instrument-score"><b id="responseIncidentCount">27</b><span>incidents from <i id="responseAlertCount">50</i> alerts</span></div>
       </div>
+      <div class="response-flow" id="responseFlow" aria-hidden="true">
+        <div class="flow-stage"><b id="flowAlerts">50</b><span>alerts</span></div>
+        <span class="flow-link"><i></i></span>
+        <div class="flow-stage"><b id="flowIncidents">27</b><span>incidents</span></div>
+        <span class="flow-link"><i></i></span>
+        <div class="flow-stage"><b id="flowActions">78</b><span>actions</span></div>
+      </div>
       <div class="instrument-stats" id="responseStats"></div>
       <div class="instrument-controls">
         <label class="sr-only" for="responseSelect">Choose an incident</label>
@@ -445,7 +452,7 @@
         <div class="instrument-score"><b id="huntFindingCount">4</b><span>hunts with findings</span></div>
       </div>
       <div class="instrument-stats" id="huntsStats"></div>
-      <div class="instrument-tabs" id="huntTabs" role="tablist" aria-label="Hunts"></div>
+      <div class="hunt-radar" id="huntRadar" role="tablist" aria-label="Hunts"></div>
       <div class="instrument-detail" id="huntDetail" aria-live="polite"></div>
       <p class="instrument-note" id="huntsNote"></p>
     </section>  </section>
@@ -601,6 +608,10 @@
         </div>
         <div class="instrument-score"><b>3</b><span>case close-outs</span></div>
       </div>
+      <div class="ir-timeline" id="irTimeline">
+        <div class="ir-track" id="irTrack"></div>
+        <div class="ir-controls"><button class="mini" id="irPlay" type="button">play close-out</button><span id="irClock"></span></div>
+      </div>
       <div class="instrument-tabs" id="irTabs" role="tablist" aria-label="IR cases"></div>
       <div class="instrument-detail" id="irDetail" aria-live="polite"></div>
       <p class="instrument-note" id="irNote"></p>
@@ -668,7 +679,7 @@
         </div>
         <div class="instrument-score"><b>3</b><span>projects</span></div>
       </div>
-      <div class="instrument-tabs" id="roadmapTabs" role="tablist" aria-label="Projects"></div>
+      <div class="roadmap-orbit" id="roadmapOrbit" role="tablist" aria-label="Projects"></div>
       <div class="instrument-detail" id="roadmapDetail" aria-live="polite"></div>
       <p class="instrument-note" id="roadmapNote"></p>
     </section>
@@ -680,6 +691,11 @@
           <h3 id="cloudTitle">What Penumbra hands to Apsis.</h3>
         </div>
         <div class="instrument-score"><b id="cloudFiredCount">2</b><span>of 3 detections fired</span></div>
+      </div>
+      <div class="cloud-bridge" id="cloudBridge" aria-hidden="true">
+        <div class="bridge-side"><span>Penumbra</span><b id="bridgeDetections">3</b><small>detections</small></div>
+        <div class="bridge-line"><i></i><span></span><span></span><span></span></div>
+        <div class="bridge-side is-apsis"><span>Apsis</span><b id="bridgeFired">2</b><small>fired findings</small></div>
       </div>
       <div class="instrument-stats" id="cloudStats"></div>
       <div class="instrument-tabs" id="cloudTabs" role="tablist" aria-label="Cloud detections"></div>

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added motion to the new instruments: a response flow, a hunt radar, an IR
+  timeline scrubber, a cloud hand-off bridge, and a project orbit. All respect
+  reduced-motion and keep a keyboard-accessible selector.
 - Rebuilt the new sections as compact selector/detail instruments with light
   surfaces, chips, and one detail pane, matching the watch floor and case chain.
   Removed the repeated validation sample cards from the visible layout.

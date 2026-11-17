@@ -405,6 +405,9 @@
       statChip(summary.actions, "actions") +
       statChip(Math.round(Number(summary.containment_coverage || 0) * 100) + "%", "containment") +
       statChip(summary.playbooks, "playbooks");
+    $("#flowAlerts").textContent = number(summary.alerts_ingested);
+    $("#flowIncidents").textContent = number(summary.incidents);
+    $("#flowActions").textContent = number(summary.actions);
     const select = $("#responseSelect");
     select.innerHTML = incidents.map((incident, index) => (
       '<option value="' + index + '">' + esc(incident.id + " / " + incident.host + " / " + incident.highest_level) + "</option>"
@@ -463,13 +466,17 @@
       '<span class="instrument-stat"><b>' + esc(number(summary.events_reviewed)) + "</b> events reviewed</span>" +
       '<span class="instrument-stat"><b>' + esc(number(summary.confirmed)) + "</b> confirmed</span>" +
       '<span class="instrument-stat"><b>' + esc(number(summary.hunts)) + "</b> hunts</span>";
-    $("#huntTabs").innerHTML = items.map((hunt, index) => (
-      '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
-      '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(hunt.id) +
-      " <span>" + esc(shortTitle(hunt)) + "</span></button>"
-    )).join("");
+    const positions = [{ x: 22, y: 30 }, { x: 78, y: 28 }, { x: 28, y: 72 }, { x: 74, y: 70 }];
+    const labels = { "HUNT-001": "Root AWS", "HUNT-002": "Service path", "HUNT-003": "DNS tunnel", "HUNT-004": "LSASS path" };
+    $("#huntRadar").innerHTML = '<span class="radar-sweep"></span>' + items.map((hunt, index) => {
+      const pos = positions[index % positions.length];
+      return '<button class="hunt-node" type="button" role="tab" data-index="' + index +
+        '" style="--x:' + pos.x + '%;--y:' + pos.y + '%;--delay:' + (index * 0.35) + 's" aria-selected="' +
+        (index === 0 ? "true" : "false") + '" aria-label="' + esc((labels[hunt.id] || shortTitle(hunt)) + ": " + hunt.title) + '"><span>' +
+        esc(labels[hunt.id] || shortTitle(hunt)) + "</span></button>";
+    }).join("");
     const detail = $("#huntDetail");
-    const tabs = Array.from(document.querySelectorAll("#huntTabs .instrument-tab"));
+    const tabs = Array.from(document.querySelectorAll("#huntRadar .hunt-node"));
     const render = (index) => {
       const hunt = items[index];
       tabs.forEach((tab, position) => tab.setAttribute("aria-selected", String(position === index)));
@@ -517,6 +524,48 @@
     )).join("");
     const detail = $("#irDetail");
     const tabs = Array.from(document.querySelectorAll("#irTabs .instrument-tab"));
+    const track = $("#irTrack");
+    const clock = $("#irClock");
+    const play = $("#irPlay");
+    let irTimer = null;
+    let activePoints = [];
+    const fmt = (value) => String(value || "").replace("T", " ").replace("Z", " UTC");
+    const stop = () => {
+      if (irTimer) clearInterval(irTimer);
+      irTimer = null;
+    };
+    const setProgress = (pct, label) => {
+      const bar = document.querySelector("#irProgress");
+      if (bar) bar.style.width = pct + "%";
+      clock.textContent = label || Math.round(pct) + "% of observed window";
+    };
+    const renderTimeline = (item) => {
+      stop();
+      const metrics = item.metrics || {};
+      const start = Date.parse(metrics.observed_start);
+      const end = Date.parse(metrics.observed_end);
+      const span = Math.max(1, end - start);
+      const at = (value) => Math.max(0, Math.min(100, ((Date.parse(value) - start) / span) * 100));
+      activePoints = [
+        { label: "observed", time: metrics.observed_start, pct: 0 },
+        { label: "first detection", time: metrics.first_detection, pct: at(metrics.first_detection) },
+        { label: "last detection", time: metrics.last_detection, pct: at(metrics.last_detection) },
+        { label: "observed end", time: metrics.observed_end, pct: 100 }
+      ];
+      track.innerHTML = '<i class="ir-progress" id="irProgress"></i>' + activePoints.map((point, index) => (
+        '<button class="ir-marker" type="button" data-index="' + index + '" style="--at:' + point.pct +
+        '%;--lane:' + (index % 2) + '" aria-label="' + esc(point.label + " " + fmt(point.time)) +
+        '"><span>' + esc(point.label) + "</span></button>"
+      )).join("");
+      track.querySelectorAll(".ir-marker").forEach((marker) => {
+        marker.addEventListener("click", () => {
+          stop();
+          const point = activePoints[Number(marker.dataset.index)];
+          setProgress(point.pct, point.label + " / " + fmt(point.time));
+        });
+      });
+      setProgress(0, "observed window / " + fmt(metrics.observed_start));
+    };
     const render = (index) => {
       const item = items[index];
       const metrics = item.metrics || {};
@@ -535,9 +584,21 @@
         '<div class="instrument-col"><h5>Lessons</h5><ul class="instrument-list">' + list(item.lessons) + "</ul></div></div>" +
         '<p class="instrument-links"><a href="cases/' + esc(item.slug) + '/report.md">Report</a>' +
         '<a href="cases/IR.md">Full close-out</a></p>';
+      renderTimeline(item);
     };
     tabs.forEach((tab, index) => {
       tab.addEventListener("click", () => render(index));
+    });
+    play.addEventListener("click", () => {
+      stop();
+      const started = performance.now();
+      const duration = reduce ? 0 : 4200;
+      irTimer = setInterval(() => {
+        const pct = duration ? Math.min(100, ((performance.now() - started) / duration) * 100) : 100;
+        const nearest = activePoints.filter((point) => point.pct <= pct).pop() || activePoints[0];
+        setProgress(pct, nearest.label + " / " + fmt(nearest.time));
+        if (pct >= 100) stop();
+      }, 40);
     });
     render(0);
     $("#irNote").innerHTML = 'Full close-outs: <a href="cases/IR.md">cases/IR.md</a>.';
@@ -556,6 +617,8 @@
       '<span class="instrument-stat"><b>' + esc(number(summary.detections)) + "</b> detections</span>" +
       '<span class="instrument-stat"><b>' + esc(number(summary.events)) + "</b> matched events</span>" +
       '<span class="instrument-stat"><b>' + esc(number(summary.not_exercised)) + "</b> waiting for telemetry</span>";
+    $("#bridgeDetections").textContent = number(summary.detections);
+    $("#bridgeFired").textContent = number(summary.fired);
     $("#cloudTabs").innerHTML = items.map((item, index) => (
       '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
       '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(item.id) +
@@ -597,12 +660,15 @@
     const items = roadmap.projects;
     $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
     $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
-    $("#roadmapTabs").innerHTML = items.map((project, index) => (
-      '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
-      '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(project.name) + "</button>"
-    )).join("");
+    const positions = [{ x: 50, y: 8 }, { x: 88, y: 78 }, { x: 12, y: 78 }];
+    $("#roadmapOrbit").innerHTML = items.map((project, index) => {
+      const pos = positions[index % positions.length];
+      return '<button class="orbit-node" type="button" role="tab" data-index="' + index +
+        '" style="--x:' + pos.x + '%;--y:' + pos.y + '%" aria-selected="' + (index === 0 ? "true" : "false") +
+        '"><span>' + esc(project.name) + "</span></button>";
+    }).join("");
     const detail = $("#roadmapDetail");
-    const tabs = Array.from(document.querySelectorAll("#roadmapTabs .instrument-tab"));
+    const tabs = Array.from(document.querySelectorAll("#roadmapOrbit .orbit-node"));
     const render = (index) => {
       const project = items[index];
       tabs.forEach((tab, position) => tab.setAttribute("aria-selected", String(position === index)));
