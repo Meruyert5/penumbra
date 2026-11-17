@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Replaced the travelling gradient rule above the new figure detail panes with a
+  fixed gradient and a slow glow pulse, so the rule stays still while it breathes.
 - Made the repository public and restored the GitHub Pages deployment at
   <https://meruyert5.github.io/penumbra/>.
 - Reworked the mobile pipeline into a readable single-column stage list, squared

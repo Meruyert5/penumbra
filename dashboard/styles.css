@@ -8859,9 +8859,9 @@ body::after { display: none; }
 .instrument-detail::after {
   height: 4px;
   background: linear-gradient(90deg, var(--instrument), var(--instrument-2) 30%, var(--coral) 58%, transparent 90%);
-  background-size: 200% 100%;
+  background-size: 100% 100%;
   box-shadow: 0 0 16px color-mix(in srgb, var(--instrument) 22%, transparent);
-  animation: detail-line 7s linear infinite;
+  animation: detail-breathe 8s ease-in-out infinite;
 }
 
 /* Deep instrument plates get a real drop shadow and an inner rim. */
@@ -8895,9 +8895,15 @@ body::after { display: none; }
 }
 #validationPanel .validation-benchmark-detail { position: relative; }
 
-@keyframes detail-line {
-  from { background-position: 0 0; }
-  to { background-position: 200% 0; }
+@keyframes detail-breathe {
+  0%, 100% {
+    opacity: .72;
+    box-shadow: 0 0 10px color-mix(in srgb, var(--instrument) 16%, transparent);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 22px color-mix(in srgb, var(--instrument) 32%, transparent);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .instrument-detail::after { animation: none; }
@@ -8929,8 +8935,10 @@ body::after { display: none; }
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, var(--instrument), var(--sun-2) 34%, var(--coral) 64%, transparent 92%);
-  background-size: 200% 100%;
-  animation: detail-line 7s linear infinite;
+  background-size: 100% 100%;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--instrument) 18%, transparent);
+  animation: detail-breathe 9s ease-in-out infinite;
+  animation-delay: -2s;
 }
 .validation-detail-head {
   display: flex;
@@ -9021,8 +9029,10 @@ body::after { display: none; }
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, var(--instrument), var(--sun-2) 34%, var(--coral) 64%, transparent 92%);
-  background-size: 200% 100%;
-  animation: detail-line 8s linear infinite;
+  background-size: 100% 100%;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--instrument) 18%, transparent);
+  animation: detail-breathe 10s ease-in-out infinite;
+  animation-delay: -4s;
 }
 .validation-proof summary {
   padding: 14px 16px;
