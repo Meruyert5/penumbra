@@ -8755,6 +8755,108 @@ body::after { display: none; }
   outline: 2px solid var(--sun-3);
   outline-offset: 2px;
 }
+
+
+/* Extra motion on the new figures. */
+#responsePanel .response-flow { position: relative; overflow: hidden; }
+.flow-scan {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 120px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(248,143,34,.14), transparent);
+  animation: flow-scan 7s linear infinite;
+}
+#responsePanel .flow-stage { animation: stage-glow 6s ease-in-out infinite; }
+#responsePanel .flow-stage:nth-of-type(2) { animation-delay: 2s; }
+#responsePanel .flow-stage:nth-of-type(3) { animation-delay: 4s; }
+
+.radar-blip {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  z-index: 1;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--sun-2);
+  box-shadow: 0 0 10px var(--sun-2);
+  opacity: 0;
+  animation: radar-blip 4.8s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+#validationPanel .validation-plate { position: relative; overflow: hidden; }
+.validation-scan {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 100px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(248,143,34,.12), transparent);
+  animation: validation-scan 8s linear infinite;
+}
+
+#irPanel .ir-progress::before {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: -7px;
+  width: 2px;
+  height: 18px;
+  background: var(--sun-2);
+  box-shadow: 0 0 12px var(--sun-2);
+}
+
+#cloudPanel .bridge-line i.p2 {
+  background: var(--sun-2);
+  box-shadow: 0 0 12px var(--sun-2);
+  animation-delay: 1.5s;
+}
+
+.orbit-moon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sun-2);
+  box-shadow: 0 0 14px var(--sun-2);
+  pointer-events: none;
+  animation: orbit-moon 16s linear infinite;
+}
+
+@keyframes flow-scan {
+  from { left: -140px; }
+  to { left: 110%; }
+}
+@keyframes stage-glow {
+  0%, 100% { box-shadow: inset 0 0 0 1px rgba(255,227,179,.1); border-color: rgba(255,227,179,.16); }
+  50% { box-shadow: inset 0 0 0 1px rgba(248,143,34,.38), 0 0 22px rgba(248,143,34,.1); border-color: rgba(248,143,34,.48); }
+}
+@keyframes radar-blip {
+  0%, 62%, 100% { opacity: 0; transform: scale(.45); }
+  8%, 18% { opacity: 1; transform: scale(1); }
+}
+@keyframes validation-scan {
+  from { left: -120px; }
+  to { left: 110%; }
+}
+@keyframes orbit-moon {
+  from { transform: translate(-50%, -50%) rotate(0deg) translateX(122px) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg) translateX(122px) rotate(-360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-scan,
+  #responsePanel .flow-stage,
+  .radar-blip,
+  .validation-scan,
+  .orbit-moon { animation: none; }
+}
 </style>
 </head>
 <body>
@@ -9089,6 +9191,7 @@ body::after { display: none; }
         <div class="instrument-score"><b id="responseIncidentCount" data-count="27">27</b><span>incidents from <i id="responseAlertCount" data-count="50">50</i> alerts</span></div>
       </div>
       <div class="response-flow" id="responseFlow" aria-hidden="true">
+        <span class="flow-scan"></span>
         <div class="flow-stage"><b id="flowAlerts" data-count="50">50</b><span>alerts</span></div>
         <span class="flow-link"><i></i></span>
         <div class="flow-stage"><b id="flowIncidents" data-count="27">27</b><span>incidents</span></div>
@@ -9256,6 +9359,7 @@ body::after { display: none; }
         <figure class="validation-plate">
           <figcaption class="validation-cap"><span>Rule status</span><span id="validationCount">loading</span></figcaption>
           <div class="validation-matrix" id="validationMatrix" role="group" aria-label="Per-rule validation status"></div>
+          <span class="validation-scan" aria-hidden="true"></span>
           <p class="validation-legend"><span class="is-matched"></span> matched <span class="is-false-negative"></span> false negative <span class="is-no-match"></span> no match <span class="is-not-evaluable"></span> not evaluable</p>
           <p class="validation-readout" id="validationCellReadout" aria-live="polite">Focus or click a tile to read the rule status.</p>
         </figure>
@@ -9448,7 +9552,7 @@ body::after { display: none; }
       </div>
       <div class="cloud-bridge" id="cloudBridge" aria-hidden="true">
         <div class="bridge-side"><span>Penumbra</span><b id="bridgeDetections" data-count="3">3</b><small>detections</small></div>
-        <div class="bridge-line"><i></i><span></span><span></span><span></span></div>
+        <div class="bridge-line"><i></i><i class="p2"></i><span></span><span></span><span></span></div>
         <div class="bridge-side is-apsis"><span>Apsis</span><b id="bridgeFired" data-count="2">2</b><small>fired findings</small></div>
       </div>
       <div class="instrument-stats" id="cloudStats"></div>
@@ -10013,7 +10117,11 @@ body::after { display: none; }
       '<span class="instrument-stat"><b>' + esc(number(summary.hunts)) + "</b> hunts</span>";
     const positions = [{ x: 22, y: 30 }, { x: 78, y: 28 }, { x: 28, y: 72 }, { x: 74, y: 70 }];
     const labels = { "HUNT-001": "Root AWS", "HUNT-002": "Service path", "HUNT-003": "DNS tunnel", "HUNT-004": "LSASS path" };
-    $("#huntRadar").innerHTML = '<span class="radar-sweep"></span>' + items.map((hunt, index) => {
+    const blips = [[18, 22], [70, 16], [64, 62], [34, 56], [86, 46], [48, 86]];
+    const blipMarkup = blips.map(([x, y], index) => (
+      '<span class="radar-blip" aria-hidden="true" style="--x:' + x + '%;--y:' + y + '%;--d:' + (index * 0.8) + 's"></span>'
+    )).join("");
+    $("#huntRadar").innerHTML = '<span class="radar-sweep"></span>' + blipMarkup + items.map((hunt, index) => {
       const pos = positions[index % positions.length];
       return '<button class="hunt-node" type="button" role="tab" data-index="' + index +
         '" style="--x:' + pos.x + '%;--y:' + pos.y + '%;--delay:' + (index * 0.35) + 's" aria-selected="' +
@@ -10103,7 +10211,8 @@ body::after { display: none; }
         '"><span>' + esc(point.label) + "</span></button>"
       )).join("");
       track.querySelectorAll(".ir-marker").forEach((marker) => {
-        marker.addEventListener("click", () => {
+        marker.addEventListener("click", (event) => {
+          event.stopPropagation();
           stop();
           const point = activePoints[Number(marker.dataset.index)];
           setProgress(point.pct, point.label + " / " + fmt(point.time));
@@ -10140,6 +10249,15 @@ body::after { display: none; }
         tabs[next].focus();
         render(next);
       });
+    });
+    track.addEventListener("click", (event) => {
+      if (event.target.closest(".ir-marker")) return;
+      const rect = track.getBoundingClientRect();
+      if (!rect.width) return;
+      const pct = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+      const nearest = activePoints.filter((point) => point.pct <= pct).pop() || activePoints[0];
+      stop();
+      setProgress(pct, nearest.label + " / " + fmt(nearest.time));
     });
     play.addEventListener("click", () => {
       stop();
@@ -10220,7 +10338,7 @@ body::after { display: none; }
     $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
     $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
     const positions = [{ x: 50, y: 8 }, { x: 76, y: 78 }, { x: 24, y: 78 }];
-    $("#roadmapOrbit").innerHTML = items.map((project, index) => {
+    $("#roadmapOrbit").innerHTML = '<span class="orbit-moon" aria-hidden="true"></span>' + items.map((project, index) => {
       const pos = positions[index % positions.length];
       return '<button class="orbit-node" type="button" role="tab" data-index="' + index +
         '" style="--x:' + pos.x + '%;--y:' + pos.y + '%" aria-selected="' + (index === 0 ? "true" : "false") +

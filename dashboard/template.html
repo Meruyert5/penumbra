@@ -345,6 +345,7 @@
         <div class="instrument-score"><b id="responseIncidentCount" data-count="27">27</b><span>incidents from <i id="responseAlertCount" data-count="50">50</i> alerts</span></div>
       </div>
       <div class="response-flow" id="responseFlow" aria-hidden="true">
+        <span class="flow-scan"></span>
         <div class="flow-stage"><b id="flowAlerts" data-count="50">50</b><span>alerts</span></div>
         <span class="flow-link"><i></i></span>
         <div class="flow-stage"><b id="flowIncidents" data-count="27">27</b><span>incidents</span></div>
@@ -512,6 +513,7 @@
         <figure class="validation-plate">
           <figcaption class="validation-cap"><span>Rule status</span><span id="validationCount">loading</span></figcaption>
           <div class="validation-matrix" id="validationMatrix" role="group" aria-label="Per-rule validation status"></div>
+          <span class="validation-scan" aria-hidden="true"></span>
           <p class="validation-legend"><span class="is-matched"></span> matched <span class="is-false-negative"></span> false negative <span class="is-no-match"></span> no match <span class="is-not-evaluable"></span> not evaluable</p>
           <p class="validation-readout" id="validationCellReadout" aria-live="polite">Focus or click a tile to read the rule status.</p>
         </figure>
@@ -704,7 +706,7 @@
       </div>
       <div class="cloud-bridge" id="cloudBridge" aria-hidden="true">
         <div class="bridge-side"><span>Penumbra</span><b id="bridgeDetections" data-count="3">3</b><small>detections</small></div>
-        <div class="bridge-line"><i></i><span></span><span></span><span></span></div>
+        <div class="bridge-line"><i></i><i class="p2"></i><span></span><span></span><span></span></div>
         <div class="bridge-side is-apsis"><span>Apsis</span><b id="bridgeFired" data-count="2">2</b><small>fired findings</small></div>
       </div>
       <div class="instrument-stats" id="cloudStats"></div>

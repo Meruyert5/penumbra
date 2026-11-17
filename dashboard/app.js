@@ -487,7 +487,11 @@
       '<span class="instrument-stat"><b>' + esc(number(summary.hunts)) + "</b> hunts</span>";
     const positions = [{ x: 22, y: 30 }, { x: 78, y: 28 }, { x: 28, y: 72 }, { x: 74, y: 70 }];
     const labels = { "HUNT-001": "Root AWS", "HUNT-002": "Service path", "HUNT-003": "DNS tunnel", "HUNT-004": "LSASS path" };
-    $("#huntRadar").innerHTML = '<span class="radar-sweep"></span>' + items.map((hunt, index) => {
+    const blips = [[18, 22], [70, 16], [64, 62], [34, 56], [86, 46], [48, 86]];
+    const blipMarkup = blips.map(([x, y], index) => (
+      '<span class="radar-blip" aria-hidden="true" style="--x:' + x + '%;--y:' + y + '%;--d:' + (index * 0.8) + 's"></span>'
+    )).join("");
+    $("#huntRadar").innerHTML = '<span class="radar-sweep"></span>' + blipMarkup + items.map((hunt, index) => {
       const pos = positions[index % positions.length];
       return '<button class="hunt-node" type="button" role="tab" data-index="' + index +
         '" style="--x:' + pos.x + '%;--y:' + pos.y + '%;--delay:' + (index * 0.35) + 's" aria-selected="' +
@@ -577,7 +581,8 @@
         '"><span>' + esc(point.label) + "</span></button>"
       )).join("");
       track.querySelectorAll(".ir-marker").forEach((marker) => {
-        marker.addEventListener("click", () => {
+        marker.addEventListener("click", (event) => {
+          event.stopPropagation();
           stop();
           const point = activePoints[Number(marker.dataset.index)];
           setProgress(point.pct, point.label + " / " + fmt(point.time));
@@ -614,6 +619,15 @@
         tabs[next].focus();
         render(next);
       });
+    });
+    track.addEventListener("click", (event) => {
+      if (event.target.closest(".ir-marker")) return;
+      const rect = track.getBoundingClientRect();
+      if (!rect.width) return;
+      const pct = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+      const nearest = activePoints.filter((point) => point.pct <= pct).pop() || activePoints[0];
+      stop();
+      setProgress(pct, nearest.label + " / " + fmt(nearest.time));
     });
     play.addEventListener("click", () => {
       stop();
@@ -694,7 +708,7 @@
     $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
     $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
     const positions = [{ x: 50, y: 8 }, { x: 76, y: 78 }, { x: 24, y: 78 }];
-    $("#roadmapOrbit").innerHTML = items.map((project, index) => {
+    $("#roadmapOrbit").innerHTML = '<span class="orbit-moon" aria-hidden="true"></span>' + items.map((project, index) => {
       const pos = positions[index % positions.length];
       return '<button class="orbit-node" type="button" role="tab" data-index="' + index +
         '" style="--x:' + pos.x + '%;--y:' + pos.y + '%" aria-selected="' + (index === 0 ? "true" : "false") +

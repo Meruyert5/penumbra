@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added scanning validation, radar blips, a scrubable IR timeline, twin cloud
+  packets, an orbiting roadmap moon, and staggered response-flow pulses.
 - Extended guided reading to fifteen steps covering response, hunting, validation,
   the IR casebook, the cloud hand-off, and the roadmap. Added focusable validation
   tiles with a live status readout and arrow-key navigation to the tab groups.
