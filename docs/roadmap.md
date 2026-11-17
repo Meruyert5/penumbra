@@ -32,8 +32,6 @@ without reading the source code.
 
 ## Apsis — cloud identity
 
-**Formerly Overpass.**
-
 **Thesis:** Find every route from a low-privilege AWS principal to administrator,
 prove which ones are real, and sever them.
 

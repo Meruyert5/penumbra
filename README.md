@@ -500,7 +500,7 @@ the After chapter.
 - **Penumbra:** detection library, validation, hunting, IR casebook, triage
   automation, and the cloud detection pack are done. Next is the dashboard
   integration pass.
-- **Apsis (formerly Overpass):** finish observed CloudTrail paths, guardrails, and
+- **Apsis:** finish observed CloudTrail paths, guardrails, and
   the attack-path case study.
 - **Network threat hunting:** build after the two existing projects are complete.
 

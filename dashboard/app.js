@@ -566,9 +566,19 @@
       if (bar) bar.style.width = pct + "%";
       track.setAttribute("aria-valuenow", String(Math.round(pct)));
       const activeIndex = activePoints.reduce((best, point, index) => (point.pct <= pct ? index : best), 0);
+      let newlyActive = null;
       track.querySelectorAll(".ir-marker").forEach((marker, index) => {
-        marker.classList.toggle("is-active", index === activeIndex);
+        const wasActive = marker.classList.contains("is-active");
+        const isActive = index === activeIndex;
+        marker.classList.toggle("is-active", isActive);
+        if (!isActive) marker.classList.remove("is-pulse");
+        if (isActive && !wasActive) newlyActive = marker;
       });
+      if (newlyActive) {
+        newlyActive.classList.remove("is-pulse");
+        void newlyActive.offsetWidth;
+        newlyActive.classList.add("is-pulse");
+      }
       clock.textContent = label || labelAt(pct);
     };
     const renderTimeline = (item) => {
@@ -585,18 +595,9 @@
       if (lastPct > 1 && lastPct < 99) activePoints.push({ label: "last detection", time: metrics.last_detection, pct: lastPct });
       activePoints.push({ label: "observed end", time: metrics.observed_end, pct: 100 });
       track.innerHTML = '<span class="ir-scan" aria-hidden="true"></span><i class="ir-progress" id="irProgress"></i>' + activePoints.map((point, index) => (
-        '<button class="ir-marker" type="button" data-index="' + index + '" style="--at:' + point.pct +
-        '%;--lane:' + (index % 2) + '" aria-label="' + esc(point.label + " " + fmt(point.time)) +
-        '"><span>' + esc(point.label) + "</span></button>"
+        '<span class="ir-marker" data-index="' + index + '" style="--at:' + point.pct +
+        '%;--lane:' + (index % 2) + '"><span>' + esc(point.label) + "</span></span>"
       )).join("");
-      track.querySelectorAll(".ir-marker").forEach((marker) => {
-        marker.addEventListener("click", (event) => {
-          event.stopPropagation();
-          stop();
-          const point = activePoints[Number(marker.dataset.index)];
-          setProgress(point.pct, point.label + " / " + fmt(point.time));
-        });
-      });
       setProgress(0, "observed window / " + fmt(metrics.observed_start));
     };
     const render = (index) => {
@@ -738,7 +739,7 @@
       const pos = positions[index % positions.length];
       return '<button class="orbit-node" type="button" role="tab" data-index="' + index +
         '" style="--x:' + pos.x + '%;--y:' + pos.y + '%" aria-selected="' + (index === 0 ? "true" : "false") +
-        '"><span>' + esc(project.name) + "</span></button>";
+        '" data-id="' + esc(project.id) + '"><span>' + esc(project.name) + "</span></button>";
     }).join("");
     const detail = $("#roadmapDetail");
     const tabs = Array.from(document.querySelectorAll("#roadmapOrbit .orbit-node"));
@@ -751,7 +752,7 @@
       )).join("");
       detail.innerHTML =
         '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(project.role) + "</span>" +
-        "<h4>" + esc(project.name) + (project.former_name ? " / formerly " + esc(project.former_name) : "") + "</h4></div>" +
+        "<h4>" + esc(project.name) + "</h4></div>" +
         '<span class="instrument-chip">' + esc(project.status) + "</span></div>" +
         '<p class="instrument-copy">' + esc(project.thesis) + "</p>" +
         '<div class="instrument-modules">' + modules + "</div>" +

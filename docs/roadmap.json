@@ -12,7 +12,6 @@
     {
       "id": "penumbra",
       "name": "Penumbra",
-      "former_name": null,
       "role": "Detection and response workbench",
       "status": "active",
       "thesis": "Prove what a detection fired on, what happened next, and how well it performed.",
@@ -58,7 +57,6 @@
     {
       "id": "apsis",
       "name": "Apsis",
-      "former_name": "Overpass",
       "role": "Cloud identity security",
       "status": "active",
       "thesis": "Find every route from a low-privilege AWS principal to administrator, prove which ones are real, and sever them.",
@@ -99,7 +97,6 @@
     {
       "id": "network",
       "name": "Network threat hunting",
-      "former_name": null,
       "role": "Packet-to-detection evidence",
       "status": "planned",
       "thesis": "Hunt C2, DNS tunneling, and lateral movement from packet capture to a defensible detection.",

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Turned the IR timeline markers into non-interactive indicators that pulse as
+  the scrub position crosses them, leaving the play control as the only trigger.
+- Fixed the Umbra orbit core so the project count stays visible, and locked the
+  roadmap orbit palette and node dots across both themes.
+- Removed the former project name from the roadmap prose, data, and dashboard.
 - Switched pipeline artifact chips to a deep ink surface and removed the pale
   hover fill and lift jitter from the IR timeline markers.
 - Rebuilt the validation benchmark detail as a dark instrument plate with warm
@@ -55,8 +60,7 @@
 - Added the first Penumbra extension: four hypothesis-driven hunts over the
   deterministic corpus, with queries, evidence, verdicts, and detection changes.
   Added `pipeline.hunts`, `hunts/README.md`, `hunts/results.json`, and tests.
-- Added the three-project roadmap to the dashboard: Penumbra, Apsis (formerly
-  Overpass), and a network threat-hunting lab. Added `docs/roadmap.json` and
+- Added the three-project roadmap to the dashboard: Penumbra, Apsis, and a network threat-hunting lab. Added `docs/roadmap.json` and
   `docs/roadmap.md`.
 - Published the public dashboard to GitHub Pages at
   <https://meruyert5.github.io/penumbra/> and wired the live URL into the README
