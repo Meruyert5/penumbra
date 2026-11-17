@@ -229,7 +229,7 @@
       [totals.not_evaluable, "not evaluable"]
     ];
     $("#validationStats").innerHTML = stats.map(([value, label]) => (
-      '<div class="validation-stat"><b>' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
+      '<div class="validation-stat"><b data-count="' + esc(value) + '">' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
     )).join("");
 
     const rules = validation.rules || [];
@@ -281,12 +281,14 @@
         " · recall " + budget(benchmarkSummary.recall);
       const labelById = new Map((validation.labels || []).map((sample) => [sample.id, sample]));
       const detail = $("#validationBenchmarkDetail");
-      const emptyDetail = '<p class="validation-detail-empty">Select a rule to see the labelled windows behind its counts.</p>';
+      const emptyDetail = "";
       const renderDetail = (row) => {
         if (!row) {
           detail.innerHTML = emptyDetail;
+          detail.hidden = true;
           return;
         }
+        detail.hidden = false;
         const windows = (row.samples || []).map((result) => {
           const label = labelById.get(result.id) || {};
           const note = label.note ? '<p class="validation-detail-note">' + esc(label.note) + "</p>" : "";
@@ -322,6 +324,7 @@
         esc(number(row.fn)) + "</td><td>" + esc(budget(row.precision)) + "</td><td>" +
         esc(budget(row.recall)) + "</td><td>" + esc(number(row.alert_volume)) + "</td></tr>"
       )).join("");
+      detail.hidden = true;
       detail.innerHTML = emptyDetail;
       const buttons = Array.from(document.querySelectorAll("#validationBenchmarkRows .validation-rule-button"));
       buttons.forEach((button) => {
@@ -546,12 +549,12 @@
       const end = Date.parse(metrics.observed_end);
       const span = Math.max(1, end - start);
       const at = (value) => Math.max(0, Math.min(100, ((Date.parse(value) - start) / span) * 100));
-      activePoints = [
-        { label: "observed", time: metrics.observed_start, pct: 0 },
-        { label: "first detection", time: metrics.first_detection, pct: at(metrics.first_detection) },
-        { label: "last detection", time: metrics.last_detection, pct: at(metrics.last_detection) },
-        { label: "observed end", time: metrics.observed_end, pct: 100 }
-      ];
+      const firstPct = at(metrics.first_detection);
+      const lastPct = at(metrics.last_detection);
+      activePoints = [{ label: "observed", time: metrics.observed_start, pct: 0 }];
+      if (firstPct > 1) activePoints.push({ label: "first detection", time: metrics.first_detection, pct: firstPct });
+      if (lastPct > 1 && lastPct < 99) activePoints.push({ label: "last detection", time: metrics.last_detection, pct: lastPct });
+      activePoints.push({ label: "observed end", time: metrics.observed_end, pct: 100 });
       track.innerHTML = '<i class="ir-progress" id="irProgress"></i>' + activePoints.map((point, index) => (
         '<button class="ir-marker" type="button" data-index="' + index + '" style="--at:' + point.pct +
         '%;--lane:' + (index % 2) + '" aria-label="' + esc(point.label + " " + fmt(point.time)) +
@@ -660,7 +663,7 @@
     const items = roadmap.projects;
     $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
     $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
-    const positions = [{ x: 50, y: 8 }, { x: 88, y: 78 }, { x: 12, y: 78 }];
+    const positions = [{ x: 50, y: 8 }, { x: 76, y: 78 }, { x: 24, y: 78 }];
     $("#roadmapOrbit").innerHTML = items.map((project, index) => {
       const pos = positions[index % positions.length];
       return '<button class="orbit-node" type="button" role="tab" data-index="' + index +

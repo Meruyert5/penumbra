@@ -341,14 +341,14 @@
           <p class="chapter-label">Fig. 2 / Response</p>
           <h3 id="responseTitle">From alert to action.</h3>
         </div>
-        <div class="instrument-score"><b id="responseIncidentCount">27</b><span>incidents from <i id="responseAlertCount">50</i> alerts</span></div>
+        <div class="instrument-score"><b id="responseIncidentCount" data-count="27">27</b><span>incidents from <i id="responseAlertCount" data-count="50">50</i> alerts</span></div>
       </div>
       <div class="response-flow" id="responseFlow" aria-hidden="true">
-        <div class="flow-stage"><b id="flowAlerts">50</b><span>alerts</span></div>
+        <div class="flow-stage"><b id="flowAlerts" data-count="50">50</b><span>alerts</span></div>
         <span class="flow-link"><i></i></span>
-        <div class="flow-stage"><b id="flowIncidents">27</b><span>incidents</span></div>
+        <div class="flow-stage"><b id="flowIncidents" data-count="27">27</b><span>incidents</span></div>
         <span class="flow-link"><i></i></span>
-        <div class="flow-stage"><b id="flowActions">78</b><span>actions</span></div>
+        <div class="flow-stage"><b id="flowActions" data-count="78">78</b><span>actions</span></div>
       </div>
       <div class="instrument-stats" id="responseStats"></div>
       <div class="instrument-controls">
@@ -449,11 +449,13 @@
           <p class="chapter-label">Fig. 3 / Hunting</p>
           <h3 id="huntsTitle">Hypothesis first, alert second.</h3>
         </div>
-        <div class="instrument-score"><b id="huntFindingCount">4</b><span>hunts with findings</span></div>
+        <div class="instrument-score"><b id="huntFindingCount" data-count="4">4</b><span>hunts with findings</span></div>
       </div>
       <div class="instrument-stats" id="huntsStats"></div>
-      <div class="hunt-radar" id="huntRadar" role="tablist" aria-label="Hunts"></div>
-      <div class="instrument-detail" id="huntDetail" aria-live="polite"></div>
+      <div class="hunt-layout">
+        <div class="hunt-radar" id="huntRadar" role="tablist" aria-label="Hunts"></div>
+        <div class="instrument-detail" id="huntDetail" aria-live="polite"></div>
+      </div>
       <p class="instrument-note" id="huntsNote"></p>
     </section>  </section>
 
@@ -529,7 +531,7 @@
             <tbody id="validationBenchmarkRows"></tbody>
           </table>
         </div>
-        <div class="validation-benchmark-detail" id="validationBenchmarkDetail" aria-live="polite"></div>
+        <div class="validation-benchmark-detail" id="validationBenchmarkDetail" aria-live="polite" hidden></div>
         <p class="validation-benchmark-note" id="validationBenchmarkNote"></p>
       </div>
       <details class="validation-fired">
@@ -679,8 +681,10 @@
         </div>
         <div class="instrument-score"><b>3</b><span>projects</span></div>
       </div>
-      <div class="roadmap-orbit" id="roadmapOrbit" role="tablist" aria-label="Projects"></div>
-      <div class="instrument-detail" id="roadmapDetail" aria-live="polite"></div>
+      <div class="orbit-layout">
+        <div class="roadmap-orbit" id="roadmapOrbit" role="tablist" aria-label="Projects"></div>
+        <div class="instrument-detail" id="roadmapDetail" aria-live="polite"></div>
+      </div>
       <p class="instrument-note" id="roadmapNote"></p>
     </section>
 
@@ -690,12 +694,12 @@
           <p class="chapter-label">After / Cloud pack</p>
           <h3 id="cloudTitle">What Penumbra hands to Apsis.</h3>
         </div>
-        <div class="instrument-score"><b id="cloudFiredCount">2</b><span>of 3 detections fired</span></div>
+        <div class="instrument-score"><b id="cloudFiredCount" data-count="2">2</b><span>of 3 detections fired</span></div>
       </div>
       <div class="cloud-bridge" id="cloudBridge" aria-hidden="true">
-        <div class="bridge-side"><span>Penumbra</span><b id="bridgeDetections">3</b><small>detections</small></div>
+        <div class="bridge-side"><span>Penumbra</span><b id="bridgeDetections" data-count="3">3</b><small>detections</small></div>
         <div class="bridge-line"><i></i><span></span><span></span><span></span></div>
-        <div class="bridge-side is-apsis"><span>Apsis</span><b id="bridgeFired">2</b><small>fired findings</small></div>
+        <div class="bridge-side is-apsis"><span>Apsis</span><b id="bridgeFired" data-count="2">2</b><small>fired findings</small></div>
       </div>
       <div class="instrument-stats" id="cloudStats"></div>
       <div class="instrument-tabs" id="cloudTabs" role="tablist" aria-label="Cloud detections"></div>

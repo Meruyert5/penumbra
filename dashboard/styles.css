@@ -8422,3 +8422,105 @@ body::after { display: none; }
   #cloudPanel .cloud-bridge,
   #roadmapPanel .roadmap-orbit::after { animation: none; }
 }
+
+
+/* Final palette pass: warm solar gradients, no green-led sections, compact matrix. */
+#irPanel { --instrument: var(--accent); --instrument-2: var(--sun-2); }
+.instrument-state.is-done,
+.roadmap-state.is-done { color: var(--ochre); border-color: color-mix(in srgb, var(--ochre) 45%, var(--line)); }
+.instrument-state.is-active,
+.roadmap-state.is-active { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.instrument-state.is-next,
+.roadmap-state.is-next { color: var(--muted); border-color: var(--line); }
+.instrument-state.is-planned,
+.roadmap-state.is-planned { color: var(--muted); border-color: var(--line-soft); }
+
+.instrument::after,
+#validationPanel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--instrument), var(--instrument-2) 42%, transparent 88%);
+}
+#validationPanel { position: relative; }
+.instrument-detail { border-top: 0; }
+.instrument-detail::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--instrument), var(--instrument-2));
+}
+.instrument-tab[aria-selected="true"],
+.hunt-node[aria-selected="true"],
+.orbit-node[aria-selected="true"] {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--instrument) 16%, var(--surface)), color-mix(in srgb, var(--instrument-2) 8%, var(--surface)));
+}
+
+.validation-panel .validation-body { grid-template-columns: 1fr; }
+.validation-panel .validation-matrix {
+  grid-template-columns: repeat(17, minmax(0, 1fr));
+  gap: 3px;
+  margin: 12px 0 10px;
+}
+.validation-panel .validation-cell { aspect-ratio: 1.2; }
+.validation-panel .validation-side { display: none; }
+.validation-panel .validation-plate { max-width: none; }
+
+#irPanel .ir-track { height: 54px; }
+#irPanel .ir-marker span { top: calc(13px + var(--lane, 0) * 18px); }
+#irPanel .ir-marker:first-of-type span {
+  left: 0;
+  transform: none;
+  text-align: left;
+}
+#irPanel .ir-marker:last-of-type span {
+  left: auto;
+  right: 0;
+  transform: none;
+  text-align: right;
+}
+@media (max-width: 720px) {
+  .validation-panel .validation-matrix { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+  .instrument::after, #validationPanel::after { height: 1px; }
+}
+
+
+/* Side-by-side instruments: radar and orbit sit beside the detail pane. */
+.hunt-layout,
+.orbit-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  margin-top: 16px;
+}
+.hunt-layout .hunt-radar,
+.orbit-layout .roadmap-orbit { margin: 0; width: 100%; }
+.hunt-layout .instrument-detail,
+.orbit-layout .instrument-detail { margin-top: 0; }
+.orbit-layout { align-items: center; }
+@media (max-width: 900px) {
+  .hunt-layout,
+  .orbit-layout { grid-template-columns: 1fr; }
+  .orbit-layout .roadmap-orbit { margin: 0 auto; }
+}
+
+
+/* Keep the later instruments in the solar family, with warm node colours. */
+#cloudPanel { --instrument: var(--accent); --instrument-2: var(--ochre); }
+#huntsPanel .hunt-node:nth-of-type(2)::before { background: var(--critical); }
+#huntsPanel .hunt-node:nth-of-type(3)::before { background: var(--sun-2); }
+#huntsPanel .hunt-node:nth-of-type(4)::before { background: var(--ochre); }
+#cloudPanel .bridge-line span:nth-child(4) {
+  background: color-mix(in srgb, var(--sun-2) 18%, var(--surface));
+  border-color: var(--sun-2);
+}
+#roadmapPanel .orbit-node:nth-child(3)::before { background: var(--sun-2); }

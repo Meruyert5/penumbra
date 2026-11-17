@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Compacted hunting and roadmap into side-by-side radar/orbit layouts, made the
+  validation matrix a full-width 17-column strip, and added count-up motion to
+  the instrument totals.
 - Added sunburst headers, corona halos, coloured detection nodes, hover light,
   and per-project orbit accents. The palette stays inside Corona/Umbra.
 - Gave each instrument its own eclipse accent, soft corona glow, staggered

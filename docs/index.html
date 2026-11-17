@@ -8448,6 +8448,108 @@ body::after { display: none; }
   #cloudPanel .cloud-bridge,
   #roadmapPanel .roadmap-orbit::after { animation: none; }
 }
+
+
+/* Final palette pass: warm solar gradients, no green-led sections, compact matrix. */
+#irPanel { --instrument: var(--accent); --instrument-2: var(--sun-2); }
+.instrument-state.is-done,
+.roadmap-state.is-done { color: var(--ochre); border-color: color-mix(in srgb, var(--ochre) 45%, var(--line)); }
+.instrument-state.is-active,
+.roadmap-state.is-active { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.instrument-state.is-next,
+.roadmap-state.is-next { color: var(--muted); border-color: var(--line); }
+.instrument-state.is-planned,
+.roadmap-state.is-planned { color: var(--muted); border-color: var(--line-soft); }
+
+.instrument::after,
+#validationPanel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--instrument), var(--instrument-2) 42%, transparent 88%);
+}
+#validationPanel { position: relative; }
+.instrument-detail { border-top: 0; }
+.instrument-detail::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--instrument), var(--instrument-2));
+}
+.instrument-tab[aria-selected="true"],
+.hunt-node[aria-selected="true"],
+.orbit-node[aria-selected="true"] {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--instrument) 16%, var(--surface)), color-mix(in srgb, var(--instrument-2) 8%, var(--surface)));
+}
+
+.validation-panel .validation-body { grid-template-columns: 1fr; }
+.validation-panel .validation-matrix {
+  grid-template-columns: repeat(17, minmax(0, 1fr));
+  gap: 3px;
+  margin: 12px 0 10px;
+}
+.validation-panel .validation-cell { aspect-ratio: 1.2; }
+.validation-panel .validation-side { display: none; }
+.validation-panel .validation-plate { max-width: none; }
+
+#irPanel .ir-track { height: 54px; }
+#irPanel .ir-marker span { top: calc(13px + var(--lane, 0) * 18px); }
+#irPanel .ir-marker:first-of-type span {
+  left: 0;
+  transform: none;
+  text-align: left;
+}
+#irPanel .ir-marker:last-of-type span {
+  left: auto;
+  right: 0;
+  transform: none;
+  text-align: right;
+}
+@media (max-width: 720px) {
+  .validation-panel .validation-matrix { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+  .instrument::after, #validationPanel::after { height: 1px; }
+}
+
+
+/* Side-by-side instruments: radar and orbit sit beside the detail pane. */
+.hunt-layout,
+.orbit-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  margin-top: 16px;
+}
+.hunt-layout .hunt-radar,
+.orbit-layout .roadmap-orbit { margin: 0; width: 100%; }
+.hunt-layout .instrument-detail,
+.orbit-layout .instrument-detail { margin-top: 0; }
+.orbit-layout { align-items: center; }
+@media (max-width: 900px) {
+  .hunt-layout,
+  .orbit-layout { grid-template-columns: 1fr; }
+  .orbit-layout .roadmap-orbit { margin: 0 auto; }
+}
+
+
+/* Keep the later instruments in the solar family, with warm node colours. */
+#cloudPanel { --instrument: var(--accent); --instrument-2: var(--ochre); }
+#huntsPanel .hunt-node:nth-of-type(2)::before { background: var(--critical); }
+#huntsPanel .hunt-node:nth-of-type(3)::before { background: var(--sun-2); }
+#huntsPanel .hunt-node:nth-of-type(4)::before { background: var(--ochre); }
+#cloudPanel .bridge-line span:nth-child(4) {
+  background: color-mix(in srgb, var(--sun-2) 18%, var(--surface));
+  border-color: var(--sun-2);
+}
+#roadmapPanel .orbit-node:nth-child(3)::before { background: var(--sun-2); }
 </style>
 </head>
 <body>
@@ -8778,14 +8880,14 @@ body::after { display: none; }
           <p class="chapter-label">Fig. 2 / Response</p>
           <h3 id="responseTitle">From alert to action.</h3>
         </div>
-        <div class="instrument-score"><b id="responseIncidentCount">27</b><span>incidents from <i id="responseAlertCount">50</i> alerts</span></div>
+        <div class="instrument-score"><b id="responseIncidentCount" data-count="27">27</b><span>incidents from <i id="responseAlertCount" data-count="50">50</i> alerts</span></div>
       </div>
       <div class="response-flow" id="responseFlow" aria-hidden="true">
-        <div class="flow-stage"><b id="flowAlerts">50</b><span>alerts</span></div>
+        <div class="flow-stage"><b id="flowAlerts" data-count="50">50</b><span>alerts</span></div>
         <span class="flow-link"><i></i></span>
-        <div class="flow-stage"><b id="flowIncidents">27</b><span>incidents</span></div>
+        <div class="flow-stage"><b id="flowIncidents" data-count="27">27</b><span>incidents</span></div>
         <span class="flow-link"><i></i></span>
-        <div class="flow-stage"><b id="flowActions">78</b><span>actions</span></div>
+        <div class="flow-stage"><b id="flowActions" data-count="78">78</b><span>actions</span></div>
       </div>
       <div class="instrument-stats" id="responseStats"></div>
       <div class="instrument-controls">
@@ -8886,11 +8988,13 @@ body::after { display: none; }
           <p class="chapter-label">Fig. 3 / Hunting</p>
           <h3 id="huntsTitle">Hypothesis first, alert second.</h3>
         </div>
-        <div class="instrument-score"><b id="huntFindingCount">4</b><span>hunts with findings</span></div>
+        <div class="instrument-score"><b id="huntFindingCount" data-count="4">4</b><span>hunts with findings</span></div>
       </div>
       <div class="instrument-stats" id="huntsStats"></div>
-      <div class="hunt-radar" id="huntRadar" role="tablist" aria-label="Hunts"></div>
-      <div class="instrument-detail" id="huntDetail" aria-live="polite"></div>
+      <div class="hunt-layout">
+        <div class="hunt-radar" id="huntRadar" role="tablist" aria-label="Hunts"></div>
+        <div class="instrument-detail" id="huntDetail" aria-live="polite"></div>
+      </div>
       <p class="instrument-note" id="huntsNote"></p>
     </section>  </section>
 
@@ -8966,7 +9070,7 @@ body::after { display: none; }
             <tbody id="validationBenchmarkRows"></tbody>
           </table>
         </div>
-        <div class="validation-benchmark-detail" id="validationBenchmarkDetail" aria-live="polite"></div>
+        <div class="validation-benchmark-detail" id="validationBenchmarkDetail" aria-live="polite" hidden></div>
         <p class="validation-benchmark-note" id="validationBenchmarkNote"></p>
       </div>
       <details class="validation-fired">
@@ -9116,8 +9220,10 @@ body::after { display: none; }
         </div>
         <div class="instrument-score"><b>3</b><span>projects</span></div>
       </div>
-      <div class="roadmap-orbit" id="roadmapOrbit" role="tablist" aria-label="Projects"></div>
-      <div class="instrument-detail" id="roadmapDetail" aria-live="polite"></div>
+      <div class="orbit-layout">
+        <div class="roadmap-orbit" id="roadmapOrbit" role="tablist" aria-label="Projects"></div>
+        <div class="instrument-detail" id="roadmapDetail" aria-live="polite"></div>
+      </div>
       <p class="instrument-note" id="roadmapNote"></p>
     </section>
 
@@ -9127,12 +9233,12 @@ body::after { display: none; }
           <p class="chapter-label">After / Cloud pack</p>
           <h3 id="cloudTitle">What Penumbra hands to Apsis.</h3>
         </div>
-        <div class="instrument-score"><b id="cloudFiredCount">2</b><span>of 3 detections fired</span></div>
+        <div class="instrument-score"><b id="cloudFiredCount" data-count="2">2</b><span>of 3 detections fired</span></div>
       </div>
       <div class="cloud-bridge" id="cloudBridge" aria-hidden="true">
-        <div class="bridge-side"><span>Penumbra</span><b id="bridgeDetections">3</b><small>detections</small></div>
+        <div class="bridge-side"><span>Penumbra</span><b id="bridgeDetections" data-count="3">3</b><small>detections</small></div>
         <div class="bridge-line"><i></i><span></span><span></span><span></span></div>
-        <div class="bridge-side is-apsis"><span>Apsis</span><b id="bridgeFired">2</b><small>fired findings</small></div>
+        <div class="bridge-side is-apsis"><span>Apsis</span><b id="bridgeFired" data-count="2">2</b><small>fired findings</small></div>
       </div>
       <div class="instrument-stats" id="cloudStats"></div>
       <div class="instrument-tabs" id="cloudTabs" role="tablist" aria-label="Cloud detections"></div>
@@ -9438,7 +9544,7 @@ body::after { display: none; }
       [totals.not_evaluable, "not evaluable"]
     ];
     $("#validationStats").innerHTML = stats.map(([value, label]) => (
-      '<div class="validation-stat"><b>' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
+      '<div class="validation-stat"><b data-count="' + esc(value) + '">' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
     )).join("");
 
     const rules = validation.rules || [];
@@ -9490,12 +9596,14 @@ body::after { display: none; }
         " · recall " + budget(benchmarkSummary.recall);
       const labelById = new Map((validation.labels || []).map((sample) => [sample.id, sample]));
       const detail = $("#validationBenchmarkDetail");
-      const emptyDetail = '<p class="validation-detail-empty">Select a rule to see the labelled windows behind its counts.</p>';
+      const emptyDetail = "";
       const renderDetail = (row) => {
         if (!row) {
           detail.innerHTML = emptyDetail;
+          detail.hidden = true;
           return;
         }
+        detail.hidden = false;
         const windows = (row.samples || []).map((result) => {
           const label = labelById.get(result.id) || {};
           const note = label.note ? '<p class="validation-detail-note">' + esc(label.note) + "</p>" : "";
@@ -9531,6 +9639,7 @@ body::after { display: none; }
         esc(number(row.fn)) + "</td><td>" + esc(budget(row.precision)) + "</td><td>" +
         esc(budget(row.recall)) + "</td><td>" + esc(number(row.alert_volume)) + "</td></tr>"
       )).join("");
+      detail.hidden = true;
       detail.innerHTML = emptyDetail;
       const buttons = Array.from(document.querySelectorAll("#validationBenchmarkRows .validation-rule-button"));
       buttons.forEach((button) => {
@@ -9755,12 +9864,12 @@ body::after { display: none; }
       const end = Date.parse(metrics.observed_end);
       const span = Math.max(1, end - start);
       const at = (value) => Math.max(0, Math.min(100, ((Date.parse(value) - start) / span) * 100));
-      activePoints = [
-        { label: "observed", time: metrics.observed_start, pct: 0 },
-        { label: "first detection", time: metrics.first_detection, pct: at(metrics.first_detection) },
-        { label: "last detection", time: metrics.last_detection, pct: at(metrics.last_detection) },
-        { label: "observed end", time: metrics.observed_end, pct: 100 }
-      ];
+      const firstPct = at(metrics.first_detection);
+      const lastPct = at(metrics.last_detection);
+      activePoints = [{ label: "observed", time: metrics.observed_start, pct: 0 }];
+      if (firstPct > 1) activePoints.push({ label: "first detection", time: metrics.first_detection, pct: firstPct });
+      if (lastPct > 1 && lastPct < 99) activePoints.push({ label: "last detection", time: metrics.last_detection, pct: lastPct });
+      activePoints.push({ label: "observed end", time: metrics.observed_end, pct: 100 });
       track.innerHTML = '<i class="ir-progress" id="irProgress"></i>' + activePoints.map((point, index) => (
         '<button class="ir-marker" type="button" data-index="' + index + '" style="--at:' + point.pct +
         '%;--lane:' + (index % 2) + '" aria-label="' + esc(point.label + " " + fmt(point.time)) +
@@ -9869,7 +9978,7 @@ body::after { display: none; }
     const items = roadmap.projects;
     $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
     $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
-    const positions = [{ x: 50, y: 8 }, { x: 88, y: 78 }, { x: 12, y: 78 }];
+    const positions = [{ x: 50, y: 8 }, { x: 76, y: 78 }, { x: 24, y: 78 }];
     $("#roadmapOrbit").innerHTML = items.map((project, index) => {
       const pos = positions[index % positions.length];
       return '<button class="orbit-node" type="button" role="tab" data-index="' + index +
