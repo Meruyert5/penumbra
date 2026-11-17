@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Rebuilt the validation benchmark detail as a dark instrument plate with warm
+  metric chips and window cards, and gave the proof drawer readable dark styling.
+- Added an orbiting sweep, concentric rings, core glow, and starfield texture to
+  the roadmap orbit, plus a brighter moving scan and shimmer on the IR timeline.
 - Gave every new detail pane a grid texture, animated gradient rule, and depth
   shadow. Query boxes now use a deep ink/teal surface. Fixed the hunt/orbit hover
   jump and made the IR scrubber draggable and keyboard-operable.

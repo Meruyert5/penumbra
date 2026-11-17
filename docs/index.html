@@ -7738,21 +7738,8 @@ body::after { display: none; }
 .validation-panel .validation-table .v-verdict { color: var(--accent); }
 .validation-panel .validation-benchmark { padding: 14px; }
 .validation-panel .validation-benchmark-score { color: var(--accent); }
-.validation-panel .validation-benchmark-detail { background: var(--surface-2); border-color: var(--line); }
 .validation-panel .validation-rule-button { color: var(--text); }
-.validation-panel .validation-detail-head { color: var(--text); }
-.validation-panel .validation-detail-level { color: var(--accent); }
-.validation-panel .validation-detail-tech { color: var(--muted); }
-.validation-panel .validation-detail-metrics { color: var(--muted); }
-.validation-panel .validation-detail-metrics b { color: var(--text); }
-.validation-panel .validation-detail-windows li { background: var(--surface-2); border-left-color: var(--line); color: var(--text-2); }
-.validation-panel .validation-detail-windows li.is-tp { border-left-color: var(--accent); }
-.validation-panel .validation-detail-windows li.is-fn { border-left-color: var(--critical); }
-.validation-panel .validation-detail-windows li span { color: var(--accent); }
-.validation-panel .validation-detail-windows li small { color: var(--muted); }
-.validation-panel .validation-detail-empty { color: var(--text-2); }
-.validation-panel .validation-detail-note,
-.validation-panel .validation-detail-expected { color: var(--muted); }
+.validation-panel .validation-detail-empty { color: rgba(246,244,241,.55); }
 .validation-panel .validation-sample { background: var(--surface); border-color: var(--line); }
 .validation-panel .validation-sample-head { color: var(--text); }
 .validation-panel .validation-sample-kind { color: var(--accent); }
@@ -8932,15 +8919,7 @@ body::after { display: none; }
   background: var(--sun-2);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--sun-2) 18%, transparent), 0 0 16px var(--sun-2);
 }
-#validationPanel .validation-benchmark-detail {
-  background:
-    linear-gradient(rgba(20,18,16,.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(20,18,16,.035) 1px, transparent 1px),
-    var(--surface-2);
-  background-size: 22px 22px, 22px 22px, auto;
-  border-top: 3px solid var(--instrument);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.45);
-}
+#validationPanel .validation-benchmark-detail { position: relative; }
 
 @keyframes detail-line {
   from { background-position: 0 0; }
@@ -8949,6 +8928,404 @@ body::after { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .instrument-detail::after { animation: none; }
 }
+
+
+/* Rich validation benchmark detail: dark plate, warm metrics, window cards. */
+.validation-benchmark-detail {
+  position: relative;
+  overflow: hidden;
+  padding: 16px 18px;
+  border: 1px solid #2a211b;
+  border-top: 3px solid var(--instrument);
+  border-radius: 2px 24px 2px 2px;
+  background:
+    linear-gradient(rgba(255,227,179,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,227,179,.035) 1px, transparent 1px),
+    radial-gradient(520px 200px at 92% -12%, rgba(248,143,34,.16), transparent 70%),
+    #0B0A09;
+  background-size: 24px 24px, 24px 24px, auto, auto;
+  box-shadow: 8px 8px 0 rgba(20,18,16,.12), 0 18px 40px rgba(20,18,16,.1);
+  color: var(--paper);
+}
+.validation-benchmark-detail::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--instrument), var(--sun-2) 34%, var(--coral) 64%, transparent 92%);
+  background-size: 200% 100%;
+  animation: detail-line 7s linear infinite;
+}
+.validation-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: baseline;
+}
+.validation-detail-head b {
+  color: var(--paper);
+  font: 500 21px/1.2 var(--serif);
+  letter-spacing: -0.02em;
+}
+.validation-detail-level {
+  color: var(--sun-2);
+  font: 500 8px/1 var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.validation-detail-tech { color: rgba(246,244,241,.55); font: 500 8px/1 var(--mono); }
+.validation-detail-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 10px 0 0;
+}
+.vd-metric {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 4px 7px;
+  border: 1px solid rgba(255,227,179,.16);
+  border-radius: 2px;
+  background: rgba(255,227,179,.035);
+  color: rgba(246,244,241,.6);
+  font: 500 8px/1.3 var(--mono);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.vd-metric b { color: var(--sun-2); font: 600 10px/1 var(--mono); }
+.vd-metric.is-fp,
+.vd-metric.is-fn { border-color: rgba(249,92,75,.4); }
+.vd-metric.is-fn b { color: var(--coral); }
+.validation-detail-windows {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.validation-detail-windows li {
+  padding: 9px 10px;
+  border-left: 3px solid var(--sun-2);
+  border-radius: 0 2px 2px 0;
+  background: rgba(255,227,179,.04);
+  color: rgba(246,244,241,.72);
+  font: 500 9px/1.5 var(--mono);
+}
+.validation-detail-windows li.is-fn { border-left-color: var(--coral); background: rgba(249,92,75,.06); }
+.validation-detail-windows li b {
+  display: inline-block;
+  min-width: 26px;
+  color: var(--sun-2);
+  font: 600 8px/1.2 var(--mono);
+  text-transform: uppercase;
+}
+.validation-detail-windows li.is-fn b { color: var(--coral); }
+.validation-detail-windows li span { color: var(--paper); }
+.validation-detail-windows li small { display: block; margin-top: 3px; color: rgba(246,244,241,.42); }
+.validation-detail-note,
+.validation-detail-expected { margin: 5px 0 0; color: rgba(246,244,241,.5); font: 500 8px/1.45 var(--mono); }
+
+/* Proof drawer: dark instrument card, gradient rule, source cards, code block. */
+.validation-proof {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #2a211b;
+  border-radius: 2px 22px 2px 2px;
+  background:
+    radial-gradient(560px 220px at 10% -12%, rgba(248,143,34,.16), transparent 70%),
+    #0B0A09;
+  box-shadow: 8px 8px 0 rgba(20,18,16,.12), 0 18px 40px rgba(20,18,16,.1);
+}
+.validation-proof::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--instrument), var(--sun-2) 34%, var(--coral) 64%, transparent 92%);
+  background-size: 200% 100%;
+  animation: detail-line 8s linear infinite;
+}
+.validation-proof summary {
+  padding: 14px 16px;
+  color: var(--sun-2);
+  font: 500 9px/1.4 var(--mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.validation-proof-body {
+  display: grid;
+  gap: 10px;
+  padding: 0 16px 16px;
+}
+.validation-proof-body p {
+  margin: 0;
+  color: rgba(246,244,241,.7);
+  font: 500 10px/1.6 var(--mono);
+}
+.validation-proof-body p b { color: var(--paper); font-weight: 600; }
+.validation-proof-samples { display: grid; gap: 7px; margin: 2px 0; }
+.validation-proof-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 14px;
+  align-items: center;
+  padding: 9px 10px;
+  border: 1px solid rgba(255,227,179,.14);
+  border-left: 3px solid var(--instrument);
+  border-radius: 0 2px 2px 0;
+  background: rgba(255,227,179,.035);
+  color: rgba(246,244,241,.68);
+  font: 500 9px/1.5 var(--mono);
+  transition: border-color .2s, background .2s;
+}
+.validation-proof-row:hover { border-color: var(--sun-2); background: rgba(248,143,34,.07); }
+.validation-proof-links { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.validation-proof-links a { color: var(--sun-2); text-decoration: underline; text-underline-offset: 3px; }
+.validation-proof-links code { color: rgba(246,244,241,.45); overflow-wrap: anywhere; }
+.validation-commands {
+  margin: 2px 0;
+  padding: 12px;
+  border: 1px solid rgba(255,227,179,.16);
+  border-left: 3px solid var(--sun-2);
+  border-radius: 2px;
+  background: #0d191c;
+  color: rgba(246,244,241,.82);
+  font: 500 9px/1.6 var(--mono);
+  overflow-wrap: anywhere;
+}
+.validation-commands code { color: inherit; }
+.validation-fixes {
+  margin: 2px 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(255,227,179,.14);
+  border-left: 3px solid var(--coral);
+  border-radius: 0 2px 2px 0;
+  background: rgba(249,92,75,.05);
+}
+.validation-fixes b { color: var(--sun-2); font: 600 8px/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+.validation-fixes ul { display: grid; gap: 5px; margin: 8px 0 0; padding-left: 14px; color: rgba(246,244,241,.62); font: 500 9px/1.5 var(--mono); }
+.validation-fixes li::marker { color: var(--coral); }
+.validation-proof-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,227,179,.14);
+  color: rgba(246,244,241,.5);
+  font: 500 9px/1.4 var(--mono);
+}
+.validation-download {
+  display: inline-flex;
+  padding: 6px 9px;
+  border: 1px solid var(--sun-2);
+  border-radius: 2px;
+  background: linear-gradient(135deg, rgba(248,143,34,.18), rgba(249,92,75,.08));
+  color: var(--sun-2);
+  font: 600 8px/1 var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.validation-download:hover { background: var(--sun-2); color: #1b1511; }
+
+/* Ambient motion on the IR track, even when not scrubbing. */
+#irPanel .ir-track::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  bottom: -8px;
+  z-index: 1;
+  width: 2px;
+  pointer-events: none;
+  background: var(--sun-2);
+  box-shadow: 0 0 16px var(--sun-2);
+  opacity: 0;
+  animation: ir-ambient 5.4s ease-in-out infinite;
+}
+@keyframes ir-ambient {
+  0% { left: 0; opacity: 0; }
+  12% { opacity: .75; }
+  86% { opacity: .75; }
+  100% { left: 100%; opacity: 0; }
+}
+
+/* More texture and depth in the roadmap orbit. */
+#roadmapPanel .roadmap-orbit {
+  background:
+    radial-gradient(circle at 18% 24%, rgba(255,227,179,.35) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 18%, rgba(255,227,179,.28) 0 1px, transparent 2px),
+    radial-gradient(circle at 84% 64%, rgba(255,227,179,.32) 0 1px, transparent 2px),
+    radial-gradient(circle at 32% 76%, rgba(255,227,179,.24) 0 1px, transparent 2px),
+    radial-gradient(circle at 50% 50%, rgba(248,143,34,.14), transparent 58%),
+    repeating-conic-gradient(from 0deg, rgba(255,227,179,.06) 0deg 1deg, transparent 1deg 14deg),
+    #0B0A09;
+}
+#roadmapPanel .roadmap-orbit::before {
+  border-color: rgba(255,227,179,.32);
+  box-shadow:
+    0 0 0 18px rgba(255,227,179,.025),
+    0 0 0 36px rgba(255,227,179,.018),
+    inset 0 0 32px rgba(248,143,34,.07);
+}
+#roadmapPanel .orbit-moon.moon2 {
+  width: 4px;
+  height: 4px;
+  opacity: .7;
+  animation-duration: 26s;
+  animation-direction: reverse;
+}
+@media (prefers-reduced-motion: reduce) {
+  #irPanel .ir-track::after,
+  .validation-proof::before,
+  .validation-benchmark-detail::after { animation: none; }
+}
+
+/* Orbital depth pass: concentric rings, grain, sweep, and core glow. */
+#roadmapPanel .roadmap-orbit {
+  background:
+    radial-gradient(circle at 18% 24%, rgba(255,227,179,.42) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 18%, rgba(255,227,179,.34) 0 1px, transparent 2px),
+    radial-gradient(circle at 84% 64%, rgba(255,227,179,.4) 0 1px, transparent 2px),
+    radial-gradient(circle at 32% 76%, rgba(255,227,179,.3) 0 1px, transparent 2px),
+    radial-gradient(circle at 12% 58%, rgba(255,227,179,.22) 0 1px, transparent 2px),
+    radial-gradient(circle at 62% 88%, rgba(255,227,179,.26) 0 1px, transparent 2px),
+    radial-gradient(closest-side, transparent 0 37.6%, rgba(255,227,179,.12) 38% 38.5%, transparent 39%),
+    radial-gradient(closest-side, transparent 0 55.6%, rgba(255,227,179,.09) 56% 56.5%, transparent 57%),
+    radial-gradient(closest-side, transparent 0 73.6%, rgba(255,227,179,.14) 74% 74.7%, transparent 75.2%),
+    radial-gradient(closest-side, transparent 0 90.6%, rgba(248,143,34,.18) 91% 91.7%, transparent 92.2%),
+    repeating-conic-gradient(from 0deg, rgba(255,227,179,.07) 0deg 1deg, transparent 1deg 14deg),
+    radial-gradient(circle at 50% 50%, rgba(248,143,34,.18), transparent 62%),
+    #0B0A09;
+  box-shadow:
+    8px 8px 0 rgba(20,18,16,.14),
+    0 26px 58px rgba(20,18,16,.18),
+    0 0 0 1px rgba(255,227,179,.08),
+    inset 0 0 80px rgba(248,143,34,.1),
+    inset 0 -30px 60px rgba(0,0,0,.4);
+}
+#roadmapPanel .orbit-sweep {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: conic-gradient(from 0deg, transparent 0deg 286deg, rgba(248,143,34,.02) 300deg, rgba(248,143,34,.18) 354deg, rgba(248,143,34,.04) 360deg);
+  animation: orbit-sweep 11s linear infinite;
+}
+#roadmapPanel .orbit-core-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 150px;
+  height: 150px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(248,143,34,.3), rgba(249,92,75,.08) 46%, transparent 68%);
+  animation: core-breathe 5.6s ease-in-out infinite;
+}
+#roadmapPanel .orbit-node,
+#roadmapPanel .orbit-moon { z-index: 2; }
+#roadmapPanel .roadmap-orbit::before {
+  z-index: 1;
+  border-color: rgba(255,227,179,.38);
+  box-shadow:
+    0 0 0 16px rgba(255,227,179,.03),
+    0 0 0 34px rgba(255,227,179,.02),
+    0 0 0 58px rgba(248,143,34,.02),
+    0 0 30px rgba(248,143,34,.1),
+    inset 0 0 36px rgba(248,143,34,.08);
+}
+@keyframes orbit-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes core-breathe {
+  0%, 100% { opacity: .55; transform: translate(-50%, -50%) scale(.92); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+}
+
+/* Make the ambient IR scan brighter and quicker. */
+#irPanel .ir-track::after {
+  width: 3px;
+  opacity: .9;
+  background: linear-gradient(180deg, transparent, var(--sun-2) 18%, #fff3d8 50%, var(--sun-2) 82%, transparent);
+  box-shadow: 0 0 18px var(--sun-2), 0 0 42px rgba(248,143,34,.5);
+  animation-duration: 3.6s;
+}
+@media (prefers-reduced-motion: reduce) {
+  #roadmapPanel .orbit-sweep,
+  #roadmapPanel .orbit-core-glow { animation: none; }
+}
+
+
+/* IR ambient pass: sweeping band, shimmering progress, pulsing markers. */
+#irPanel .ir-track { overflow: visible; }
+#irPanel .ir-scan {
+  position: absolute;
+  top: -9px;
+  bottom: -9px;
+  z-index: 0;
+  width: 140px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(248,143,34,.2) 46%, rgba(255,227,179,.08) 62%, transparent);
+  animation: ir-band 4.2s linear infinite;
+}
+#irPanel .ir-progress {
+  background: linear-gradient(90deg, var(--coral), var(--sun-2) 45%, var(--sun-3) 70%, var(--sun-2));
+  background-size: 220% 100%;
+  animation: ir-shimmer 3.4s linear infinite;
+  box-shadow: 0 0 16px rgba(248,143,34,.5), 0 0 32px rgba(248,143,34,.22);
+}
+#irPanel .ir-marker::before {
+  animation: ir-marker-pulse 2.4s ease-out infinite;
+  animation-delay: calc(var(--at) * -0.012s);
+}
+@keyframes ir-band {
+  from { left: -150px; }
+  to { left: 100%; }
+}
+@keyframes ir-shimmer {
+  from { background-position: 0 0; }
+  to { background-position: -220% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #irPanel .ir-scan,
+  #irPanel .ir-progress,
+  #irPanel .ir-marker::before { animation: none; }
+}
+
+
+/* Enlarge the timeline marker targets without moving the visible dot. */
+#irPanel .ir-marker {
+  top: -13px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+}
+#irPanel .ir-marker span { top: calc(19px + var(--lane, 0) * 18px); }
+
+
+/* Proof drawer legibility and structure. */
+.validation-proof summary { font-size: 9.5px; letter-spacing: .14em; }
+.validation-proof summary::marker { color: var(--sun-2); }
+.validation-proof-body p { font-size: 10.5px; color: rgba(246,244,241,.78); }
+.validation-proof-row { font-size: 9.5px; color: rgba(246,244,241,.75); }
+.validation-proof-links { font-size: 9.5px; }
+.validation-commands { font-size: 9.5px; color: rgba(246,244,241,.88); }
+.validation-fixes ul { font-size: 9.5px; color: rgba(246,244,241,.7); }
+.validation-proof-foot { font-size: 9.5px; color: rgba(246,244,241,.56); }
+.validation-proof .validation-download { font-size: 8.5px; }
 </style>
 </head>
 <body>
@@ -10044,12 +10421,12 @@ body::after { display: none; }
           '<span class="validation-detail-level">' + esc(row.level || "") + "</span>" +
           '<span class="validation-detail-tech">' + esc(row.technique || "") + "</span></div>" +
           '<div class="validation-detail-metrics">' +
-          "<span><b>" + esc(number(row.tp)) + "</b> TP</span>" +
-          "<span><b>" + esc(number(row.fp)) + "</b> FP</span>" +
-          "<span><b>" + esc(number(row.fn)) + "</b> FN</span>" +
-          "<span><b>" + esc(budget(row.precision)) + "</b> precision</span>" +
-          "<span><b>" + esc(budget(row.recall)) + "</b> recall</span>" +
-          "<span><b>" + esc(number(row.alert_volume)) + "</b> " +
+          '<span class="vd-metric is-tp"><b>' + esc(number(row.tp)) + "</b> TP</span>" +
+          '<span class="vd-metric is-fp"><b>' + esc(number(row.fp)) + "</b> FP</span>" +
+          '<span class="vd-metric is-fn"><b>' + esc(number(row.fn)) + "</b> FN</span>" +
+          '<span class="vd-metric"><b>' + esc(budget(row.precision)) + "</b> precision</span>" +
+          '<span class="vd-metric"><b>' + esc(budget(row.recall)) + "</b> recall</span>" +
+          '<span class="vd-metric"><b>' + esc(number(row.alert_volume)) + "</b> " +
           (Number(row.alert_volume) === 1 ? "alert" : "alerts") + "</span></div>" +
           '<ul class="validation-detail-windows">' + windows + "</ul>";
       };
@@ -10306,7 +10683,7 @@ body::after { display: none; }
       if (firstPct > 1) activePoints.push({ label: "first detection", time: metrics.first_detection, pct: firstPct });
       if (lastPct > 1 && lastPct < 99) activePoints.push({ label: "last detection", time: metrics.last_detection, pct: lastPct });
       activePoints.push({ label: "observed end", time: metrics.observed_end, pct: 100 });
-      track.innerHTML = '<i class="ir-progress" id="irProgress"></i>' + activePoints.map((point, index) => (
+      track.innerHTML = '<span class="ir-scan" aria-hidden="true"></span><i class="ir-progress" id="irProgress"></i>' + activePoints.map((point, index) => (
         '<button class="ir-marker" type="button" data-index="' + index + '" style="--at:' + point.pct +
         '%;--lane:' + (index % 2) + '" aria-label="' + esc(point.label + " " + fmt(point.time)) +
         '"><span>' + esc(point.label) + "</span></button>"
@@ -10456,7 +10833,7 @@ body::after { display: none; }
     $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
     $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
     const positions = [{ x: 50, y: 8 }, { x: 76, y: 78 }, { x: 24, y: 78 }];
-    $("#roadmapOrbit").innerHTML = '<span class="orbit-moon" aria-hidden="true"></span>' + items.map((project, index) => {
+    $("#roadmapOrbit").innerHTML = '<span class="orbit-sweep" aria-hidden="true"></span><span class="orbit-core-glow" aria-hidden="true"></span><span class="orbit-moon" aria-hidden="true"></span><span class="orbit-moon moon2" aria-hidden="true"></span>' + items.map((project, index) => {
       const pos = positions[index % positions.length];
       return '<button class="orbit-node" type="button" role="tab" data-index="' + index +
         '" style="--x:' + pos.x + '%;--y:' + pos.y + '%" aria-selected="' + (index === 0 ? "true" : "false") +

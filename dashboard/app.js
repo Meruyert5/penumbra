@@ -322,12 +322,12 @@
           '<span class="validation-detail-level">' + esc(row.level || "") + "</span>" +
           '<span class="validation-detail-tech">' + esc(row.technique || "") + "</span></div>" +
           '<div class="validation-detail-metrics">' +
-          "<span><b>" + esc(number(row.tp)) + "</b> TP</span>" +
-          "<span><b>" + esc(number(row.fp)) + "</b> FP</span>" +
-          "<span><b>" + esc(number(row.fn)) + "</b> FN</span>" +
-          "<span><b>" + esc(budget(row.precision)) + "</b> precision</span>" +
-          "<span><b>" + esc(budget(row.recall)) + "</b> recall</span>" +
-          "<span><b>" + esc(number(row.alert_volume)) + "</b> " +
+          '<span class="vd-metric is-tp"><b>' + esc(number(row.tp)) + "</b> TP</span>" +
+          '<span class="vd-metric is-fp"><b>' + esc(number(row.fp)) + "</b> FP</span>" +
+          '<span class="vd-metric is-fn"><b>' + esc(number(row.fn)) + "</b> FN</span>" +
+          '<span class="vd-metric"><b>' + esc(budget(row.precision)) + "</b> precision</span>" +
+          '<span class="vd-metric"><b>' + esc(budget(row.recall)) + "</b> recall</span>" +
+          '<span class="vd-metric"><b>' + esc(number(row.alert_volume)) + "</b> " +
           (Number(row.alert_volume) === 1 ? "alert" : "alerts") + "</span></div>" +
           '<ul class="validation-detail-windows">' + windows + "</ul>";
       };
@@ -584,7 +584,7 @@
       if (firstPct > 1) activePoints.push({ label: "first detection", time: metrics.first_detection, pct: firstPct });
       if (lastPct > 1 && lastPct < 99) activePoints.push({ label: "last detection", time: metrics.last_detection, pct: lastPct });
       activePoints.push({ label: "observed end", time: metrics.observed_end, pct: 100 });
-      track.innerHTML = '<i class="ir-progress" id="irProgress"></i>' + activePoints.map((point, index) => (
+      track.innerHTML = '<span class="ir-scan" aria-hidden="true"></span><i class="ir-progress" id="irProgress"></i>' + activePoints.map((point, index) => (
         '<button class="ir-marker" type="button" data-index="' + index + '" style="--at:' + point.pct +
         '%;--lane:' + (index % 2) + '" aria-label="' + esc(point.label + " " + fmt(point.time)) +
         '"><span>' + esc(point.label) + "</span></button>"
@@ -734,7 +734,7 @@
     $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
     $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
     const positions = [{ x: 50, y: 8 }, { x: 76, y: 78 }, { x: 24, y: 78 }];
-    $("#roadmapOrbit").innerHTML = '<span class="orbit-moon" aria-hidden="true"></span>' + items.map((project, index) => {
+    $("#roadmapOrbit").innerHTML = '<span class="orbit-sweep" aria-hidden="true"></span><span class="orbit-core-glow" aria-hidden="true"></span><span class="orbit-moon" aria-hidden="true"></span><span class="orbit-moon moon2" aria-hidden="true"></span>' + items.map((project, index) => {
       const pos = positions[index % positions.length];
       return '<button class="orbit-node" type="button" role="tab" data-index="' + index +
         '" style="--x:' + pos.x + '%;--y:' + pos.y + '%" aria-selected="' + (index === 0 ? "true" : "false") +
