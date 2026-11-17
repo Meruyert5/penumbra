@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added sunburst headers, corona halos, coloured detection nodes, hover light,
+  and per-project orbit accents. The palette stays inside Corona/Umbra.
 - Gave each instrument its own eclipse accent, soft corona glow, staggered
   detail reveal, and colour on the flow, radar, timeline, bridge, orbit, and
   validation matrix. The accents stay within the existing Corona/Umbra palette.
