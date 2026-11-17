@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Gave each instrument its own eclipse accent, soft corona glow, staggered
+  detail reveal, and colour on the flow, radar, timeline, bridge, orbit, and
+  validation matrix. The accents stay within the existing Corona/Umbra palette.
 - Added motion to the new instruments: a response flow, a hunt radar, an IR
   timeline scrubber, a cloud hand-off bridge, and a project orbit. All respect
   reduced-motion and keep a keyboard-accessible selector.

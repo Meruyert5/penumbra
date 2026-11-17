@@ -8085,6 +8085,178 @@ body::after { display: none; }
   .bridge-line i,
   .roadmap-orbit::before { animation: none; }
 }
+
+
+/* Colour and motion pass: each instrument gets one eclipse accent. */
+.instrument {
+  --instrument: var(--accent);
+  --instrument-2: var(--accent-2);
+  position: relative;
+  background:
+    radial-gradient(560px 190px at 8% -20%, color-mix(in srgb, var(--instrument) 8%, transparent), transparent 72%),
+    linear-gradient(180deg, color-mix(in srgb, var(--instrument) 3%, transparent), transparent 260px);
+}
+#responsePanel { --instrument: var(--critical); --instrument-2: var(--sun-2); }
+#huntsPanel { --instrument: var(--ochre); --instrument-2: var(--sun-2); }
+#validationPanel { --instrument: var(--accent); --instrument-2: var(--accent-2); }
+#irPanel { --instrument: var(--forest); --instrument-2: var(--forest-2); }
+#cloudPanel { --instrument: var(--accent); --instrument-2: var(--accent-2); }
+#roadmapPanel { --instrument: var(--accent); --instrument-2: var(--ochre); }
+
+.instrument::before {
+  content: "";
+  position: absolute;
+  inset: -8px -6px auto;
+  height: 190px;
+  pointer-events: none;
+  background: radial-gradient(420px 170px at 18% 0%, color-mix(in srgb, var(--instrument) 12%, transparent), transparent 70%);
+  opacity: .55;
+  animation: instrument-breathe 9s ease-in-out infinite;
+}
+.instrument > * { position: relative; z-index: 1; }
+.instrument-head .chapter-label { color: var(--instrument); }
+.instrument-head .chapter-label::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  margin-right: 8px;
+  vertical-align: 2px;
+  background: linear-gradient(90deg, var(--instrument), transparent);
+}
+.instrument-score b { color: var(--instrument); }
+.instrument-score i { color: var(--instrument); }
+.instrument-stat {
+  border-color: color-mix(in srgb, var(--instrument) 26%, var(--line));
+  background: color-mix(in srgb, var(--instrument) 4%, var(--surface));
+}
+.instrument-stat b { color: var(--instrument); }
+.instrument-tab[aria-selected="true"],
+.hunt-node[aria-selected="true"],
+.orbit-node[aria-selected="true"] {
+  border-color: var(--instrument);
+  background: color-mix(in srgb, var(--instrument) 12%, var(--surface));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--instrument) 14%, transparent);
+}
+.instrument-tab:hover,
+.hunt-node:hover,
+.orbit-node:hover { border-color: var(--instrument); }
+.instrument-detail {
+  border-top: 3px solid var(--instrument);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--instrument) 6%, var(--surface)), var(--surface) 38%),
+    var(--surface);
+}
+.instrument-id { color: var(--instrument); }
+.instrument-chip.is-high,
+.instrument-chip.is-critical { border-color: var(--instrument); color: var(--instrument); }
+.instrument-query { border-left: 3px solid var(--instrument); }
+.instrument-action code { color: var(--instrument); }
+.instrument-links a,
+.instrument-note a { color: var(--instrument); }
+.instrument-detail-head,
+.instrument-body,
+.instrument-stats,
+.instrument-links,
+.instrument-modules {
+  animation: instrument-reveal .45s var(--ease) both;
+}
+.instrument-list li { animation: instrument-reveal .4s var(--ease) both; }
+.instrument-list li:nth-child(2) { animation-delay: .04s; }
+.instrument-list li:nth-child(3) { animation-delay: .08s; }
+.instrument-list li:nth-child(4) { animation-delay: .12s; }
+
+#responsePanel .flow-stage {
+  border-color: color-mix(in srgb, var(--instrument) 26%, var(--line));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--instrument) 6%, var(--surface)), var(--surface));
+}
+#responsePanel .flow-stage b { color: var(--instrument); }
+#responsePanel .flow-link i { background: var(--instrument); box-shadow: 0 0 10px var(--instrument); }
+
+#huntsPanel .hunt-radar {
+  border-color: color-mix(in srgb, var(--instrument) 28%, var(--line));
+  background:
+    linear-gradient(90deg, transparent 49.8%, color-mix(in srgb, var(--instrument) 18%, transparent) 50%, transparent 50.2%),
+    linear-gradient(0deg, transparent 49.8%, color-mix(in srgb, var(--instrument) 18%, transparent) 50%, transparent 50.2%),
+    radial-gradient(circle, color-mix(in srgb, var(--instrument) 9%, transparent), transparent 64%);
+}
+#huntsPanel .radar-sweep {
+  background: conic-gradient(from 0deg, transparent 0deg, color-mix(in srgb, var(--instrument) 24%, transparent) 34deg, transparent 72deg);
+}
+#huntsPanel .hunt-node::before { background: var(--instrument); }
+#huntsPanel .hunt-node[aria-selected="true"] {
+  color: var(--text);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--instrument) 14%, transparent), 0 0 18px color-mix(in srgb, var(--instrument) 16%, transparent);
+}
+
+#irPanel .ir-progress { background: linear-gradient(90deg, var(--instrument), var(--instrument-2)); }
+#irPanel .ir-marker::before {
+  border-color: var(--instrument);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--instrument) 40%, transparent);
+  animation: ir-marker-pulse 2.8s ease-out infinite;
+}
+#irPanel .ir-marker:hover::before { background: color-mix(in srgb, var(--instrument) 16%, var(--surface)); }
+#irPanel .ir-timeline { border-top: 3px solid var(--instrument); }
+
+#cloudPanel .cloud-bridge { border-top: 3px solid var(--instrument); }
+#cloudPanel .bridge-side span { color: var(--instrument); }
+#cloudPanel .bridge-line i { background: var(--instrument); box-shadow: 0 0 12px var(--instrument); }
+#cloudPanel .bridge-line span { border-color: var(--instrument); }
+
+#roadmapPanel .roadmap-orbit::before { border-color: color-mix(in srgb, var(--instrument) 34%, var(--line)); }
+#roadmapPanel .roadmap-orbit::after {
+  background:
+    radial-gradient(circle, var(--surface) 0 38%, transparent 39%),
+    conic-gradient(from 200deg, var(--instrument), var(--instrument-2), var(--coral), var(--instrument));
+  box-shadow: 0 0 30px color-mix(in srgb, var(--instrument) 22%, transparent);
+}
+#roadmapPanel .orbit-node { animation: orbit-float 6s ease-in-out infinite; }
+#roadmapPanel .orbit-node:nth-child(2) { animation-delay: 1.5s; }
+#roadmapPanel .orbit-node:nth-child(3) { animation-delay: 3s; }
+
+#validationPanel { border-top-color: var(--instrument); }
+#validationPanel .validation-cell.is-matched { animation: cell-breathe 5.5s ease-in-out infinite; }
+#validationPanel .validation-cell:hover { transform: translateY(-1px) scale(1.04); transition: transform .18s var(--ease); }
+#validationPanel .validation-stat b { color: var(--instrument); }
+#validationPanel .validation-kicker { color: var(--instrument); }
+
+@keyframes instrument-breathe {
+  0%, 100% { opacity: .35; }
+  50% { opacity: .7; }
+}
+@keyframes instrument-reveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ir-marker-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--instrument) 40%, transparent); }
+  70%, 100% { box-shadow: 0 0 0 8px transparent; }
+}
+@keyframes orbit-float {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50% { transform: translate(-50%, calc(-50% - 5px)); }
+}
+@keyframes cell-breathe {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.12); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .instrument::before,
+  .instrument-detail-head,
+  .instrument-body,
+  .instrument-stats,
+  .instrument-links,
+  .instrument-modules,
+  .instrument-list li,
+  #roadmapPanel .orbit-node,
+  #validationPanel .validation-cell.is-matched,
+  #irPanel .ir-marker::before { animation: none; }
+}
+
+:root { --cloud-accent: #1f4a5c; }
+:root[data-theme="umbra"] { --cloud-accent: #6fd9e3; }
+#cloudPanel { --instrument: var(--cloud-accent); --instrument-2: var(--accent-2); }
 </style>
 </head>
 <body>
