@@ -8831,3 +8831,95 @@ body::after { display: none; }
   .validation-scan,
   .orbit-moon { animation: none; }
 }
+
+
+/* Fix the hover jump on radar/orbit nodes: they are already translated. */
+.hunt-node,
+.orbit-node {
+  transition: border-color .2s, background .2s, color .2s, box-shadow .2s;
+}
+.hunt-node:hover,
+.orbit-node:hover { transform: translate(-50%, -50%); }
+.instrument-tab { transition: transform .2s var(--ease), border-color .2s, background .2s, color .2s; }
+.instrument-tab:hover { transform: translateY(-1px); }
+
+/* Query boxes: switch from beige to a deep ink/teal surface. */
+.instrument-query {
+  background:
+    radial-gradient(360px 120px at 8% -20%, rgba(111,217,227,.08), transparent 70%),
+    linear-gradient(180deg, #0d191c, #12100d);
+  color: rgba(246,244,241,.86);
+  border: 1px solid rgba(255,227,179,.18);
+  border-left: 3px solid var(--instrument);
+  box-shadow: inset 0 0 0 1px rgba(255,227,179,.04), 0 10px 24px rgba(20,18,16,.12);
+}
+.instrument-query code { color: inherit; }
+
+/* More depth and texture in every new detail pane. */
+.instrument-detail {
+  border-radius: 2px 28px 2px 2px;
+  background:
+    linear-gradient(rgba(20,18,16,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20,18,16,.035) 1px, transparent 1px),
+    radial-gradient(520px 200px at 92% -12%, color-mix(in srgb, var(--instrument) 8%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--instrument) 6%, var(--surface)), var(--surface) 38%);
+  background-size: 24px 24px, 24px 24px, auto, auto;
+  box-shadow:
+    8px 8px 0 rgba(20,18,16,.05),
+    0 16px 36px color-mix(in srgb, var(--instrument) 8%, transparent),
+    inset 0 1px 0 rgba(255,255,255,.45);
+}
+.instrument-detail::after {
+  height: 4px;
+  background: linear-gradient(90deg, var(--instrument), var(--instrument-2) 30%, var(--coral) 58%, transparent 90%);
+  background-size: 200% 100%;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--instrument) 22%, transparent);
+  animation: detail-line 7s linear infinite;
+}
+
+/* Deep instrument plates get a real drop shadow and an inner rim. */
+#responsePanel .response-flow,
+#huntsPanel .hunt-radar,
+#irPanel .ir-timeline,
+#cloudPanel .cloud-bridge,
+#roadmapPanel .roadmap-orbit,
+#validationPanel .validation-plate {
+  box-shadow:
+    8px 8px 0 rgba(20,18,16,.14),
+    0 22px 48px rgba(20,18,16,.12),
+    inset 0 1px 0 rgba(255,227,179,.07);
+}
+#roadmapPanel .roadmap-orbit {
+  border-radius: 50%;
+  box-shadow:
+    8px 8px 0 rgba(20,18,16,.14),
+    0 24px 54px rgba(20,18,16,.16),
+    inset 0 0 70px rgba(248,143,34,.08);
+}
+
+/* The timeline is a real scrubber, not just a picture. */
+#irPanel .ir-track { cursor: grab; }
+#irPanel .ir-track:active { cursor: grabbing; }
+#irPanel .ir-track:focus-visible { outline: 2px solid var(--sun-3); outline-offset: 4px; border-radius: 2px; }
+#irPanel .ir-hint { color: rgba(246,244,241,.4); font: 500 8px/1.3 var(--mono); }
+#irPanel .ir-marker.is-active::before {
+  background: var(--sun-2);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sun-2) 18%, transparent), 0 0 16px var(--sun-2);
+}
+#validationPanel .validation-benchmark-detail {
+  background:
+    linear-gradient(rgba(20,18,16,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20,18,16,.035) 1px, transparent 1px),
+    var(--surface-2);
+  background-size: 22px 22px, 22px 22px, auto;
+  border-top: 3px solid var(--instrument);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45);
+}
+
+@keyframes detail-line {
+  from { background-position: 0 0; }
+  to { background-position: 200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .instrument-detail::after { animation: none; }
+}

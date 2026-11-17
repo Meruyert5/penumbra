@@ -557,10 +557,19 @@
       if (irTimer) clearInterval(irTimer);
       irTimer = null;
     };
+    const labelAt = (pct) => {
+      const point = activePoints.filter((item) => item.pct <= pct).pop() || activePoints[0];
+      return point ? point.label + " / " + fmt(point.time) : Math.round(pct) + "%";
+    };
     const setProgress = (pct, label) => {
       const bar = document.querySelector("#irProgress");
       if (bar) bar.style.width = pct + "%";
-      clock.textContent = label || Math.round(pct) + "% of observed window";
+      track.setAttribute("aria-valuenow", String(Math.round(pct)));
+      const activeIndex = activePoints.reduce((best, point, index) => (point.pct <= pct ? index : best), 0);
+      track.querySelectorAll(".ir-marker").forEach((marker, index) => {
+        marker.classList.toggle("is-active", index === activeIndex);
+      });
+      clock.textContent = label || labelAt(pct);
     };
     const renderTimeline = (item) => {
       stop();
@@ -620,14 +629,32 @@
         render(next);
       });
     });
-    track.addEventListener("click", (event) => {
-      if (event.target.closest(".ir-marker")) return;
+    let irDragging = false;
+    const scrubAt = (clientX) => {
       const rect = track.getBoundingClientRect();
       if (!rect.width) return;
-      const pct = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
-      const nearest = activePoints.filter((point) => point.pct <= pct).pop() || activePoints[0];
+      const pct = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
       stop();
-      setProgress(pct, nearest.label + " / " + fmt(nearest.time));
+      setProgress(pct);
+    };
+    track.addEventListener("pointerdown", (event) => {
+      if (event.target.closest(".ir-marker")) return;
+      irDragging = true;
+      if (track.setPointerCapture) track.setPointerCapture(event.pointerId);
+      scrubAt(event.clientX);
+    });
+    track.addEventListener("pointermove", (event) => {
+      if (irDragging) scrubAt(event.clientX);
+    });
+    track.addEventListener("pointerup", () => { irDragging = false; });
+    track.addEventListener("pointercancel", () => { irDragging = false; });
+    track.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      const current = Number(track.getAttribute("aria-valuenow") || 0);
+      const pct = Math.max(0, Math.min(100, current + (event.key === "ArrowRight" ? 4 : -4)));
+      stop();
+      setProgress(pct);
     });
     play.addEventListener("click", () => {
       stop();
@@ -635,8 +662,7 @@
       const duration = reduce ? 0 : 4200;
       irTimer = setInterval(() => {
         const pct = duration ? Math.min(100, ((performance.now() - started) / duration) * 100) : 100;
-        const nearest = activePoints.filter((point) => point.pct <= pct).pop() || activePoints[0];
-        setProgress(pct, nearest.label + " / " + fmt(nearest.time));
+        setProgress(pct);
         if (pct >= 100) stop();
       }, 40);
     });

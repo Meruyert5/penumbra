@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Gave every new detail pane a grid texture, animated gradient rule, and depth
+  shadow. Query boxes now use a deep ink/teal surface. Fixed the hunt/orbit hover
+  jump and made the IR scrubber draggable and keyboard-operable.
 - Added scanning validation, radar blips, a scrubable IR timeline, twin cloud
   packets, an orbiting roadmap moon, and staggered response-flow pulses.
 - Extended guided reading to fifteen steps covering response, hunting, validation,

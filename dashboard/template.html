@@ -617,8 +617,8 @@
         <div class="instrument-score"><b>3</b><span>case close-outs</span></div>
       </div>
       <div class="ir-timeline" id="irTimeline">
-        <div class="ir-track" id="irTrack"></div>
-        <div class="ir-controls"><button class="mini" id="irPlay" type="button">play close-out</button><span id="irClock"></span></div>
+        <div class="ir-track" id="irTrack" role="slider" tabindex="0" aria-label="Observed window scrubber" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+        <div class="ir-controls"><button class="mini" id="irPlay" type="button">play close-out</button><span class="ir-hint">click or drag to scrub</span><span id="irClock"></span></div>
       </div>
       <div class="instrument-tabs" id="irTabs" role="tablist" aria-label="IR cases"></div>
       <div class="instrument-detail" id="irDetail" aria-live="polite"></div>
