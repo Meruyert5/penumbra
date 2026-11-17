@@ -8550,6 +8550,175 @@ body::after { display: none; }
   border-color: var(--sun-2);
 }
 #roadmapPanel .orbit-node:nth-child(3)::before { background: var(--sun-2); }
+
+
+/* Put the new instruments on dark plates, like Fig. 1 and the watch-floor bar. */
+#responsePanel .response-flow,
+#irPanel .ir-timeline,
+#cloudPanel .cloud-bridge {
+  background:
+    radial-gradient(540px 210px at 14% -24%, rgba(248,143,34,.2), transparent 68%),
+    #0B0A09;
+  border: 1px solid #2a211b;
+  border-radius: var(--r-lg);
+  padding: 16px;
+  color: var(--paper);
+  box-shadow: 8px 8px 0 rgba(20,18,16,.14);
+}
+#responsePanel .flow-stage {
+  background: rgba(255,227,179,.04);
+  border-color: rgba(255,227,179,.16);
+}
+#responsePanel .flow-stage b { color: var(--sun-2); }
+#responsePanel .flow-stage span { color: rgba(246,244,241,.55); }
+#responsePanel .flow-link { background: rgba(255,227,179,.16); }
+#responsePanel .flow-link i { background: var(--sun-2); box-shadow: 0 0 10px var(--sun-2); }
+
+#huntsPanel .hunt-radar {
+  background:
+    linear-gradient(90deg, transparent 49.8%, rgba(255,227,179,.12) 50%, transparent 50.2%),
+    linear-gradient(0deg, transparent 49.8%, rgba(255,227,179,.12) 50%, transparent 50.2%),
+    radial-gradient(circle, rgba(248,143,34,.13), transparent 62%),
+    #0B0A09;
+  border: 1px solid #2a211b;
+  box-shadow: 8px 8px 0 rgba(20,18,16,.14), 0 0 40px rgba(248,143,34,.08);
+}
+#huntsPanel .hunt-radar::before,
+#huntsPanel .hunt-radar::after { border-color: rgba(255,227,179,.16); }
+#huntsPanel .radar-sweep { background: conic-gradient(from 0deg, transparent 0deg, rgba(248,143,34,.32) 34deg, transparent 72deg); }
+#huntsPanel .hunt-node {
+  background: #0B0A09;
+  border-color: rgba(255,227,179,.2);
+  color: rgba(246,244,241,.72);
+}
+#huntsPanel .hunt-node[aria-selected="true"] {
+  background: linear-gradient(135deg, rgba(248,143,34,.22), rgba(255,227,179,.05));
+  color: var(--paper);
+  border-color: var(--sun-2);
+}
+#huntsPanel .hunt-node:hover { color: var(--paper); border-color: var(--sun-2); }
+
+#irPanel .ir-timeline { border-top: 3px solid var(--instrument); }
+#irPanel .ir-track { border-top-color: rgba(255,227,179,.18); }
+#irPanel .ir-marker { color: rgba(246,244,241,.55); }
+#irPanel .ir-marker::before { background: #0B0A09; border-color: var(--sun-2); }
+#irPanel .ir-marker span { color: rgba(246,244,241,.5); }
+#irPanel .ir-marker:hover span { color: var(--paper); }
+#irPanel .ir-controls #irClock { color: rgba(246,244,241,.5); }
+
+#cloudPanel .cloud-bridge { border-top: 3px solid var(--instrument); }
+#cloudPanel .bridge-side span { color: var(--sun-3); }
+#cloudPanel .bridge-side b { color: var(--paper); }
+#cloudPanel .bridge-side small { color: rgba(246,244,241,.5); }
+#cloudPanel .bridge-line { background: repeating-linear-gradient(90deg, rgba(255,227,179,.18) 0 6px, transparent 6px 12px); }
+#cloudPanel .bridge-line span { background: #0B0A09; border-color: var(--sun-2); }
+
+#roadmapPanel .roadmap-orbit {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(248,143,34,.12), transparent 58%),
+    repeating-conic-gradient(from 0deg, rgba(255,227,179,.06) 0deg 1deg, transparent 1deg 14deg),
+    #0B0A09;
+  border: 1px solid #2a211b;
+  box-shadow: 8px 8px 0 rgba(20,18,16,.14), 0 0 40px rgba(248,143,34,.06);
+}
+#roadmapPanel .roadmap-orbit::before { border-color: rgba(255,227,179,.18); }
+#roadmapPanel .orbit-node {
+  background: #0B0A09;
+  border-color: rgba(255,227,179,.2);
+  color: rgba(246,244,241,.72);
+}
+#roadmapPanel .orbit-node[aria-selected="true"] {
+  background: linear-gradient(135deg, rgba(248,143,34,.2), rgba(255,227,179,.05));
+  color: var(--paper);
+  border-color: var(--sun-2);
+}
+#roadmapPanel .orbit-node:hover { color: var(--paper); border-color: var(--sun-2); }
+
+#validationPanel .validation-plate {
+  background:
+    linear-gradient(rgba(255,227,179,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,227,179,.035) 1px, transparent 1px),
+    radial-gradient(520px 220px at 86% -10%, rgba(248,143,34,.16), transparent 70%),
+    #0B0A09;
+  background-size: 24px 24px, 24px 24px, auto, auto;
+  border: 1px solid #2a211b;
+  border-radius: var(--r-lg);
+  padding: 14px;
+  color: var(--paper);
+  box-shadow: 8px 8px 0 rgba(20,18,16,.14);
+}
+#validationPanel .validation-cap { color: rgba(246,244,241,.62); }
+#validationPanel .validation-cell { background: #1b1511; border-color: #2a211b; }
+#validationPanel .validation-cell.is-no-match { background: #2a211b; }
+#validationPanel .validation-cell.is-not-evaluable {
+  border-color: #5b4a3a;
+  background:
+    repeating-linear-gradient(135deg, rgba(255,227,179,.08) 0 2px, transparent 2px 5px),
+    #1b1511;
+}
+#validationPanel .validation-cell.is-matched {
+  border-color: var(--sun-3);
+  background: linear-gradient(135deg, var(--coral), var(--sun-2) 56%, var(--sun-3));
+}
+#validationPanel .validation-cell.is-false-negative {
+  border-color: var(--coral);
+  background: repeating-linear-gradient(135deg, rgba(249,92,75,.92) 0 2px, #2a1512 2px 5px);
+}
+#validationPanel .validation-legend { color: rgba(246,244,241,.5); }
+#validationPanel .validation-legend .is-no-match { background: #2a211b; }
+#validationPanel .validation-legend .is-not-evaluable { border-color: #5b4a3a; }
+
+
+/* Final plate polish: richer dark instruments. */
+#responsePanel .response-flow {
+  background:
+    repeating-linear-gradient(0deg, rgba(255,227,179,.035) 0 1px, transparent 1px 7px),
+    radial-gradient(540px 210px at 14% -24%, rgba(248,143,34,.22), transparent 68%),
+    #0B0A09;
+}
+#huntsPanel .hunt-radar {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(248,143,34,.95) 0 2px, transparent 3px),
+    linear-gradient(90deg, transparent 49.8%, rgba(255,227,179,.12) 50%, transparent 50.2%),
+    linear-gradient(0deg, transparent 49.8%, rgba(255,227,179,.12) 50%, transparent 50.2%),
+    radial-gradient(circle, rgba(248,143,34,.15), transparent 62%),
+    #0B0A09;
+}
+#huntsPanel .hunt-radar::after { box-shadow: 0 0 24px rgba(248,143,34,.12); }
+#irPanel .ir-timeline {
+  background:
+    repeating-linear-gradient(0deg, rgba(255,227,179,.025) 0 1px, transparent 1px 6px),
+    radial-gradient(620px 220px at 10% -20%, rgba(248,143,34,.2), transparent 68%),
+    #0B0A09;
+}
+#irPanel .ir-track { position: relative; }
+#irPanel .ir-track::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: repeating-linear-gradient(90deg, rgba(255,227,179,.08) 0 1px, transparent 1px 28px);
+}
+#irPanel .ir-marker { z-index: 2; }
+#irPanel .ir-progress { height: 4px; z-index: 1; box-shadow: 0 0 14px rgba(248,143,34,.35); }
+#irPanel .ir-marker span { color: rgba(246,244,241,.72); }
+#irPanel .ir-marker::before { width: 12px; height: 12px; box-shadow: 0 0 12px rgba(248,143,34,.45); }
+#irPanel .ir-controls #irClock { color: rgba(246,244,241,.7); }
+#roadmapPanel .roadmap-orbit {
+  box-shadow: 8px 8px 0 rgba(20,18,16,.14), 0 0 60px rgba(248,143,34,.1);
+}
+#roadmapPanel .roadmap-orbit::before {
+  border-color: rgba(255,227,179,.3);
+  box-shadow: 0 0 26px rgba(248,143,34,.08);
+}
+#roadmapPanel .orbit-node::before { box-shadow: 0 0 10px currentColor; }
+#cloudPanel .cloud-bridge {
+  background:
+    radial-gradient(560px 220px at 12% -22%, rgba(248,143,34,.2), transparent 68%),
+    repeating-linear-gradient(90deg, rgba(255,227,179,.025) 0 1px, transparent 1px 32px),
+    #0B0A09;
+}
 </style>
 </head>
 <body>

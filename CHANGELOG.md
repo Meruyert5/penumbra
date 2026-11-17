@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Moved the response flow, hunt radar, IR timeline, cloud bridge, roadmap orbit,
+  and validation matrix onto dark instrument plates, matching the Fig. 1 chart's
+  contrast instead of leaving them as pale cards.
 - Compacted hunting and roadmap into side-by-side radar/orbit layouts, made the
   validation matrix a full-width 17-column strip, and added count-up motion to
   the instrument totals.
