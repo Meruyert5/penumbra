@@ -1,5 +1,9 @@
 # Publishing checklist
 
+**Current status:** the repository is public and GitHub Pages is live at
+<https://meruyert5.github.io/penumbra/>. The rest of this file is the checklist
+for forks and future releases.
+
 This is the release checklist for the public repository and the public dashboard.
 It separates what is safe to publish from what should stay in the working tree.
 

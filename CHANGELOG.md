@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Made the repository public and restored the GitHub Pages deployment at
+  <https://meruyert5.github.io/penumbra/>.
 - Reworked the mobile pipeline into a readable single-column stage list, squared
   up the validation tiles, and cleaned up the palette and IR controls on small screens.
 - Added the After chapter to the command palette and scroll spy, fixed the keyboard

@@ -11,12 +11,13 @@ account.
 | Author | Meruyert Oshayeva |
 | Branch | `main` |
 | Latest commit | use `git log -1 --oneline`; the repository is clean after each handoff |
+| Repository | <https://github.com/Meruyert5/penumbra> (public) |
 | Local repo | the repository checkout |
 | Built dashboard | `docs/index.html` |
 | Evidence sections | Response in Instruments, hunting in Umbra, validation in Corona, IR in Eclipses, roadmap in After |
 | Public site | `site/` (generated, gitignored) |
 | Public surface | `index.html`, `assets/`, `cases/`, `.nojekyll`; optionally `CNAME` |
-| Public host | Private repository; GitHub Pages offline during the integration pass |
+| Public host | <https://meruyert5.github.io/penumbra/> |
 | Permanent target | `https://penumbra.is-a.dev` (domain still available; registration pending) |
 | Tests | 79 passing |
 | Real validation | 1,381 events across five indices and 16 labelled windows; 6 TP / 0 FP / 1 FN; 0 not evaluable; 89,704-event benign baseline |
@@ -24,8 +25,8 @@ account.
 
 The local server can serve `site/` for review. GitHub Pages is the only public
 host; the Cloudflare Quick Tunnel has been removed. `design.md`,
-`design-research.md`, `runbook.md`, and `tuning.md` are not part of the public
-surface.
+`design-research.md`, `runbook.md`, and `tuning.md` are public in the repository
+but are not part of the published site.
 
 ## Rebuild and verify
 
@@ -70,48 +71,36 @@ design notes, runbook, and tuning log. Do not point a public tunnel at `docs/`.
 
 ## Public hosting
 
-GitHub Pages is the intended public host. The workflow uploads `site/`, never
-`docs/`. The repository is currently private, so Pages is offline; re-enable it
-when the repository is public again. The Cloudflare Quick Tunnel is not used for
-this project. If you need a temporary preview, serve `site/` on localhost and
-keep it private; do not publish a tunnel that exposes the working tree.
+GitHub Pages is the public host at <https://meruyert5.github.io/penumbra/>.
+The workflow uploads `site/`, never `docs/`. The Cloudflare Quick Tunnel is not
+used for this project. If you need a temporary preview, serve `site/` on
+localhost; do not publish a tunnel that exposes the working tree.
 
-## Upload to GitHub
+## Repository
 
-GitHub CLI is not installed in the current environment, and no remote or SSH key
-is configured. Install the CLI, authenticate with the device flow, then create
-and push:
-
-```powershell
-winget install --id GitHub.cli -e
-gh auth login --hostname github.com --git-protocol https --web
-cd <repo>
-gh repo create penumbra --public --source=. --remote=origin --push
-```
-
-The `--web` flow prints a one-time code. The human enters it at
-<https://github.com/login/device>. Never ask for or store a password or personal
-access token.
-
-Without GitHub CLI, the equivalent is:
+The repository is public at
+[github.com/Meruyert5/penumbra](https://github.com/Meruyert5/penumbra).
+`origin` is configured, `main` is the deployment branch, and the Pages workflow
+runs on every push.
 
 ```powershell
-git remote add origin https://github.com/<owner>/penumbra.git
-git push -u origin main
+git push origin main
 ```
 
-The prepared artifacts are:
-
-- `%USERPROFILE%\Documents\penumbra-upload.zip` — tracked-file snapshot;
-- `%USERPROFILE%\Documents\penumbra.bundle` — full Git history.
+| Workflow | Purpose |
+|---|---|
+| `penumbra-ci` | Tests and rule checks |
+| `penumbra-quality` | Documentation links and Lighthouse |
+| `penumbra-pages` | Builds `site/` and deploys Pages |
 
 ## GitHub Pages
 
-1. Push `main`.
-2. **Settings → Pages → Source: GitHub Actions**.
-3. Run `penumbra-pages` or push to `main`.
-4. Open the Pages URL and confirm `/design.md` returns 404.
-5. Add the live URL to the README reviewer path and the repository About panel.
+Pages is enabled with **Source: GitHub Actions** and deploys on every push to
+`main`. Redeploy by running `penumbra-pages` or pushing to `main`.
+
+1. Open <https://meruyert5.github.io/penumbra/>.
+2. Confirm `/design.md`, `/runbook.md`, and `/tuning.md` return 404.
+3. Confirm the live URL is in the README reviewer path and the repository About panel.
 
 The workflow uploads `site/`, never `docs/`.
 
@@ -137,9 +126,10 @@ Read [`docs/custom-domain.md`](custom-domain.md). The short version:
 
 ## Open decisions
 
-1. **Design privacy.** The design source is public. `pipeline.publish` keeps it
-   off the website, not out of the repository. See
-   [`docs/publishing.md`](publishing.md) for the split-repository options.
+1. **Design privacy (decided).** The repository is public under MIT, so the
+   design source is public. `pipeline.publish` keeps it off the website, not out
+   of the repository. See [`docs/publishing.md`](publishing.md) for the
+   split-repository options if that changes.
 2. **Name.** Penumbra collides with Penumbra Security, Inc. and other products.
    Keep it for a portfolio with the disclaimer, or choose a more distinctive name
    before a commercial launch.

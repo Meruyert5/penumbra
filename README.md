@@ -16,13 +16,13 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 
 > **Project status: portfolio lab, not a production detection product.** The telemetry is synthetic and generated to exercise this rule set. The repository demonstrates detection-as-code, validation, triage, and reporting; it does not claim production precision or recall. The evidence boundary is documented in [Evaluation and validation](docs/evaluation.md).
 
-**Repository status:** private until the public release check is complete. Run the site locally from `site/` after `python -m pipeline.report` and `python -m pipeline.publish`.
+**Repository status:** public. The dashboard is live at <https://meruyert5.github.io/penumbra/>. Run the site locally from `site/` after `python -m pipeline.report` and `python -m pipeline.publish`.
 
 ## Reviewer path
 
 | Time | Open | Why it matters |
 |---|---|---|
-| 2 minutes | [The dashboard](docs/index.html) | See the run, the peak hour, the coverage ring, and the triage queue |
+| 2 minutes | [The live dashboard](https://meruyert5.github.io/penumbra/) | See the run, the peak hour, the coverage ring, and the triage queue |
 | 5 minutes | [`rules/sigma/`](rules/sigma) and [`rules/compiled/`](rules/compiled) | Read the source rule and the EQL/KQL that Elasticsearch actually runs |
 | 5 minutes | [`cases/case-002-multi-stage-intrusion/report.md`](cases/case-002-multi-stage-intrusion/report.md) | Follow one investigation from alert to verdict |
 | 5 minutes | [`docs/attck-coverage.md`](docs/attck-coverage.md) and [`docs/tuning.md`](docs/tuning.md) | Check coverage and the tuning record |
@@ -473,7 +473,7 @@ scripts/                Convenience scripts
 
 [`.github/workflows/pages.yml`](.github/workflows/pages.yml) publishes a filtered public site on every push to `main`:
 
-The repository is private until the public release check is complete, so GitHub Pages is offline. The deployment target remains `https://meruyert5.github.io/penumbra/`; re-enable Pages when the repository is public again.
+The live dashboard is <https://meruyert5.github.io/penumbra/>. The workflow deploys on every push to `main`.
 
 ```powershell
 python -m pipeline.report
@@ -482,9 +482,10 @@ python -m pipeline.publish
 
 `pipeline.publish` writes `site/` with only `index.html`, `assets/`, `cases/`, `.nojekyll`, and `CNAME` when a custom domain is configured. The design notes, research log, runbook, and tuning record stay in `docs/` and are not uploaded to Pages. This is a deployment boundary, not a secrecy guarantee: `dashboard/` is still part of this repository.
 
-1. Push the repository to GitHub.
-2. Open **Settings → Pages** and set **Source** to **GitHub Actions**.
-3. Push to `main` or run the workflow manually. GitHub shows the published URL in the workflow run and in **Settings → Pages**.
+Pages is already enabled for this repository. For a fork:
+
+1. Open **Settings → Pages** and set **Source** to **GitHub Actions**.
+2. Push to `main` or run the workflow manually. GitHub shows the published URL in the workflow run and in **Settings → Pages**.
 
 The dashboard has no server-side dependencies, so Pages serves it as-is. If you fork the repo under a different name, the workflow still publishes `site/`; no code change is needed.
 
