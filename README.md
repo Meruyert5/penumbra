@@ -16,7 +16,7 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 
 > **Project status: portfolio lab, not a production detection product.** The telemetry is synthetic and generated to exercise this rule set. The repository demonstrates detection-as-code, validation, triage, and reporting; it does not claim production precision or recall. The evidence boundary is documented in [Evaluation and validation](docs/evaluation.md).
 
-**Repository status:** private while the dashboard integration pass is in progress. Run the site locally from `site/` after `python -m pipeline.report` and `python -m pipeline.publish`.
+**Repository status:** private until the public release check is complete. Run the site locally from `site/` after `python -m pipeline.report` and `python -m pipeline.publish`.
 
 ## Reviewer path
 
@@ -473,7 +473,7 @@ scripts/                Convenience scripts
 
 [`.github/workflows/pages.yml`](.github/workflows/pages.yml) publishes a filtered public site on every push to `main`:
 
-The repository is private during the dashboard integration pass, so GitHub Pages is offline. The deployment target remains `https://meruyert5.github.io/penumbra/`; re-enable Pages when the repository is public again.
+The repository is private until the public release check is complete, so GitHub Pages is offline. The deployment target remains `https://meruyert5.github.io/penumbra/`; re-enable Pages when the repository is public again.
 
 ```powershell
 python -m pipeline.report

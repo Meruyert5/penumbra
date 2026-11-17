@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Reworked the mobile pipeline into a readable single-column stage list, squared
+  up the validation tiles, and cleaned up the palette and IR controls on small screens.
+- Added the After chapter to the command palette and scroll spy, fixed the keyboard
+  help copy, linked the IR hint to the slider, and added Home/End scrubbing.
+- Raised the smallest label sizes and added deeper dark-theme shadows so the new
+  instrument plates stay separated from the Umbra page.
 - Turned the IR timeline markers into non-interactive indicators that pulse as
   the scrub position crosses them, leaving the play control as the only trigger.
 - Fixed the Umbra orbit core so the project count stays visible, and locked the

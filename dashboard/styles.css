@@ -9395,3 +9395,103 @@ body::after { display: none; }
   #irPanel .ir-marker.is-pulse::before,
   #roadmapPanel .roadmap-orbit::after { animation: none; }
 }
+
+
+/* Public-readiness polish: mobile pipeline, tap targets, and small-label legibility. */
+.path-phase { font-size: 8.5px; }
+.validation-cap { font-size: 9px; letter-spacing: .08em; }
+.validation-legend { font-size: 9px; }
+.vd-metric { font-size: 8.5px; }
+.vd-metric b { font-size: 10.5px; }
+#irPanel .ir-hint { color: rgba(246,244,241,.55); font-size: 9px; }
+
+@media (max-width: 520px) {
+  .path {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .path::after { display: none; }
+  .path-step {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: 4px 14px;
+    align-items: start;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--line-soft);
+  }
+  .path-step:first-child { padding-top: 0; }
+  .path-step:last-child { border-bottom: 0; padding-bottom: 0; }
+  .path-step .path-top {
+    grid-column: 1;
+    grid-row: 1 / 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+  }
+  .path-step .path-icon { display: none; }
+  .path-step .path-phase { grid-column: 2; grid-row: 1; margin: 3px 0 0; }
+  .path-step .path-label { grid-column: 2; grid-row: 2; }
+  .path-step .path-title { grid-column: 2; grid-row: 3; font-size: 15px; }
+  .path-step .path-bottom {
+    grid-column: 2;
+    grid-row: 4;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .path-step .path-count { font-size: 17px; }
+  .path-step .path-artifact { font-size: 9px; }
+
+  .validation-cap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .validation-panel .validation-cell { aspect-ratio: 1; min-height: 26px; }
+
+  #paletteInput { padding: 14px 12px; font-size: 15px; }
+
+  #irPanel .ir-controls {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 6px 10px;
+    align-items: center;
+  }
+  #irPanel .ir-controls .mini { grid-column: 1; grid-row: 1; }
+  #irPanel .ir-hint { grid-column: 2; grid-row: 1; text-align: left; }
+  #irPanel .ir-controls #irClock { grid-column: 1 / -1; grid-row: 2; text-align: left; }
+}
+
+/* Dark theme depth for the instrument plates and detail panes. */
+:root[data-theme="umbra"] #responsePanel .response-flow,
+:root[data-theme="umbra"] #huntsPanel .hunt-radar,
+:root[data-theme="umbra"] #irPanel .ir-timeline,
+:root[data-theme="umbra"] #cloudPanel .cloud-bridge,
+:root[data-theme="umbra"] #roadmapPanel .roadmap-orbit,
+:root[data-theme="umbra"] #validationPanel .validation-plate {
+  box-shadow:
+    0 22px 54px rgba(0,0,0,.55),
+    0 0 0 1px rgba(255,227,179,.06),
+    inset 0 1px 0 rgba(255,227,179,.08);
+}
+:root[data-theme="umbra"] .instrument-detail,
+:root[data-theme="umbra"] .validation-benchmark-detail,
+:root[data-theme="umbra"] .validation-proof {
+  box-shadow:
+    0 18px 44px rgba(0,0,0,.42),
+    0 0 0 1px rgba(255,227,179,.05),
+    inset 0 1px 0 rgba(255,227,179,.06);
+}
+
+
+/* Keep the orbit's inner glow when the Umbra shadow lands. */
+:root[data-theme="umbra"] #roadmapPanel .roadmap-orbit {
+  box-shadow:
+    8px 8px 0 rgba(20,18,16,.14),
+    0 26px 58px rgba(0,0,0,.55),
+    0 0 0 1px rgba(255,227,179,.08),
+    inset 0 0 80px rgba(248,143,34,.1),
+    inset 0 -30px 60px rgba(0,0,0,.4);
+}

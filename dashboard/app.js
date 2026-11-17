@@ -565,6 +565,7 @@
       const bar = document.querySelector("#irProgress");
       if (bar) bar.style.width = pct + "%";
       track.setAttribute("aria-valuenow", String(Math.round(pct)));
+      track.setAttribute("aria-valuetext", label || labelAt(pct));
       const activeIndex = activePoints.reduce((best, point, index) => (point.pct <= pct ? index : best), 0);
       let newlyActive = null;
       track.querySelectorAll(".ir-marker").forEach((marker, index) => {
@@ -650,10 +651,12 @@
     track.addEventListener("pointerup", () => { irDragging = false; });
     track.addEventListener("pointercancel", () => { irDragging = false; });
     track.addEventListener("keydown", (event) => {
-      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
       event.preventDefault();
       const current = Number(track.getAttribute("aria-valuenow") || 0);
-      const pct = Math.max(0, Math.min(100, current + (event.key === "ArrowRight" ? 4 : -4)));
+      const pct = event.key === "Home" ? 0 :
+        event.key === "End" ? 100 :
+        Math.max(0, Math.min(100, current + (event.key === "ArrowRight" ? 4 : -4)));
       stop();
       setProgress(pct);
     });
@@ -2983,7 +2986,7 @@
     { target: "#matrix", title: "Read the corona", body: "The corona ring only counts priority techniques. All 45 are closed in this run; the gaps view stays available as a regression check." },
     { target: "#validationPanel", title: "Check the evidence", body: "The matrix carries all 50 rules. Focus or click a tile to read its status; the table below gives per-rule TP, FP, FN, precision, recall, and alert volume against real labelled windows." },
     { target: "#caseGrid", title: "Read the investigations", body: "Each case follows the same structure: summary, timeline, evidence, analysis, verdict, containment, and the detection improvement that came out of it." },
-    { target: "#irPanel", title: "Close the loop", body: "The timeline scrubs the observed window. Play the close-out or click a marker; the detail pane adds containment, recovery, lessons, and open questions." },
+    { target: "#irPanel", title: "Close the loop", body: "The timeline scrubs the observed window: drag it, or use the arrow keys. The markers light as the readout crosses them; play runs the whole close-out." },
     { target: "#reproduce .terminal", title: "Repeat the orbit", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." },
     { target: "#cloudPanel", title: "Hand off to Apsis", body: "The bridge shows the three CloudTrail detections Penumbra hands to Apsis. Select a detection to see the query and the response hand-off." },
     { target: "#roadmapPanel", title: "Read the next orbit", body: "The orbit holds three projects. Select a node to see its thesis, module states, and what done means. The build order is Apsis, Penumbra, network hunting." }
@@ -3133,6 +3136,7 @@
     { group: "Go", label: "Corona", hint: "04", run: () => goTo("#coverage") },
     { group: "Go", label: "Eclipses", hint: "05", run: () => goTo("#cases") },
     { group: "Go", label: "Recurrence", hint: "06", run: () => goTo("#reproduce") },
+    { group: "Go", label: "After", hint: "07", run: () => goTo("#after") },
     { group: "Filter", label: "All detections", hint: "clear severity", run: () => { setLevel("all"); goTo("#ledger"); } },
     { group: "Filter", label: "Critical detections", hint: number(severity.critical || 0), run: () => { setLevel("critical"); goTo("#ledger"); } },
     { group: "Filter", label: "High detections", hint: number(severity.high || 0), run: () => { setLevel("high"); goTo("#ledger"); } },
@@ -3328,7 +3332,7 @@
     const chapterObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => { if (entry.isIntersecting) setActiveChapter(entry.target.id); });
     }, { rootMargin: "-28% 0px -62% 0px", threshold: 0 });
-    ["cover", "run", "method", "ledger", "coverage", "cases", "reproduce"].forEach((id) => {
+    ["cover", "run", "method", "ledger", "coverage", "cases", "reproduce", "after"].forEach((id) => {
       const node = document.getElementById(id);
       if (node) chapterObserver.observe(node);
     });
