@@ -308,7 +308,7 @@ Representative coverage:
 * EQL and KQL panels with syntax highlighting and one-click copy
 * Case cards with a detection chain that opens a case-file summary and links to the published investigation reports
 * A case-chain player that steps through each investigation's detections in order, with the rule, time, host, and EQL for every step
-* A response flow, hunt radar, IR timeline scrubber, cloud hand-off bridge, and project orbit, each with a selector and one detail pane
+* A response flow, hunt radar, IR timeline scrubber, cloud hand-off bridge, and project vinyl record, each with a selector and one detail pane
 * A validation matrix with focusable rule tiles and a live status readout, plus a per-rule benchmark table
 * A host-lane hour axis and a severity-mix bar in the watch floor status band
 * Two eclipse themes: **Corona** (paper, sunlight, coral) and **Umbra** (black sky, corona glow), each with its own accent, plus a contact-ribbon play control (`P`), a command palette (`Ctrl/Cmd K`), a guided fifteen-step reading, keyboard shortcuts, and reduced-motion support

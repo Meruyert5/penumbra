@@ -49,7 +49,7 @@
         {
           "name": "Dashboard integration",
           "state": "active",
-          "detail": "Evidence workspace with four tabs, compact validation, expandable incidents, and interactive roadmap; further visual polish can follow."
+          "detail": "Evidence workspace with four tabs, compact validation, expandable incidents, and an interactive vinyl roadmap; further visual polish can follow."
         }
       ],
       "done": "A reviewer can follow a hunt or a case from telemetry to verdict without reading the source code."
