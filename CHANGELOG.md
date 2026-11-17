@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Switched pipeline artifact chips to a deep ink surface and removed the pale
+  hover fill and lift jitter from the IR timeline markers.
 - Rebuilt the validation benchmark detail as a dark instrument plate with warm
   metric chips and window cards, and gave the proof drawer readable dark styling.
 - Added an orbiting sweep, concentric rings, core glow, and starfield texture to
