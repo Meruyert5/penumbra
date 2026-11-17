@@ -2,9 +2,10 @@
 
 ## Unreleased
 
-- Rebuilt the portfolio roadmap as a vinyl record with grooves, a warm project
-  label, a tonearm, and track-style project selectors, so it no longer mirrors
-  the hunting radar.
+- Rebuilt the portfolio roadmap as a high-angle vinyl record with grooves, a warm
+  project label, a tonearm, and track-style project selectors. The record floats
+  on a turntable plane with a drifting arm, moving light, and a slow shadow
+  breathe, so it no longer mirrors the hunting radar.
 - Switched the type system to Fraunces for display, Manrope for body, and
   JetBrains Mono for data, including refreshed embedded fonts and screenshots.
 - Replaced the travelling gradient rule above the new figure detail panes with a

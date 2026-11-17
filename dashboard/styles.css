@@ -9649,3 +9649,98 @@ body::after { display: none; }
     inset 0 0 70px rgba(0,0,0,.8),
     inset 0 0 0 7px rgba(0,0,0,.35);
 }
+
+/* High-angle vinyl: the record lies on a turntable plane, labels stay upright. */
+#roadmapPanel .roadmap-orbit {
+  width: min(100%, 420px);
+  height: auto;
+  aspect-ratio: 1.12;
+  margin: 4px auto 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+  perspective: 900px;
+  perspective-origin: 50% 38%;
+}
+.vinyl-disc {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) rotateX(46deg) rotateZ(-8deg) scale(.88);
+  transform-style: preserve-3d;
+  border-radius: 50%;
+  border: 1px solid rgba(255,227,179,.2);
+  background:
+    radial-gradient(circle at 36% 28%, rgba(255,227,179,.12), transparent 24%),
+    repeating-radial-gradient(circle at 50% 50%, rgba(255,227,179,.055) 0 1px, transparent 1px 6px),
+    repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,.52) 0 2px, transparent 2px 13px),
+    radial-gradient(circle at 50% 50%, #16100b 0 18%, #0b0806 19% 64%, #060403 100%);
+  box-shadow:
+    18px 24px 0 rgba(20,18,16,.1),
+    0 34px 64px rgba(20,18,16,.28),
+    inset 0 0 70px rgba(0,0,0,.78),
+    inset 0 0 0 7px rgba(0,0,0,.35);
+  animation: vinyl-float 14s ease-in-out infinite;
+}
+.vinyl-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 1.5%;
+  z-index: 0;
+  width: 72%;
+  height: 17%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(20,18,16,.38), transparent 70%);
+  filter: blur(18px);
+  transform: translateX(-50%) rotate(-8deg);
+  animation: vinyl-shadow 14s ease-in-out infinite;
+  pointer-events: none;
+}
+.vinyl-light {
+  position: absolute;
+  inset: -4%;
+  z-index: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  background: conic-gradient(from 0deg, transparent 0 64deg, rgba(255,227,179,.18) 88deg, rgba(255,255,255,.06) 106deg, transparent 132deg 360deg);
+  -webkit-mask-image: radial-gradient(circle, transparent 0 29%, #000 34% 84%, transparent 89%);
+  mask-image: radial-gradient(circle, transparent 0 29%, #000 34% 84%, transparent 89%);
+  mix-blend-mode: screen;
+  filter: blur(4px);
+  animation: vinyl-light 18s linear infinite;
+}
+.tonearm { animation: arm-drift 10s ease-in-out infinite; transform-origin: 82% 14%; }
+.vinyl-disc .vinyl-label { z-index: 2; }
+.vinyl-disc .tonearm { z-index: 3; }
+#roadmapPanel .roadmap-orbit .orbit-node { z-index: 4; }
+:root[data-theme="umbra"] #roadmapPanel .roadmap-orbit { box-shadow: none; }
+:root[data-theme="umbra"] .vinyl-disc {
+  box-shadow:
+    18px 24px 0 rgba(0,0,0,.18),
+    0 38px 74px rgba(0,0,0,.66),
+    inset 0 0 70px rgba(0,0,0,.8),
+    inset 0 0 0 7px rgba(0,0,0,.35);
+}
+@keyframes vinyl-float {
+  0%, 100% { transform: translate(-50%, -50%) rotateX(46deg) rotateZ(-8deg) scale(.88); }
+  50% { transform: translate(-50%, -50%) rotateX(43deg) rotateZ(-6deg) scale(.89); }
+}
+@keyframes vinyl-light {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes arm-drift {
+  0%, 100% { transform: rotate(-.5deg); }
+  50% { transform: rotate(1.7deg); }
+}
+@keyframes vinyl-shadow {
+  0%, 100% { opacity: .58; transform: translateX(-50%) rotate(-8deg) scale(.95); }
+  50% { opacity: .82; transform: translateX(-50%) rotate(-8deg) scale(1.03); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vinyl-disc, .vinyl-light, .tonearm, .vinyl-shadow { animation: none; }
+}

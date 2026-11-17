@@ -737,26 +737,30 @@
     const items = roadmap.projects;
     $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
     $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
-    const positions = [{ x: 50, y: 12 }, { x: 74, y: 82 }, { x: 26, y: 82 }];
+    const positions = [{ x: 50, y: 20 }, { x: 75, y: 76 }, { x: 25, y: 76 }];
     $("#roadmapOrbit").innerHTML =
-      '<span class="vinyl-grooves" aria-hidden="true"></span>' +
-      '<span class="vinyl-sheen" aria-hidden="true"></span>' +
-      '<span class="vinyl-label" aria-hidden="true"><b>' + items.length + '</b><span>projects</span><small>33⅓ / a-side</small></span>' +
-      '<span class="tonearm" aria-hidden="true"><svg viewBox="0 0 220 220">' +
-        '<defs><linearGradient id="vinylArm" x1="0" y1="0" x2="1" y2="1">' +
-          '<stop offset="0" stop-color="#F7E8CF"></stop><stop offset="1" stop-color="#8C7658"></stop>' +
-        '</linearGradient></defs>' +
-        '<circle cx="174" cy="28" r="15" fill="#120D0A" stroke="#8C7658" stroke-width="1.2"></circle>' +
-        '<circle cx="174" cy="28" r="6" fill="#F2A33A"></circle>' +
-        '<path d="M174 28 C160 74 139 108 102 132" fill="none" stroke="url(#vinylArm)" stroke-width="4.5" stroke-linecap="round"></path>' +
-        '<path d="M174 28 C160 74 139 108 102 132" fill="none" stroke="#FFF4DE" stroke-opacity=".42" stroke-width="1" stroke-linecap="round"></path>' +
-        '<g transform="rotate(-28 100 132)">' +
-          '<rect x="86" y="125" width="30" height="12" rx="2" fill="#D8C3A0" stroke="#6E5A42" stroke-width="1"></rect>' +
-          '<circle cx="93" cy="131" r="2" fill="#8F2F16"></circle>' +
-        '</g>' +
-        '<path d="M96 140 L91 147" stroke="#F7C96D" stroke-width="1.5" stroke-linecap="round"></path>' +
-        '<circle cx="90" cy="149" r="2" fill="#F2A33A"></circle>' +
-      '</svg></span>' +
+      '<span class="vinyl-shadow" aria-hidden="true"></span>' +
+      '<span class="vinyl-disc" aria-hidden="true">' +
+        '<span class="vinyl-grooves"></span>' +
+        '<span class="vinyl-light"></span>' +
+        '<span class="vinyl-sheen"></span>' +
+        '<span class="vinyl-label"><b>' + items.length + '</b><span>projects</span><small>33⅓ / a-side</small></span>' +
+        '<span class="tonearm"><svg viewBox="0 0 220 220">' +
+          '<defs><linearGradient id="vinylArm" x1="0" y1="0" x2="1" y2="1">' +
+            '<stop offset="0" stop-color="#F7E8CF"></stop><stop offset="1" stop-color="#8C7658"></stop>' +
+          '</linearGradient></defs>' +
+          '<circle cx="174" cy="28" r="15" fill="#120D0A" stroke="#8C7658" stroke-width="1.2"></circle>' +
+          '<circle cx="174" cy="28" r="6" fill="#F2A33A"></circle>' +
+          '<path d="M174 28 C160 74 139 108 102 132" fill="none" stroke="url(#vinylArm)" stroke-width="4.5" stroke-linecap="round"></path>' +
+          '<path d="M174 28 C160 74 139 108 102 132" fill="none" stroke="#FFF4DE" stroke-opacity=".42" stroke-width="1" stroke-linecap="round"></path>' +
+          '<g transform="rotate(-28 100 132)">' +
+            '<rect x="86" y="125" width="30" height="12" rx="2" fill="#D8C3A0" stroke="#6E5A42" stroke-width="1"></rect>' +
+            '<circle cx="93" cy="131" r="2" fill="#8F2F16"></circle>' +
+          '</g>' +
+          '<path d="M96 140 L91 147" stroke="#F7C96D" stroke-width="1.5" stroke-linecap="round"></path>' +
+          '<circle cx="90" cy="149" r="2" fill="#F2A33A"></circle>' +
+        '</svg></span>' +
+      '</span>' +
       items.map((project, index) => {
         const pos = positions[index % positions.length];
         return '<button class="orbit-node" type="button" role="tab" data-index="' + index +
