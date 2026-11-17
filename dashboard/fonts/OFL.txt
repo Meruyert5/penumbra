@@ -1,11 +1,11 @@
-Sora
-Copyright 2019 The Sora Project Authors (https://github.com/sora-xor/sora-font)
+Fraunces
+Copyright 2020 The Fraunces Project Authors (https://github.com/undercasetype/Fraunces)
 
-IBM Plex Mono
-Copyright 2017 IBM Corp. (https://github.com/IBM/plex)
+Manrope
+Copyright 2019 The Manrope Project Authors (https://github.com/sharanda/manrope)
 
-Instrument Serif
-Copyright 2022 The Instrument Serif Project Authors (https://github.com/Instrument/instrument-serif)
+JetBrains Mono
+Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)
 
 All three font families are licensed under the SIL Open Font License, Version 1.1.
 

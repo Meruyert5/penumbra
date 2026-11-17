@@ -19,7 +19,7 @@ reuse the visual identity in a product, please ask first.
 
 ## Fonts
 
-The dashboard embeds Sora, IBM Plex Mono, and Instrument Serif under the SIL Open
+The dashboard embeds Fraunces, Manrope, and JetBrains Mono under the SIL Open
 Font License 1.1. The licence text is in [`dashboard/fonts/OFL.txt`](dashboard/fonts/OFL.txt).
 The font files are redistributed unmodified.
 

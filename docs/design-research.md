@@ -95,11 +95,11 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 
 ## Typography
 
-- **Instrument Serif** for the editorial voice: cover lyric, chapter titles, case
+- **Fraunces** for the editorial voice: cover lyric, chapter titles, case
   titles, big numerals. Its high contrast and soft terminals carry the poster.
-- **Sora 800** for one poster word per chapter and the `SHADOW.`
+- **Manrope 800** for one poster word per chapter and the `SHADOW.`
   line. The pairing is the 5 Layout Rules move: serif + heavy grotesque.
-- **IBM Plex Mono 400/500** for labels, timestamps, IDs, and commands.
+- **JetBrains Mono 400/500/600** for labels, timestamps, IDs, and commands.
 - Two families do the identity; mono is the instrument. Do not add a fourth.
 - Scale: 8, 9, 9.5, 10.5, 12, 14, 15, 16, 19, 22, 30, 36, 46, 62, 78, 112.
 - Display line-height 0.8-0.98; body 1.62; ledes 54-58ch.
@@ -136,7 +136,7 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 
 - The cover is a two-column poster: lyric and actions on paper; a black plate
   with a corona disc; a paper ticket pinned over the plate.
-- Chapter indices are solid coral Instrument Serif, not faint outlines. The number is the
+- Chapter indices are solid coral Fraunces, not faint outlines. The number is the
   graphic; the rule and side note carry the metadata.
 - The coverage dial is a radial corona, not a row of bars. Forty-five ticks map
   one-to-one to the priority techniques.
@@ -183,7 +183,7 @@ coral/sunset family 10%. The accent is a state and an instrument, not wallpaper.
 ## Direction chosen
 
 **An eclipse instrument, not a page about an eclipse.** Paper, stone, coral, and
-totality black; Instrument Serif for the record; Sora 800 for the shout; IBM Plex
+totality black; Fraunces for the record; Manrope 800 for the shout; JetBrains
 Mono for the instruments. The first pass built the black totality plate, the
 corona disc, the paper run ticket, the radial corona ring, the warm light curve,
 and the sunset footer. The second pass pushed the language through every surface:

@@ -42,16 +42,15 @@ SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 # Local font files keep the report self-contained. All families are SIL OFL 1.1.
 FONT_FILES = {
-    "Sora": [
-        {"file": "sora-latin.woff2", "weight": "100 800"}
+    "Fraunces": [
+        {"file": "fraunces-latin.woff2", "weight": "100 900"},
+        {"file": "fraunces-italic-latin.woff2", "weight": "100 900", "style": "italic"},
     ],
-    "IBM Plex Mono": [
-        {"file": "ibm-plex-mono-400-latin.woff2", "weight": "400"},
-        {"file": "ibm-plex-mono-500-latin.woff2", "weight": "500"},
+    "Manrope": [
+        {"file": "manrope-latin.woff2", "weight": "200 800"},
     ],
-    "Instrument Serif": [
-        {"file": "instrument-serif-latin.woff2", "weight": "400"},
-        {"file": "instrument-serif-italic-latin.woff2", "weight": "400", "style": "italic"},
+    "JetBrains Mono": [
+        {"file": "jetbrains-mono-latin.woff2", "weight": "100 800"},
     ],
 }
 

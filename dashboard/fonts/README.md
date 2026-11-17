@@ -1,17 +1,17 @@
 # Embedded fonts
 
-The dashboard embeds five latin-subset WOFF2 files so the published page stays
+The dashboard embeds four latin-subset WOFF2 files so the published page stays
 self-contained and works from `file://`:
 
-- **Sora** variable, weights 100-800.
-  Copyright 2019 The Sora Project Authors
-  (https://github.com/sora-xor/sora-font).
-- **IBM Plex Mono** 400 and 500.
-  Copyright 2017 IBM Corp.
-  (https://github.com/IBM/plex).
-- **Instrument Serif** roman and italic, weight 400.
-  Copyright 2022 The Instrument Serif Project Authors
-  (https://github.com/Instrument/instrument-serif).
+- **Fraunces** variable roman and italic, weights 100-900.
+  Copyright 2020 The Fraunces Project Authors
+  (https://github.com/undercasetype/Fraunces).
+- **Manrope** variable, weights 200-800.
+  Copyright 2019 The Manrope Project Authors
+  (https://github.com/sharanda/manrope).
+- **JetBrains Mono** variable, weights 100-800.
+  Copyright 2020 The JetBrains Mono Project Authors
+  (https://github.com/JetBrains/JetBrainsMono).
 
 All three families are licensed under the SIL Open Font License, Version 1.1.
 The full license text is in `OFL.txt`. The files were downloaded from Google

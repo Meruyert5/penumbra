@@ -87,12 +87,12 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
 
 ## Typography
 
-- **Display: Instrument Serif** 400, roman and italic. The cover lyric, chapter
+- **Display: Fraunces** 400-500, roman and italic. The cover lyric, chapter
   titles, case titles, the coverage numeral, the footer wordmark, and the big
   chapter indices use it. Its high contrast is the eclipse-poster voice.
-- **Poster: Sora 800.** One word per chapter title and the `SHADOW.` line on
-  the cover. It is the loud counterweight to Instrument Serif.
-- **Data: IBM Plex Mono 400 and 500.** Labels, timestamps, IDs, table values, and
+- **Poster: Manrope 800.** One word per chapter title and the `SHADOW.` line on
+  the cover. It is the loud counterweight to Fraunces.
+- **Data: JetBrains Mono 400, 500, and 600.** Labels, timestamps, IDs, table values, and
   commands. Mono is never body copy.
 - **Scale:** 8, 9, 9.5, 10.5, 12, 14, 15, 16, 19, 22, 30, 36, 46, 66, 100, 122.
 - **Line length:** ledes cap at 54-58ch; chapter ledes at 58ch; matrix labels
@@ -114,7 +114,7 @@ paper uses `--accent` (`#C9402C`), which clears AA at body size; the brighter
   interlude. Native scroll drives the moon across the sun, the corona, Baily's
   beads, the diamond ring, the phase word, and a progress rail. Reduced motion
   renders the static totality frame.
-- **Chapters.** A serif index, a one-word label, a serif title with one Sora
+- **Chapters.** A serif index, a one-word label, a serif title with one Manrope
   word, and a 58ch lede. The rule above each chapter is stone, with a small bead
   cluster at the right edge.
 - **Instruments.** The scope is a full-width black plate with a warm light curve.

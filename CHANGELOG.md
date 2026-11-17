@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Switched the type system to Fraunces for display, Manrope for body, and
+  JetBrains Mono for data, including refreshed embedded fonts and screenshots.
 - Replaced the travelling gradient rule above the new figure detail panes with a
   fixed gradient and a slow glow pulse, so the rule stays still while it breathes.
 - Made the repository public and restored the GitHub Pages deployment at
