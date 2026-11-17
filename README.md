@@ -308,8 +308,9 @@ Representative coverage:
 * EQL and KQL panels with syntax highlighting and one-click copy
 * Case cards with a detection chain that opens a case-file summary and links to the published investigation reports
 * A case-chain player that steps through each investigation's detections in order, with the rule, time, host, and EQL for every step
+* A response flow, hunt radar, IR timeline scrubber, cloud hand-off bridge, and project orbit, each with a selector and one detail pane
 * A host-lane hour axis and a severity-mix bar in the watch floor status band
-* Two eclipse themes: **Corona** (paper, sunlight, coral) and **Umbra** (black sky, corona glow), each with its own accent, plus a contact-ribbon play control (`P`), a command palette (`Ctrl/Cmd K`), a guided nine-step reading, keyboard shortcuts, and reduced-motion support
+* Two eclipse themes: **Corona** (paper, sunlight, coral) and **Umbra** (black sky, corona glow), each with its own accent, plus a contact-ribbon play control (`P`), a command palette (`Ctrl/Cmd K`), a guided fifteen-step reading, keyboard shortcuts, and reduced-motion support
 * Copy buttons for every command and query
 
 The source is split for maintenance: [`dashboard/template.html`](dashboard/template.html), [`dashboard/styles.css`](dashboard/styles.css), [`dashboard/app.js`](dashboard/app.js), [`dashboard/icon.svg`](dashboard/icon.svg), and the locally embedded WOFF2 files in [`dashboard/fonts/`](dashboard/fonts). The report step inlines the source and the fonts into one HTML file.

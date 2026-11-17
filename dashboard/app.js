@@ -233,13 +233,29 @@
     )).join("");
 
     const rules = validation.rules || [];
-    $("#validationMatrix").innerHTML = rules.map((rule) => {
+    $("#validationMatrix").innerHTML = rules.map((rule, index) => {
       const status = String(rule.status || "no_match").replace(/_/g, "-");
       const statusLabel = String(rule.status || "no_match").replace(/_/g, " ");
-      return '<span class="validation-cell is-' + esc(status) + '" role="img" title="' +
-        esc(rule.title) + " — " + esc(rule.reason) + '" aria-label="' +
+      return '<span class="validation-cell is-' + esc(status) + '" role="button" tabindex="0" data-index="' + index +
+        '" title="' + esc(rule.title) + " - " + esc(rule.reason) + '" aria-label="' +
         esc(rule.title + ": " + statusLabel + ". " + rule.reason) + '"></span>';
     }).join("");
+    const cellReadout = $("#validationCellReadout");
+    const showCell = (index) => {
+      const rule = rules[index];
+      if (!rule || !cellReadout) return;
+      const label = String(rule.status || "no_match").replace(/_/g, " ");
+      cellReadout.innerHTML = "<b>" + esc(rule.title) + "</b> " + esc(label) + ". " + esc(rule.reason);
+    };
+    Array.from(document.querySelectorAll("#validationMatrix .validation-cell")).forEach((cell, index) => {
+      cell.addEventListener("focus", () => showCell(index));
+      cell.addEventListener("click", () => showCell(index));
+      cell.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        showCell(index);
+      });
+    });
     const matched = rules.filter((rule) => rule.status === "matched").length;
     const notEvaluable = rules.filter((rule) => rule.status === "not_evaluable").length;
     const falseNegative = rules.filter((rule) => rule.status === "false_negative").length;
@@ -591,6 +607,13 @@
     };
     tabs.forEach((tab, index) => {
       tab.addEventListener("click", () => render(index));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+        tabs[next].focus();
+        render(next);
+      });
     });
     play.addEventListener("click", () => {
       stop();
@@ -648,6 +671,13 @@
     };
     tabs.forEach((tab, index) => {
       tab.addEventListener("click", () => render(index));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+        tabs[next].focus();
+        render(next);
+      });
     });
     render(0);
     $("#cloudNote").innerHTML = "The cloud pack is separate from the 50-rule Sigma core. " +
@@ -689,6 +719,13 @@
     };
     tabs.forEach((tab, index) => {
       tab.addEventListener("click", () => render(index));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+        tabs[next].focus();
+        render(next);
+      });
     });
     render(0);
     $("#roadmapNote").innerHTML = "Build order: Apsis, Penumbra, network hunting. " +
@@ -2897,12 +2934,18 @@
     { target: "#cover .ticket", title: "A run you can inspect", body: "This is the output of one deterministic run: 9,223 events, a 50-rule Sigma library, and eight correlation specs. The ticket is the receipt." },
     { target: "#scopePlate", title: "Read the light curve", body: "The light curve counts matched events across the full day. Several hours carry bursts; the shadow bands between them are part of the shape. A rule that fires on everything cannot discriminate." },
     { target: "#pathStrip", title: "Follow the chain", body: "Sigma compiles to Elasticsearch EQL and KQL. Detection executes the queries, correlation adds volume logic, and triage turns matches into a queue with evidence." },
+    { target: "#responsePanel", title: "Watch the response", body: "The flow turns 50 alerts into 27 incidents and 78 recommended actions. Choose an incident to see its alerts and dry-run playbook. No EDR, cloud, or ticketing API is called." },
     { target: "#ledger .chapter-head", title: "Enter the Umbra", body: "Umbra is the working console. The queue, the evidence inspector, the host lanes, and the coincidence strip all read from the same detection run." },
     { target: "#ledgerPanel", title: "Work the queue", body: "Filter by severity, host, or technique. Select a detection to keep its events and exact EQL beside the queue. J and K move; Enter selects." },
     { target: "#wfLaneList", title: "Read the field", body: "Every mark is a detection against the 24-hour window, one lane per host. The coincidence strip below adds the volume conditions that a single event cannot carry." },
+    { target: "#huntsPanel", title: "Hunt past the queue", body: "The radar holds four hypothesis-driven hunts. Select a node to see the query, evidence, verdict, and the detection change the hunt recommends." },
     { target: "#matrix", title: "Read the corona", body: "The corona ring only counts priority techniques. All 45 are closed in this run; the gaps view stays available as a regression check." },
+    { target: "#validationPanel", title: "Check the evidence", body: "The matrix carries all 50 rules. Focus or click a tile to read its status; the table below gives per-rule TP, FP, FN, precision, recall, and alert volume against real labelled windows." },
     { target: "#caseGrid", title: "Read the investigations", body: "Each case follows the same structure: summary, timeline, evidence, analysis, verdict, containment, and the detection improvement that came out of it." },
-    { target: "#reproduce .terminal", title: "Repeat the orbit", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." }
+    { target: "#irPanel", title: "Close the loop", body: "The timeline scrubs the observed window. Play the close-out or click a marker; the detail pane adds containment, recovery, lessons, and open questions." },
+    { target: "#reproduce .terminal", title: "Repeat the orbit", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." },
+    { target: "#cloudPanel", title: "Hand off to Apsis", body: "The bridge shows the three CloudTrail detections Penumbra hands to Apsis. Select a detection to see the query and the response hand-off." },
+    { target: "#roadmapPanel", title: "Read the next orbit", body: "The orbit holds three projects. Select a node to see its thesis, module states, and what done means. The build order is Apsis, Penumbra, network hunting." }
   ];
   const spot = $("#tourSpot");
   const tourCard = $("#tourCard");

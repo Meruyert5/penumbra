@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Extended guided reading to fifteen steps covering response, hunting, validation,
+  the IR casebook, the cloud hand-off, and the roadmap. Added focusable validation
+  tiles with a live status readout and arrow-key navigation to the tab groups.
 - Moved the response flow, hunt radar, IR timeline, cloud bridge, roadmap orbit,
   and validation matrix onto dark instrument plates, matching the Fig. 1 chart's
   contrast instead of leaving them as pale cards.

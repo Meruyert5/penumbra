@@ -8719,6 +8719,42 @@ body::after { display: none; }
     repeating-linear-gradient(90deg, rgba(255,227,179,.025) 0 1px, transparent 1px 32px),
     #0B0A09;
 }
+
+
+/* Typography pass for the new instruments. */
+.instrument-lede {
+  margin: 7px 0 0;
+  max-width: 62ch;
+  color: var(--text-2);
+  font: 500 13px/1.55 var(--sans);
+}
+.instrument-detail h4 { font-size: 23px; }
+.instrument-copy { font-size: 12px; line-height: 1.6; }
+.instrument-list li { font-size: 11.5px; line-height: 1.55; }
+.instrument-meta { font-size: 10px; }
+.instrument-stat { font-size: 9.5px; }
+.instrument-note { font-size: 10px; }
+.instrument-query { font-size: 9.5px; }
+.instrument-module { font-size: 9px; }
+@media (max-width: 720px) {
+  .instrument-lede { font-size: 12.5px; }
+  .instrument-detail h4 { font-size: 20px; }
+}
+
+
+/* Matrix cells are focusable status buttons with a live readout. */
+.validation-readout {
+  margin: 10px 0 0;
+  min-height: 1.6em;
+  color: rgba(246,244,241,.72);
+  font: 500 10px/1.5 var(--mono);
+}
+.validation-readout b { color: var(--sun-2); }
+#validationPanel .validation-cell { cursor: pointer; }
+#validationPanel .validation-cell:focus-visible {
+  outline: 2px solid var(--sun-3);
+  outline-offset: 2px;
+}
 </style>
 </head>
 <body>
@@ -9048,6 +9084,7 @@ body::after { display: none; }
         <div>
           <p class="chapter-label">Fig. 2 / Response</p>
           <h3 id="responseTitle">From alert to action.</h3>
+          <p class="instrument-lede">A dry-run engine that enriches, groups, and recommends; no external API is called.</p>
         </div>
         <div class="instrument-score"><b id="responseIncidentCount" data-count="27">27</b><span>incidents from <i id="responseAlertCount" data-count="50">50</i> alerts</span></div>
       </div>
@@ -9156,6 +9193,7 @@ body::after { display: none; }
         <div>
           <p class="chapter-label">Fig. 3 / Hunting</p>
           <h3 id="huntsTitle">Hypothesis first, alert second.</h3>
+          <p class="instrument-lede">Four questions the alert queue could not answer on its own.</p>
         </div>
         <div class="instrument-score"><b id="huntFindingCount" data-count="4">4</b><span>hunts with findings</span></div>
       </div>
@@ -9219,6 +9257,7 @@ body::after { display: none; }
           <figcaption class="validation-cap"><span>Rule status</span><span id="validationCount">loading</span></figcaption>
           <div class="validation-matrix" id="validationMatrix" role="group" aria-label="Per-rule validation status"></div>
           <p class="validation-legend"><span class="is-matched"></span> matched <span class="is-false-negative"></span> false negative <span class="is-no-match"></span> no match <span class="is-not-evaluable"></span> not evaluable</p>
+          <p class="validation-readout" id="validationCellReadout" aria-live="polite">Focus or click a tile to read the rule status.</p>
         </figure>
         <div class="validation-side">
           <div class="validation-samples" id="validationSamples"></div>
@@ -9315,6 +9354,7 @@ body::after { display: none; }
         <div>
           <p class="chapter-label">Fig. 5 / Casebook</p>
           <h3 id="irTitle">Close the loop.</h3>
+          <p class="instrument-lede">What was contained, recovered, and learned, with the observed window and open questions.</p>
         </div>
         <div class="instrument-score"><b>3</b><span>case close-outs</span></div>
       </div>
@@ -9386,6 +9426,7 @@ body::after { display: none; }
         <div>
           <p class="chapter-label" id="roadmapKicker">After / Portfolio roadmap</p>
           <h3 id="roadmapTitle">Three complete projects, no connector.</h3>
+          <p class="instrument-lede">Three projects, one shared evidence shape, no connector repo.</p>
         </div>
         <div class="instrument-score"><b>3</b><span>projects</span></div>
       </div>
@@ -9401,6 +9442,7 @@ body::after { display: none; }
         <div>
           <p class="chapter-label">After / Cloud pack</p>
           <h3 id="cloudTitle">What Penumbra hands to Apsis.</h3>
+          <p class="instrument-lede">The CloudTrail detections Penumbra hands to Apsis.</p>
         </div>
         <div class="instrument-score"><b id="cloudFiredCount" data-count="2">2</b><span>of 3 detections fired</span></div>
       </div>
@@ -9717,13 +9759,29 @@ body::after { display: none; }
     )).join("");
 
     const rules = validation.rules || [];
-    $("#validationMatrix").innerHTML = rules.map((rule) => {
+    $("#validationMatrix").innerHTML = rules.map((rule, index) => {
       const status = String(rule.status || "no_match").replace(/_/g, "-");
       const statusLabel = String(rule.status || "no_match").replace(/_/g, " ");
-      return '<span class="validation-cell is-' + esc(status) + '" role="img" title="' +
-        esc(rule.title) + " — " + esc(rule.reason) + '" aria-label="' +
+      return '<span class="validation-cell is-' + esc(status) + '" role="button" tabindex="0" data-index="' + index +
+        '" title="' + esc(rule.title) + " - " + esc(rule.reason) + '" aria-label="' +
         esc(rule.title + ": " + statusLabel + ". " + rule.reason) + '"></span>';
     }).join("");
+    const cellReadout = $("#validationCellReadout");
+    const showCell = (index) => {
+      const rule = rules[index];
+      if (!rule || !cellReadout) return;
+      const label = String(rule.status || "no_match").replace(/_/g, " ");
+      cellReadout.innerHTML = "<b>" + esc(rule.title) + "</b> " + esc(label) + ". " + esc(rule.reason);
+    };
+    Array.from(document.querySelectorAll("#validationMatrix .validation-cell")).forEach((cell, index) => {
+      cell.addEventListener("focus", () => showCell(index));
+      cell.addEventListener("click", () => showCell(index));
+      cell.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        showCell(index);
+      });
+    });
     const matched = rules.filter((rule) => rule.status === "matched").length;
     const notEvaluable = rules.filter((rule) => rule.status === "not_evaluable").length;
     const falseNegative = rules.filter((rule) => rule.status === "false_negative").length;
@@ -10075,6 +10133,13 @@ body::after { display: none; }
     };
     tabs.forEach((tab, index) => {
       tab.addEventListener("click", () => render(index));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+        tabs[next].focus();
+        render(next);
+      });
     });
     play.addEventListener("click", () => {
       stop();
@@ -10132,6 +10197,13 @@ body::after { display: none; }
     };
     tabs.forEach((tab, index) => {
       tab.addEventListener("click", () => render(index));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+        tabs[next].focus();
+        render(next);
+      });
     });
     render(0);
     $("#cloudNote").innerHTML = "The cloud pack is separate from the 50-rule Sigma core. " +
@@ -10173,6 +10245,13 @@ body::after { display: none; }
     };
     tabs.forEach((tab, index) => {
       tab.addEventListener("click", () => render(index));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+        tabs[next].focus();
+        render(next);
+      });
     });
     render(0);
     $("#roadmapNote").innerHTML = "Build order: Apsis, Penumbra, network hunting. " +
@@ -12381,12 +12460,18 @@ body::after { display: none; }
     { target: "#cover .ticket", title: "A run you can inspect", body: "This is the output of one deterministic run: 9,223 events, a 50-rule Sigma library, and eight correlation specs. The ticket is the receipt." },
     { target: "#scopePlate", title: "Read the light curve", body: "The light curve counts matched events across the full day. Several hours carry bursts; the shadow bands between them are part of the shape. A rule that fires on everything cannot discriminate." },
     { target: "#pathStrip", title: "Follow the chain", body: "Sigma compiles to Elasticsearch EQL and KQL. Detection executes the queries, correlation adds volume logic, and triage turns matches into a queue with evidence." },
+    { target: "#responsePanel", title: "Watch the response", body: "The flow turns 50 alerts into 27 incidents and 78 recommended actions. Choose an incident to see its alerts and dry-run playbook. No EDR, cloud, or ticketing API is called." },
     { target: "#ledger .chapter-head", title: "Enter the Umbra", body: "Umbra is the working console. The queue, the evidence inspector, the host lanes, and the coincidence strip all read from the same detection run." },
     { target: "#ledgerPanel", title: "Work the queue", body: "Filter by severity, host, or technique. Select a detection to keep its events and exact EQL beside the queue. J and K move; Enter selects." },
     { target: "#wfLaneList", title: "Read the field", body: "Every mark is a detection against the 24-hour window, one lane per host. The coincidence strip below adds the volume conditions that a single event cannot carry." },
+    { target: "#huntsPanel", title: "Hunt past the queue", body: "The radar holds four hypothesis-driven hunts. Select a node to see the query, evidence, verdict, and the detection change the hunt recommends." },
     { target: "#matrix", title: "Read the corona", body: "The corona ring only counts priority techniques. All 45 are closed in this run; the gaps view stays available as a regression check." },
+    { target: "#validationPanel", title: "Check the evidence", body: "The matrix carries all 50 rules. Focus or click a tile to read its status; the table below gives per-rule TP, FP, FN, precision, recall, and alert volume against real labelled windows." },
     { target: "#caseGrid", title: "Read the investigations", body: "Each case follows the same structure: summary, timeline, evidence, analysis, verdict, containment, and the detection improvement that came out of it." },
-    { target: "#reproduce .terminal", title: "Repeat the orbit", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." }
+    { target: "#irPanel", title: "Close the loop", body: "The timeline scrubs the observed window. Play the close-out or click a marker; the detail pane adds containment, recovery, lessons, and open questions." },
+    { target: "#reproduce .terminal", title: "Repeat the orbit", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." },
+    { target: "#cloudPanel", title: "Hand off to Apsis", body: "The bridge shows the three CloudTrail detections Penumbra hands to Apsis. Select a detection to see the query and the response hand-off." },
+    { target: "#roadmapPanel", title: "Read the next orbit", body: "The orbit holds three projects. Select a node to see its thesis, module states, and what done means. The build order is Apsis, Penumbra, network hunting." }
   ];
   const spot = $("#tourSpot");
   const tourCard = $("#tourCard");
