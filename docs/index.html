@@ -7492,6 +7492,305 @@ body::after { display: none; }
   color: rgba(246,244,241,.55);
   font: 500 9px/1.45 var(--mono);
 }
+
+
+/* Instrument pattern: one visual summary, one selector, one detail pane. */
+.instrument {
+  margin-top: clamp(28px, 4vw, 44px);
+  padding-top: clamp(18px, 2.5vw, 28px);
+  border-top: 1px solid var(--line);
+  color: var(--text);
+}
+.instrument-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 24px;
+  align-items: end;
+}
+.instrument-head .chapter-label { margin: 0; }
+.instrument-head h3 {
+  margin: 4px 0 0;
+  color: var(--text);
+  font: 500 clamp(26px, 3.2vw, 40px)/1 var(--serif);
+  letter-spacing: -0.035em;
+}
+.instrument-score { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; }
+.instrument-score b {
+  color: var(--text);
+  font: 500 clamp(36px, 4.6vw, 58px)/0.9 var(--serif);
+  letter-spacing: -0.04em;
+}
+.instrument-score span { max-width: 26ch; color: var(--text-2); font: 500 11px/1.4 var(--sans); }
+.instrument-score i { color: var(--accent); font-style: normal; }
+.instrument-stats { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 12px; }
+.instrument-stat {
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  color: var(--muted);
+  font: 500 9px/1.3 var(--mono);
+  letter-spacing: .02em;
+}
+.instrument-stat b { color: var(--text); font-weight: 600; }
+.instrument-controls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 14px; }
+.instrument-controls .field { min-width: min(360px, 100%); }
+.instrument-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 14px; }
+.instrument-tab {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-height: 30px;
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  background: var(--surface);
+  color: var(--text-2);
+  cursor: pointer;
+  font: 500 9.5px/1.2 var(--mono);
+  text-align: left;
+}
+.instrument-tab span { color: var(--muted); font-size: 8px; text-transform: uppercase; letter-spacing: .06em; }
+.instrument-tab:hover { border-color: var(--accent); color: var(--text); }
+.instrument-tab[aria-selected="true"] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: var(--text);
+}
+.instrument-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.instrument-detail {
+  margin-top: 10px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 2px 24px 2px 2px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.instrument-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px 16px;
+  align-items: start;
+}
+.instrument-id {
+  color: var(--accent);
+  font: 500 9px/1 var(--mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.instrument-detail h4 {
+  margin: 5px 0 0;
+  color: var(--text);
+  font: 500 22px/1.1 var(--serif);
+  letter-spacing: -0.02em;
+}
+.instrument-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+  margin-top: 8px;
+  color: var(--muted);
+  font: 500 9.5px/1.4 var(--mono);
+}
+.instrument-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  color: var(--text-2);
+  font: 500 8px/1.2 var(--mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.instrument-chip.is-high,
+.instrument-chip.is-critical { border-color: var(--critical); color: var(--critical); }
+.instrument-chip.is-low { border-color: var(--line); color: var(--muted); }
+.instrument-copy { margin: 9px 0 0; color: var(--text-2); font: 500 11px/1.55 var(--sans); }
+.instrument-body { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 12px; }
+.instrument-body-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.instrument-col { min-width: 0; }
+.instrument-col h5,
+.instrument-detail > h5 {
+  margin: 12px 0 5px;
+  color: var(--muted);
+  font: 500 8px/1.2 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.instrument-col:first-child h5 { margin-top: 0; }
+.instrument-list { display: grid; gap: 4px; margin: 5px 0 0; padding: 0; list-style: none; }
+.instrument-list li { color: var(--text-2); font: 500 10px/1.45 var(--sans); }
+.instrument-list li b { color: var(--text); text-transform: uppercase; font: 600 8px/1.2 var(--mono); }
+.instrument-query {
+  margin: 0;
+  padding: 8px 9px;
+  overflow-x: auto;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-xs);
+  background: var(--surface-2);
+  color: var(--text-2);
+  font: 500 9px/1.5 var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.instrument-actions { display: flex; flex-wrap: wrap; gap: 5px; }
+.instrument-action {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  color: var(--text-2);
+  font: 500 8px/1.3 var(--mono);
+}
+.instrument-action code { color: var(--accent); font: 600 8.5px/1 var(--mono); }
+.instrument-modules { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.instrument-module {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  color: var(--text-2);
+  font: 500 8.5px/1.2 var(--mono);
+}
+.instrument-module b { color: var(--text); font-weight: 600; }
+.instrument-state {
+  padding: 1px 4px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  color: var(--muted);
+  font: 500 7px/1 var(--mono);
+  text-transform: uppercase;
+}
+.instrument-state.is-done { color: var(--forest); border-color: color-mix(in srgb, var(--forest) 45%, var(--line)); }
+.instrument-state.is-active { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.instrument-state.is-next { color: var(--ochre); border-color: color-mix(in srgb, var(--ochre) 45%, var(--line)); }
+.instrument-links { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0 0; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+.instrument-links a { color: var(--accent); font: 500 9px/1.3 var(--mono); text-decoration: underline; text-underline-offset: 3px; }
+.instrument-note { margin: 10px 0 0; color: var(--muted); font: 500 9px/1.45 var(--mono); }
+.instrument-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 900px) {
+  .instrument-body,
+  .instrument-body-three { grid-template-columns: 1fr; }
+  .instrument-detail { padding: 14px; }
+}
+
+
+/* The validation view is an instrument too: light surface, dark proof drawer. */
+.validation-panel {
+  margin-top: clamp(28px, 4vw, 44px);
+  padding: clamp(18px, 2.5vw, 28px) 0 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text);
+  overflow: visible;
+}
+.validation-panel .validation-kicker { color: var(--accent); }
+.validation-panel h3 { color: var(--text); }
+.validation-panel .validation-lede,
+.validation-panel .validation-note,
+.validation-panel .validation-benchmark-note { color: var(--text-2); }
+.validation-panel .validation-stat { background: var(--surface); border-color: var(--line); }
+.validation-panel .validation-stat b { color: var(--accent); }
+.validation-panel .validation-stat span { color: var(--muted); }
+.validation-panel .validation-plate,
+.validation-panel .validation-benchmark {
+  background: var(--surface);
+  border-color: var(--line);
+  border-radius: 2px 24px 2px 2px;
+}
+.validation-panel .validation-cap,
+.validation-panel .validation-legend { color: var(--muted); }
+.validation-panel .validation-cell {
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--text) 6%, var(--surface));
+}
+.validation-panel .validation-cell.is-no-match { background: color-mix(in srgb, var(--text) 10%, var(--surface)); }
+.validation-panel .validation-cell.is-not-evaluable {
+  border-color: var(--line);
+  background:
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--text) 12%, transparent) 0 1px, transparent 1px 4px),
+    var(--surface);
+}
+.validation-panel .validation-cell.is-matched {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, var(--coral), var(--sun-2) 56%, var(--sun-3));
+}
+.validation-panel .validation-cell.is-false-negative {
+  border-color: var(--critical);
+  background:
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--critical) 55%, transparent) 0 2px, color-mix(in srgb, var(--critical) 15%, var(--surface)) 2px 5px);
+}
+.validation-panel .validation-table { color: var(--text-2); }
+.validation-panel .validation-table th { color: var(--muted); border-color: var(--line); }
+.validation-panel .validation-table td { border-color: var(--line-soft); }
+.validation-panel .validation-table td:nth-child(2) { color: var(--accent); }
+.validation-panel .validation-table td:nth-child(4) { color: var(--text); }
+.validation-panel .validation-table .v-verdict { color: var(--accent); }
+.validation-panel .validation-benchmark { padding: 14px; }
+.validation-panel .validation-benchmark-score { color: var(--accent); }
+.validation-panel .validation-benchmark-detail { background: var(--surface-2); border-color: var(--line); }
+.validation-panel .validation-rule-button { color: var(--text); }
+.validation-panel .validation-detail-head { color: var(--text); }
+.validation-panel .validation-detail-level { color: var(--accent); }
+.validation-panel .validation-detail-tech { color: var(--muted); }
+.validation-panel .validation-detail-metrics { color: var(--muted); }
+.validation-panel .validation-detail-metrics b { color: var(--text); }
+.validation-panel .validation-detail-windows li { background: var(--surface-2); border-left-color: var(--line); color: var(--text-2); }
+.validation-panel .validation-detail-windows li.is-tp { border-left-color: var(--accent); }
+.validation-panel .validation-detail-windows li.is-fn { border-left-color: var(--critical); }
+.validation-panel .validation-detail-windows li span { color: var(--accent); }
+.validation-panel .validation-detail-windows li small { color: var(--muted); }
+.validation-panel .validation-detail-empty { color: var(--text-2); }
+.validation-panel .validation-detail-note,
+.validation-panel .validation-detail-expected { color: var(--muted); }
+.validation-panel .validation-sample { background: var(--surface); border-color: var(--line); }
+.validation-panel .validation-sample-head { color: var(--text); }
+.validation-panel .validation-sample-kind { color: var(--accent); }
+.validation-panel .validation-sample-stats { color: var(--muted); }
+.validation-panel .validation-sample-stats b { color: var(--accent); }
+.validation-panel #validationBreakdown { display: none; }
+.validation-panel .validation-proof { background: #0B0A09; border-color: var(--line); }
+.validation-panel .validation-fired { border-top-color: var(--line); }
+.validation-panel .validation-fired summary { color: var(--accent); }
+
+.validation-panel .validation-benchmark-head h4 { color: var(--text); }
+.validation-panel .validation-proof .validation-table { color: rgba(246,244,241,.74); }
+.validation-panel .validation-proof .validation-table th {
+  color: rgba(255,227,179,.5);
+  border-color: rgba(255,227,179,.16);
+}
+.validation-panel .validation-proof .validation-table td {
+  border-color: rgba(255,227,179,.08);
+  color: rgba(246,244,241,.74);
+}
+.validation-panel .validation-proof .validation-table td:nth-child(2),
+.validation-panel .validation-proof .validation-table td:nth-child(4) { color: rgba(246,244,241,.74); }
+
+.instrument .validation-table-wrap { border-color: var(--line); }
+.instrument .validation-table th {
+  color: var(--muted);
+  border-color: var(--line);
+}
+.instrument .validation-table td {
+  color: var(--text-2);
+  border-color: var(--line-soft);
+}
+.instrument .validation-table td:nth-child(2) { color: var(--accent); }
+.instrument .validation-table td:nth-child(4) { color: var(--text); }
+.instrument .hunt-table td { font-size: 8.5px; }
+
+.validation-panel .validation-body { grid-template-columns: minmax(0, 680px); justify-content: start; }
+.validation-panel .validation-side { display: none; }
 </style>
 </head>
 <body>
@@ -7816,16 +8115,23 @@ body::after { display: none; }
     <div class="path" id="pathStrip" role="tablist" aria-label="Pipeline stages" data-reveal></div>
     <div class="path-detail" id="pathDetail" aria-live="polite" data-reveal></div>
 
-    <section class="ops-panel response-panel" id="responsePanel" aria-labelledby="responseTitle">
-      <div class="ops-head">
-        <p class="validation-kicker">Fig. 2 / Response</p>
-        <h3 id="responseTitle">From alert to action.</h3>
-        <p class="ops-lede">A dry-run response engine enriches 50 alerts, groups them into 27 incidents, and recommends 78 actions. No EDR, cloud, or ticketing API is called.</p>
+    <section class="instrument" id="responsePanel" aria-labelledby="responseTitle">
+      <div class="instrument-head">
+        <div>
+          <p class="chapter-label">Fig. 2 / Response</p>
+          <h3 id="responseTitle">From alert to action.</h3>
+        </div>
+        <div class="instrument-score"><b id="responseIncidentCount">27</b><span>incidents from <i id="responseAlertCount">50</i> alerts</span></div>
       </div>
-      <div class="validation-stats ops-stats" id="responseStats"></div>
-      <div class="ops-grid" id="responseIncidents"></div>
-      <div class="ops-more"><button class="mini" type="button" id="responseShowAll">Show all incidents</button></div>
-      <p class="ops-note" id="responseNote"></p>
+      <div class="instrument-stats" id="responseStats"></div>
+      <div class="instrument-controls">
+        <label class="sr-only" for="responseSelect">Choose an incident</label>
+        <select class="field" id="responseSelect"></select>
+        <button class="mini" type="button" id="responsePrev">prev</button>
+        <button class="mini" type="button" id="responseNext">next</button>
+      </div>
+      <div class="instrument-detail" id="responseDetail" aria-live="polite"></div>
+      <p class="instrument-note" id="responseNote"></p>
     </section>
   </section>
 
@@ -7910,16 +8216,19 @@ body::after { display: none; }
       </div>
     </div>
 
-<section class="hunts-panel" id="huntsPanel" aria-labelledby="huntsTitle">
-    <div class="hunts-head">
-      <p class="validation-kicker">Fig. 3 / Hunting</p>
-      <h3 id="huntsTitle">Hypothesis first, alert second.</h3>
-      <p class="hunts-lede">Four hunts over the deterministic corpus. Each records the question, the query, the evidence, the verdict, and the detection change it recommends.</p>
-    </div>
-    <div class="hunts-stats" id="huntsStats"></div>
-    <div class="hunt-grid" id="huntGrid"></div>
-    <p class="hunts-note" id="huntsNote"></p>
-  </section>  </section>
+<section class="instrument" id="huntsPanel" aria-labelledby="huntsTitle">
+      <div class="instrument-head">
+        <div>
+          <p class="chapter-label">Fig. 3 / Hunting</p>
+          <h3 id="huntsTitle">Hypothesis first, alert second.</h3>
+        </div>
+        <div class="instrument-score"><b id="huntFindingCount">4</b><span>hunts with findings</span></div>
+      </div>
+      <div class="instrument-stats" id="huntsStats"></div>
+      <div class="instrument-tabs" id="huntTabs" role="tablist" aria-label="Hunts"></div>
+      <div class="instrument-detail" id="huntDetail" aria-live="polite"></div>
+      <p class="instrument-note" id="huntsNote"></p>
+    </section>  </section>
 
   <section class="chapter" id="coverage">
     <header class="chapter-head" data-reveal>
@@ -8064,14 +8373,17 @@ body::after { display: none; }
     </div>
     <div class="case-grid" id="caseGrid" data-reveal></div>
 
-    <section class="ops-panel ir-panel" id="irPanel" aria-labelledby="irTitle">
-      <div class="ops-head">
-        <p class="validation-kicker">Fig. 5 / Casebook</p>
-        <h3 id="irTitle">Close the loop.</h3>
-        <p class="ops-lede">Three structured close-outs: observed window, detection span, containment, eradication, recovery, communication, evidence, lessons, and open questions.</p>
+    <section class="instrument" id="irPanel" aria-labelledby="irTitle">
+      <div class="instrument-head">
+        <div>
+          <p class="chapter-label">Fig. 5 / Casebook</p>
+          <h3 id="irTitle">Close the loop.</h3>
+        </div>
+        <div class="instrument-score"><b>3</b><span>case close-outs</span></div>
       </div>
-      <div class="ops-grid ops-grid-three" id="irCards"></div>
-      <p class="ops-note" id="irNote"></p>
+      <div class="instrument-tabs" id="irTabs" role="tablist" aria-label="IR cases"></div>
+      <div class="instrument-detail" id="irDetail" aria-live="polite"></div>
+      <p class="instrument-note" id="irNote"></p>
     </section>
   </section>
 
@@ -8128,38 +8440,31 @@ body::after { display: none; }
       </div>
     </header>
 
-<section class="roadmap-panel" id="roadmapPanel" aria-labelledby="roadmapTitle">
-    <div class="roadmap-head">
-      <p class="validation-kicker" id="roadmapKicker">After / Portfolio roadmap</p>
-      <h3 id="roadmapTitle">Three complete projects, no connector.</h3>
-      <p class="roadmap-lede" id="roadmapIntro"></p>
-    </div>
-    <div class="roadmap-grid" id="roadmapProjects"></div>
-    <div class="roadmap-lower">
-      <div class="roadmap-block">
-        <h4>Build order</h4>
-        <ol id="roadmapSequence"></ol>
+<section class="instrument" id="roadmapPanel" aria-labelledby="roadmapTitle">
+      <div class="instrument-head">
+        <div>
+          <p class="chapter-label" id="roadmapKicker">After / Portfolio roadmap</p>
+          <h3 id="roadmapTitle">Three complete projects, no connector.</h3>
+        </div>
+        <div class="instrument-score"><b>3</b><span>projects</span></div>
       </div>
-      <div class="roadmap-block">
-        <h4>Principles</h4>
-        <ul id="roadmapPrinciples"></ul>
-      </div>
-      <div class="roadmap-block">
-        <h4>Shared evidence</h4>
-        <ul id="roadmapShared"></ul>
-      </div>
-    </div>
-  </section>
+      <div class="instrument-tabs" id="roadmapTabs" role="tablist" aria-label="Projects"></div>
+      <div class="instrument-detail" id="roadmapDetail" aria-live="polite"></div>
+      <p class="instrument-note" id="roadmapNote"></p>
+    </section>
 
-    <section class="ops-panel cloud-panel" id="cloudPanel" aria-labelledby="cloudTitle">
-      <div class="ops-head">
-        <p class="validation-kicker">After / Cloud pack</p>
-        <h3 id="cloudTitle">What Penumbra hands to Apsis.</h3>
-        <p class="ops-lede">Three CloudTrail detections that complement the IAM graph: root policy attachment, root user creation, and CloudTrail tampering. Two fire; one is waiting for telemetry.</p>
+    <section class="instrument" id="cloudPanel" aria-labelledby="cloudTitle">
+      <div class="instrument-head">
+        <div>
+          <p class="chapter-label">After / Cloud pack</p>
+          <h3 id="cloudTitle">What Penumbra hands to Apsis.</h3>
+        </div>
+        <div class="instrument-score"><b id="cloudFiredCount">2</b><span>of 3 detections fired</span></div>
       </div>
-      <div class="validation-stats ops-stats" id="cloudStats"></div>
-      <div class="ops-grid" id="cloudCards"></div>
-      <p class="ops-note" id="cloudNote"></p>
+      <div class="instrument-stats" id="cloudStats"></div>
+      <div class="instrument-tabs" id="cloudTabs" role="tablist" aria-label="Cloud detections"></div>
+      <div class="instrument-detail" id="cloudDetail" aria-live="polite"></div>
+      <p class="instrument-note" id="cloudNote"></p>
     </section>
   </section>
 
@@ -8621,195 +8926,240 @@ body::after { display: none; }
     validationPanel.hidden = true;
   }
 
-  /* ------------------------------------------------------------- hunts */
-  const huntsPanel = $("#huntsPanel");
-  const hunts = DATA.hunts;
-  if (huntsPanel && hunts && (hunts.hunts || []).length) {
-    const summary = hunts.summary || {};
-    $("#huntsStats").innerHTML = [
-      [summary.hunts, "hunts"],
-      [summary.events_reviewed, "events reviewed"],
-      [summary.findings, "hunts with findings"],
-      [summary.confirmed, "confirmed true positives"]
-    ].map(([value, label]) => (
-      '<div class="validation-stat"><b>' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
-    )).join("");
-
-    $("#huntGrid").innerHTML = hunts.hunts.map((hunt) => {
-      const verdict = hunt.verdict === "true_positive" ? "True positive" : "No finding";
-      const evidence = (hunt.evidence || []).slice(0, 8).map((row) => (
-        "<tr><td>" + esc(row.time || "") + "</td><td>" + esc(row.host || "") + "</td><td>" +
-        esc(row.user || "") + "</td><td>" + esc(row.source || "") + "</td><td>" +
-        esc(row.detail || "") + "</td></tr>"
-      )).join("");
-      return '<article class="hunt-card ' + (hunt.verdict === "true_positive" ? "is-positive" : "is-empty") + '">' +
-        '<div class="hunt-card-head"><span class="hunt-id">' + esc(hunt.id) + "</span>" +
-        '<span class="hunt-verdict">' + esc(verdict) + "</span></div>" +
-        "<h4>" + esc(hunt.title) + "</h4>" +
-        '<p class="hunt-hypothesis">' + esc(hunt.hypothesis) + "</p>" +
-        '<p class="hunt-finding">' + esc(hunt.finding) + "</p>" +
-        '<div class="hunt-meta"><span><b>' + esc(number(hunt.event_count)) + "</b> events</span>" +
-        "<span>" + esc(hunt.first_seen || "") + " → " + esc(hunt.last_seen || "") + "</span>" +
-        "<span>" + esc(hunt.confidence || "") + " confidence</span></div>" +
-        '<details class="hunt-evidence"><summary>Query, evidence, and detection change</summary>' +
-        '<p class="hunt-label">Query</p><pre class="hunt-query"><code>' + esc(hunt.query) + "</code></pre>" +
-        '<p class="hunt-label">Detection change</p><p class="hunt-copy">' + esc(hunt.detection_change) + "</p>" +
-        '<p class="hunt-label">Limitations</p><p class="hunt-copy">' + esc(hunt.limitations) + "</p>" +
-        (evidence ? '<div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>Host</th><th>User</th><th>Source</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>" : "") +
-        "</details></article>";
-    }).join("");
-    $("#huntsNote").innerHTML = "Hunts read the same deterministic corpus as the dashboard. Full reports: " +
-      '<a href="https://github.com/Meruyert5/penumbra/blob/main/hunts/README.md" target="_blank" rel="noreferrer">hunts/README.md</a>.';
-  } else if (huntsPanel) {
-    huntsPanel.hidden = true;
-  }
-
   /* ------------------------------------------------------------- response */
   const response = DATA.response;
   const responsePanel = $("#responsePanel");
   if (responsePanel && response && (response.incidents || []).length) {
     const summary = response.summary || {};
-    $("#responseStats").innerHTML = [
-      [summary.alerts_ingested, "alerts ingested"],
-      [summary.incidents, "incidents"],
-      [summary.actions, "recommended actions"],
-      [Number(summary.containment_coverage || 0) * 100, "containment coverage", true]
-    ].map(([value, label, percent]) => (
-      '<div class="validation-stat"><b>' + esc(percent ? number(Math.round(value)) + "%" : number(value)) +
-      "</b><span>" + esc(label) + "</span></div>"
-    )).join("");
-
     const incidents = response.incidents || [];
-    const renderIncidents = (limit) => {
-      $("#responseIncidents").innerHTML = incidents.slice(0, limit).map((incident) => {
-        const alerts = (incident.alerts || []).map((alert) => (
-          "<li><b>" + esc(alert.level) + "</b> " + esc(alert.title) +
-          " <small>" + esc((alert.techniques || []).join(", ")) + "</small></li>"
-        )).join("");
-        const actions = (incident.actions || []).map((action) => (
-          "<li><code>" + esc(action.action) + "</code> <small>" + esc(action.reason) + "</small></li>"
-        )).join("");
-        return '<article class="ops-card is-' + esc(incident.highest_level) + '">' +
-          '<div class="ops-card-head"><span class="ops-id">' + esc(incident.id) + "</span>" +
-          '<span class="ops-chip">' + esc(incident.highest_level) + "</span></div>" +
-          "<h4>" + esc(incident.host) + "</h4>" +
-          '<div class="ops-metrics"><span><b>' + esc(number(incident.alert_count)) + "</b> alerts</span>" +
-          "<span><b>" + esc(number((incident.actions || []).length)) + "</b> actions</span>" +
-          "<span>" + esc(incident.window_start || "") + "</span></div>" +
-          '<p class="ops-playbooks">' + esc((incident.playbooks || []).join(" / ")) + "</p>" +
-          '<details class="ops-details"><summary>Alerts and actions</summary>' +
-          '<p class="hunt-label">Alerts</p><ul class="ops-list">' + alerts + "</ul>" +
-          '<p class="hunt-label">Recommended actions</p><ul class="ops-list ops-actions">' + actions + "</ul>" +
-          "</details></article>";
-      }).join("");
-      const button = $("#responseShowAll");
-      if (button) {
-        button.hidden = incidents.length <= 8;
-        button.textContent = limit >= incidents.length ? "Show fewer incidents" : "Show all " + incidents.length + " incidents";
-      }
+    const statChip = (value, label) => (
+      '<span class="instrument-stat"><b>' + (typeof value === "number" ? number(value) : esc(value)) + "</b> " + esc(label) + "</span>"
+    );
+    $("#responseIncidentCount").textContent = number(summary.incidents);
+    $("#responseAlertCount").textContent = number(summary.alerts_ingested);
+    $("#responseStats").innerHTML =
+      statChip(summary.actions, "actions") +
+      statChip(Math.round(Number(summary.containment_coverage || 0) * 100) + "%", "containment") +
+      statChip(summary.playbooks, "playbooks");
+    const select = $("#responseSelect");
+    select.innerHTML = incidents.map((incident, index) => (
+      '<option value="' + index + '">' + esc(incident.id + " / " + incident.host + " / " + incident.highest_level) + "</option>"
+    )).join("");
+    const detail = $("#responseDetail");
+    let current = 0;
+    const render = () => {
+      const incident = incidents[current];
+      const alerts = (incident.alerts || []).slice(0, 5).map((alert) => (
+        "<li><b>" + esc(alert.level) + "</b> " + esc(alert.title) + "</li>"
+      )).join("");
+      const actions = (incident.actions || []).map((action) => (
+        '<span class="instrument-action"><code>' + esc(action.action) + "</code> " + esc(action.reason) + "</span>"
+      )).join("");
+      detail.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(incident.id) + "</span>" +
+        "<h4>" + esc(incident.host) + "</h4>" +
+        '<div class="instrument-meta"><span class="instrument-chip is-' + esc(incident.highest_level) + '">' + esc(incident.highest_level) + "</span>" +
+        "<span>" + esc(number(incident.alert_count)) + " alerts</span>" +
+        "<span>" + esc(number((incident.actions || []).length)) + " actions</span>" +
+        "<span>" + esc(incident.window_start || "") + "</span></div></div>" +
+        '<span class="instrument-chip">' + esc((incident.playbooks || []).join(" / ")) + "</span></div>" +
+        '<div class="instrument-body"><div class="instrument-col"><h5>Alerts</h5><ul class="instrument-list">' + alerts + "</ul></div>" +
+        '<div class="instrument-col"><h5>Recommended actions</h5><div class="instrument-actions">' + actions + "</div></div></div>";
     };
-    renderIncidents(8);
-    const showAll = $("#responseShowAll");
-    if (showAll) {
-      showAll.addEventListener("click", () => {
-        const expanded = showAll.textContent.startsWith("Show fewer");
-        renderIncidents(expanded ? 8 : incidents.length);
-      });
-    }
+    select.addEventListener("change", () => {
+      current = Number(select.value);
+      render();
+    });
+    $("#responsePrev").addEventListener("click", () => {
+      current = (current - 1 + incidents.length) % incidents.length;
+      select.value = String(current);
+      render();
+    });
+    $("#responseNext").addEventListener("click", () => {
+      current = (current + 1) % incidents.length;
+      select.value = String(current);
+      render();
+    });
+    render();
     $("#responseNote").innerHTML = "Dry-run response: no EDR, cloud, or ticketing API was called. " +
       'Full data: <a href="https://github.com/Meruyert5/penumbra/blob/main/response/README.md" target="_blank" rel="noreferrer">response/README.md</a>.';
   } else if (responsePanel) {
     responsePanel.hidden = true;
   }
 
-  /* ------------------------------------------------------------- cloud pack */
-  const cloudPack = DATA.cloud_pack;
-  const cloudPanel = $("#cloudPanel");
-  if (cloudPanel && cloudPack && (cloudPack.detections || []).length) {
-    const summary = cloudPack.summary || {};
-    $("#cloudStats").innerHTML = [
-      [summary.detections, "detections"],
-      [summary.fired, "fired"],
-      [summary.events, "matched events"],
-      [summary.not_exercised, "not exercised"]
-    ].map(([value, label]) => (
-      '<div class="validation-stat"><b>' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
+  /* ------------------------------------------------------------- hunting */
+  const hunts = DATA.hunts;
+  const huntsPanel = $("#huntsPanel");
+  if (huntsPanel && hunts && (hunts.hunts || []).length) {
+    const items = hunts.hunts;
+    const summary = hunts.summary || {};
+    const shortTitle = (hunt) => String(hunt.title || "").split(" ").slice(0, 3).join(" ");
+    $("#huntFindingCount").textContent = number(summary.findings);
+    $("#huntsStats").innerHTML =
+      '<span class="instrument-stat"><b>' + esc(number(summary.events_reviewed)) + "</b> events reviewed</span>" +
+      '<span class="instrument-stat"><b>' + esc(number(summary.confirmed)) + "</b> confirmed</span>" +
+      '<span class="instrument-stat"><b>' + esc(number(summary.hunts)) + "</b> hunts</span>";
+    $("#huntTabs").innerHTML = items.map((hunt, index) => (
+      '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
+      '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(hunt.id) +
+      " <span>" + esc(shortTitle(hunt)) + "</span></button>"
     )).join("");
-    $("#cloudCards").innerHTML = (cloudPack.detections || []).map((detection) => {
-      const evidence = (detection.evidence || []).slice(0, 8).map((row) => (
-        "<tr><td>" + esc(row.time || "") + "</td><td>" + esc(row.user || "") + "</td><td>" +
-        esc(row.source || "") + "</td><td>" + esc(row.detail || "") + "</td></tr>"
+    const detail = $("#huntDetail");
+    const tabs = Array.from(document.querySelectorAll("#huntTabs .instrument-tab"));
+    const render = (index) => {
+      const hunt = items[index];
+      tabs.forEach((tab, position) => tab.setAttribute("aria-selected", String(position === index)));
+      const evidence = (hunt.evidence || []).slice(0, 3).map((row) => (
+        "<tr><td>" + esc(row.time || "") + "</td><td>" + esc(row.host || "") + "</td><td>" +
+        esc(row.user || "") + "</td><td>" + esc(row.detail || "") + "</td></tr>"
       )).join("");
-      return '<article class="ops-card is-' + (detection.status === "fired" ? "critical" : "empty") + '">' +
-        '<div class="ops-card-head"><span class="ops-id">' + esc(detection.id) + "</span>" +
-        '<span class="ops-chip">' + esc(detection.status) + "</span></div>" +
-        "<h4>" + esc(detection.title) + "</h4>" +
-        '<div class="ops-metrics"><span><b>' + esc(number(detection.event_count)) + "</b> events</span>" +
-        "<span>" + esc(detection.technique) + "</span><span>" + esc(detection.level) + "</span></div>" +
-        '<p class="ops-copy">' + esc(detection.description) + "</p>" +
-        '<details class="ops-details"><summary>Query and evidence</summary>' +
-        '<pre class="hunt-query"><code>' + esc(detection.query) + "</code></pre>" +
-        '<p class="hunt-label">Response hand-off</p><p class="ops-copy">' + esc(detection.detection_change) + "</p>" +
-        (evidence ? '<div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>User</th><th>Source</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>" : "") +
-        "</details></article>";
-    }).join("");
-    $("#cloudNote").innerHTML = "The cloud pack is separate from the 50-rule Sigma core. " +
-      'Full data: <a href="https://github.com/Meruyert5/penumbra/blob/main/cloud/README.md" target="_blank" rel="noreferrer">cloud/README.md</a>.';
-  } else if (cloudPanel) {
-    cloudPanel.hidden = true;
+      detail.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(hunt.id) + "</span>" +
+        "<h4>" + esc(hunt.title) + "</h4>" +
+        '<div class="instrument-meta"><span class="instrument-chip is-' + (hunt.verdict === "true_positive" ? "high" : "low") + '">' +
+        esc(hunt.verdict === "true_positive" ? "true positive" : "no finding") + "</span>" +
+        "<span>" + esc(number(hunt.event_count)) + " events</span><span>" + esc(hunt.confidence || "") + " confidence</span></div></div></div>" +
+        '<p class="instrument-copy">' + esc(hunt.hypothesis) + "</p>" +
+        '<div class="instrument-body"><div class="instrument-col"><h5>Query</h5><pre class="instrument-query"><code>' + esc(hunt.query) + "</code></pre></div>" +
+        '<div class="instrument-col"><h5>Detection change</h5><p class="instrument-copy">' + esc(hunt.detection_change) + "</p>" +
+        '<h5>Limitations</h5><p class="instrument-copy">' + esc(hunt.limitations) + "</p></div></div>" +
+        '<h5>Evidence</h5><div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>Host</th><th>User</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>";
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => render(index));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+        tabs[next].focus();
+        render(next);
+      });
+    });
+    render(0);
+    $("#huntsNote").innerHTML = "Hunts read the same deterministic corpus as the dashboard. " +
+      'Full reports: <a href="https://github.com/Meruyert5/penumbra/blob/main/hunts/README.md" target="_blank" rel="noreferrer">hunts/README.md</a>.';
+  } else if (huntsPanel) {
+    huntsPanel.hidden = true;
   }
 
   /* ------------------------------------------------------------- IR casebook */
   const ir = DATA.ir;
   const irPanel = $("#irPanel");
   if (irPanel && ir && (ir.cases || []).length) {
-    $("#irCards").innerHTML = (ir.cases || []).map((item) => {
+    const items = ir.cases;
+    $("#irTabs").innerHTML = items.map((item, index) => (
+      '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
+      '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(item.id) + "</button>"
+    )).join("");
+    const detail = $("#irDetail");
+    const tabs = Array.from(document.querySelectorAll("#irTabs .instrument-tab"));
+    const render = (index) => {
+      const item = items[index];
       const metrics = item.metrics || {};
-      return '<article class="ops-card ops-case is-' + esc(item.severity) + '">' +
-        '<div class="ops-card-head"><span class="ops-id">' + esc(item.id) + "</span>" +
-        '<span class="ops-chip">' + esc(item.verdict) + "</span></div>" +
+      tabs.forEach((tab, position) => tab.setAttribute("aria-selected", String(position === index)));
+      const list = (values) => (values || []).slice(0, 3).map((value) => "<li>" + esc(value) + "</li>").join("");
+      detail.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(item.id) + "</span>" +
         "<h4>" + esc(item.slug) + "</h4>" +
-        '<p class="ops-copy">' + esc(item.containment_status) + "</p>" +
-        '<div class="ops-metrics"><span><b>' + esc(number(metrics.observed_seconds)) + "</b> observed seconds</span>" +
-        "<span><b>" + esc(number(metrics.alert_count)) + "</b> alerts</span>" +
-        "<span><b>" + esc(number(metrics.detection_span_seconds)) + "</b> detection seconds</span></div>" +
-        '<p class="ops-case-links"><a href="cases/' + esc(item.slug) + '/report.md">Report</a>' +
-        '<a href="cases/IR.md">Close-out</a></p></article>';
-    }).join("");
-    $("#irNote").innerHTML = "Full close-outs: " +
-      '<a href="cases/IR.md">cases/IR.md</a>.';
+        '<div class="instrument-meta"><span class="instrument-chip is-high">' + esc(item.verdict) + "</span>" +
+        "<span>" + esc(item.containment_status) + "</span></div></div></div>" +
+        '<div class="instrument-stats"><span class="instrument-stat"><b>' + esc(number(metrics.observed_seconds)) + "</b> observed seconds</span>" +
+        '<span class="instrument-stat"><b>' + esc(number(metrics.alert_count)) + "</b> alerts</span>" +
+        '<span class="instrument-stat"><b>' + esc(number(metrics.detection_span_seconds)) + "</b> detection seconds</span></div>" +
+        '<div class="instrument-body instrument-body-three"><div class="instrument-col"><h5>Containment</h5><ul class="instrument-list">' + list(item.containment) + "</ul></div>" +
+        '<div class="instrument-col"><h5>Recovery</h5><ul class="instrument-list">' + list(item.recovery) + "</ul></div>" +
+        '<div class="instrument-col"><h5>Lessons</h5><ul class="instrument-list">' + list(item.lessons) + "</ul></div></div>" +
+        '<p class="instrument-links"><a href="cases/' + esc(item.slug) + '/report.md">Report</a>' +
+        '<a href="cases/IR.md">Full close-out</a></p>';
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => render(index));
+    });
+    render(0);
+    $("#irNote").innerHTML = 'Full close-outs: <a href="cases/IR.md">cases/IR.md</a>.';
   } else if (irPanel) {
     irPanel.hidden = true;
+  }
+
+  /* ------------------------------------------------------------- cloud pack */
+  const cloudPack = DATA.cloud_pack;
+  const cloudPanel = $("#cloudPanel");
+  if (cloudPanel && cloudPack && (cloudPack.detections || []).length) {
+    const items = cloudPack.detections;
+    const summary = cloudPack.summary || {};
+    $("#cloudFiredCount").textContent = number(summary.fired);
+    $("#cloudStats").innerHTML =
+      '<span class="instrument-stat"><b>' + esc(number(summary.detections)) + "</b> detections</span>" +
+      '<span class="instrument-stat"><b>' + esc(number(summary.events)) + "</b> matched events</span>" +
+      '<span class="instrument-stat"><b>' + esc(number(summary.not_exercised)) + "</b> waiting for telemetry</span>";
+    $("#cloudTabs").innerHTML = items.map((item, index) => (
+      '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
+      '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(item.id) +
+      " <span>" + esc(String(item.status).replace(/_/g, " ")) + "</span></button>"
+    )).join("");
+    const detail = $("#cloudDetail");
+    const tabs = Array.from(document.querySelectorAll("#cloudTabs .instrument-tab"));
+    const render = (index) => {
+      const item = items[index];
+      tabs.forEach((tab, position) => tab.setAttribute("aria-selected", String(position === index)));
+      const evidence = (item.evidence || []).slice(0, 3).map((row) => (
+        "<tr><td>" + esc(row.time || "") + "</td><td>" + esc(row.user || "") + "</td><td>" +
+        esc(row.source || "") + "</td><td>" + esc(row.detail || "") + "</td></tr>"
+      )).join("");
+      detail.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(item.id) + "</span>" +
+        "<h4>" + esc(item.title) + "</h4>" +
+        '<div class="instrument-meta"><span class="instrument-chip is-' + (item.status === "fired" ? "high" : "low") + '">' + esc(String(item.status).replace(/_/g, " ")) + "</span>" +
+        "<span>" + esc(item.technique) + "</span><span>" + esc(item.level) + "</span><span>" + esc(number(item.event_count)) + " events</span></div></div></div>" +
+        '<p class="instrument-copy">' + esc(item.description) + "</p>" +
+        '<div class="instrument-body"><div class="instrument-col"><h5>Query</h5><pre class="instrument-query"><code>' + esc(item.query) + "</code></pre></div>" +
+        '<div class="instrument-col"><h5>Hand-off to Apsis</h5><p class="instrument-copy">' + esc(item.detection_change) + "</p></div></div>" +
+        (evidence ? '<h5>Evidence</h5><div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>User</th><th>Source</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>" : "");
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => render(index));
+    });
+    render(0);
+    $("#cloudNote").innerHTML = "The cloud pack is separate from the 50-rule Sigma core. " +
+      'Full data: <a href="https://github.com/Meruyert5/penumbra/blob/main/cloud/README.md" target="_blank" rel="noreferrer">cloud/README.md</a>.';
+  } else if (cloudPanel) {
+    cloudPanel.hidden = true;
   }
 
   /* ------------------------------------------------------------- roadmap */
   const roadmapPanel = $("#roadmapPanel");
   const roadmap = DATA.roadmap;
   if (roadmapPanel && roadmap && (roadmap.projects || []).length) {
+    const items = roadmap.projects;
     $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
     $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
-    $("#roadmapIntro").innerHTML = esc(roadmap.intro || "") +
-      ' <a class="roadmap-link" href="https://github.com/Meruyert5/penumbra/blob/main/docs/roadmap.md" target="_blank" rel="noreferrer">Read the full roadmap</a>.';
-    $("#roadmapProjects").innerHTML = roadmap.projects.map((project) => {
-      const modules = (project.modules || []).map((module) => (
-        '<li><span class="roadmap-module-name">' + esc(module.name) + "</span>" +
-        '<span class="roadmap-state is-' + esc(module.state) + '">' + esc(module.state) + "</span>" +
-        "<small>" + esc(module.detail) + "</small></li>"
-      )).join("");
-      return '<article class="roadmap-card is-' + esc(project.status) + '">' +
-        '<div class="roadmap-card-head"><div><p class="roadmap-role">' + esc(project.role) + "</p>" +
-        "<h4>" + esc(project.name) + "</h4>" +
-        (project.former_name ? '<span class="roadmap-former">formerly ' + esc(project.former_name) + "</span>" : "") +
-        '</div><span class="roadmap-status">' + esc(project.status) + "</span></div>" +
-        '<p class="roadmap-thesis">' + esc(project.thesis) + "</p>" +
-        '<ul class="roadmap-modules">' + modules + "</ul>" +
-        '<p class="roadmap-done"><b>Done means</b> ' + esc(project.done) + "</p></article>";
-    }).join("");
-    $("#roadmapSequence").innerHTML = (roadmap.sequence || []).map((item) => "<li>" + esc(item) + "</li>").join("");
-    $("#roadmapPrinciples").innerHTML = (roadmap.principles || []).map((item) => "<li>" + esc(item) + "</li>").join("");
-    $("#roadmapShared").innerHTML = (roadmap.shared || []).map((item) => (
-      "<li><b>" + esc(item.name) + "</b><span>" + esc(item.detail) + "</span></li>"
+    $("#roadmapTabs").innerHTML = items.map((project, index) => (
+      '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
+      '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(project.name) + "</button>"
     )).join("");
+    const detail = $("#roadmapDetail");
+    const tabs = Array.from(document.querySelectorAll("#roadmapTabs .instrument-tab"));
+    const render = (index) => {
+      const project = items[index];
+      tabs.forEach((tab, position) => tab.setAttribute("aria-selected", String(position === index)));
+      const modules = (project.modules || []).map((module) => (
+        '<span class="instrument-module"><b>' + esc(module.name) + "</b>" +
+        '<span class="instrument-state is-' + esc(module.state) + '">' + esc(module.state) + "</span></span>"
+      )).join("");
+      detail.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(project.role) + "</span>" +
+        "<h4>" + esc(project.name) + (project.former_name ? " / formerly " + esc(project.former_name) : "") + "</h4></div>" +
+        '<span class="instrument-chip">' + esc(project.status) + "</span></div>" +
+        '<p class="instrument-copy">' + esc(project.thesis) + "</p>" +
+        '<div class="instrument-modules">' + modules + "</div>" +
+        '<p class="instrument-copy"><b>Done means</b> ' + esc(project.done) + "</p>";
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => render(index));
+    });
+    render(0);
+    $("#roadmapNote").innerHTML = "Build order: Apsis, Penumbra, network hunting. " +
+      '<a href="https://github.com/Meruyert5/penumbra/blob/main/docs/roadmap.md" target="_blank" rel="noreferrer">Full roadmap</a>.';
   } else if (roadmapPanel) {
     roadmapPanel.hidden = true;
   }

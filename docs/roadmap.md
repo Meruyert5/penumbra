@@ -25,7 +25,7 @@ performed.
 | IR casebook | Done | Three structured close-outs with metrics, containment, eradication, recovery, communication, evidence, lessons, and open questions |
 | Triage automation | Done | Dry-run enrichment, incident grouping, playbook selection, and 78 recommended actions; no external API calls |
 | Cloud detection pack | Done | Three CloudTrail detections; two fired on the synthetic corpus, one is awaiting telemetry |
-| Dashboard integration | Active | Response in Instruments, hunting in Umbra, validation in Corona, IR in Eclipses, and roadmap in After; compact cards and expandable incidents |
+| Dashboard integration | Active | Response in Instruments, hunting in Umbra, validation in Corona, IR in Eclipses, and roadmap in After; selector/detail instruments with light surfaces |
 
 **Done means:** a reviewer can follow a hunt or a case from telemetry to verdict
 without reading the source code.

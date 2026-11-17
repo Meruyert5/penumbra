@@ -335,16 +335,23 @@
     <div class="path" id="pathStrip" role="tablist" aria-label="Pipeline stages" data-reveal></div>
     <div class="path-detail" id="pathDetail" aria-live="polite" data-reveal></div>
 
-    <section class="ops-panel response-panel" id="responsePanel" aria-labelledby="responseTitle">
-      <div class="ops-head">
-        <p class="validation-kicker">Fig. 2 / Response</p>
-        <h3 id="responseTitle">From alert to action.</h3>
-        <p class="ops-lede">A dry-run response engine enriches 50 alerts, groups them into 27 incidents, and recommends 78 actions. No EDR, cloud, or ticketing API is called.</p>
+    <section class="instrument" id="responsePanel" aria-labelledby="responseTitle">
+      <div class="instrument-head">
+        <div>
+          <p class="chapter-label">Fig. 2 / Response</p>
+          <h3 id="responseTitle">From alert to action.</h3>
+        </div>
+        <div class="instrument-score"><b id="responseIncidentCount">27</b><span>incidents from <i id="responseAlertCount">50</i> alerts</span></div>
       </div>
-      <div class="validation-stats ops-stats" id="responseStats"></div>
-      <div class="ops-grid" id="responseIncidents"></div>
-      <div class="ops-more"><button class="mini" type="button" id="responseShowAll">Show all incidents</button></div>
-      <p class="ops-note" id="responseNote"></p>
+      <div class="instrument-stats" id="responseStats"></div>
+      <div class="instrument-controls">
+        <label class="sr-only" for="responseSelect">Choose an incident</label>
+        <select class="field" id="responseSelect"></select>
+        <button class="mini" type="button" id="responsePrev">prev</button>
+        <button class="mini" type="button" id="responseNext">next</button>
+      </div>
+      <div class="instrument-detail" id="responseDetail" aria-live="polite"></div>
+      <p class="instrument-note" id="responseNote"></p>
     </section>
   </section>
 
@@ -429,16 +436,19 @@
       </div>
     </div>
 
-<section class="hunts-panel" id="huntsPanel" aria-labelledby="huntsTitle">
-    <div class="hunts-head">
-      <p class="validation-kicker">Fig. 3 / Hunting</p>
-      <h3 id="huntsTitle">Hypothesis first, alert second.</h3>
-      <p class="hunts-lede">Four hunts over the deterministic corpus. Each records the question, the query, the evidence, the verdict, and the detection change it recommends.</p>
-    </div>
-    <div class="hunts-stats" id="huntsStats"></div>
-    <div class="hunt-grid" id="huntGrid"></div>
-    <p class="hunts-note" id="huntsNote"></p>
-  </section>  </section>
+<section class="instrument" id="huntsPanel" aria-labelledby="huntsTitle">
+      <div class="instrument-head">
+        <div>
+          <p class="chapter-label">Fig. 3 / Hunting</p>
+          <h3 id="huntsTitle">Hypothesis first, alert second.</h3>
+        </div>
+        <div class="instrument-score"><b id="huntFindingCount">4</b><span>hunts with findings</span></div>
+      </div>
+      <div class="instrument-stats" id="huntsStats"></div>
+      <div class="instrument-tabs" id="huntTabs" role="tablist" aria-label="Hunts"></div>
+      <div class="instrument-detail" id="huntDetail" aria-live="polite"></div>
+      <p class="instrument-note" id="huntsNote"></p>
+    </section>  </section>
 
   <section class="chapter" id="coverage">
     <header class="chapter-head" data-reveal>
@@ -583,14 +593,17 @@
     </div>
     <div class="case-grid" id="caseGrid" data-reveal></div>
 
-    <section class="ops-panel ir-panel" id="irPanel" aria-labelledby="irTitle">
-      <div class="ops-head">
-        <p class="validation-kicker">Fig. 5 / Casebook</p>
-        <h3 id="irTitle">Close the loop.</h3>
-        <p class="ops-lede">Three structured close-outs: observed window, detection span, containment, eradication, recovery, communication, evidence, lessons, and open questions.</p>
+    <section class="instrument" id="irPanel" aria-labelledby="irTitle">
+      <div class="instrument-head">
+        <div>
+          <p class="chapter-label">Fig. 5 / Casebook</p>
+          <h3 id="irTitle">Close the loop.</h3>
+        </div>
+        <div class="instrument-score"><b>3</b><span>case close-outs</span></div>
       </div>
-      <div class="ops-grid ops-grid-three" id="irCards"></div>
-      <p class="ops-note" id="irNote"></p>
+      <div class="instrument-tabs" id="irTabs" role="tablist" aria-label="IR cases"></div>
+      <div class="instrument-detail" id="irDetail" aria-live="polite"></div>
+      <p class="instrument-note" id="irNote"></p>
     </section>
   </section>
 
@@ -647,38 +660,31 @@
       </div>
     </header>
 
-<section class="roadmap-panel" id="roadmapPanel" aria-labelledby="roadmapTitle">
-    <div class="roadmap-head">
-      <p class="validation-kicker" id="roadmapKicker">After / Portfolio roadmap</p>
-      <h3 id="roadmapTitle">Three complete projects, no connector.</h3>
-      <p class="roadmap-lede" id="roadmapIntro"></p>
-    </div>
-    <div class="roadmap-grid" id="roadmapProjects"></div>
-    <div class="roadmap-lower">
-      <div class="roadmap-block">
-        <h4>Build order</h4>
-        <ol id="roadmapSequence"></ol>
+<section class="instrument" id="roadmapPanel" aria-labelledby="roadmapTitle">
+      <div class="instrument-head">
+        <div>
+          <p class="chapter-label" id="roadmapKicker">After / Portfolio roadmap</p>
+          <h3 id="roadmapTitle">Three complete projects, no connector.</h3>
+        </div>
+        <div class="instrument-score"><b>3</b><span>projects</span></div>
       </div>
-      <div class="roadmap-block">
-        <h4>Principles</h4>
-        <ul id="roadmapPrinciples"></ul>
-      </div>
-      <div class="roadmap-block">
-        <h4>Shared evidence</h4>
-        <ul id="roadmapShared"></ul>
-      </div>
-    </div>
-  </section>
+      <div class="instrument-tabs" id="roadmapTabs" role="tablist" aria-label="Projects"></div>
+      <div class="instrument-detail" id="roadmapDetail" aria-live="polite"></div>
+      <p class="instrument-note" id="roadmapNote"></p>
+    </section>
 
-    <section class="ops-panel cloud-panel" id="cloudPanel" aria-labelledby="cloudTitle">
-      <div class="ops-head">
-        <p class="validation-kicker">After / Cloud pack</p>
-        <h3 id="cloudTitle">What Penumbra hands to Apsis.</h3>
-        <p class="ops-lede">Three CloudTrail detections that complement the IAM graph: root policy attachment, root user creation, and CloudTrail tampering. Two fire; one is waiting for telemetry.</p>
+    <section class="instrument" id="cloudPanel" aria-labelledby="cloudTitle">
+      <div class="instrument-head">
+        <div>
+          <p class="chapter-label">After / Cloud pack</p>
+          <h3 id="cloudTitle">What Penumbra hands to Apsis.</h3>
+        </div>
+        <div class="instrument-score"><b id="cloudFiredCount">2</b><span>of 3 detections fired</span></div>
       </div>
-      <div class="validation-stats ops-stats" id="cloudStats"></div>
-      <div class="ops-grid" id="cloudCards"></div>
-      <p class="ops-note" id="cloudNote"></p>
+      <div class="instrument-stats" id="cloudStats"></div>
+      <div class="instrument-tabs" id="cloudTabs" role="tablist" aria-label="Cloud detections"></div>
+      <div class="instrument-detail" id="cloudDetail" aria-live="polite"></div>
+      <p class="instrument-note" id="cloudNote"></p>
     </section>
   </section>
 

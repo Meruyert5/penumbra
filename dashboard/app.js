@@ -390,195 +390,240 @@
     validationPanel.hidden = true;
   }
 
-  /* ------------------------------------------------------------- hunts */
-  const huntsPanel = $("#huntsPanel");
-  const hunts = DATA.hunts;
-  if (huntsPanel && hunts && (hunts.hunts || []).length) {
-    const summary = hunts.summary || {};
-    $("#huntsStats").innerHTML = [
-      [summary.hunts, "hunts"],
-      [summary.events_reviewed, "events reviewed"],
-      [summary.findings, "hunts with findings"],
-      [summary.confirmed, "confirmed true positives"]
-    ].map(([value, label]) => (
-      '<div class="validation-stat"><b>' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
-    )).join("");
-
-    $("#huntGrid").innerHTML = hunts.hunts.map((hunt) => {
-      const verdict = hunt.verdict === "true_positive" ? "True positive" : "No finding";
-      const evidence = (hunt.evidence || []).slice(0, 8).map((row) => (
-        "<tr><td>" + esc(row.time || "") + "</td><td>" + esc(row.host || "") + "</td><td>" +
-        esc(row.user || "") + "</td><td>" + esc(row.source || "") + "</td><td>" +
-        esc(row.detail || "") + "</td></tr>"
-      )).join("");
-      return '<article class="hunt-card ' + (hunt.verdict === "true_positive" ? "is-positive" : "is-empty") + '">' +
-        '<div class="hunt-card-head"><span class="hunt-id">' + esc(hunt.id) + "</span>" +
-        '<span class="hunt-verdict">' + esc(verdict) + "</span></div>" +
-        "<h4>" + esc(hunt.title) + "</h4>" +
-        '<p class="hunt-hypothesis">' + esc(hunt.hypothesis) + "</p>" +
-        '<p class="hunt-finding">' + esc(hunt.finding) + "</p>" +
-        '<div class="hunt-meta"><span><b>' + esc(number(hunt.event_count)) + "</b> events</span>" +
-        "<span>" + esc(hunt.first_seen || "") + " → " + esc(hunt.last_seen || "") + "</span>" +
-        "<span>" + esc(hunt.confidence || "") + " confidence</span></div>" +
-        '<details class="hunt-evidence"><summary>Query, evidence, and detection change</summary>' +
-        '<p class="hunt-label">Query</p><pre class="hunt-query"><code>' + esc(hunt.query) + "</code></pre>" +
-        '<p class="hunt-label">Detection change</p><p class="hunt-copy">' + esc(hunt.detection_change) + "</p>" +
-        '<p class="hunt-label">Limitations</p><p class="hunt-copy">' + esc(hunt.limitations) + "</p>" +
-        (evidence ? '<div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>Host</th><th>User</th><th>Source</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>" : "") +
-        "</details></article>";
-    }).join("");
-    $("#huntsNote").innerHTML = "Hunts read the same deterministic corpus as the dashboard. Full reports: " +
-      '<a href="https://github.com/Meruyert5/penumbra/blob/main/hunts/README.md" target="_blank" rel="noreferrer">hunts/README.md</a>.';
-  } else if (huntsPanel) {
-    huntsPanel.hidden = true;
-  }
-
   /* ------------------------------------------------------------- response */
   const response = DATA.response;
   const responsePanel = $("#responsePanel");
   if (responsePanel && response && (response.incidents || []).length) {
     const summary = response.summary || {};
-    $("#responseStats").innerHTML = [
-      [summary.alerts_ingested, "alerts ingested"],
-      [summary.incidents, "incidents"],
-      [summary.actions, "recommended actions"],
-      [Number(summary.containment_coverage || 0) * 100, "containment coverage", true]
-    ].map(([value, label, percent]) => (
-      '<div class="validation-stat"><b>' + esc(percent ? number(Math.round(value)) + "%" : number(value)) +
-      "</b><span>" + esc(label) + "</span></div>"
-    )).join("");
-
     const incidents = response.incidents || [];
-    const renderIncidents = (limit) => {
-      $("#responseIncidents").innerHTML = incidents.slice(0, limit).map((incident) => {
-        const alerts = (incident.alerts || []).map((alert) => (
-          "<li><b>" + esc(alert.level) + "</b> " + esc(alert.title) +
-          " <small>" + esc((alert.techniques || []).join(", ")) + "</small></li>"
-        )).join("");
-        const actions = (incident.actions || []).map((action) => (
-          "<li><code>" + esc(action.action) + "</code> <small>" + esc(action.reason) + "</small></li>"
-        )).join("");
-        return '<article class="ops-card is-' + esc(incident.highest_level) + '">' +
-          '<div class="ops-card-head"><span class="ops-id">' + esc(incident.id) + "</span>" +
-          '<span class="ops-chip">' + esc(incident.highest_level) + "</span></div>" +
-          "<h4>" + esc(incident.host) + "</h4>" +
-          '<div class="ops-metrics"><span><b>' + esc(number(incident.alert_count)) + "</b> alerts</span>" +
-          "<span><b>" + esc(number((incident.actions || []).length)) + "</b> actions</span>" +
-          "<span>" + esc(incident.window_start || "") + "</span></div>" +
-          '<p class="ops-playbooks">' + esc((incident.playbooks || []).join(" / ")) + "</p>" +
-          '<details class="ops-details"><summary>Alerts and actions</summary>' +
-          '<p class="hunt-label">Alerts</p><ul class="ops-list">' + alerts + "</ul>" +
-          '<p class="hunt-label">Recommended actions</p><ul class="ops-list ops-actions">' + actions + "</ul>" +
-          "</details></article>";
-      }).join("");
-      const button = $("#responseShowAll");
-      if (button) {
-        button.hidden = incidents.length <= 8;
-        button.textContent = limit >= incidents.length ? "Show fewer incidents" : "Show all " + incidents.length + " incidents";
-      }
+    const statChip = (value, label) => (
+      '<span class="instrument-stat"><b>' + (typeof value === "number" ? number(value) : esc(value)) + "</b> " + esc(label) + "</span>"
+    );
+    $("#responseIncidentCount").textContent = number(summary.incidents);
+    $("#responseAlertCount").textContent = number(summary.alerts_ingested);
+    $("#responseStats").innerHTML =
+      statChip(summary.actions, "actions") +
+      statChip(Math.round(Number(summary.containment_coverage || 0) * 100) + "%", "containment") +
+      statChip(summary.playbooks, "playbooks");
+    const select = $("#responseSelect");
+    select.innerHTML = incidents.map((incident, index) => (
+      '<option value="' + index + '">' + esc(incident.id + " / " + incident.host + " / " + incident.highest_level) + "</option>"
+    )).join("");
+    const detail = $("#responseDetail");
+    let current = 0;
+    const render = () => {
+      const incident = incidents[current];
+      const alerts = (incident.alerts || []).slice(0, 5).map((alert) => (
+        "<li><b>" + esc(alert.level) + "</b> " + esc(alert.title) + "</li>"
+      )).join("");
+      const actions = (incident.actions || []).map((action) => (
+        '<span class="instrument-action"><code>' + esc(action.action) + "</code> " + esc(action.reason) + "</span>"
+      )).join("");
+      detail.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(incident.id) + "</span>" +
+        "<h4>" + esc(incident.host) + "</h4>" +
+        '<div class="instrument-meta"><span class="instrument-chip is-' + esc(incident.highest_level) + '">' + esc(incident.highest_level) + "</span>" +
+        "<span>" + esc(number(incident.alert_count)) + " alerts</span>" +
+        "<span>" + esc(number((incident.actions || []).length)) + " actions</span>" +
+        "<span>" + esc(incident.window_start || "") + "</span></div></div>" +
+        '<span class="instrument-chip">' + esc((incident.playbooks || []).join(" / ")) + "</span></div>" +
+        '<div class="instrument-body"><div class="instrument-col"><h5>Alerts</h5><ul class="instrument-list">' + alerts + "</ul></div>" +
+        '<div class="instrument-col"><h5>Recommended actions</h5><div class="instrument-actions">' + actions + "</div></div></div>";
     };
-    renderIncidents(8);
-    const showAll = $("#responseShowAll");
-    if (showAll) {
-      showAll.addEventListener("click", () => {
-        const expanded = showAll.textContent.startsWith("Show fewer");
-        renderIncidents(expanded ? 8 : incidents.length);
-      });
-    }
+    select.addEventListener("change", () => {
+      current = Number(select.value);
+      render();
+    });
+    $("#responsePrev").addEventListener("click", () => {
+      current = (current - 1 + incidents.length) % incidents.length;
+      select.value = String(current);
+      render();
+    });
+    $("#responseNext").addEventListener("click", () => {
+      current = (current + 1) % incidents.length;
+      select.value = String(current);
+      render();
+    });
+    render();
     $("#responseNote").innerHTML = "Dry-run response: no EDR, cloud, or ticketing API was called. " +
       'Full data: <a href="https://github.com/Meruyert5/penumbra/blob/main/response/README.md" target="_blank" rel="noreferrer">response/README.md</a>.';
   } else if (responsePanel) {
     responsePanel.hidden = true;
   }
 
-  /* ------------------------------------------------------------- cloud pack */
-  const cloudPack = DATA.cloud_pack;
-  const cloudPanel = $("#cloudPanel");
-  if (cloudPanel && cloudPack && (cloudPack.detections || []).length) {
-    const summary = cloudPack.summary || {};
-    $("#cloudStats").innerHTML = [
-      [summary.detections, "detections"],
-      [summary.fired, "fired"],
-      [summary.events, "matched events"],
-      [summary.not_exercised, "not exercised"]
-    ].map(([value, label]) => (
-      '<div class="validation-stat"><b>' + esc(number(value)) + "</b><span>" + esc(label) + "</span></div>"
+  /* ------------------------------------------------------------- hunting */
+  const hunts = DATA.hunts;
+  const huntsPanel = $("#huntsPanel");
+  if (huntsPanel && hunts && (hunts.hunts || []).length) {
+    const items = hunts.hunts;
+    const summary = hunts.summary || {};
+    const shortTitle = (hunt) => String(hunt.title || "").split(" ").slice(0, 3).join(" ");
+    $("#huntFindingCount").textContent = number(summary.findings);
+    $("#huntsStats").innerHTML =
+      '<span class="instrument-stat"><b>' + esc(number(summary.events_reviewed)) + "</b> events reviewed</span>" +
+      '<span class="instrument-stat"><b>' + esc(number(summary.confirmed)) + "</b> confirmed</span>" +
+      '<span class="instrument-stat"><b>' + esc(number(summary.hunts)) + "</b> hunts</span>";
+    $("#huntTabs").innerHTML = items.map((hunt, index) => (
+      '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
+      '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(hunt.id) +
+      " <span>" + esc(shortTitle(hunt)) + "</span></button>"
     )).join("");
-    $("#cloudCards").innerHTML = (cloudPack.detections || []).map((detection) => {
-      const evidence = (detection.evidence || []).slice(0, 8).map((row) => (
-        "<tr><td>" + esc(row.time || "") + "</td><td>" + esc(row.user || "") + "</td><td>" +
-        esc(row.source || "") + "</td><td>" + esc(row.detail || "") + "</td></tr>"
+    const detail = $("#huntDetail");
+    const tabs = Array.from(document.querySelectorAll("#huntTabs .instrument-tab"));
+    const render = (index) => {
+      const hunt = items[index];
+      tabs.forEach((tab, position) => tab.setAttribute("aria-selected", String(position === index)));
+      const evidence = (hunt.evidence || []).slice(0, 3).map((row) => (
+        "<tr><td>" + esc(row.time || "") + "</td><td>" + esc(row.host || "") + "</td><td>" +
+        esc(row.user || "") + "</td><td>" + esc(row.detail || "") + "</td></tr>"
       )).join("");
-      return '<article class="ops-card is-' + (detection.status === "fired" ? "critical" : "empty") + '">' +
-        '<div class="ops-card-head"><span class="ops-id">' + esc(detection.id) + "</span>" +
-        '<span class="ops-chip">' + esc(detection.status) + "</span></div>" +
-        "<h4>" + esc(detection.title) + "</h4>" +
-        '<div class="ops-metrics"><span><b>' + esc(number(detection.event_count)) + "</b> events</span>" +
-        "<span>" + esc(detection.technique) + "</span><span>" + esc(detection.level) + "</span></div>" +
-        '<p class="ops-copy">' + esc(detection.description) + "</p>" +
-        '<details class="ops-details"><summary>Query and evidence</summary>' +
-        '<pre class="hunt-query"><code>' + esc(detection.query) + "</code></pre>" +
-        '<p class="hunt-label">Response hand-off</p><p class="ops-copy">' + esc(detection.detection_change) + "</p>" +
-        (evidence ? '<div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>User</th><th>Source</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>" : "") +
-        "</details></article>";
-    }).join("");
-    $("#cloudNote").innerHTML = "The cloud pack is separate from the 50-rule Sigma core. " +
-      'Full data: <a href="https://github.com/Meruyert5/penumbra/blob/main/cloud/README.md" target="_blank" rel="noreferrer">cloud/README.md</a>.';
-  } else if (cloudPanel) {
-    cloudPanel.hidden = true;
+      detail.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(hunt.id) + "</span>" +
+        "<h4>" + esc(hunt.title) + "</h4>" +
+        '<div class="instrument-meta"><span class="instrument-chip is-' + (hunt.verdict === "true_positive" ? "high" : "low") + '">' +
+        esc(hunt.verdict === "true_positive" ? "true positive" : "no finding") + "</span>" +
+        "<span>" + esc(number(hunt.event_count)) + " events</span><span>" + esc(hunt.confidence || "") + " confidence</span></div></div></div>" +
+        '<p class="instrument-copy">' + esc(hunt.hypothesis) + "</p>" +
+        '<div class="instrument-body"><div class="instrument-col"><h5>Query</h5><pre class="instrument-query"><code>' + esc(hunt.query) + "</code></pre></div>" +
+        '<div class="instrument-col"><h5>Detection change</h5><p class="instrument-copy">' + esc(hunt.detection_change) + "</p>" +
+        '<h5>Limitations</h5><p class="instrument-copy">' + esc(hunt.limitations) + "</p></div></div>" +
+        '<h5>Evidence</h5><div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>Host</th><th>User</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>";
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => render(index));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+        tabs[next].focus();
+        render(next);
+      });
+    });
+    render(0);
+    $("#huntsNote").innerHTML = "Hunts read the same deterministic corpus as the dashboard. " +
+      'Full reports: <a href="https://github.com/Meruyert5/penumbra/blob/main/hunts/README.md" target="_blank" rel="noreferrer">hunts/README.md</a>.';
+  } else if (huntsPanel) {
+    huntsPanel.hidden = true;
   }
 
   /* ------------------------------------------------------------- IR casebook */
   const ir = DATA.ir;
   const irPanel = $("#irPanel");
   if (irPanel && ir && (ir.cases || []).length) {
-    $("#irCards").innerHTML = (ir.cases || []).map((item) => {
+    const items = ir.cases;
+    $("#irTabs").innerHTML = items.map((item, index) => (
+      '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
+      '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(item.id) + "</button>"
+    )).join("");
+    const detail = $("#irDetail");
+    const tabs = Array.from(document.querySelectorAll("#irTabs .instrument-tab"));
+    const render = (index) => {
+      const item = items[index];
       const metrics = item.metrics || {};
-      return '<article class="ops-card ops-case is-' + esc(item.severity) + '">' +
-        '<div class="ops-card-head"><span class="ops-id">' + esc(item.id) + "</span>" +
-        '<span class="ops-chip">' + esc(item.verdict) + "</span></div>" +
+      tabs.forEach((tab, position) => tab.setAttribute("aria-selected", String(position === index)));
+      const list = (values) => (values || []).slice(0, 3).map((value) => "<li>" + esc(value) + "</li>").join("");
+      detail.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(item.id) + "</span>" +
         "<h4>" + esc(item.slug) + "</h4>" +
-        '<p class="ops-copy">' + esc(item.containment_status) + "</p>" +
-        '<div class="ops-metrics"><span><b>' + esc(number(metrics.observed_seconds)) + "</b> observed seconds</span>" +
-        "<span><b>" + esc(number(metrics.alert_count)) + "</b> alerts</span>" +
-        "<span><b>" + esc(number(metrics.detection_span_seconds)) + "</b> detection seconds</span></div>" +
-        '<p class="ops-case-links"><a href="cases/' + esc(item.slug) + '/report.md">Report</a>' +
-        '<a href="cases/IR.md">Close-out</a></p></article>';
-    }).join("");
-    $("#irNote").innerHTML = "Full close-outs: " +
-      '<a href="cases/IR.md">cases/IR.md</a>.';
+        '<div class="instrument-meta"><span class="instrument-chip is-high">' + esc(item.verdict) + "</span>" +
+        "<span>" + esc(item.containment_status) + "</span></div></div></div>" +
+        '<div class="instrument-stats"><span class="instrument-stat"><b>' + esc(number(metrics.observed_seconds)) + "</b> observed seconds</span>" +
+        '<span class="instrument-stat"><b>' + esc(number(metrics.alert_count)) + "</b> alerts</span>" +
+        '<span class="instrument-stat"><b>' + esc(number(metrics.detection_span_seconds)) + "</b> detection seconds</span></div>" +
+        '<div class="instrument-body instrument-body-three"><div class="instrument-col"><h5>Containment</h5><ul class="instrument-list">' + list(item.containment) + "</ul></div>" +
+        '<div class="instrument-col"><h5>Recovery</h5><ul class="instrument-list">' + list(item.recovery) + "</ul></div>" +
+        '<div class="instrument-col"><h5>Lessons</h5><ul class="instrument-list">' + list(item.lessons) + "</ul></div></div>" +
+        '<p class="instrument-links"><a href="cases/' + esc(item.slug) + '/report.md">Report</a>' +
+        '<a href="cases/IR.md">Full close-out</a></p>';
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => render(index));
+    });
+    render(0);
+    $("#irNote").innerHTML = 'Full close-outs: <a href="cases/IR.md">cases/IR.md</a>.';
   } else if (irPanel) {
     irPanel.hidden = true;
+  }
+
+  /* ------------------------------------------------------------- cloud pack */
+  const cloudPack = DATA.cloud_pack;
+  const cloudPanel = $("#cloudPanel");
+  if (cloudPanel && cloudPack && (cloudPack.detections || []).length) {
+    const items = cloudPack.detections;
+    const summary = cloudPack.summary || {};
+    $("#cloudFiredCount").textContent = number(summary.fired);
+    $("#cloudStats").innerHTML =
+      '<span class="instrument-stat"><b>' + esc(number(summary.detections)) + "</b> detections</span>" +
+      '<span class="instrument-stat"><b>' + esc(number(summary.events)) + "</b> matched events</span>" +
+      '<span class="instrument-stat"><b>' + esc(number(summary.not_exercised)) + "</b> waiting for telemetry</span>";
+    $("#cloudTabs").innerHTML = items.map((item, index) => (
+      '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
+      '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(item.id) +
+      " <span>" + esc(String(item.status).replace(/_/g, " ")) + "</span></button>"
+    )).join("");
+    const detail = $("#cloudDetail");
+    const tabs = Array.from(document.querySelectorAll("#cloudTabs .instrument-tab"));
+    const render = (index) => {
+      const item = items[index];
+      tabs.forEach((tab, position) => tab.setAttribute("aria-selected", String(position === index)));
+      const evidence = (item.evidence || []).slice(0, 3).map((row) => (
+        "<tr><td>" + esc(row.time || "") + "</td><td>" + esc(row.user || "") + "</td><td>" +
+        esc(row.source || "") + "</td><td>" + esc(row.detail || "") + "</td></tr>"
+      )).join("");
+      detail.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(item.id) + "</span>" +
+        "<h4>" + esc(item.title) + "</h4>" +
+        '<div class="instrument-meta"><span class="instrument-chip is-' + (item.status === "fired" ? "high" : "low") + '">' + esc(String(item.status).replace(/_/g, " ")) + "</span>" +
+        "<span>" + esc(item.technique) + "</span><span>" + esc(item.level) + "</span><span>" + esc(number(item.event_count)) + " events</span></div></div></div>" +
+        '<p class="instrument-copy">' + esc(item.description) + "</p>" +
+        '<div class="instrument-body"><div class="instrument-col"><h5>Query</h5><pre class="instrument-query"><code>' + esc(item.query) + "</code></pre></div>" +
+        '<div class="instrument-col"><h5>Hand-off to Apsis</h5><p class="instrument-copy">' + esc(item.detection_change) + "</p></div></div>" +
+        (evidence ? '<h5>Evidence</h5><div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>User</th><th>Source</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>" : "");
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => render(index));
+    });
+    render(0);
+    $("#cloudNote").innerHTML = "The cloud pack is separate from the 50-rule Sigma core. " +
+      'Full data: <a href="https://github.com/Meruyert5/penumbra/blob/main/cloud/README.md" target="_blank" rel="noreferrer">cloud/README.md</a>.';
+  } else if (cloudPanel) {
+    cloudPanel.hidden = true;
   }
 
   /* ------------------------------------------------------------- roadmap */
   const roadmapPanel = $("#roadmapPanel");
   const roadmap = DATA.roadmap;
   if (roadmapPanel && roadmap && (roadmap.projects || []).length) {
+    const items = roadmap.projects;
     $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
     $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
-    $("#roadmapIntro").innerHTML = esc(roadmap.intro || "") +
-      ' <a class="roadmap-link" href="https://github.com/Meruyert5/penumbra/blob/main/docs/roadmap.md" target="_blank" rel="noreferrer">Read the full roadmap</a>.';
-    $("#roadmapProjects").innerHTML = roadmap.projects.map((project) => {
-      const modules = (project.modules || []).map((module) => (
-        '<li><span class="roadmap-module-name">' + esc(module.name) + "</span>" +
-        '<span class="roadmap-state is-' + esc(module.state) + '">' + esc(module.state) + "</span>" +
-        "<small>" + esc(module.detail) + "</small></li>"
-      )).join("");
-      return '<article class="roadmap-card is-' + esc(project.status) + '">' +
-        '<div class="roadmap-card-head"><div><p class="roadmap-role">' + esc(project.role) + "</p>" +
-        "<h4>" + esc(project.name) + "</h4>" +
-        (project.former_name ? '<span class="roadmap-former">formerly ' + esc(project.former_name) + "</span>" : "") +
-        '</div><span class="roadmap-status">' + esc(project.status) + "</span></div>" +
-        '<p class="roadmap-thesis">' + esc(project.thesis) + "</p>" +
-        '<ul class="roadmap-modules">' + modules + "</ul>" +
-        '<p class="roadmap-done"><b>Done means</b> ' + esc(project.done) + "</p></article>";
-    }).join("");
-    $("#roadmapSequence").innerHTML = (roadmap.sequence || []).map((item) => "<li>" + esc(item) + "</li>").join("");
-    $("#roadmapPrinciples").innerHTML = (roadmap.principles || []).map((item) => "<li>" + esc(item) + "</li>").join("");
-    $("#roadmapShared").innerHTML = (roadmap.shared || []).map((item) => (
-      "<li><b>" + esc(item.name) + "</b><span>" + esc(item.detail) + "</span></li>"
+    $("#roadmapTabs").innerHTML = items.map((project, index) => (
+      '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
+      '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(project.name) + "</button>"
     )).join("");
+    const detail = $("#roadmapDetail");
+    const tabs = Array.from(document.querySelectorAll("#roadmapTabs .instrument-tab"));
+    const render = (index) => {
+      const project = items[index];
+      tabs.forEach((tab, position) => tab.setAttribute("aria-selected", String(position === index)));
+      const modules = (project.modules || []).map((module) => (
+        '<span class="instrument-module"><b>' + esc(module.name) + "</b>" +
+        '<span class="instrument-state is-' + esc(module.state) + '">' + esc(module.state) + "</span></span>"
+      )).join("");
+      detail.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(project.role) + "</span>" +
+        "<h4>" + esc(project.name) + (project.former_name ? " / formerly " + esc(project.former_name) : "") + "</h4></div>" +
+        '<span class="instrument-chip">' + esc(project.status) + "</span></div>" +
+        '<p class="instrument-copy">' + esc(project.thesis) + "</p>" +
+        '<div class="instrument-modules">' + modules + "</div>" +
+        '<p class="instrument-copy"><b>Done means</b> ' + esc(project.done) + "</p>";
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => render(index));
+    });
+    render(0);
+    $("#roadmapNote").innerHTML = "Build order: Apsis, Penumbra, network hunting. " +
+      '<a href="https://github.com/Meruyert5/penumbra/blob/main/docs/roadmap.md" target="_blank" rel="noreferrer">Full roadmap</a>.';
   } else if (roadmapPanel) {
     roadmapPanel.hidden = true;
   }

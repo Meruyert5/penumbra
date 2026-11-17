@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Rebuilt the new sections as compact selector/detail instruments with light
+  surfaces, chips, and one detail pane, matching the watch floor and case chain.
+  Removed the repeated validation sample cards from the visible layout.
 - Distributed the new evidence views across the chapters: response in
   Instruments, hunting in Umbra, validation in Corona, IR close-outs in Eclipses,
   and the roadmap plus Apsis cloud hand-off in a short After chapter. This
