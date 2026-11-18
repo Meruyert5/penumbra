@@ -319,6 +319,15 @@ def build_payload(
     ir_path = ROOT / "cases" / "ir.json"
     ir = json.loads(ir_path.read_text(encoding="utf-8")) if ir_path.is_file() else None
 
+    handoff_alert_path = ROOT / "integrations" / "apsis" / "alert.json"
+    handoff_evidence_path = ROOT / "integrations" / "apsis" / "evidence.json"
+    handoff = None
+    if handoff_alert_path.is_file() and handoff_evidence_path.is_file():
+        handoff = {
+            "alert": json.loads(handoff_alert_path.read_text(encoding="utf-8")),
+            "evidence": json.loads(handoff_evidence_path.read_text(encoding="utf-8")),
+        }
+
     return {
         "meta": meta,
         "severity": severity_counts,
@@ -335,6 +344,7 @@ def build_payload(
         "response": response,
         "cloud_pack": cloud_pack,
         "ir": ir,
+        "handoff": handoff,
         "pipeline": pipeline_payload(meta, alerts, correlations, cases, events),
     }
 

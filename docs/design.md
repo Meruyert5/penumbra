@@ -202,6 +202,11 @@ switch is instant, the chain does not autoplay, and the scope draws once.
   that adds Saros 145, magnitude 1.02, and 100% obscuration.
 - **Run ticket.** The live numbers (events, rules, correlations, errors) sit on a
   paper receipt with a barcode and a verified stamp.
+- **New figures.** Response flow, hunting radar, validation matrix and benchmark,
+  IR timeline, cloud hand-off, incoming Apsis handoff, and the vinyl roadmap use
+  dark instrument plates with light detail panes, keyboard selectors, and
+  reduced-motion fallbacks. The watch floor adds filtered CSV export and a native
+  focus/fullscreen mode.
 
 ## Accessibility
 

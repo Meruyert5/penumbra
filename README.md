@@ -6,7 +6,7 @@
 [![Elasticsearch 8.15](https://img.shields.io/badge/Elasticsearch-8.15-005571?logo=elasticsearch&logoColor=white)](docker-compose.yml)
 [![Sigma](https://img.shields.io/badge/rules-50%20Sigma-1f6feb)](rules/sigma)
 [![Tests](https://img.shields.io/badge/tests-79%20passing-2ea043)](tests)
-[![ATT&CK](https://img.shields.io/badge/MITRE%20ATT%26CK-45%20techniques-ff5d5d)](docs/attck-coverage.md)
+[![ATT&CK](https://img.shields.io/badge/MITRE%20ATT%26CK-48%20techniques-ff5d5d)](docs/attck-coverage.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea043)](LICENSE)
 [![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2ea043)](.github/workflows/ci.yml)
 
@@ -17,6 +17,18 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 > **Project status: portfolio lab, not a production detection product.** The telemetry is synthetic and generated to exercise this rule set. The repository demonstrates detection-as-code, validation, triage, and reporting; it does not claim production precision or recall. The evidence boundary is documented in [Evaluation and validation](docs/evaluation.md).
 
 **Repository status:** public. The dashboard is live at <https://meruyert5.github.io/penumbra/>. Run the site locally from `site/` after `python -m pipeline.report` and `python -m pipeline.publish`.
+
+## Contents
+
+- [Reviewer path](#reviewer-path)
+- [What you can inspect](#what-you-can-inspect)
+- [Quickstart](#quickstart)
+- [The dashboard](#the-dashboard)
+- [Detection library](#detection-library)
+- [Evaluation and validation](#evaluation-and-validation)
+- [Repository layout](#repository-layout)
+- [Publish the dashboard](#publish-the-dashboard)
+- [Roadmap](#roadmap)
 
 ## Reviewer path
 
@@ -309,10 +321,10 @@ Representative coverage:
 * EQL and KQL panels with syntax highlighting and one-click copy
 * Case cards with a detection chain that opens a case-file summary and links to the published investigation reports
 * A case-chain player that steps through each investigation's detections in order, with the rule, time, host, and EQL for every step
-* A response flow, hunt radar, IR timeline scrubber, cloud hand-off bridge, and project vinyl record, each with a selector and one detail pane
+* A response flow, hunt radar, IR timeline scrubber, cloud hand-off bridge, incoming Apsis route handoff, and project vinyl record, each with a selector and one detail pane
 * A validation matrix with focusable rule tiles and a live status readout, plus a per-rule benchmark table
 * A host-lane hour axis and a severity-mix bar in the watch floor status band
-* Two eclipse themes: **Corona** (paper, sunlight, coral) and **Umbra** (black sky, corona glow), each with its own accent, plus a contact-ribbon play control (`P`), a command palette (`Ctrl/Cmd K`), a guided fifteen-step reading, keyboard shortcuts, and reduced-motion support
+* Two eclipse themes: **Corona** (paper, sunlight, coral) and **Umbra** (black sky, corona glow), each with its own accent, plus a contact-ribbon play control (`P`), a command palette (`Ctrl/Cmd K`), a guided sixteen-step reading, keyboard shortcuts, and reduced-motion support
 * Copy buttons for every command and query
 
 The source is split for maintenance: [`dashboard/template.html`](dashboard/template.html), [`dashboard/styles.css`](dashboard/styles.css), [`dashboard/app.js`](dashboard/app.js), [`dashboard/icon.svg`](dashboard/icon.svg), and the locally embedded WOFF2 files in [`dashboard/fonts/`](dashboard/fonts). The report step inlines the source and the fonts into one HTML file.

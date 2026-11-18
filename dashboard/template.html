@@ -716,6 +716,21 @@
       <div class="instrument-detail" id="cloudDetail" aria-live="polite"></div>
       <p class="instrument-note" id="cloudNote"></p>
     </section>
+
+    <section class="instrument" id="handoffPanel" aria-labelledby="handoffTitle">
+      <div class="instrument-head">
+        <div>
+          <p class="chapter-label">After / Incoming handoff</p>
+          <h3 id="handoffTitle">Apsis sent a route.</h3>
+          <p class="instrument-lede">A validated <code>penumbra.alert/v1</code> and evidence manifest from the observed-path case. Penumbra reads the evidence; it does not import Apsis code.</p>
+        </div>
+        <div class="instrument-score"><b id="handoffEdges">0</b><span>observed edges</span></div>
+      </div>
+      <div class="handoff-route" id="handoffRoute" aria-hidden="true"></div>
+      <div class="instrument-stats" id="handoffStats"></div>
+      <div class="instrument-detail" id="handoffDetail" aria-live="polite"></div>
+      <p class="instrument-note" id="handoffNote"></p>
+    </section>
   </section>
 
 <footer class="colophon" data-reveal>
@@ -772,7 +787,7 @@
 
 <div class="tour-spot" id="tourSpot" aria-hidden="true"></div>
 <div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle" aria-hidden="true" tabindex="-1">
-  <div class="tour-kicker"><span id="tourStep">01 / 09</span><button class="mini" id="tourClose" type="button">close</button></div>
+  <div class="tour-kicker"><span id="tourStep">01 / 16</span><button class="mini" id="tourClose" type="button">close</button></div>
   <h3 id="tourTitle">Start here</h3>
   <p id="tourBody"></p>
   <div class="tour-dots" id="tourDots" aria-hidden="true"></div>

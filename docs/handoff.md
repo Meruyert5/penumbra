@@ -35,8 +35,8 @@ Apsis delivered the observed-path case as data in
 `penumbra.evidence/v1` manifest, the case narrative, the guardrails and the
 before/after route snapshots. Both payloads validate against the copied schemas.
 Penumbra reads the alert and cites the evidence; it does not import Apsis code.
-Apsis is complete at functional source `fae1f74`; its 89 Python tests, 5 logic
-tests, console build, and both contracts pass.
+Apsis is complete. Its 89 Python tests, 5 logic tests, console build, and both
+contracts pass, and the handoff payload is pinned to Apsis commit `b50f894`.
 
 ## Rebuild and verify
 

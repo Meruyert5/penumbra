@@ -9784,3 +9784,63 @@ body::after { display: none; }
 .wf-status { font-size: 10px; }
 .validation-table { font-size: 10px; }
 .validation-table th { font-size: 8.5px; }
+
+/* Incoming Apsis handoff: a dark route strip and a readable contract pane. */
+#handoffPanel .handoff-route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 2px;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid #2a211b;
+  border-top: 3px solid var(--instrument);
+  border-radius: 2px 22px 2px 2px;
+  background:
+    linear-gradient(rgba(255,227,179,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,227,179,.035) 1px, transparent 1px),
+    radial-gradient(520px 180px at 90% -20%, rgba(248,143,34,.15), transparent 70%),
+    #0B0A09;
+  background-size: 24px 24px, 24px 24px, auto, auto;
+  box-shadow: 8px 8px 0 rgba(20,18,16,.1), 0 18px 40px rgba(20,18,16,.1);
+}
+.handoff-stop {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 7px 9px 6px;
+  border: 1px solid rgba(255,227,179,.18);
+  border-radius: 2px;
+  background: rgba(255,227,179,.045);
+  color: rgba(246,244,241,.82);
+  font: 600 8px/1 var(--mono);
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.handoff-stop b {
+  color: var(--sun-2);
+  font: 500 6.5px/1 var(--mono);
+  letter-spacing: .12em;
+}
+.handoff-arrow {
+  padding: 0 2px;
+  color: var(--sun-2);
+  font-style: normal;
+  font-size: 10px;
+  opacity: .55;
+}
+#handoffPanel .instrument-detail { margin-top: 14px; }
+.handoff-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 13px;
+}
+.handoff-columns h5 { margin-top: 0; }
+.handoff-columns .instrument-list { margin-top: 0; }
+.handoff-columns .instrument-list li { padding-left: 10px; }
+@media (max-width: 720px) {
+  .handoff-stop { font-size: 7.5px; padding: 6px 7px 5px; }
+  .handoff-arrow { font-size: 9px; }
+  .handoff-columns { grid-template-columns: 1fr; gap: 10px; }
+}

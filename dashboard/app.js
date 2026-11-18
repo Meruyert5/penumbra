@@ -736,6 +736,49 @@
     cloudPanel.hidden = true;
   }
 
+  /* ------------------------------------------------------ Apsis handoff */
+  const handoff = DATA.handoff;
+  const handoffPanel = $("#handoffPanel");
+  if (handoffPanel && handoff && handoff.alert) {
+    const alert = handoff.alert;
+    const evidence = handoff.evidence || {};
+    const route = alert.route || [];
+    const edges = alert.edges || [];
+    const cut = alert.cut || [];
+    const guardrails = alert.guardrails || [];
+    $("#handoffEdges").textContent = number(edges.length);
+    $("#handoffRoute").innerHTML = route.map((step, index) => (
+      '<span class="handoff-stop"><b>' + String(index + 1).padStart(2, "0") + "</b>" + esc(step) + "</span>"
+    )).join('<i class="handoff-arrow" aria-hidden="true">→</i>');
+    $("#handoffStats").innerHTML =
+      '<span class="instrument-stat"><b>' + esc(number(route.length)) + "</b> principals</span>" +
+      '<span class="instrument-stat"><b>' + esc(number(edges.length)) + "</b> observed edges</span>" +
+      '<span class="instrument-stat"><b>' + esc(number(cut.length)) + "</b> cut actions</span>" +
+      '<span class="instrument-stat"><b>' + esc(alert.account) + "</b> account</span>";
+    const eventRows = (evidence.events || []).map((event) => (
+      "<tr><td>" + esc(event.time) + "</td><td>" + esc(event.actor) + "</td><td>" +
+      esc(event.action) + "</td><td>" + esc(event.target) + "</td></tr>"
+    )).join("");
+    $("#handoffDetail").innerHTML =
+      '<div class="instrument-detail-head"><div><span class="instrument-id">APSIS / ' + esc(alert.kind) + "</span>" +
+      "<h4>Tools intern to Administrator</h4>" +
+      '<div class="instrument-meta"><span class="instrument-chip is-high">' + esc(alert.severity) + "</span>" +
+      "<span>observed</span><span>" + esc(evidence.window ? evidence.window.from + " / " + evidence.window.to : "") + "</span>" +
+      "<span>" + esc(alert.schema) + "</span></div></div></div>" +
+      '<p class="instrument-copy">A low-privilege Games Studio principal reached administrator through seven observed trust edges. The cut removes the two permissions that close the route.</p>' +
+      '<div class="handoff-columns"><div><h5>Minimum cut</h5><ul class="instrument-list">' +
+      cut.map((item) => "<li><b>" + esc(item.split(":")[0]) + "</b> " + esc(item.split(":").slice(1).join(":")) + "</li>").join("") +
+      '</ul></div><div><h5>Guardrails</h5><ul class="instrument-list">' +
+      guardrails.map((item) => "<li>" + esc(item) + "</li>").join("") +
+      "</ul></div></div>" +
+      '<h5>Observed CloudTrail evidence</h5><div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Target</th></tr></thead><tbody>' +
+      eventRows + "</tbody></table></div>";
+    $("#handoffNote").innerHTML = "Handoff payload pinned to Apsis commit <b>b50f894</b>; contract validated. " +
+      'Full data: <a href="https://github.com/Meruyert5/penumbra/tree/main/integrations/apsis" target="_blank" rel="noreferrer">integrations/apsis</a>.';
+  } else if (handoffPanel) {
+    handoffPanel.hidden = true;
+  }
+
   /* ------------------------------------------------------------- roadmap */
   const roadmapPanel = $("#roadmapPanel");
   const roadmap = DATA.roadmap;
@@ -3067,6 +3110,7 @@
     { target: "#irPanel", title: "Close the loop", body: "The timeline scrubs the observed window: drag it, or use the arrow keys. The markers light as the readout crosses them; play runs the whole close-out." },
     { target: "#reproduce .terminal", title: "Repeat the orbit", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." },
     { target: "#cloudPanel", title: "Hand off to Apsis", body: "The bridge shows the three CloudTrail detections Penumbra hands to Apsis. Select a detection to see the query and the response hand-off." },
+    { target: "#handoffPanel", title: "Receive the handoff", body: "Apsis sends a validated path.opened alert and evidence manifest. Read the seven observed edges, the two-permission cut, and the guardrails that keep the route closed." },
     { target: "#roadmapPanel", title: "Read the next record", body: "The A-side holds two complete projects and the next orbit. Select a track label to see its thesis, module states, and what done means. Apsis and Penumbra are complete; network hunting is next." }
   ];
   const spot = $("#tourSpot");
