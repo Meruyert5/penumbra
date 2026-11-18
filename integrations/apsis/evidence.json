@@ -1,0 +1,75 @@
+{
+  "schema": "penumbra.evidence/v1",
+  "account": "555566667777",
+  "window": {
+    "from": "2026-11-16T18:00:00Z",
+    "to": "2026-11-16T18:42:00Z"
+  },
+  "events": [
+    {
+      "time": "2026-11-16T18:04:12Z",
+      "actor": "gs-intern",
+      "action": "sts:AssumeRole",
+      "target": "arn:aws:iam::555566667777:role/gs-build",
+      "source": "cloudtrail",
+      "ip": "203.0.113.24"
+    },
+    {
+      "time": "2026-11-16T18:08:44Z",
+      "actor": "gs-build",
+      "action": "iam:PassRole",
+      "target": "arn:aws:iam::555566667777:role/gs-art",
+      "source": "cloudtrail",
+      "ip": "203.0.113.24"
+    },
+    {
+      "time": "2026-11-16T18:12:03Z",
+      "actor": "gs-art",
+      "action": "sts:AssumeRole",
+      "target": "arn:aws:iam::555566667777:role/gs-server",
+      "source": "cloudtrail",
+      "ip": "203.0.113.24"
+    },
+    {
+      "time": "2026-11-16T18:17:55Z",
+      "actor": "gs-server",
+      "action": "sts:AssumeRole",
+      "target": "arn:aws:iam::555566667777:role/gs-live",
+      "source": "cloudtrail",
+      "ip": "203.0.113.24"
+    },
+    {
+      "time": "2026-11-16T18:22:31Z",
+      "actor": "gs-live",
+      "action": "sts:AssumeRole",
+      "target": "arn:aws:iam::555566667777:role/gs-ops",
+      "source": "cloudtrail",
+      "ip": "203.0.113.24"
+    },
+    {
+      "time": "2026-11-16T18:27:09Z",
+      "actor": "gs-ops",
+      "action": "sts:AssumeRole",
+      "target": "arn:aws:iam::555566667777:role/gs-backup",
+      "source": "cloudtrail",
+      "ip": "203.0.113.24"
+    },
+    {
+      "time": "2026-11-16T18:33:40Z",
+      "actor": "gs-backup",
+      "action": "iam:CreatePolicyVersion",
+      "target": "arn:aws:iam::555566667777:policy/gs-backup-policy",
+      "source": "cloudtrail",
+      "ip": "203.0.113.24"
+    }
+  ],
+  "edges": [
+    { "id": "e4", "source": "gs-intern", "target": "gs-build", "technique": "assume_role", "observed": true, "firstSeen": "2026-11-16T18:04:12Z", "lastSeen": "2026-11-16T18:04:12Z", "count": 1 },
+    { "id": "e3", "source": "gs-build", "target": "gs-art", "technique": "passrole_lambda", "observed": true, "firstSeen": "2026-11-16T18:08:44Z", "lastSeen": "2026-11-16T18:08:44Z", "count": 1 },
+    { "id": "e0", "source": "gs-art", "target": "gs-server", "technique": "assume_role", "observed": true, "firstSeen": "2026-11-16T18:12:03Z", "lastSeen": "2026-11-16T18:12:03Z", "count": 1 },
+    { "id": "e10", "source": "gs-server", "target": "gs-live", "technique": "assume_role", "observed": true, "firstSeen": "2026-11-16T18:17:55Z", "lastSeen": "2026-11-16T18:17:55Z", "count": 1 },
+    { "id": "e5", "source": "gs-live", "target": "gs-ops", "technique": "assume_role", "observed": true, "firstSeen": "2026-11-16T18:22:31Z", "lastSeen": "2026-11-16T18:22:31Z", "count": 1 },
+    { "id": "e8", "source": "gs-ops", "target": "gs-backup", "technique": "assume_role", "observed": true, "firstSeen": "2026-11-16T18:27:09Z", "lastSeen": "2026-11-16T18:27:09Z", "count": 1 },
+    { "id": "e1", "source": "gs-backup", "target": "__admin__", "technique": "iam_create_policy_version", "observed": true, "firstSeen": "2026-11-16T18:33:40Z", "lastSeen": "2026-11-16T18:33:40Z", "count": 1 }
+  ]
+}

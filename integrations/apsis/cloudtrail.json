@@ -1,0 +1,11 @@
+{
+  "Records": [
+    { "eventTime": "2026-11-16T18:04:12Z", "eventName": "AssumeRole", "userIdentity": { "userName": "gs-intern", "arn": "arn:aws:iam::555566667777:user/gs-intern" }, "requestParameters": { "roleArn": "arn:aws:iam::555566667777:role/gs-build" }, "sourceIPAddress": "203.0.113.24" },
+    { "eventTime": "2026-11-16T18:08:44Z", "eventName": "PassRole", "userIdentity": { "userName": "gs-build", "arn": "arn:aws:iam::555566667777:role/gs-build" }, "requestParameters": { "roleArn": "arn:aws:iam::555566667777:role/gs-art" }, "sourceIPAddress": "203.0.113.24" },
+    { "eventTime": "2026-11-16T18:12:03Z", "eventName": "AssumeRole", "userIdentity": { "userName": "gs-art", "arn": "arn:aws:iam::555566667777:role/gs-art" }, "requestParameters": { "roleArn": "arn:aws:iam::555566667777:role/gs-server" }, "sourceIPAddress": "203.0.113.24" },
+    { "eventTime": "2026-11-16T18:17:55Z", "eventName": "AssumeRole", "userIdentity": { "userName": "gs-server", "arn": "arn:aws:iam::555566667777:role/gs-server" }, "requestParameters": { "roleArn": "arn:aws:iam::555566667777:role/gs-live" }, "sourceIPAddress": "203.0.113.24" },
+    { "eventTime": "2026-11-16T18:22:31Z", "eventName": "AssumeRole", "userIdentity": { "userName": "gs-live", "arn": "arn:aws:iam::555566667777:role/gs-live" }, "requestParameters": { "roleArn": "arn:aws:iam::555566667777:role/gs-ops" }, "sourceIPAddress": "203.0.113.24" },
+    { "eventTime": "2026-11-16T18:27:09Z", "eventName": "AssumeRole", "userIdentity": { "userName": "gs-ops", "arn": "arn:aws:iam::555566667777:role/gs-ops" }, "requestParameters": { "roleArn": "arn:aws:iam::555566667777:role/gs-backup" }, "sourceIPAddress": "203.0.113.24" },
+    { "eventTime": "2026-11-16T18:33:40Z", "eventName": "CreatePolicyVersion", "userIdentity": { "userName": "gs-backup", "arn": "arn:aws:iam::555566667777:role/gs-backup" }, "requestParameters": { "policyArn": "arn:aws:iam::555566667777:policy/gs-backup-policy" }, "sourceIPAddress": "203.0.113.24" }
+  ]
+}

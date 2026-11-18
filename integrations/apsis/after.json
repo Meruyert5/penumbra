@@ -1,0 +1,16 @@
+{
+  "account": "555566667777",
+  "routes": 0,
+  "observed": true,
+  "route": null,
+  "cut": {
+    "edges": ["e1", "e11"],
+    "actions": ["iam:CreatePolicyVersion", "iam:CreateAccessKey"]
+  },
+  "guardrails": [
+    "SCP: deny iam:PassRole to compute outside the platform role set",
+    "SCP + Config: deny iam:CreatePolicyVersion outside the policy platform role",
+    "CloudTrail alarm: CreateAccessKey outside the key service"
+  ],
+  "note": "After the cut. The route is closed; the guardrails prevent recurrence."
+}

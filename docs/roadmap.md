@@ -40,9 +40,10 @@ prove which ones are real, and sever them.
 | IAM graph | Done | Users, roles, policies, and every route to administrator |
 | Minimum cut | Done | The fewest permissions to revoke to close every route |
 | Drift | Done | Diff two account exports and fail a newly opened route |
-| Observed paths | Next | Overlay CloudTrail to mark theoretical and observed graph edges |
-| Guardrails | Next | Map each cut to an SCP, permission boundary, or AWS Config rule |
-| Case study | Planned | A safe lab path from low privilege to admin, with evidence and a verified fix |
+| Observed paths | Case + contract | Case 01 ships a validated `penumbra.alert/v1` and evidence manifest for the seven-hop route; the live CloudTrail overlay is next |
+| Guardrails | Done | Each cut mapped to an SCP, a Config rule or a CloudTrail alarm in `guardrail.md` |
+| Case study | Done | The observed-path case with before/after snapshots, evidence and a verified cut |
+| Penumbra handoff | Done | Alert, evidence, case, guardrails and schemas in `integrations/apsis/` |
 
 **Done means:** a reviewer can see a path, the evidence that it is real, and the
 guardrail that closes it.
@@ -64,7 +65,9 @@ traffic is benign or malicious.
 
 ## Sequence
 
-1. Finish Apsis: observed paths, guardrails, and the attack-path case study.
+1. Apsis: graph, minimum cut, drift, the observed-path case, the guardrail
+   contract and the validated alert/evidence handoff are done. Next is the live
+   CloudTrail overlay and live import.
 2. Penumbra extensions: hunting, IR casebook, triage automation, and the cloud
    pack are done; next is the dashboard integration pass.
 3. Build the network threat-hunting lab after the two existing projects are

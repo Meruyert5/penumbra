@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meruyert5.github.io/apsis/schema/alert.schema.json",
+  "title": "Penumbra alert v1",
+  "description": "A finding emitted by Apsis and consumed by Penumbra. One alert describes one route transition or one guardrail gap.",
+  "type": "object",
+  "required": ["schema", "kind", "source", "generated", "account", "principal", "route", "edges", "observed"],
+  "properties": {
+    "schema": { "const": "penumbra.alert/v1" },
+    "kind": { "enum": ["path.opened", "path.closed", "drift", "guardrail.missing"] },
+    "source": { "const": "apsis" },
+    "generated": { "type": "string", "format": "date-time" },
+    "account": { "type": "string", "pattern": "^[0-9]{12}$" },
+    "principal": { "type": ["string", "null"] },
+    "route": { "type": "array", "items": { "type": "string" } },
+    "edges": { "type": "array", "items": { "type": "string", "pattern": "^e[0-9]+$" } },
+    "observed": { "type": "boolean" },
+    "firstSeen": { "type": ["string", "null"], "format": "date-time" },
+    "lastSeen": { "type": ["string", "null"], "format": "date-time" },
+    "cut": { "type": "array", "items": { "type": "string" } },
+    "guardrails": { "type": "array", "items": { "type": "string" } },
+    "evidence": { "type": "string" },
+    "severity": { "enum": ["critical", "high", "medium", "low"] }
+  },
+  "additionalProperties": false
+}

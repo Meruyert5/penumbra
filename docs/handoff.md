@@ -28,6 +28,14 @@ host; the Cloudflare Quick Tunnel has been removed. `design.md`,
 `design-research.md`, `runbook.md`, and `tuning.md` are public in the repository
 but are not part of the published site.
 
+## Cross-project handoff
+
+Apsis delivered the observed-path case as data in
+[`integrations/apsis/`](integrations/apsis/): a `penumbra.alert/v1` alert, its
+`penumbra.evidence/v1` manifest, the case narrative, the guardrails and the
+before/after route snapshots. Both payloads validate against the copied schemas.
+Penumbra reads the alert and cites the evidence; it does not import Apsis code.
+
 ## Rebuild and verify
 
 ```powershell

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meruyert5.github.io/apsis/schema/evidence.schema.json",
+  "title": "Apsis evidence manifest v1",
+  "description": "The events and graph facts behind one alert. Paths are relative to the case directory.",
+  "type": "object",
+  "required": ["schema", "account", "window", "events", "edges"],
+  "properties": {
+    "schema": { "const": "penumbra.evidence/v1" },
+    "account": { "type": "string", "pattern": "^[0-9]{12}$" },
+    "window": {
+      "type": "object",
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "format": "date-time" },
+        "to": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["time", "actor", "action", "source"],
+        "properties": {
+          "time": { "type": "string", "format": "date-time" },
+          "actor": { "type": "string" },
+          "action": { "type": "string" },
+          "target": { "type": "string" },
+          "source": { "type": "string" },
+          "ip": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source", "target", "technique", "observed"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^e[0-9]+$" },
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "technique": { "type": "string" },
+          "observed": { "type": "boolean" },
+          "firstSeen": { "type": ["string", "null"] },
+          "lastSeen": { "type": ["string", "null"] },
+          "count": { "type": "integer", "minimum": 0 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

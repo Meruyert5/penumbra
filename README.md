@@ -461,6 +461,7 @@ config/                 Elasticsearch template, Filebeat, Winlogbeat, index rout
 lab/logs/               Generated telemetry (gitignored)
 alerts/                 Detection output (gitignored)
 cases/                  Analyst case reports and dashboard metadata
+integrations/           Delivered cross-project handoffs (Apsis alert + evidence)
 docs/                   Dashboard, design system, runbook, tuning log, ATT&CK coverage, evaluation, publishing, validation
 site/                   Generated public site (dashboard + assets + cases; gitignored)
 tests/                  pytest suite
@@ -501,8 +502,9 @@ the After chapter.
 - **Penumbra:** detection library, validation, hunting, IR casebook, triage
   automation, and the cloud detection pack are done. Next is the dashboard
   integration pass.
-- **Apsis:** finish observed CloudTrail paths, guardrails, and
-  the attack-path case study.
+- **Apsis:** graph, minimum cut, drift, the observed-path case, guardrail
+  contract and the validated alert/evidence handoff are done. Next is the live
+  CloudTrail overlay.
 - **Network threat hunting:** build after the two existing projects are complete.
 
 Other backlog items:

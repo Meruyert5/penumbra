@@ -1,0 +1,12 @@
+{
+  "account": "555566667777",
+  "routes": 15,
+  "observed": true,
+  "route": {
+    "source": "gs-intern",
+    "labels": ["Tools intern", "Build role", "Art pipeline role", "Game server role", "Live services role", "Live-ops engineer", "Backup role", "Administrator"],
+    "edges": ["e4", "e3", "e0", "e10", "e5", "e8", "e1"],
+    "hops": 7
+  },
+  "note": "Before the cut. Every edge in the signature route is observed in CloudTrail."
+}

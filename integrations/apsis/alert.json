@@ -1,0 +1,30 @@
+{
+  "schema": "penumbra.alert/v1",
+  "kind": "path.opened",
+  "source": "apsis",
+  "generated": "2026-11-16T18:48:00Z",
+  "account": "555566667777",
+  "principal": "gs-intern",
+  "route": [
+    "Tools intern",
+    "Build role",
+    "Art pipeline role",
+    "Game server role",
+    "Live services role",
+    "Live-ops engineer",
+    "Backup role",
+    "Administrator"
+  ],
+  "edges": ["e4", "e3", "e0", "e10", "e5", "e8", "e1"],
+  "observed": true,
+  "firstSeen": "2026-11-16T18:04:12Z",
+  "lastSeen": "2026-11-16T18:33:40Z",
+  "cut": ["iam:CreatePolicyVersion", "iam:CreateAccessKey"],
+  "guardrails": [
+    "SCP: deny iam:PassRole to compute outside the platform role set",
+    "SCP + Config: deny iam:CreatePolicyVersion outside the policy platform role",
+    "CloudTrail alarm: CreateAccessKey outside the key service"
+  ],
+  "evidence": "evidence.json",
+  "severity": "critical"
+}
