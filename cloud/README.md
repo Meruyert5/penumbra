@@ -13,7 +13,7 @@ the rest of Penumbra.
 |---|---|---|---|---:|
 | CLOUD-001 Root policy attachment | critical | T1098 | fired | 1 |
 | CLOUD-002 Root user creation | critical | T1136.003 | fired | 1 |
-| CLOUD-003 CloudTrail tampering | critical | T1562.008 | no_match | 0 |
+| CLOUD-003 CloudTrail tampering | critical | T1562.008 | not exercised | 0 |
 
 ## CLOUD-001 — Root policy attachment
 
@@ -65,6 +65,8 @@ any where cloud.provider:"aws" and user.name:"root" and event.action:"CreateUser
 any where cloud.provider:"aws" and event.action in ("StopLogging", "DeleteTrail", "UpdateTrail")
 ```
 
-**Status.** no_match (0 events).
+**Status.** not exercised (0 events).
+
+No matching CloudTrail event exists in this synthetic run; the rule is implemented but not exercised.
 
 **Response hand-off.** Alert on trail changes, verify the trail with an independent account-level control, and require a change ticket.

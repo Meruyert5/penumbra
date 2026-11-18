@@ -73,7 +73,7 @@
   calls.
 - Added the cloud detection pack for Apsis: root policy attachment, root user
   creation, and CloudTrail tampering. Two detections fire on the synthetic
-  corpus; one is waiting for telemetry.
+  corpus; one is implemented but not exercised.
 - Added `cases/ir.json` and `pipeline.casebook` to render three structured IR
   close-outs with metrics, containment, eradication, recovery, communication,
   evidence, lessons, and open questions.

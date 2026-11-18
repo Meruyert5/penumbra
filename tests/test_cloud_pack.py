@@ -34,7 +34,7 @@ def test_pack_ignores_non_root_policy_change() -> None:
 def test_pack_marks_unexercised_trail_tampering() -> None:
     results = run_pack([_cloud("DescribeInstances")])
     by_id = {row["id"]: row for row in results["detections"]}
-    assert by_id["CLOUD-003"]["status"] == "no_match"
+    assert by_id["CLOUD-003"]["status"] == "not_exercised"
     assert results["summary"]["not_exercised"] == 3
 
 

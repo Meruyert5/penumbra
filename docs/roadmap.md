@@ -24,7 +24,7 @@ performed.
 | Threat hunting | Done | Four hypothesis-driven hunts with queries, evidence, verdicts, and detection changes |
 | IR casebook | Done | Three structured close-outs with metrics, containment, eradication, recovery, communication, evidence, lessons, and open questions |
 | Triage automation | Done | Dry-run enrichment, incident grouping, playbook selection, and 78 recommended actions; no external API calls |
-| Cloud detection pack | Done | Three CloudTrail detections; two fired on the synthetic corpus, one is awaiting telemetry |
+| Cloud detection pack | Done | Three CloudTrail detections; two fired on the synthetic corpus, one is implemented but not exercised |
 | Dashboard integration | Done | Live evidence workspace with response, hunting, validation, IR, cloud, and vinyl-roadmap instruments; guided reading; public Pages deployment |
 
 **Done means:** a reviewer can follow a hunt or a case from telemetry to verdict
@@ -69,7 +69,7 @@ traffic is benign or malicious.
 
 1. Apsis: complete. Graph, minimum cut, drift, observed paths, guardrails, the
    case study, live import, the eight-view console, and the Penumbra handoff are
-   done; repository upload is the remaining release step.
+   done.
 2. Penumbra: complete. Detection, validation, hunting, IR, triage, the cloud
    pack, and the live dashboard are done.
 3. Build the network threat-hunting lab next.

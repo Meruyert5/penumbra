@@ -98,6 +98,7 @@ body {
   background-color: var(--bg);
   color: var(--text);
   font: 1rem/1.62 var(--sans);
+  font-variant-numeric: tabular-nums;
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -9767,3 +9768,19 @@ body::after { display: none; }
   .ledger-count { width: 100%; margin-left: 0; }
   .ledger-focus { margin-left: auto; }
 }
+
+
+/* Reading scale for evidence-heavy panels. */
+.instrument-copy { font-size: 13px; }
+.instrument-list li { font-size: 12.3px; }
+.instrument-meta { font-size: 10.5px; }
+.instrument-stat { font-size: 10px; }
+.instrument-note { font-size: 10.5px; }
+.instrument-query { font-size: 10px; }
+.instrument-module { font-size: 9.5px; }
+.row-meta { font-size: 9.5px; }
+.wf .row-meta { font-size: 10px; }
+.row-meta i { font-size: 9.5px; }
+.wf-status { font-size: 10px; }
+.validation-table { font-size: 10px; }
+.validation-table th { font-size: 8.5px; }

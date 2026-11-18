@@ -54,7 +54,7 @@
       "query": "any where cloud.provider:\"aws\" and event.action in (\"StopLogging\", \"DeleteTrail\", \"UpdateTrail\")",
       "description": "A principal stopped, deleted, or changed a CloudTrail trail. This is a defense-evasion lead and a visibility emergency.",
       "detection_change": "Alert on trail changes, verify the trail with an independent account-level control, and require a change ticket.",
-      "status": "no_match",
+      "status": "not_exercised",
       "event_count": 0,
       "evidence": []
     }

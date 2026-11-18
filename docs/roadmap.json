@@ -44,7 +44,7 @@
         {
           "name": "Cloud detection pack",
           "state": "done",
-          "detail": "Three CloudTrail detections; two fired on the synthetic corpus, one is awaiting telemetry."
+          "detail": "Three CloudTrail detections; two fired on the synthetic corpus, one is implemented but not exercised."
         },
         {
           "name": "Dashboard integration",
@@ -141,7 +141,7 @@
     }
   ],
   "sequence": [
-    "Apsis: complete. Graph, minimum cut, drift, observed paths, guardrails, case study, live import, console, and the Penumbra handoff are done; repository upload is the remaining release step.",
+    "Apsis: complete. Graph, minimum cut, drift, observed paths, guardrails, case study, live import, console, and the Penumbra handoff are done.",
     "Penumbra: complete. Detection library, validation, hunting, IR casebook, triage automation, cloud pack, and the live dashboard are done.",
     "Build the network threat-hunting lab next."
   ],

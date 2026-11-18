@@ -682,17 +682,22 @@
   if (cloudPanel && cloudPack && (cloudPack.detections || []).length) {
     const items = cloudPack.detections;
     const summary = cloudPack.summary || {};
+    const statusLabel = (status) => status === "fired"
+      ? "fired"
+      : status === "not_exercised"
+        ? "not exercised"
+        : String(status || "not exercised").replace(/_/g, " ");
     $("#cloudFiredCount").textContent = number(summary.fired);
     $("#cloudStats").innerHTML =
       '<span class="instrument-stat"><b>' + esc(number(summary.detections)) + "</b> detections</span>" +
       '<span class="instrument-stat"><b>' + esc(number(summary.events)) + "</b> matched events</span>" +
-      '<span class="instrument-stat"><b>' + esc(number(summary.not_exercised)) + "</b> waiting for telemetry</span>";
+      '<span class="instrument-stat"><b>' + esc(number(summary.not_exercised)) + "</b> not exercised</span>";
     $("#bridgeDetections").textContent = number(summary.detections);
     $("#bridgeFired").textContent = number(summary.fired);
     $("#cloudTabs").innerHTML = items.map((item, index) => (
       '<button class="instrument-tab" type="button" role="tab" data-index="' + index +
       '" aria-selected="' + (index === 0 ? "true" : "false") + '">' + esc(item.id) +
-      " <span>" + esc(String(item.status).replace(/_/g, " ")) + "</span></button>"
+      " <span>" + esc(statusLabel(item.status)) + "</span></button>"
     )).join("");
     const detail = $("#cloudDetail");
     const tabs = Array.from(document.querySelectorAll("#cloudTabs .instrument-tab"));
@@ -706,9 +711,10 @@
       detail.innerHTML =
         '<div class="instrument-detail-head"><div><span class="instrument-id">' + esc(item.id) + "</span>" +
         "<h4>" + esc(item.title) + "</h4>" +
-        '<div class="instrument-meta"><span class="instrument-chip is-' + (item.status === "fired" ? "high" : "low") + '">' + esc(String(item.status).replace(/_/g, " ")) + "</span>" +
+        '<div class="instrument-meta"><span class="instrument-chip is-' + (item.status === "fired" ? "high" : "low") + '">' + esc(statusLabel(item.status)) + "</span>" +
         "<span>" + esc(item.technique) + "</span><span>" + esc(item.level) + "</span><span>" + esc(number(item.event_count)) + " events</span></div></div></div>" +
         '<p class="instrument-copy">' + esc(item.description) + "</p>" +
+        (item.status === "not_exercised" ? '<p class="instrument-note">No matching CloudTrail event exists in this synthetic run. The rule is implemented but was not exercised; this is not a failed detection.</p>' : "") +
         '<div class="instrument-body"><div class="instrument-col"><h5>Query</h5><pre class="instrument-query"><code>' + esc(item.query) + "</code></pre></div>" +
         '<div class="instrument-col"><h5>Hand-off to Apsis</h5><p class="instrument-copy">' + esc(item.detection_change) + "</p></div></div>" +
         (evidence ? '<h5>Evidence</h5><div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>User</th><th>Source</th><th>Detail</th></tr></thead><tbody>' + evidence + "</tbody></table></div>" : "");

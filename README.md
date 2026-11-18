@@ -431,7 +431,7 @@ is a response design, not a claim that a host was isolated. See
 
 `pipeline.cloud_pack` evaluates three CloudTrail detections that complement
 Apsis: root policy attachment, root user creation, and CloudTrail tampering.
-Two fire on the synthetic corpus; one is waiting for telemetry. See
+Two fire on the synthetic corpus; one is implemented but not exercised because the corpus has no matching event. See
 [cloud/README.md](cloud/README.md).
 
 The three cases now have a structured close-out layer: observed window, detection
@@ -504,8 +504,7 @@ the After chapter.
   triage automation, the cloud detection pack, and the live dashboard are done.
 - **Apsis:** complete. Graph, minimum cut, drift, observed paths, guardrails,
   the case study, live IAM import, the eight-view console, and the validated
-  Penumbra alert/evidence handoff are done. Repository upload is the remaining
-  release step.
+  Penumbra alert/evidence handoff are done.
 - **Network threat hunting:** build after the two existing projects are complete.
 
 Other backlog items:

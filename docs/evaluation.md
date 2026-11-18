@@ -49,7 +49,7 @@ investigations. The dashboard now shows both separately.
 | Threat hunts | [hunts/README.md](../hunts/README.md) | 4 hypothesis-driven hunts, 4 findings, evidence and detection changes |
 | Portfolio roadmap | [docs/roadmap.md](roadmap.md) | Penumbra, Apsis, and network hunting; no connector project |
 | Triage and response | [response/README.md](../response/README.md) | 27 dry-run incidents, 6 playbooks, 78 recommended actions |
-| Cloud detection pack | [cloud/README.md](../cloud/README.md) | 3 CloudTrail detections; 2 fired, 1 awaiting telemetry |
+| Cloud detection pack | [cloud/README.md](../cloud/README.md) | 3 CloudTrail detections; 2 fired, 1 implemented but not exercised |
 | IR casebook | [cases/IR.md](../cases/IR.md) | 3 close-outs with metrics, containment, recovery, and lessons |
 | Large benign baseline | [docs/validation/large-benign-results.md](validation/large-benign-results.md) | 89,704 synthetic benign events, 1 low-severity match, 0 correlations |
 

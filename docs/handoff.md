@@ -20,7 +20,7 @@ account.
 | Public host | <https://meruyert5.github.io/penumbra/> |
 | Permanent target | `https://penumbra.is-a.dev` (domain still available; registration pending) |
 | Tests | 79 passing |
-| Apsis | Complete; repository upload pending |
+| Apsis | Complete |
 | Real validation | 1,381 events across five indices and 16 labelled windows; 6 TP / 0 FP / 1 FN; 0 not evaluable; 89,704-event benign baseline |
 | Lighthouse | 100 accessibility / 100 best practices / 100 SEO |
 
@@ -35,10 +35,8 @@ Apsis delivered the observed-path case as data in
 `penumbra.evidence/v1` manifest, the case narrative, the guardrails and the
 before/after route snapshots. Both payloads validate against the copied schemas.
 Penumbra reads the alert and cites the evidence; it does not import Apsis code.
-Apsis's functional source is at `fae1f74`; its 89 Python tests, 5 logic tests,
-console build, and both contracts pass. The local Apsis working tree still has an
-uncommitted design pass and untracked screenshots; clean and commit that before
-repository creation and Pages upload.
+Apsis is complete at functional source `fae1f74`; its 89 Python tests, 5 logic
+tests, console build, and both contracts pass.
 
 ## Rebuild and verify
 

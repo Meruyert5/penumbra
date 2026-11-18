@@ -114,7 +114,7 @@ def run_pack(events: list[dict[str, Any]]) -> dict[str, Any]:
                 "query": detection["query"],
                 "description": detection["description"],
                 "detection_change": detection["detection_change"],
-                "status": "fired" if hits else "no_match",
+                "status": "fired" if hits else "not_exercised",
                 "event_count": len(hits),
                 "evidence": [_evidence(event) for event in hits],
             }
@@ -124,7 +124,7 @@ def run_pack(events: list[dict[str, Any]]) -> dict[str, Any]:
             "detections": len(DETECTIONS),
             "fired": fired,
             "events": total_events,
-            "not_exercised": sum(1 for row in rows if row["status"] == "no_match"),
+            "not_exercised": sum(1 for row in rows if row["status"] == "not_exercised"),
         },
         "detections": rows,
     }
@@ -149,7 +149,7 @@ def to_markdown(results: dict[str, Any]) -> str:
     ]
     for row in results["detections"]:
         lines.append(
-            f"| {row['id']} {row['title']} | {row['level']} | {row['technique']} | {row['status']} | {row['event_count']} |"
+            f"| {row['id']} {row['title']} | {row['level']} | {row['technique']} | {row['status'].replace('_', ' ')} | {row['event_count']} |"
         )
     lines.append("")
     for row in results["detections"]:
@@ -165,8 +165,9 @@ def to_markdown(results: dict[str, Any]) -> str:
                 row["query"],
                 "```",
                 "",
-                f"**Status.** {row['status']} ({row['event_count']} events).",
+                f"**Status.** {row['status'].replace('_', ' ')} ({row['event_count']} events).",
                 "",
+                *(["No matching CloudTrail event exists in this synthetic run; the rule is implemented but not exercised.", ""] if row["status"] == "not_exercised" else []),
                 f"**Response hand-off.** {row['detection_change']}",
                 "",
             ]
