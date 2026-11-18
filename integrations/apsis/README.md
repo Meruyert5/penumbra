@@ -7,7 +7,7 @@ schemas that bind them.
 | Field | Value |
 | --- | --- |
 | Source repository | <https://github.com/Meruyert5/apsis> |
-| Source commit | `b50f894` |
+| Source commit | `fae1f74` |
 | Contract | `penumbra.alert/v1` + `penumbra.evidence/v1` |
 | Case | `01-observed-path`, Games Studio fixture `555566667777` |
 | Finding | `path.opened` - Tools intern to administrator, seven hops |
@@ -65,10 +65,10 @@ python -c "import jsonschema, json; jsonschema.validate(json.load(open('alert.js
 - The contract is the coupling: no connector API, no shared database, no
   cross-repository import.
 
-## Next engine step
+## Engine status
 
-The alert is generated from the shipped synthetic case, not yet from a live
-CloudTrail import. The Apsis roadmap item is the engine overlay that marks
-theoretical and observed edges from a real export. The contract and this
-handoff do not change when that lands.
+The CloudTrail overlay and the read-only IAM import now ship in Apsis. This
+handoff was generated from the shipped synthetic observed-path case and is
+stable across those engine changes. Apsis tests: 89 Python tests, 5 logic
+tests, a successful console build, and valid alert/evidence contracts.
 

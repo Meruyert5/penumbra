@@ -736,7 +736,7 @@
   if (roadmapPanel && roadmap && (roadmap.projects || []).length) {
     const items = roadmap.projects;
     $("#roadmapKicker").textContent = roadmap.kicker || "Portfolio roadmap";
-    $("#roadmapTitle").textContent = roadmap.title || "Three complete projects, no connector.";
+    $("#roadmapTitle").textContent = roadmap.title || "Two complete projects, one orbit ahead.";
     const positions = [{ x: 50, y: 20 }, { x: 75, y: 76 }, { x: 25, y: 76 }];
     $("#roadmapOrbit").innerHTML =
       '<span class="vinyl-shadow" aria-hidden="true"></span>' +
@@ -795,7 +795,7 @@
       });
     });
     render(0);
-    $("#roadmapNote").innerHTML = "Build order: Apsis, Penumbra, network hunting. " +
+    $("#roadmapNote").innerHTML = "Build order: Apsis and Penumbra are done; network hunting is next. " +
       '<a href="https://github.com/Meruyert5/penumbra/blob/main/docs/roadmap.md" target="_blank" rel="noreferrer">Full roadmap</a>.';
   } else if (roadmapPanel) {
     roadmapPanel.hidden = true;
@@ -2123,6 +2123,31 @@
     });
   }
 
+  function csvValue(value) {
+    const text = Array.isArray(value) ? value.join("; ") : value == null ? "" : String(value);
+    return '"' + text.replace(/"/g, '""') + '"';
+  }
+
+  function exportRowsCsv() {
+    const rows = filteredRows();
+    if (!rows.length) {
+      toast("nothing to export");
+      return;
+    }
+    const columns = ["kind", "id", "title", "level", "host", "hosts", "count", "first_seen", "last_seen", "techniques", "tactics", "index"];
+    const csv = [columns.join(","), ...rows.map((row) => columns.map((column) => csvValue(row[column])).join(","))].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "penumbra-watch-floor-" + state.tab + "-" + new Date().toISOString().slice(0, 10) + ".csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast(rows.length + " rows exported");
+  }
+
   function kvRows(pairs) {
     return '<dl class="kv">' + pairs.filter(([, value]) => value != null && value !== "").map(([key, value]) => (
       "<div><dt>" + esc(key) + "</dt><dd>" + esc(value) + "</dd></div>"
@@ -2495,6 +2520,30 @@
   $("#hostFilter").addEventListener("change", (event) => { state.host = event.target.value; renderLedger(); });
   $("#sortFilter").addEventListener("change", (event) => { state.sort = event.target.value; renderLedger(); });
   $("#search").addEventListener("input", (event) => { state.q = event.target.value.trim(); renderLedger(); });
+  $("#ledgerExport").addEventListener("click", exportRowsCsv);
+
+  const ledgerPanel = $("#ledgerPanel");
+  const ledgerFocus = $("#ledgerFullscreen");
+  function toggleLedgerFocus() {
+    if (!document.fullscreenEnabled) return;
+    if (document.fullscreenElement === ledgerPanel) {
+      document.exitFullscreen().catch(() => toast("fullscreen unavailable"));
+    } else {
+      ledgerPanel.requestFullscreen().catch(() => toast("fullscreen unavailable"));
+    }
+  }
+  if (ledgerFocus) {
+    if (!document.fullscreenEnabled) {
+      ledgerFocus.hidden = true;
+    } else {
+      ledgerFocus.addEventListener("click", toggleLedgerFocus);
+      document.addEventListener("fullscreenchange", () => {
+        const active = document.fullscreenElement === ledgerPanel;
+        ledgerFocus.textContent = active ? "exit focus" : "focus";
+        ledgerFocus.setAttribute("aria-pressed", String(active));
+      });
+    }
+  }
   $("#tabDetections").addEventListener("click", () => switchTab("detections"));
   $("#tabCorrelations").addEventListener("click", () => switchTab("correlations"));
 
@@ -3012,7 +3061,7 @@
     { target: "#irPanel", title: "Close the loop", body: "The timeline scrubs the observed window: drag it, or use the arrow keys. The markers light as the readout crosses them; play runs the whole close-out." },
     { target: "#reproduce .terminal", title: "Repeat the orbit", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." },
     { target: "#cloudPanel", title: "Hand off to Apsis", body: "The bridge shows the three CloudTrail detections Penumbra hands to Apsis. Select a detection to see the query and the response hand-off." },
-    { target: "#roadmapPanel", title: "Read the next record", body: "The A-side holds three projects. Select a track label to see its thesis, module states, and what done means. The build order is Apsis, Penumbra, network hunting." }
+    { target: "#roadmapPanel", title: "Read the next record", body: "The A-side holds two complete projects and the next orbit. Select a track label to see its thesis, module states, and what done means. Apsis and Penumbra are complete; network hunting is next." }
   ];
   const spot = $("#tourSpot");
   const tourCard = $("#tourCard");
@@ -3166,6 +3215,8 @@
     { group: "Filter", label: "Medium detections", hint: number(severity.medium || 0), run: () => { setLevel("medium"); goTo("#ledger"); } },
     { group: "Filter", label: "Low detections", hint: number(severity.low || 0), run: () => { setLevel("low"); goTo("#ledger"); } },
     { group: "View", label: state.gaps ? "Show all techniques" : "Show gaps only", hint: "coverage", run: () => { toggleGaps(); goTo("#coverage"); } },
+    { group: "View", label: "Export filtered queue as CSV", hint: "download", run: exportRowsCsv },
+    { group: "View", label: "Focus the watch floor", hint: "fullscreen", run: toggleLedgerFocus },
     { group: "View", label: "Switch theme", hint: "paper / night", run: toggleTheme },
     { group: "Reading", label: "Start guided reading", hint: steps.length + " steps", run: startTour },
     { group: "Reading", label: "Keyboard shortcuts", hint: "?", run: openKeys }

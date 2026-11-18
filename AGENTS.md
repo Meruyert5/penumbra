@@ -51,7 +51,7 @@ tokens, and name the source behind the decision.
 Before any visual, UI, brand, motion, or layout change:
 
 1. Load the `pinterest-reference-first` skill.
-2. Read [`docs/design-research.md`](docs/design-research.md).
+2. Read [`docs/design.md`](docs/design.md).
 3. If the change is a new direction, reopen the relevant pins, captions, source
    links, and video frames. Do not design from memory.
 4. Write the observed → decision → trade-off trail in the research file.
@@ -87,7 +87,6 @@ The full skill and the Desktop brief are at:
 - [`dashboard/app.js`](dashboard/app.js)
 - [`pipeline/report.py`](pipeline/report.py)
 - [`docs/design.md`](docs/design.md)
-- [`docs/design-research.md`](docs/design-research.md)
 - [`docs/evaluation.md`](docs/evaluation.md)
 
 ## Before calling it done

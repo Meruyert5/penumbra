@@ -1,7 +1,7 @@
 {
   "kicker": "After / Portfolio roadmap",
-  "title": "Three complete projects, no connector.",
-  "intro": "Penumbra, Apsis, and a network threat-hunting lab each own one question. They share evidence formats and case studies, not a separate integration layer.",
+  "title": "Two complete projects, one orbit ahead.",
+  "intro": "Penumbra and Apsis are complete. The network threat-hunting lab is next. They share evidence formats and case studies, not a separate integration layer.",
   "principles": [
     "One sentence per project. If a module does not serve that sentence, it belongs somewhere else.",
     "Every module produces evidence or a metric, not just code.",
@@ -13,7 +13,7 @@
       "id": "penumbra",
       "name": "Penumbra",
       "role": "Detection and response workbench",
-      "status": "active",
+      "status": "done",
       "thesis": "Prove what a detection fired on, what happened next, and how well it performed.",
       "modules": [
         {
@@ -48,8 +48,8 @@
         },
         {
           "name": "Dashboard integration",
-          "state": "active",
-          "detail": "Evidence workspace with four tabs, compact validation, expandable incidents, and an interactive vinyl roadmap; further visual polish can follow."
+          "state": "done",
+          "detail": "Live evidence workspace with four tabs, compact validation, expandable incidents, a vinyl roadmap, guided reading, and a public Pages deployment."
         }
       ],
       "done": "A reviewer can follow a hunt or a case from telemetry to verdict without reading the source code."
@@ -58,7 +58,7 @@
       "id": "apsis",
       "name": "Apsis",
       "role": "Cloud identity security",
-      "status": "active",
+      "status": "done",
       "thesis": "Find every route from a low-privilege AWS principal to administrator, prove which ones are real, and sever them.",
       "modules": [
         {
@@ -78,18 +78,33 @@
         },
         {
           "name": "Observed paths",
-          "state": "next",
-          "detail": "Overlay CloudTrail to mark theoretical and observed graph edges."
+          "state": "done",
+          "detail": "CloudTrail overlay marks theoretical and observed graph edges with first/last seen and fully observed routes."
         },
         {
           "name": "Guardrails",
-          "state": "next",
-          "detail": "Map each cut to an SCP, permission boundary, or AWS Config rule."
+          "state": "done",
+          "detail": "Each cut maps to an SCP, Config rule, or CloudTrail alarm; the observed-path guardrail contract ships with the handoff."
         },
         {
           "name": "Case study",
-          "state": "planned",
-          "detail": "A safe lab account or LocalStack path from low privilege to admin, with evidence and a verified fix."
+          "state": "done",
+          "detail": "Observed-path case across a synthetic Games Studio fixture with before/after snapshots, evidence, and a verified cut."
+        },
+        {
+          "name": "Live IAM import",
+          "state": "done",
+          "detail": "Read-only AWS CLI import and saved authorization dumps; no AWS SDK and no account writes."
+        },
+        {
+          "name": "Fleet console",
+          "state": "done",
+          "detail": "Eight-view static console with 3D planet/wireframe scenes, 2D fallback, fullscreen, command palette, and CSV ledger."
+        },
+        {
+          "name": "Penumbra handoff",
+          "state": "done",
+          "detail": "Validated alert, evidence, case, guardrails, and schemas delivered to integrations/apsis/."
         }
       ],
       "done": "A reviewer can see a path, the evidence that it is real, and the guardrail that closes it."
@@ -126,9 +141,9 @@
     }
   ],
   "sequence": [
-    "Finish Apsis: observed paths, guardrails, and the attack-path case study.",
-    "Penumbra extensions: hunting, IR casebook, triage automation, and the cloud pack are done; next is the dashboard integration pass.",
-    "Build the network threat-hunting lab after the two existing projects are complete."
+    "Apsis: complete. Graph, minimum cut, drift, observed paths, guardrails, case study, live import, console, and the Penumbra handoff are done; repository upload is the remaining release step.",
+    "Penumbra: complete. Detection library, validation, hunting, IR casebook, triage automation, cloud pack, and the live dashboard are done.",
+    "Build the network threat-hunting lab next."
   ],
   "shared": [
     {

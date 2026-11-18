@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Received the final Apsis observed-path handoff, marked Apsis and Penumbra
+  complete in the portfolio roadmap, and added the completed modules to the
+  vinyl roadmap.
+- Added a filtered CSV export and a native focus/fullscreen mode to the watch
+  floor, plus command-palette entries for both.
+- Replaced the eclipse mark with a detailed crescent-and-corona icon, removed
+  the old design-research notes, and refreshed the repository metadata and README.
 - Rebuilt the portfolio roadmap as a high-angle vinyl record with grooves, a warm
   project label, a tonearm, and track-style project selectors. The record floats
   on a turntable plane with a drifting arm, moving light, and a slow shadow

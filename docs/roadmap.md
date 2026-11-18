@@ -1,6 +1,6 @@
 # Portfolio roadmap
 
-Three complete projects, no connector. Each project owns one question. They share
+Two complete projects, one orbit ahead. Each project owns one question. They share
 evidence formats and case studies, not a separate integration layer.
 
 ## Principles
@@ -25,7 +25,7 @@ performed.
 | IR casebook | Done | Three structured close-outs with metrics, containment, eradication, recovery, communication, evidence, lessons, and open questions |
 | Triage automation | Done | Dry-run enrichment, incident grouping, playbook selection, and 78 recommended actions; no external API calls |
 | Cloud detection pack | Done | Three CloudTrail detections; two fired on the synthetic corpus, one is awaiting telemetry |
-| Dashboard integration | Active | Response in Instruments, hunting in Umbra, validation in Corona, IR in Eclipses, and roadmap in After; selector/detail instruments on dark instrument plates with eclipse accents, corona glow, animated flow, radar, timeline, bridge, and vinyl record |
+| Dashboard integration | Done | Live evidence workspace with response, hunting, validation, IR, cloud, and vinyl-roadmap instruments; guided reading; public Pages deployment |
 
 **Done means:** a reviewer can follow a hunt or a case from telemetry to verdict
 without reading the source code.
@@ -40,10 +40,12 @@ prove which ones are real, and sever them.
 | IAM graph | Done | Users, roles, policies, and every route to administrator |
 | Minimum cut | Done | The fewest permissions to revoke to close every route |
 | Drift | Done | Diff two account exports and fail a newly opened route |
-| Observed paths | Case + contract | Case 01 ships a validated `penumbra.alert/v1` and evidence manifest for the seven-hop route; the live CloudTrail overlay is next |
-| Guardrails | Done | Each cut mapped to an SCP, a Config rule or a CloudTrail alarm in `guardrail.md` |
-| Case study | Done | The observed-path case with before/after snapshots, evidence and a verified cut |
-| Penumbra handoff | Done | Alert, evidence, case, guardrails and schemas in `integrations/apsis/` |
+| Observed paths | Done | CloudTrail overlay marks theoretical and observed graph edges with first/last seen and fully observed routes |
+| Guardrails | Done | Each cut mapped to an SCP, a Config rule, or a CloudTrail alarm; the observed-path guardrail contract ships with the handoff |
+| Case study | Done | The observed-path case with before/after snapshots, evidence, and a verified cut |
+| Live IAM import | Done | Read-only AWS CLI import and saved authorization dumps; no AWS SDK and no account writes |
+| Fleet console | Done | Eight-view static console with 3D planet/wireframe scenes, 2D fallback, fullscreen, command palette, and CSV ledger |
+| Penumbra handoff | Done | Alert, evidence, case, guardrails, and schemas in `integrations/apsis/` |
 
 **Done means:** a reviewer can see a path, the evidence that it is real, and the
 guardrail that closes it.
@@ -65,13 +67,12 @@ traffic is benign or malicious.
 
 ## Sequence
 
-1. Apsis: graph, minimum cut, drift, the observed-path case, the guardrail
-   contract and the validated alert/evidence handoff are done. Next is the live
-   CloudTrail overlay and live import.
-2. Penumbra extensions: hunting, IR casebook, triage automation, and the cloud
-   pack are done; next is the dashboard integration pass.
-3. Build the network threat-hunting lab after the two existing projects are
-   complete.
+1. Apsis: complete. Graph, minimum cut, drift, observed paths, guardrails, the
+   case study, live import, the eight-view console, and the Penumbra handoff are
+   done; repository upload is the remaining release step.
+2. Penumbra: complete. Detection, validation, hunting, IR, triage, the cloud
+   pack, and the live dashboard are done.
+3. Build the network threat-hunting lab next.
 
 The sequence is an order, not a schedule.
 

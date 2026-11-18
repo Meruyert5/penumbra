@@ -10,7 +10,7 @@ It separates what is safe to publish from what should stay in the working tree.
 ## Before the first push
 
 1. Confirm the repository visibility. A public repository exposes every committed
-   file, including `dashboard/`, `docs/design.md`, and `docs/design-research.md`.
+   file, including `dashboard/` and `docs/design.md`.
    `pipeline.publish` keeps those files off the website, not out of the repository.
 2. Decide the design licence. The current root [LICENSE](../LICENSE) is MIT and
    covers the whole repository. If the visual design should not be reusable,
@@ -126,6 +126,6 @@ Cloud. If the design must stay private, use a private host with authentication
 For the permanent simple link, see [Custom domain](custom-domain.md).
 
 The current repository keeps the design public. If that changes, move
-`dashboard/`, `docs/design.md`, `docs/design-research.md`, and the dashboard
+`dashboard/`, `docs/design.md`, and the dashboard
 screenshots into a private repository, keep the compiled `site/` in the public
 repository, and update the root licence to carve out the design assets explicitly.

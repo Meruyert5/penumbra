@@ -9744,3 +9744,26 @@ body::after { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .vinyl-disc, .vinyl-light, .tonearm, .vinyl-shadow { animation: none; }
 }
+
+/* Watch-floor focus mode and queue export. */
+.ledger-count { margin-left: auto; }
+.ledger-focus { flex: none; }
+.ledger-export { flex: none; }
+#ledgerPanel:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-height: none;
+  margin: 0;
+  overflow: auto;
+  padding: 22px clamp(18px, 4vw, 52px) 34px;
+  border: 0;
+  border-radius: 0;
+  background: var(--bg);
+  box-shadow: none;
+}
+#ledgerPanel:fullscreen .wf-status { position: sticky; top: 0; z-index: 8; }
+#ledgerPanel:fullscreen .ledger-bar { position: relative; z-index: 7; }
+@media (max-width: 720px) {
+  .ledger-count { width: 100%; margin-left: 0; }
+  .ledger-focus { margin-left: auto; }
+}

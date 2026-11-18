@@ -5,8 +5,8 @@
 [![Python 3.11](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
 [![Elasticsearch 8.15](https://img.shields.io/badge/Elasticsearch-8.15-005571?logo=elasticsearch&logoColor=white)](docker-compose.yml)
 [![Sigma](https://img.shields.io/badge/rules-50%20Sigma-1f6feb)](rules/sigma)
-[![Tests](https://img.shields.io/badge/tests-54%20passing-2ea043)](tests)
-[![ATT&CK](https://img.shields.io/badge/MITRE%20ATT%26CK-48%20techniques-ff5d5d)](docs/attck-coverage.md)
+[![Tests](https://img.shields.io/badge/tests-79%20passing-2ea043)](tests)
+[![ATT&CK](https://img.shields.io/badge/MITRE%20ATT%26CK-45%20techniques-ff5d5d)](docs/attck-coverage.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea043)](LICENSE)
 [![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2ea043)](.github/workflows/ci.yml)
 
@@ -26,6 +26,7 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | 5 minutes | [`rules/sigma/`](rules/sigma) and [`rules/compiled/`](rules/compiled) | Read the source rule and the EQL/KQL that Elasticsearch actually runs |
 | 5 minutes | [`cases/case-002-multi-stage-intrusion/report.md`](cases/case-002-multi-stage-intrusion/report.md) | Follow one investigation from alert to verdict |
 | 5 minutes | [`docs/attck-coverage.md`](docs/attck-coverage.md) and [`docs/tuning.md`](docs/tuning.md) | Check coverage and the tuning record |
+| 2 minutes | [`integrations/apsis/README.md`](integrations/apsis/README.md) | Read the validated Apsis handoff: a seven-hop route, its evidence, cut, and guardrails |
 | 2 minutes | [`tests/`](tests) and [`ci.yml`](.github/workflows/ci.yml) | See rules treated as reviewed software |
 
 ## What this is, and what it is not
@@ -300,7 +301,7 @@ Representative coverage:
 * A run ticket with contact times, Saros 145, magnitude 1.02, 100% obscuration, and a paper receipt texture
 * Auto-replaying hourly signal chart with a smoothed envelope, quiet-baseline markers, event severity, and an event-versus-detection split
 * A 45-tick radial corona ring for priority coverage, with the score in the eye of the eclipse
-* Watch floor with a fixed evidence inspector, host lanes, severity chips, host filter, sort, and free-text search (`/` focuses it)
+* Watch floor with a fixed evidence inspector, host lanes, severity chips, host filter, sort, free-text search (`/` focuses it), CSV export of the filtered queue, and a focus/fullscreen mode
 * Separate tab for correlation alerts, including threshold, window, and distinct-account counts
 * Expand any detection to see the raw evidence events and the exact EQL and KQL that fired
 * Clickable ATT&CK matrix that filters the watch floor by technique, with hover cards naming the detection that covers each tile, plus a gaps-only view
@@ -499,12 +500,12 @@ See [Publishing checklist](docs/publishing.md) for repository metadata, the desi
 The full three-project roadmap is in [docs/roadmap.md](docs/roadmap.md) and
 the After chapter.
 
-- **Penumbra:** detection library, validation, hunting, IR casebook, triage
-  automation, and the cloud detection pack are done. Next is the dashboard
-  integration pass.
-- **Apsis:** graph, minimum cut, drift, the observed-path case, guardrail
-  contract and the validated alert/evidence handoff are done. Next is the live
-  CloudTrail overlay.
+- **Penumbra:** complete. Detection library, validation, hunting, IR casebook,
+  triage automation, the cloud detection pack, and the live dashboard are done.
+- **Apsis:** complete. Graph, minimum cut, drift, observed paths, guardrails,
+  the case study, live IAM import, the eight-view console, and the validated
+  Penumbra alert/evidence handoff are done. Repository upload is the remaining
+  release step.
 - **Network threat hunting:** build after the two existing projects are complete.
 
 Other backlog items:
