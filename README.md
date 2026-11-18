@@ -12,7 +12,7 @@
 
 ![Penumbra interactive dashboard](docs/assets/dashboard-corona.png)
 
-Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, compiles 50 Sigma rules to Elasticsearch EQL and KQL, runs them against a local Elasticsearch stack, correlates the matches, and turns the result into an interactive dashboard and three analyst case reports. Every number in the dashboard traces to an event and the query that found it.
+Penumbra is a detection lab you can rerun. It generates 9,224 synthetic events, compiles 50 Sigma rules to Elasticsearch EQL and KQL, runs them against a local Elasticsearch stack, correlates the matches, and turns the result into an interactive dashboard and three analyst case reports. Every number in the dashboard traces to an event and the query that found it.
 
 > **Project status: portfolio lab, not a production detection product.** The telemetry is synthetic and generated to exercise this rule set. The repository demonstrates detection-as-code, validation, triage, and reporting; it does not claim production precision or recall. The evidence boundary is documented in [Evaluation and validation](docs/evaluation.md).
 
@@ -38,7 +38,8 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | 5 minutes | [`rules/sigma/`](rules/sigma) and [`rules/compiled/`](rules/compiled) | Read the source rule and the EQL/KQL that Elasticsearch actually runs |
 | 5 minutes | [`cases/case-002-multi-stage-intrusion/report.md`](cases/case-002-multi-stage-intrusion/report.md) | Follow one investigation from alert to verdict |
 | 5 minutes | [`docs/attck-coverage.md`](docs/attck-coverage.md) and [`docs/tuning.md`](docs/tuning.md) | Check coverage and the tuning record |
-| 2 minutes | [`integrations/apsis/README.md`](integrations/apsis/README.md) | Read the validated Apsis handoff: a seven-hop route, its evidence, cut, and guardrails |
+| 2 minutes | [`integrations/apsis/README.md`](integrations/apsis/README.md) | Read the delivered Apsis handoff: a seven-hop route, its evidence, cut, and guardrails |
+| 1 minute | [`integrations/network/README.md`](integrations/network/README.md) | Check the network handoff plan: no capture yet, contract and acceptance criteria defined |
 | 2 minutes | [`tests/`](tests) and [`ci.yml`](.github/workflows/ci.yml) | See rules treated as reviewed software |
 
 ## What this is, and what it is not
@@ -61,6 +62,7 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | Hypothesis-driven hunts with evidence and verdicts | [`hunts/`](hunts) |
 | Dry-run triage, incident grouping, and response playbooks | [`response/`](response) |
 | CloudTrail detections for the Apsis hand-off | [`cloud/`](cloud) |
+| Incoming cross-project evidence: Apsis delivered, network planned | [`integrations/`](integrations) |
 | IR close-outs with metrics, recovery, and lessons | [`cases/IR.md`](cases/IR.md) |
 | The three-project roadmap | [`docs/roadmap.md`](docs/roadmap.md) |
 | ATT&CK coverage with an explicit gap view | [`docs/attck-coverage.md`](docs/attck-coverage.md) |
@@ -75,10 +77,10 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 | | |
 |---|---|
 | **Detections** | 50 Sigma rules and 8 correlation specs |
-| **Telemetry** | 9,223 deterministic events across Windows, Linux, web, AWS, and network flows |
-| **Scenarios** | 33 attack scenarios plus a benign baseline, spread across a 24-hour window |
+| **Telemetry** | 9,224 deterministic events across Windows, Linux, web, AWS, and network flows |
+| **Scenarios** | 34 attack scenarios plus a benign baseline, spread across a 24-hour window |
 | **Coverage** | 48 ATT&CK techniques, 13 tactics, 45 of 45 priority techniques, 0 gaps |
-| **Hunts** | 4 hypothesis-driven hunts over 9,223 events, with evidence and detection changes |
+| **Hunts** | 4 hypothesis-driven hunts over 9,224 events, with evidence and detection changes |
 | **Response** | 27 dry-run incidents, 6 playbooks, 78 recommended actions, 85% containment coverage |
 | **Correlation** | Sliding windows with optional distinct-value thresholds, for example 10 attempts across 8 accounts |
 | **Backend** | Elasticsearch 8.15.3 and Kibana 8.15.3, single node, security disabled for lab use |
@@ -93,7 +95,7 @@ Penumbra is a detection lab you can rerun. It generates 9,223 synthetic events, 
 ```mermaid
 flowchart LR
   subgraph Telemetry
-    A["pipeline/labgen.py<br/>33 attack scenarios + baseline"] --> B["lab/logs/*.ndjson<br/>windows · linux · web · cloud · network"]
+    A["pipeline/labgen.py<br/>34 attack scenarios + baseline"] --> B["lab/logs/*.ndjson<br/>windows · linux · web · cloud · network"]
     W["Windows VM<br/>Sysmon + Winlogbeat"] -. optional real path .-> ES
     B --> I["pipeline/ingest.py"]
   end
@@ -127,7 +129,7 @@ The repo has two ingestion paths on purpose:
 
 `pipeline/labgen.py` is the source of the run. The committed dashboard uses seed `1337` and base time `2026-11-11T12:30:00Z`; the same commands reproduce the same event count and timestamps. Every host, user, and address is synthetic. IP addresses use RFC 5737 documentation ranges, and the repository contains no customer logs, credentials, or personal data.
 
-The current corpus is deliberately small and narrow: 9,223 events across Windows, Linux, web, AWS CloudTrail, and network flow over 24 hours. That is enough to exercise this rule set and keep CI fast. It is not enough to measure production noise tolerance, precision, or recall. See [Evaluation and validation](docs/evaluation.md) for what is measured, what is not, and how to extend the evidence with public real-telemetry datasets.
+The current corpus is deliberately small and narrow: 9,224 events across Windows, Linux, web, AWS CloudTrail, and network flow over 24 hours. That is enough to exercise this rule set and keep CI fast. It is not enough to measure production noise tolerance, precision, or recall. See [Evaluation and validation](docs/evaluation.md) for what is measured, what is not, and how to extend the evidence with public real-telemetry datasets.
 
 ---
 
@@ -174,7 +176,7 @@ python -m pipeline.labgen --scenario all --base-time 2026-11-11T12:30:00Z
 python -m pipeline.ingest --reset
 ```
 
-The `--base-time` value matches the committed dashboard. Omit it for a run against the current clock. The event count stays at 9,223, but the timestamps move.
+The `--base-time` value matches the committed dashboard. Omit it for a run against the current clock. The event count stays at 9,224, but the timestamps move.
 
 ### 4. Compile and run the detections
 
@@ -321,7 +323,7 @@ Representative coverage:
 * EQL and KQL panels with syntax highlighting and one-click copy
 * Case cards with a detection chain that opens a case-file summary and links to the published investigation reports
 * A case-chain player that steps through each investigation's detections in order, with the rule, time, host, and EQL for every step
-* A response flow, hunt radar, IR timeline scrubber, cloud hand-off bridge, incoming Apsis route handoff, and project vinyl record, each with a selector and one detail pane
+* A response flow, hunt radar, IR timeline scrubber, cloud hand-off bridge, incoming Apsis and network handoff selector, and project vinyl record, each with a selector and one detail pane
 * A validation matrix with focusable rule tiles and a live status readout, plus a per-rule benchmark table
 * A host-lane hour axis and a severity-mix bar in the watch floor status band
 * Two eclipse themes: **Corona** (paper, sunlight, coral) and **Umbra** (black sky, corona glow), each with its own accent, plus a contact-ribbon play control (`P`), a command palette (`Ctrl/Cmd K`), a guided sixteen-step reading, keyboard shortcuts, and reduced-motion support
@@ -398,7 +400,7 @@ The current evidence is structural and behavioural, not statistical. CI proves t
 
 | Evidence | Status |
 |---|---|
-| Deterministic synthetic run | Done: 9,223 events, 33 attack scenarios plus baseline |
+| Deterministic synthetic run | Done: 9,224 events, 34 attack scenarios plus baseline |
 | Rule metadata and ATT&CK tags enforced | Done: `pipeline.lint` |
 | Compilation and artifact drift | Done: `pipeline.compile --check`, `pipeline.coverage --check` |
 | Scenario-to-detection tests | Done for the committed scenarios |
@@ -429,8 +431,9 @@ the question, the query, the evidence, the verdict, and the detection change it
 recommends. See [hunts/README.md](hunts/README.md).
 
 Hunting sits in Umbra, validation in Corona, response in Instruments, and the IR
-close-outs in Eclipses. The three-project roadmap and the Apsis cloud hand-off
-are in the final After chapter. The roadmap is also in
+close-outs in Eclipses. The final After chapter holds the three-project roadmap
+and the incoming handoffs: Apsis delivered with evidence, network hunting planned
+against the same contract. The roadmap is also in
 [docs/roadmap.md](docs/roadmap.md).
 
 ## Response and IR
@@ -443,7 +446,7 @@ is a response design, not a claim that a host was isolated. See
 
 `pipeline.cloud_pack` evaluates three CloudTrail detections that complement
 Apsis: root policy attachment, root user creation, and CloudTrail tampering.
-Two fire on the synthetic corpus; one is implemented but not exercised because the corpus has no matching event. See
+All three fire on the synthetic corpus. See
 [cloud/README.md](cloud/README.md).
 
 The three cases now have a structured close-out layer: observed window, detection
@@ -474,7 +477,7 @@ config/                 Elasticsearch template, Filebeat, Winlogbeat, index rout
 lab/logs/               Generated telemetry (gitignored)
 alerts/                 Detection output (gitignored)
 cases/                  Analyst case reports and dashboard metadata
-integrations/           Delivered cross-project handoffs (Apsis alert + evidence)
+integrations/           Cross-project handoffs: Apsis delivered, network plan
 docs/                   Dashboard, design system, runbook, tuning log, ATT&CK coverage, evaluation, publishing, validation
 site/                   Generated public site (dashboard + assets + cases; gitignored)
 tests/                  pytest suite
@@ -517,7 +520,9 @@ the After chapter.
 - **Apsis:** complete. Graph, minimum cut, drift, observed paths, guardrails,
   the case study, live IAM import, the eight-view console, and the validated
   Penumbra alert/evidence handoff are done.
-- **Network threat hunting:** build after the two existing projects are complete.
+- **Network threat hunting:** planned. The capture lab, five-hunt set, five
+  detections, two reports, and the Penumbra handoff are specified; the first
+  approved capture starts it. See [`integrations/network/`](integrations/network/).
 
 Other backlog items:
 

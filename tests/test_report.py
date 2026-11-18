@@ -105,7 +105,7 @@ def test_payload_has_every_dashboard_field(tmp_path):
         RULES,
         CASES,
     )
-    for key in ("meta", "severity", "alerts", "correlations", "timeline", "hosts", "sources", "coverage", "cases", "validation", "hunts", "roadmap", "response", "cloud_pack", "ir", "pipeline"):
+    for key in ("meta", "severity", "alerts", "correlations", "timeline", "hosts", "sources", "coverage", "cases", "validation", "hunts", "roadmap", "response", "cloud_pack", "ir", "handoff", "pipeline"):
         assert key in payload
     assert payload["validation"]["totals"]["rules_total"] == 50
     assert payload["validation"]["totals"]["real_matches"] == 5
@@ -117,6 +117,18 @@ def test_payload_has_every_dashboard_field(tmp_path):
     assert payload["response"]["summary"]["incidents"] >= 1
     assert payload["cloud_pack"]["summary"]["detections"] == 3
     assert len(payload["ir"]["cases"]) == 3
+
+    handoff = payload["handoff"]
+    assert [source["id"] for source in handoff["sources"]] == ["apsis", "network"]
+    apsis, network = handoff["sources"]
+    assert apsis["observed"] is True
+    assert len(apsis["alert"]["edges"]) == 7
+    assert len(apsis["evidence"]["events"]) == 7
+    assert network["observed"] is False
+    assert network["status"] == "planned"
+    assert len(network["stages"]) == 5
+    assert all(stage["state"] == "planned" for stage in network["stages"])
+    assert not network.get("events")
 
     assert payload["severity"] == {"critical": 1, "high": 1, "medium": 0, "low": 0}
     assert payload["meta"]["sigma_rules"] == len(compile_all())

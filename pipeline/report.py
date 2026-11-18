@@ -321,12 +321,33 @@ def build_payload(
 
     handoff_alert_path = ROOT / "integrations" / "apsis" / "alert.json"
     handoff_evidence_path = ROOT / "integrations" / "apsis" / "evidence.json"
+    handoff_plan_path = ROOT / "integrations" / "network" / "plan.json"
     handoff = None
     if handoff_alert_path.is_file() and handoff_evidence_path.is_file():
-        handoff = {
-            "alert": json.loads(handoff_alert_path.read_text(encoding="utf-8")),
-            "evidence": json.loads(handoff_evidence_path.read_text(encoding="utf-8")),
-        }
+        handoff_sources = [
+            {
+                "id": "apsis",
+                "name": "Apsis",
+                "role": "Cloud identity security",
+                "status": "delivered",
+                "statusLabel": "delivered",
+                "observed": True,
+                "repo": "",
+                "case": "01-observed-path",
+                "thesis": "Find every route from a low-privilege AWS principal to administrator, prove which ones are real, and sever them.",
+                "contract": {
+                    "alert": "penumbra.alert/v1",
+                    "evidence": "penumbra.evidence/v1",
+                    "note": "Both payloads validate against the copied schemas.",
+                },
+                "alert": json.loads(handoff_alert_path.read_text(encoding="utf-8")),
+                "evidence": json.loads(handoff_evidence_path.read_text(encoding="utf-8")),
+                "how": "Each stop is a principal. An edge is observed when CloudTrail shows the source principal acting on the target. Apsis sends the ordered edge ids; Penumbra resolves them against the manifest, then reads the cut and guardrails.",
+            }
+        ]
+        if handoff_plan_path.is_file():
+            handoff_sources.append(json.loads(handoff_plan_path.read_text(encoding="utf-8")))
+        handoff = {"sources": handoff_sources}
 
     return {
         "meta": meta,

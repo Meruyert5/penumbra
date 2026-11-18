@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Made the After chapter an interactive incoming-evidence figure: source tabs for
+  Apsis and network hunting, a clickable route, the CloudTrail event behind every
+  observed edge, a trace control, the minimum cut, and the guardrails. Apsis is
+  delivered; network hunting shows a planned capture and contract, with no
+  fabricated flows.
+- Exercised CLOUD-003 with a CloudTrail tampering scenario, so all three cloud
+  detections fire; the corpus is now 9,224 events and 34 attack scenarios.
 - Received the final Apsis observed-path handoff, marked Apsis and Penumbra
   complete in the portfolio roadmap, and added the completed modules to the
   vinyl roadmap.

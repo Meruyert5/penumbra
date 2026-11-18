@@ -46,11 +46,11 @@ SAMPLE_ROWS = [
     {
         "id": "synthetic",
         "name": "Committed scenario run",
-        "events": 9223,
+        "events": 9224,
         "matches": 50,
         "correlations": 9,
         "kind": "synthetic",
-        "note": "33 attack scenarios plus benign baseline; drives the dashboard",
+        "note": "34 attack scenarios plus benign baseline; drives the dashboard",
     },
     {
         "id": "benign",

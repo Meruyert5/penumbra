@@ -1,7 +1,7 @@
 {
   "summary": {
     "hunts": 4,
-    "events_reviewed": 9223,
+    "events_reviewed": 9224,
     "findings": 4,
     "confirmed": 4
   },
@@ -20,7 +20,7 @@
     },
     {
       "name": "aws.cloudtrail",
-      "events": 1384
+      "events": 1385
     },
     {
       "name": "system.auth",

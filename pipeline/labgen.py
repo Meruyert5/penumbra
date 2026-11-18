@@ -66,6 +66,7 @@ SCENARIOS = (
     "psexec-lateral",
     "discovery-burst",
     "cloud-key-creation",
+    "cloud-trail-tamper",
     "port-scan",
     "dns-tunnel",
     "exfil-transfer",
@@ -97,6 +98,7 @@ SCENARIO_HOURS = {
     "discovery-burst": 13,
     "cron-persistence": 13,
     "cloud-key-creation": 11,
+    "cloud-trail-tamper": 11,
     "registry-persistence": 11,
     "smb-admin-share": 10,
     "wmi-persistence": 10,
@@ -1028,6 +1030,11 @@ def scenario_cloud_key_creation(lab: Lab) -> None:
     lab.cloud_event(start + timedelta(minutes=1), "CreateUser", "root", ATTACKER, "success", "us-east-1")
 
 
+def scenario_cloud_trail_tamper(lab: Lab) -> None:
+    start = lab.base - timedelta(minutes=53)
+    lab.cloud_event(start, "StopLogging", "root", ATTACKER, "success", "us-east-1")
+
+
 def scenario_port_scan(lab: Lab) -> None:
     start = lab.base - timedelta(minutes=40)
     for index in range(30):
@@ -1322,6 +1329,7 @@ BUILDERS = {
     "psexec-lateral": scenario_psexec_lateral,
     "discovery-burst": scenario_discovery_burst,
     "cloud-key-creation": scenario_cloud_key_creation,
+    "cloud-trail-tamper": scenario_cloud_trail_tamper,
     "port-scan": scenario_port_scan,
     "dns-tunnel": scenario_dns_tunnel,
     "exfil-transfer": scenario_exfil_transfer,

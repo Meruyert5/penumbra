@@ -203,10 +203,16 @@ switch is instant, the chain does not autoplay, and the scope draws once.
 - **Run ticket.** The live numbers (events, rules, correlations, errors) sit on a
   paper receipt with a barcode and a verified stamp.
 - **New figures.** Response flow, hunting radar, validation matrix and benchmark,
-  IR timeline, cloud hand-off, incoming Apsis handoff, and the vinyl roadmap use
+  IR timeline, cloud hand-off, incoming handoff selector (Apsis delivered,
+  network planned), and the vinyl roadmap use
   dark instrument plates with light detail panes, keyboard selectors, and
   reduced-motion fallbacks. The watch floor adds filtered CSV export and a native
   focus/fullscreen mode.
+- **Incoming handoff.** A source selector, a clickable route, and a detail pane.
+  Selecting a hop resolves the edge id to the CloudTrail event in the manifest,
+  highlights that row, and shows the minimum cut and guardrails. **Trace the
+  route** walks the hops; reduced motion jumps to the final state. The network
+  source shows planned stages and zero observed events, never fabricated flows.
 
 ## Accessibility
 

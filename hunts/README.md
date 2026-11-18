@@ -5,7 +5,7 @@ question, then records the query, evidence, verdict, and the detection change it
 recommends.
 
 - Hunts: **4**
-- Events reviewed: **9,223**
+- Events reviewed: **9,224**
 - Hunts with findings: **4**
 - Confirmed true positives: **4**
 

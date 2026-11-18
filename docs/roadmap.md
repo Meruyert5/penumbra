@@ -24,7 +24,7 @@ performed.
 | Threat hunting | Done | Four hypothesis-driven hunts with queries, evidence, verdicts, and detection changes |
 | IR casebook | Done | Three structured close-outs with metrics, containment, eradication, recovery, communication, evidence, lessons, and open questions |
 | Triage automation | Done | Dry-run enrichment, incident grouping, playbook selection, and 78 recommended actions; no external API calls |
-| Cloud detection pack | Done | Three CloudTrail detections; two fired on the synthetic corpus, one is implemented but not exercised |
+| Cloud detection pack | Done | Three CloudTrail detections; all three fired on the synthetic corpus |
 | Dashboard integration | Done | Live evidence workspace with response, hunting, validation, IR, cloud, and vinyl-roadmap instruments; guided reading; public Pages deployment |
 
 **Done means:** a reviewer can follow a hunt or a case from telemetry to verdict
@@ -61,6 +61,7 @@ defensible detection.
 | Hunt set | Planned | Five hypotheses: C2 beaconing, DNS tunneling, lateral movement, staging, TLS or JA3 |
 | Detections | Planned | Five network detections with ATT&CK mapping and evidence |
 | Reports | Planned | Two full hunt reports and one PCAP-to-detection walkthrough |
+| Penumbra handoff | Planned | One alert, one evidence manifest, one case, and the copied contracts in `integrations/network/` |
 
 **Done means:** a reviewer can replay a capture, see the hunt, and explain why the
 traffic is benign or malicious.
@@ -72,7 +73,8 @@ traffic is benign or malicious.
    done.
 2. Penumbra: complete. Detection, validation, hunting, IR, triage, the cloud
    pack, and the live dashboard are done.
-3. Build the network threat-hunting lab next.
+3. Build the network threat-hunting lab next, starting with the capture lab and
+   ending with the Penumbra handoff.
 
 The sequence is an order, not a schedule.
 
@@ -85,5 +87,6 @@ The sequence is an order, not a schedule.
 | Evidence manifest | Source, hash, timestamp, query, and retention note for every artifact |
 
 Apsis exports a path-opened finding in the alert schema. Penumbra can triage it.
-The network project writes its evidence in the same manifest. That is the
-connector: a format, not a repository.
+The network project will write its flows in the same evidence manifest and add a
+`flow.suspicious` kind in a v1.1 alert revision. That is the connector: a
+format, not a repository.

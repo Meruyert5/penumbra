@@ -44,7 +44,7 @@
         {
           "name": "Cloud detection pack",
           "state": "done",
-          "detail": "Three CloudTrail detections; two fired on the synthetic corpus, one is implemented but not exercised."
+          "detail": "Three CloudTrail detections; all three fired on the synthetic corpus."
         },
         {
           "name": "Dashboard integration",
@@ -135,6 +135,11 @@
           "name": "Reports",
           "state": "planned",
           "detail": "Two full hunt reports and one PCAP-to-detection walkthrough."
+        },
+        {
+          "name": "Penumbra handoff",
+          "state": "planned",
+          "detail": "One alert, one evidence manifest, one case, and the copied contracts delivered to integrations/network/."
         }
       ],
       "done": "A reviewer can replay a capture, see the hunt, and explain why the traffic is benign or malicious."
@@ -143,7 +148,7 @@
   "sequence": [
     "Apsis: complete. Graph, minimum cut, drift, observed paths, guardrails, case study, live import, console, and the Penumbra handoff are done.",
     "Penumbra: complete. Detection library, validation, hunting, IR casebook, triage automation, cloud pack, and the live dashboard are done.",
-    "Build the network threat-hunting lab next."
+    "Build the network threat-hunting lab next, starting with the capture lab and ending with the Penumbra handoff."
   ],
   "shared": [
     {

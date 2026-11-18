@@ -11,9 +11,9 @@ Sigma source to Elasticsearch EQL/KQL, correlation, triage, and analyst reportin
 inspectable and reproducible. It is not a production detection product, a vendor
 comparison, or a source of real incident telemetry.
 
-The committed dashboard represents one deterministic run: 9,223 synthetic events
+The committed dashboard represents one deterministic run: 9,224 synthetic events
 across Windows, Linux, web, AWS CloudTrail, and network flow over 24 hours. The
-run contains 33 attack scenarios plus a benign baseline, 50 Sigma rules, 8
+run contains 34 attack scenarios plus a benign baseline, 50 Sigma rules, 8
 correlation specs, and three case reports. About 8,280 of the events come from the
 benign baseline loop; raw volume is therefore not the main gap. Independent
 labels, source diversity, and real noise are.
@@ -22,11 +22,11 @@ labels, source diversity, and real noise are.
 
 | Corpus | Role | Why it exists |
 |---|---|---|
-| 9,223-event scenario run | Main dashboard and case corpus | Deterministic, fast, contains 33 labelled attack scenarios plus baseline |
+| 9,224-event scenario run | Main dashboard and case corpus | Deterministic, fast, contains 34 labelled attack scenarios plus baseline |
 | 89,704-event benign baseline | False-positive and scale test | 10× baseline; no attack scenarios; cannot replace the case corpus |
 | 1,381 real multi-source events | Field-behaviour and small-sample benchmark | Windows, Linux, web, cloud, and network telemetry across 16 labelled windows |
 
-The 9,223 run is not pointless. It is the only corpus with attack scenarios,
+The 9,224 run is not pointless. It is the only corpus with attack scenarios,
 case narratives, and a deterministic dashboard. The 89,704 run is better for
 volume and benign-noise comparison, but it has no attacks and cannot drive the
 investigations. The dashboard now shows both separately.
@@ -49,7 +49,7 @@ investigations. The dashboard now shows both separately.
 | Threat hunts | [hunts/README.md](../hunts/README.md) | 4 hypothesis-driven hunts, 4 findings, evidence and detection changes |
 | Portfolio roadmap | [docs/roadmap.md](roadmap.md) | Penumbra, Apsis, and network hunting; no connector project |
 | Triage and response | [response/README.md](../response/README.md) | 27 dry-run incidents, 6 playbooks, 78 recommended actions |
-| Cloud detection pack | [cloud/README.md](../cloud/README.md) | 3 CloudTrail detections; 2 fired, 1 implemented but not exercised |
+| Cloud detection pack | [cloud/README.md](../cloud/README.md) | 3 CloudTrail detections; all 3 fired |
 | IR casebook | [cases/IR.md](../cases/IR.md) | 3 close-outs with metrics, containment, recovery, and lessons |
 | Large benign baseline | [docs/validation/large-benign-results.md](validation/large-benign-results.md) | 89,704 synthetic benign events, 1 low-severity match, 0 correlations |
 

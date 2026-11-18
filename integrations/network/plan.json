@@ -1,0 +1,93 @@
+{
+  "id": "network",
+  "name": "Network threat hunting",
+  "role": "Packet-to-detection evidence",
+  "status": "planned",
+  "statusLabel": "awaiting first capture",
+  "observed": false,
+  "repo": "",
+  "case": "",
+  "thesis": "Hunt C2, DNS tunneling, and lateral movement from packet capture to a defensible detection.",
+  "contract": {
+    "alert": "penumbra.alert/v1",
+    "evidence": "penumbra.evidence/v1",
+    "note": "The evidence manifest is unchanged. The first network delivery adds a flow.suspicious alert kind in a v1.1 revision; it is not part of the validated Apsis contract yet."
+  },
+  "stages": [
+    {
+      "name": "Capture lab",
+      "state": "planned",
+      "detail": "Zeek and Suricata telemetry from approved public PCAPs.",
+      "evidence": "PCAP source, license, SHA-256, capture window, and the sensor configuration."
+    },
+    {
+      "name": "Hunt set",
+      "state": "planned",
+      "detail": "Five hypotheses: C2 beaconing, DNS tunneling, lateral movement, staging, and TLS or JA3.",
+      "evidence": "One hypothesis file per hunt with the query, window, reviewed flows, and verdict."
+    },
+    {
+      "name": "Detections",
+      "state": "planned",
+      "detail": "Five network detections with ATT&CK mapping and evidence.",
+      "evidence": "Rule, query, matched flows, ATT&CK technique, and the false-positive note."
+    },
+    {
+      "name": "Reports",
+      "state": "planned",
+      "detail": "Two full hunt reports and one PCAP-to-detection walkthrough.",
+      "evidence": "Case narrative, timeline, verdict, containment, and lessons."
+    },
+    {
+      "name": "Penumbra handoff",
+      "state": "planned",
+      "detail": "One alert, one evidence manifest, one case, and the copied contracts delivered to integrations/network/.",
+      "evidence": "Contract-valid alert.json, evidence.json, case.md, response.md, capture.json, and schema/."
+    }
+  ],
+  "requirements": [
+    {
+      "file": "alert.json",
+      "detail": "One penumbra.alert/v1 finding. The flow.suspicious kind arrives with the v1.1 revision."
+    },
+    {
+      "file": "evidence.json",
+      "detail": "One penumbra.evidence/v1 manifest with flow events and the edge facts behind the finding."
+    },
+    {
+      "file": "capture.json",
+      "detail": "PCAP source, license, SHA-256, capture window, sensor, and retention note."
+    },
+    {
+      "file": "case.md",
+      "detail": "The narrative from capture to verdict, including what was benign and why."
+    },
+    {
+      "file": "response.md",
+      "detail": "Containment or blocking guidance for the traffic and the hosts that produced it."
+    },
+    {
+      "file": "schema/",
+      "detail": "The alert and evidence contracts copied into the folder so the handoff is self-contained."
+    }
+  ],
+  "stats": [
+    {
+      "value": "0",
+      "label": "observed events"
+    },
+    {
+      "value": "5",
+      "label": "planned detections"
+    },
+    {
+      "value": "2",
+      "label": "hunt reports"
+    },
+    {
+      "value": "—",
+      "label": "capture"
+    }
+  ],
+  "how": "The network lab owns capture, parsing, hunting, and the verdict. Penumbra owns intake, triage, response, and casework. The connector is the evidence manifest, not a shared database or a cross-repository import."
+}

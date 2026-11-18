@@ -62,7 +62,7 @@ The generated events and result files are gitignored.
 
 | Run | Events | Rule matches | Correlation alerts | Nature |
 |---|---:|---:|---:|---|
-| Committed dashboard run | 9,223 | 50 | 9 | Synthetic scenarios + baseline |
+| Committed dashboard run | 9,224 | 50 | 9 | Synthetic scenarios + baseline |
 | Large benign baseline | 89,704 | 1 | 0 | Synthetic benign only |
 | OTRF Sample A | 110 | 1 | 0 | Real Windows Security 1102 |
 | OTRF Sample B | 118 | 3 | 0 | Real Sysmon/Security capture |

@@ -736,45 +736,288 @@
     cloudPanel.hidden = true;
   }
 
-  /* ------------------------------------------------------ Apsis handoff */
+  /* -------------------------------------------------- incoming handoff */
   const handoff = DATA.handoff;
   const handoffPanel = $("#handoffPanel");
-  if (handoffPanel && handoff && handoff.alert) {
-    const alert = handoff.alert;
-    const evidence = handoff.evidence || {};
-    const route = alert.route || [];
-    const edges = alert.edges || [];
-    const cut = alert.cut || [];
-    const guardrails = alert.guardrails || [];
-    $("#handoffEdges").textContent = number(edges.length);
-    $("#handoffRoute").innerHTML = route.map((step, index) => (
-      '<span class="handoff-stop"><b>' + String(index + 1).padStart(2, "0") + "</b>" + esc(step) + "</span>"
-    )).join('<i class="handoff-arrow" aria-hidden="true">→</i>');
-    $("#handoffStats").innerHTML =
-      '<span class="instrument-stat"><b>' + esc(number(route.length)) + "</b> principals</span>" +
-      '<span class="instrument-stat"><b>' + esc(number(edges.length)) + "</b> observed edges</span>" +
-      '<span class="instrument-stat"><b>' + esc(number(cut.length)) + "</b> cut actions</span>" +
-      '<span class="instrument-stat"><b>' + esc(alert.account) + "</b> account</span>";
-    const eventRows = (evidence.events || []).map((event) => (
-      "<tr><td>" + esc(event.time) + "</td><td>" + esc(event.actor) + "</td><td>" +
-      esc(event.action) + "</td><td>" + esc(event.target) + "</td></tr>"
+  if (handoffPanel && handoff && (handoff.sources || []).length) {
+    const sources = handoff.sources;
+    const sourceTabs = $("#handoffSources");
+    const routeEl = $("#handoffRoute");
+    const statsEl = $("#handoffStats");
+    const detailEl = $("#handoffDetail");
+    const noteEl = $("#handoffNote");
+    const scoreEl = $("#handoffScore");
+    const scoreLabel = $("#handoffScoreLabel");
+    const titleEl = $("#handoffTitle");
+    const ledeEl = $("#handoffLede");
+    const hintEl = $("#handoffHint");
+    const traceBtn = $("#handoffTrace");
+    let traceTimer = null;
+    let activeSource = 0;
+    let activeStep = 0;
+
+    const stopTrace = () => {
+      if (traceTimer) {
+        window.clearInterval(traceTimer);
+        traceTimer = null;
+      }
+      if (traceBtn) {
+        traceBtn.textContent = "Trace the route";
+        traceBtn.setAttribute("aria-pressed", "false");
+      }
+    };
+
+    const edgeByIndex = (source, index) => {
+      const ids = (source.alert || {}).edges || [];
+      const id = ids[Math.min(index, ids.length - 1)];
+      return ((source.evidence || {}).edges || []).find((edge) => edge.id === id) || null;
+    };
+
+    const eventByEdge = (source, edge, index) => {
+      if (!edge) return null;
+      const events = (source.evidence || {}).events || [];
+      const exact = events.find((event) => {
+        if (event.actor !== edge.source) return false;
+        if (edge.target === "__admin__") return /policy/i.test(String(event.target || ""));
+        return String(event.target || "").indexOf(edge.target) >= 0;
+      });
+      return exact || null;
+    };
+
+    const observedStop = (name, index, source) => {
+      const edge = edgeByIndex(source, index);
+      const isEnd = index >= ((source.alert || {}).route || []).length - 1;
+      const label = isEnd ? "end" : edge ? edge.id + " / " + edge.technique.replace(/_/g, " ") : "edge";
+      return (
+        '<button class="handoff-stop" type="button" data-step="' + index + '" aria-pressed="false">' +
+        "<b>" + String(index + 1).padStart(2, "0") + "</b>" +
+        "<span>" + esc(name) + "</span>" +
+        "<small>" + esc(label) + "</small>" +
+        "</button>"
+      );
+    };
+
+    const plannedStop = (stage, index) => (
+      '<button class="handoff-stop is-planned" type="button" data-step="' + index + '" aria-pressed="false">' +
+      "<b>PLAN " + String(index + 1).padStart(2, "0") + "</b>" +
+      "<span>" + esc(stage.name) + "</span>" +
+      "<small>" + esc(stage.state || "planned") + "</small>" +
+      "</button>"
+    );
+
+    const renderRoute = (source) => {
+      if (source.observed) {
+        const route = (source.alert || {}).route || [];
+        routeEl.innerHTML = route.map((name, index) => observedStop(name, index, source))
+          .join('<i class="handoff-arrow" aria-hidden="true">→</i>');
+      } else {
+        const stages = source.stages || [];
+        routeEl.innerHTML = stages.map((stage, index) => plannedStop(stage, index))
+          .join('<i class="handoff-arrow is-planned" aria-hidden="true">→</i>');
+      }
+      routeEl.classList.toggle("is-planned-route", !source.observed);
+      $$(".handoff-stop", routeEl).forEach((stop, index) => {
+        stop.addEventListener("click", () => {
+          stopTrace();
+          renderStep(index);
+        });
+      });
+    };
+
+    const renderStats = (source) => {
+      if (source.observed) {
+        const alert = source.alert || {};
+        statsEl.innerHTML =
+          '<span class="instrument-stat"><b>' + esc(number((alert.route || []).length)) + "</b> principals</span>" +
+          '<span class="instrument-stat"><b>' + esc(number((alert.edges || []).length)) + "</b> observed edges</span>" +
+          '<span class="instrument-stat"><b>' + esc(number((alert.cut || []).length)) + "</b> cut actions</span>" +
+          '<span class="instrument-stat"><b>' + esc(alert.account) + "</b> account</span>";
+      } else {
+        statsEl.innerHTML = (source.stats || []).map((stat) => (
+          '<span class="instrument-stat"><b>' + esc(stat.value) + "</b> " + esc(stat.label) + "</span>"
+        )).join("");
+      }
+    };
+
+    function renderObserved(source, step) {
+      const alert = source.alert || {};
+      const evidence = source.evidence || {};
+      const route = alert.route || [];
+      const edgeIds = alert.edges || [];
+      const cut = alert.cut || [];
+      const guardrails = alert.guardrails || [];
+      const edgeIndex = Math.min(step, edgeIds.length - 1);
+      const edge = edgeByIndex(source, edgeIndex);
+      const event = eventByEdge(source, edge, edgeIndex);
+      const from = route[step] || (edge ? edge.source : "");
+      const to = route[step + 1] || (edge && edge.target === "__admin__" ? "Administrator" : edge ? edge.target : "");
+      const final = step >= route.length - 1;
+      const heading = final ? "Administrator reached" : esc(from) + " → " + esc(to);
+      const facts = edge
+        ? '<span class="instrument-chip is-high">observed</span>' +
+          "<span>" + esc(String(edge.technique || "").replace(/_/g, " ")) + "</span>" +
+          "<span>" + esc(unit(edge.count || 0, "event", "events")) + "</span>" +
+          (event ? "<span>" + esc(event.time) + "</span>" : "") +
+          (event && event.ip ? "<span>" + esc(event.ip) + "</span>" : "")
+        : '<span class="instrument-chip is-low">no edge</span>';
+      const why = edge && event
+        ? "CloudTrail records <b>" + esc(event.actor) + "</b> calling <code>" + esc(event.action) +
+          "</code> on <code>" + esc(event.target) + "</code> at <b>" + esc(event.time) +
+          "</b>. Edge <code>" + esc(edge.id) + "</code> is observed because the source principal performed the action on the target inside the manifest window." +
+          (final ? " <b>This is the final hop;</b> the route ends at Administrator." : "")
+        : "No event is attached to this step.";
+      const rows = ((evidence.events || []).map((row) => (
+        "<tr" + (row === event ? ' class="is-active"' : "") + '><td title="' + esc(row.time) + '">' +
+        esc(clock(row.time).slice(0, 5)) + "</td><td>" +
+        esc(row.actor) + "</td><td>" + esc(row.action) + "</td><td>" + esc(row.target) + "</td></tr>"
+      )).join(""));
+      detailEl.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">APSIS / ' + esc(edge ? edge.id : "route") + "</span>" +
+        "<h4>" + heading + "</h4>" +
+        '<div class="instrument-meta">' + facts + "<span>" + esc(alert.schema) + "</span>" +
+        (evidence.window ? "<span>" + esc(evidence.window.from + " / " + evidence.window.to) + "</span>" : "") +
+        "</div></div></div>" +
+        '<p class="instrument-copy"><b>Why this edge is observed.</b> ' + why + "</p>" +
+        '<div class="handoff-columns"><div><h5>Minimum cut</h5><ul class="instrument-list">' +
+        cut.map((item) => {
+          const parts = String(item).split(":");
+          return "<li><b>" + esc(parts[0]) + "</b> " + esc(parts.slice(1).join(":")) + "</li>";
+        }).join("") +
+        '</ul></div><div><h5>Guardrails</h5><ul class="instrument-list">' +
+        guardrails.map((item) => "<li>" + esc(item) + "</li>").join("") +
+        "</ul></div></div>" +
+        '<h5>Observed CloudTrail evidence</h5><div class="validation-table-wrap"><table class="validation-table hunt-table handoff-evidence"><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Target</th></tr></thead><tbody>' +
+        rows + "</tbody></table></div>" +
+        '<p class="handoff-read"><b>How the route is read.</b> Apsis sends the ordered principals and the edge ids. Penumbra joins each id to the evidence manifest. One event per edge marks it observed; the route is observed only when every edge is observed. The cut is the smallest permission set that closes the route, and the guardrails keep it closed.</p>';
+    }
+
+    function renderPlanned(source, step) {
+      const stages = source.stages || [];
+      const stage = stages[step] || stages[0] || {};
+      const requirements = source.requirements || [];
+      const contract = source.contract || {};
+      detailEl.innerHTML =
+        '<div class="instrument-detail-head"><div><span class="instrument-id">NETWORK / PLANNED</span>' +
+        "<h4>" + esc(stage.name || "Plan") + "</h4>" +
+        '<div class="instrument-meta"><span class="instrument-chip is-low">planned</span>' +
+        "<span>stage " + esc(step + 1) + " of " + esc(stages.length) + "</span>" +
+        "<span>0 observed events</span></div></div></div>" +
+        '<p class="instrument-copy"><b>What this stage produces.</b> ' + esc(stage.detail || "") + "</p>" +
+        (stage.evidence ? '<p class="instrument-copy"><b>Evidence required.</b> ' + esc(stage.evidence) + "</p>" : "") +
+        '<div class="handoff-contract"><b>Contract target.</b> <code>' + esc(contract.alert || "") + "</code> and <code>" + esc(contract.evidence || "") + "</code>. " + esc(contract.note || "") + "</div>" +
+        '<h5>Handoff artifacts when capture lands</h5><ul class="instrument-list handoff-requirements">' +
+        requirements.map((item) => "<li><code>" + esc(item.file) + "</code> " + esc(item.detail) + "</li>").join("") +
+        "</ul>" +
+        '<p class="handoff-read"><b>How the route will be read.</b> ' + esc(source.how || "") + "</p>";
+    }
+
+    function renderStep(index) {
+      const source = sources[activeSource];
+      const stops = $$(".handoff-stop", routeEl);
+      if (!stops.length) return;
+      activeStep = Math.max(0, Math.min(index, stops.length - 1));
+      stops.forEach((stop, position) => {
+        stop.classList.toggle("is-active", position === activeStep);
+        stop.classList.toggle("is-past", position < activeStep);
+        stop.setAttribute("aria-pressed", String(position === activeStep));
+      });
+      if (source.observed) renderObserved(source, activeStep);
+      else renderPlanned(source, activeStep);
+    }
+
+    function renderSource(index) {
+      stopTrace();
+      activeSource = index;
+      activeStep = 0;
+      const source = sources[index];
+      $$(".instrument-tab", sourceTabs).forEach((tab, position) => {
+        tab.setAttribute("aria-selected", String(position === index));
+      });
+      detailEl.setAttribute("aria-labelledby", "handoff-source-" + index);
+      routeEl.setAttribute("aria-label", source.observed ? "Observed route" : "Planned stages");
+      titleEl.textContent = source.observed ? "Apsis sent a route." : "Network hunting has a plan.";
+      ledeEl.innerHTML = source.observed
+        ? "A validated <code>penumbra.alert/v1</code> and <code>penumbra.evidence/v1</code> manifest from the observed-path case. Select any hop to see the CloudTrail event that observes it."
+        : "No capture exists yet. The same <code>penumbra.evidence/v1</code> manifest is reserved, and the figure shows the planned stages and the artifacts required before Penumbra accepts a finding.";
+      if (source.observed) {
+        scoreEl.textContent = number(((source.alert || {}).edges || []).length);
+        scoreLabel.textContent = "observed edges";
+        hintEl.textContent = "Each stop names the edge that leaves it. Select a stop, or press the left and right arrow keys, to read the event behind that edge.";
+        if (traceBtn) traceBtn.hidden = false;
+      } else {
+        scoreEl.textContent = "—";
+        scoreLabel.textContent = "no capture yet";
+        hintEl.textContent = "Each stop is a planned stage. Select a stage to see the evidence it must produce before the handoff is accepted.";
+        if (traceBtn) traceBtn.hidden = true;
+      }
+      renderRoute(source);
+      renderStats(source);
+      renderStep(0);
+      noteEl.innerHTML = source.observed
+        ? "Contract validated against the copied schemas. Source repository link pending; full data: " +
+          '<a href="https://github.com/Meruyert5/penumbra/tree/main/integrations/apsis" target="_blank" rel="noreferrer">integrations/apsis</a>.'
+        : "Nothing here is observed. The plan and acceptance checklist are in " +
+          '<a href="https://github.com/Meruyert5/penumbra/tree/main/integrations/network" target="_blank" rel="noreferrer">integrations/network</a>; the roadmap marks the project planned.';
+    }
+
+    sourceTabs.innerHTML = sources.map((source, index) => (
+      '<button class="instrument-tab" type="button" role="tab" id="handoff-source-' + index +
+      '" aria-controls="handoffDetail" data-source="' + index +
+      '" aria-selected="' + (index === 0 ? "true" : "false") + '">' +
+      esc(source.name) + " <span>" + esc(source.statusLabel || source.status) + "</span></button>"
     )).join("");
-    $("#handoffDetail").innerHTML =
-      '<div class="instrument-detail-head"><div><span class="instrument-id">APSIS / ' + esc(alert.kind) + "</span>" +
-      "<h4>Tools intern to Administrator</h4>" +
-      '<div class="instrument-meta"><span class="instrument-chip is-high">' + esc(alert.severity) + "</span>" +
-      "<span>observed</span><span>" + esc(evidence.window ? evidence.window.from + " / " + evidence.window.to : "") + "</span>" +
-      "<span>" + esc(alert.schema) + "</span></div></div></div>" +
-      '<p class="instrument-copy">A low-privilege Games Studio principal reached administrator through seven observed trust edges. The cut removes the two permissions that close the route.</p>' +
-      '<div class="handoff-columns"><div><h5>Minimum cut</h5><ul class="instrument-list">' +
-      cut.map((item) => "<li><b>" + esc(item.split(":")[0]) + "</b> " + esc(item.split(":").slice(1).join(":")) + "</li>").join("") +
-      '</ul></div><div><h5>Guardrails</h5><ul class="instrument-list">' +
-      guardrails.map((item) => "<li>" + esc(item) + "</li>").join("") +
-      "</ul></div></div>" +
-      '<h5>Observed CloudTrail evidence</h5><div class="validation-table-wrap"><table class="validation-table hunt-table"><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Target</th></tr></thead><tbody>' +
-      eventRows + "</tbody></table></div>";
-    $("#handoffNote").innerHTML = "Handoff payload pinned to Apsis commit <b>b50f894</b>; contract validated. " +
-      'Full data: <a href="https://github.com/Meruyert5/penumbra/tree/main/integrations/apsis" target="_blank" rel="noreferrer">integrations/apsis</a>.';
+    $$(".instrument-tab", sourceTabs).forEach((tab, index) => {
+      tab.addEventListener("click", () => renderSource(index));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = (index + (event.key === "ArrowRight" ? 1 : -1) + sources.length) % sources.length;
+        renderSource(next);
+        $$(".instrument-tab", sourceTabs)[next].focus();
+      });
+    });
+    routeEl.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+      const stops = $$(".handoff-stop", routeEl);
+      const current = stops.indexOf(document.activeElement);
+      if (current < 0) return;
+      event.preventDefault();
+      const next = (current + (event.key === "ArrowRight" ? 1 : -1) + stops.length) % stops.length;
+      stops[next].focus();
+      stopTrace();
+      renderStep(next);
+    });
+    if (traceBtn) {
+      traceBtn.addEventListener("click", () => {
+        const source = sources[activeSource];
+        if (!source.observed) return;
+        if (traceTimer) {
+          stopTrace();
+          return;
+        }
+        const route = (source.alert || {}).route || [];
+        if (reduce) {
+          renderStep(route.length - 1);
+          return;
+        }
+        let cursor = activeStep;
+        if (cursor >= route.length - 1) {
+          renderStep(0);
+          cursor = 0;
+        }
+        traceBtn.textContent = "Pause trace";
+        traceBtn.setAttribute("aria-pressed", "true");
+        traceTimer = window.setInterval(() => {
+          cursor += 1;
+          if (cursor >= route.length) {
+            stopTrace();
+            return;
+          }
+          renderStep(cursor);
+        }, 1100);
+      });
+    }
+    renderSource(0);
   } else if (handoffPanel) {
     handoffPanel.hidden = true;
   }
@@ -3096,7 +3339,7 @@
 
   /* ------------------------------------------------------------------ tour */
   const steps = [
-    { target: "#cover .ticket", title: "A run you can inspect", body: "This is the output of one deterministic run: 9,223 events, a 50-rule Sigma library, and eight correlation specs. The ticket is the receipt." },
+    { target: "#cover .ticket", title: "A run you can inspect", body: "This is the output of one deterministic run: 9,224 events, a 50-rule Sigma library, and eight correlation specs. The ticket is the receipt." },
     { target: "#scopePlate", title: "Read the light curve", body: "The light curve counts matched events across the full day. Several hours carry bursts; the shadow bands between them are part of the shape. A rule that fires on everything cannot discriminate." },
     { target: "#pathStrip", title: "Follow the chain", body: "Sigma compiles to Elasticsearch EQL and KQL. Detection executes the queries, correlation adds volume logic, and triage turns matches into a queue with evidence." },
     { target: "#responsePanel", title: "Watch the response", body: "The flow turns 50 alerts into 27 incidents and 78 recommended actions. Choose an incident to see its alerts and dry-run playbook. No EDR, cloud, or ticketing API is called." },
@@ -3110,7 +3353,7 @@
     { target: "#irPanel", title: "Close the loop", body: "The timeline scrubs the observed window: drag it, or use the arrow keys. The markers light as the readout crosses them; play runs the whole close-out." },
     { target: "#reproduce .terminal", title: "Repeat the orbit", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." },
     { target: "#cloudPanel", title: "Hand off to Apsis", body: "The bridge shows the three CloudTrail detections Penumbra hands to Apsis. Select a detection to see the query and the response hand-off." },
-    { target: "#handoffPanel", title: "Receive the handoff", body: "Apsis sends a validated path.opened alert and evidence manifest. Read the seven observed edges, the two-permission cut, and the guardrails that keep the route closed." },
+    { target: "#handoffPanel", title: "Receive the handoff", body: "Penumbra reads the same alert and evidence contracts from Apsis and the network lab. Apsis is delivered: trace seven observed edges, the two-permission cut, and the guardrails. Network hunting is planned until its first capture." },
     { target: "#roadmapPanel", title: "Read the next record", body: "The A-side holds two complete projects and the next orbit. Select a track label to see its thesis, module states, and what done means. Apsis and Penumbra are complete; network hunting is next." }
   ];
   const spot = $("#tourSpot");
@@ -3259,6 +3502,7 @@
     { group: "Go", label: "Eclipses", hint: "05", run: () => goTo("#cases") },
     { group: "Go", label: "Recurrence", hint: "06", run: () => goTo("#reproduce") },
     { group: "Go", label: "After", hint: "07", run: () => goTo("#after") },
+    { group: "Go", label: "Incoming handoffs", hint: "Apsis / network", run: () => goTo("#handoffPanel") },
     { group: "Filter", label: "All detections", hint: "clear severity", run: () => { setLevel("all"); goTo("#ledger"); } },
     { group: "Filter", label: "Critical detections", hint: number(severity.critical || 0), run: () => { setLevel("critical"); goTo("#ledger"); } },
     { group: "Filter", label: "High detections", hint: number(severity.high || 0), run: () => { setLevel("high"); goTo("#ledger"); } },

@@ -14,7 +14,7 @@ account.
 | Repository | <https://github.com/Meruyert5/penumbra> (public) |
 | Local repo | the repository checkout |
 | Built dashboard | `docs/index.html` |
-| Evidence sections | Response in Instruments, hunting in Umbra, validation in Corona, IR in Eclipses, roadmap in After |
+| Evidence sections | Response in Instruments, hunting in Umbra, validation in Corona, IR in Eclipses, incoming handoffs and roadmap in After |
 | Public site | `site/` (generated, gitignored) |
 | Public surface | `index.html`, `assets/`, `cases/`, `.nojekyll`; optionally `CNAME` |
 | Public host | <https://meruyert5.github.io/penumbra/> |
@@ -30,13 +30,25 @@ but are not part of the published site.
 
 ## Cross-project handoff
 
-Apsis delivered the observed-path case as data in
+Penumbra accepts incoming evidence from both other projects through one
+contract. The dashboard's After chapter has a source selector, a route figure,
+and a detail pane that shows the event behind each step.
+
+**Apsis (delivered).** Apsis delivered the observed-path case as data in
 [`integrations/apsis/`](../integrations/apsis/): a `penumbra.alert/v1` alert, its
 `penumbra.evidence/v1` manifest, the case narrative, the guardrails and the
 before/after route snapshots. Both payloads validate against the copied schemas.
 Penumbra reads the alert and cites the evidence; it does not import Apsis code.
 Apsis is complete. Its 89 Python tests, 5 logic tests, console build, and both
-contracts pass, and the handoff payload is pinned to Apsis commit `b50f894`.
+contracts pass. Source repository: `https://github.com/<owner>/apsis` (link
+pending publication).
+
+**Network threat hunting (planned).** No capture exists yet.
+[`integrations/network/`](../integrations/network/) holds the capture plan and
+the acceptance checklist, and `plan.json` drives the dashboard's planned tab. The
+evidence manifest is reused unchanged; the alert needs a `flow.suspicious` kind
+in a v1.1 revision before the first delivery. The dashboard shows five planned
+stages and zero observed events. It does not fabricate flows.
 
 ## Rebuild and verify
 

@@ -1,9 +1,9 @@
 {
   "summary": {
     "detections": 3,
-    "fired": 2,
-    "events": 2,
-    "not_exercised": 1
+    "fired": 3,
+    "events": 3,
+    "not_exercised": 0
   },
   "detections": [
     {
@@ -54,9 +54,17 @@
       "query": "any where cloud.provider:\"aws\" and event.action in (\"StopLogging\", \"DeleteTrail\", \"UpdateTrail\")",
       "description": "A principal stopped, deleted, or changed a CloudTrail trail. This is a defense-evasion lead and a visibility emergency.",
       "detection_change": "Alert on trail changes, verify the trail with an independent account-level control, and require a change ticket.",
-      "status": "not_exercised",
-      "event_count": 0,
-      "evidence": []
+      "status": "fired",
+      "event_count": 1,
+      "evidence": [
+        {
+          "time": "2026-11-11T00:37:00.000Z",
+          "host": "aws-prod",
+          "user": "root",
+          "source": "203.0.113.44",
+          "detail": "StopLogging -> success"
+        }
+      ]
     }
   ]
 }

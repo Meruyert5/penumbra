@@ -5,15 +5,15 @@ is separate from the 50-rule Sigma core and exports the same evidence shape as
 the rest of Penumbra.
 
 - Detections: **3**
-- Detections fired: **2**
-- Events matched: **2**
-- Detections not exercised: **1**
+- Detections fired: **3**
+- Events matched: **3**
+- Detections not exercised: **0**
 
 | Detection | Level | Technique | Status | Events |
 |---|---|---|---|---:|
 | CLOUD-001 Root policy attachment | critical | T1098 | fired | 1 |
 | CLOUD-002 Root user creation | critical | T1136.003 | fired | 1 |
-| CLOUD-003 CloudTrail tampering | critical | T1562.008 | not exercised | 0 |
+| CLOUD-003 CloudTrail tampering | critical | T1562.008 | fired | 1 |
 
 ## CLOUD-001 — Root policy attachment
 
@@ -65,8 +65,12 @@ any where cloud.provider:"aws" and user.name:"root" and event.action:"CreateUser
 any where cloud.provider:"aws" and event.action in ("StopLogging", "DeleteTrail", "UpdateTrail")
 ```
 
-**Status.** not exercised (0 events).
-
-No matching CloudTrail event exists in this synthetic run; the rule is implemented but not exercised.
+**Status.** fired (1 events).
 
 **Response hand-off.** Alert on trail changes, verify the trail with an independent account-level control, and require a change ticket.
+
+**Evidence.**
+
+| Time | Host | User | Source | Detail |
+|---|---|---|---|---|
+| 2026-11-11T00:37:00.000Z | aws-prod | root | 203.0.113.44 | StopLogging -> success |

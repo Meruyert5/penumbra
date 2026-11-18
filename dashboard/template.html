@@ -508,7 +508,7 @@
       <div class="validation-head">
         <p class="validation-kicker">Fig. 4 / Validation</p>
         <h3 id="validationTitle">What the rules did on real and benign data.</h3>
-        <p class="validation-lede">A separate replay, not the dashboard run. The scenario corpus stays at 9,223 events; the validation set adds 1,381 real events across five indices, with 16 labelled windows and an 89,704-event benign baseline.</p>
+        <p class="validation-lede">A separate replay, not the dashboard run. The scenario corpus stays at 9,224 events; the validation set adds 1,381 real events across five indices, with 16 labelled windows and an 89,704-event benign baseline.</p>
       </div>
       <div class="validation-stats" id="validationStats"></div>
       <div class="validation-body">
@@ -704,12 +704,12 @@
           <h3 id="cloudTitle">What Penumbra hands to Apsis.</h3>
           <p class="instrument-lede">The CloudTrail detections Penumbra hands to Apsis.</p>
         </div>
-        <div class="instrument-score"><b id="cloudFiredCount" data-count="2">2</b><span>of 3 detections fired</span></div>
+        <div class="instrument-score"><b id="cloudFiredCount" data-count="3">3</b><span>of 3 detections fired</span></div>
       </div>
       <div class="cloud-bridge" id="cloudBridge" aria-hidden="true">
         <div class="bridge-side"><span>Penumbra</span><b id="bridgeDetections" data-count="3">3</b><small>detections</small></div>
         <div class="bridge-line"><i></i><i class="p2"></i><span></span><span></span><span></span></div>
-        <div class="bridge-side is-apsis"><span>Apsis</span><b id="bridgeFired" data-count="2">2</b><small>fired findings</small></div>
+        <div class="bridge-side is-apsis"><span>Apsis</span><b id="bridgeFired" data-count="3">3</b><small>fired findings</small></div>
       </div>
       <div class="instrument-stats" id="cloudStats"></div>
       <div class="instrument-tabs" id="cloudTabs" role="tablist" aria-label="Cloud detections"></div>
@@ -721,14 +721,19 @@
       <div class="instrument-head">
         <div>
           <p class="chapter-label">After / Incoming handoff</p>
-          <h3 id="handoffTitle">Apsis sent a route.</h3>
-          <p class="instrument-lede">A validated <code>penumbra.alert/v1</code> and evidence manifest from the observed-path case. Penumbra reads the evidence; it does not import Apsis code.</p>
+          <h3 id="handoffTitle">Two projects send evidence.</h3>
+          <p class="instrument-lede" id="handoffLede">Penumbra reads the same <code>penumbra.alert/v1</code> and <code>penumbra.evidence/v1</code> contracts from Apsis and the network hunting lab. Apsis is delivered; network hunting is planned.</p>
         </div>
-        <div class="instrument-score"><b id="handoffEdges">0</b><span>observed edges</span></div>
+        <div class="instrument-score"><b id="handoffScore">0</b><span id="handoffScoreLabel">observed edges</span></div>
       </div>
-      <div class="handoff-route" id="handoffRoute" aria-hidden="true"></div>
+      <div class="instrument-tabs handoff-sources" id="handoffSources" role="tablist" aria-label="Incoming evidence sources"></div>
+      <div class="handoff-route" id="handoffRoute" role="group" aria-label="Route stages"></div>
+      <div class="handoff-toolbar" id="handoffToolbar">
+        <p class="handoff-hint" id="handoffHint">Each stop names the edge that leaves it. Select a stop, or press the left and right arrow keys, to read the event behind that edge.</p>
+        <button class="mini handoff-trace" id="handoffTrace" type="button" aria-pressed="false">Trace the route</button>
+      </div>
       <div class="instrument-stats" id="handoffStats"></div>
-      <div class="instrument-detail" id="handoffDetail" aria-live="polite"></div>
+      <div class="instrument-detail" id="handoffDetail" role="tabpanel" aria-live="polite"></div>
       <p class="instrument-note" id="handoffNote"></p>
     </section>
   </section>
