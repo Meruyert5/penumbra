@@ -7,7 +7,7 @@ schemas that bind them.
 | Field | Value |
 | --- | --- |
 | Source repository | <https://github.com/Meruyert5/apsis> |
-| Source commit | `802a0e0` |
+| Source commit | `b50f894` |
 | Contract | `penumbra.alert/v1` + `penumbra.evidence/v1` |
 | Case | `01-observed-path`, Games Studio fixture `555566667777` |
 | Finding | `path.opened` - Tools intern to administrator, seven hops |
@@ -71,3 +71,4 @@ The alert is generated from the shipped synthetic case, not yet from a live
 CloudTrail import. The Apsis roadmap item is the engine overlay that marks
 theoretical and observed edges from a real export. The contract and this
 handoff do not change when that lands.
+
