@@ -324,6 +324,7 @@ Representative coverage:
 * Case cards with a detection chain that opens a case-file summary and links to the published investigation reports
 * A case-chain player that steps through each investigation's detections in order, with the rule, time, host, and EQL for every step
 * A response flow, hunt radar, IR timeline scrubber, cloud hand-off bridge, incoming Apsis and network handoff selector, and project vinyl record, each with a selector and one detail pane
+* Recorded players for the five-stage pipeline, the seven-command build, and the 50-rule validation sweep, each with a step control
 * A validation matrix with focusable rule tiles and a live status readout, plus a per-rule benchmark table
 * A host-lane hour axis and a severity-mix bar in the watch floor status band
 * Two eclipse themes: **Corona** (paper, sunlight, coral) and **Umbra** (black sky, corona glow), each with its own accent, plus a contact-ribbon play control (`P`), a command palette (`Ctrl/Cmd K`), a guided sixteen-step reading, keyboard shortcuts, and reduced-motion support
@@ -519,7 +520,8 @@ the After chapter.
   triage automation, the cloud detection pack, and the live dashboard are done.
 - **Apsis:** complete. Graph, minimum cut, drift, observed paths, guardrails,
   the case study, live IAM import, the eight-view console, and the validated
-  Penumbra alert/evidence handoff are done.
+  Penumbra alert/evidence handoff are done. Repository:
+  <https://github.com/Meruyert5/apsis>.
 - **Network threat hunting:** planned. The capture lab, five-hunt set, five
   detections, two reports, and the Penumbra handoff are specified; the first
   approved capture starts it. See [`integrations/network/`](integrations/network/).

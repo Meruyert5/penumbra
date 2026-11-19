@@ -332,6 +332,14 @@
       </div>
     </header>
 
+    <div class="path-toolbar" data-reveal>
+      <span class="path-kicker">Fig. 2 / Recorded pipeline</span>
+      <div class="path-toolbar-actions">
+        <span class="path-run-status" id="pathRunStatus">idle / five stages</span>
+        <button class="mini path-play" id="pathPlay" type="button" aria-pressed="false">run the pipeline</button>
+      </div>
+    </div>
+    <div class="path-run-meter" aria-hidden="true"><i id="pathRunFill"></i></div>
     <div class="path" id="pathStrip" role="tablist" aria-label="Pipeline stages" data-reveal></div>
     <div class="path-detail" id="pathDetail" aria-live="polite" data-reveal></div>
 
@@ -509,6 +517,10 @@
         <p class="validation-kicker">Fig. 4 / Validation</p>
         <h3 id="validationTitle">What the rules did on real and benign data.</h3>
         <p class="validation-lede">A separate replay, not the dashboard run. The scenario corpus stays at 9,224 events; the validation set adds 1,381 real events across five indices, with 16 labelled windows and an 89,704-event benign baseline.</p>
+        <div class="validation-replay-row">
+          <span class="validation-replay-status" id="validationReplayStatus">50 rules / 16 labelled windows</span>
+          <button class="mini" id="validationReplay" type="button">replay the scan</button>
+        </div>
       </div>
       <div class="validation-stats" id="validationStats"></div>
       <div class="validation-body">
@@ -658,7 +670,7 @@
       </div>
 
       <div class="terminal">
-        <div class="terminal-bar"><i></i><i></i><i></i><span>penumbra / powershell</span><button type="button" id="copyAll" class="mini">copy all</button></div>
+        <div class="terminal-bar"><i></i><i></i><i></i><span>penumbra / powershell</span><div class="terminal-bar-actions"><button type="button" id="buildPlay" class="mini">replay build</button><button type="button" id="copyAll" class="mini">copy all</button></div></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.labgen --scenario all --base-time 2026-11-11T12:30:00Z</code><button type="button" data-copy="python -m pipeline.labgen --scenario all --base-time 2026-11-11T12:30:00Z">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.compile</code><button type="button" data-copy="python -m pipeline.compile">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> docker compose up -d</code><button type="button" data-copy="docker compose up -d">copy</button></div>
@@ -666,6 +678,7 @@
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z</code><button type="button" data-copy="python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.replay --source otrf.json --file windows --label malicious</code><button type="button" data-copy="python -m pipeline.replay --source otrf.json --file windows --label malicious">copy</button></div>
         <div class="cmd"><code><span class="p">PS&gt;</span> python -m pipeline.report</code><button type="button" data-copy="python -m pipeline.report">copy</button></div>
+        <div class="terminal-foot"><span id="buildStatus">recorded build / 7 commands</span><span>seed 1337 / 9,224 events</span></div>
       </div>
     </div>
 

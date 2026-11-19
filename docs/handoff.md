@@ -40,8 +40,7 @@ and a detail pane that shows the event behind each step.
 before/after route snapshots. Both payloads validate against the copied schemas.
 Penumbra reads the alert and cites the evidence; it does not import Apsis code.
 Apsis is complete. Its 89 Python tests, 5 logic tests, console build, and both
-contracts pass. Source repository: `https://github.com/<owner>/apsis` (link
-pending publication).
+contracts pass. Source repository: <https://github.com/Meruyert5/apsis>.
 
 **Network threat hunting (planned).** No capture exists yet.
 [`integrations/network/`](../integrations/network/) holds the capture plan and

@@ -6,7 +6,7 @@ schemas that bind them.
 
 | Field | Value |
 | --- | --- |
-| Source repository | `https://github.com/<owner>/apsis` (link pending) |
+| Source repository | <https://github.com/Meruyert5/apsis> |
 | Contract | `penumbra.alert/v1` + `penumbra.evidence/v1` |
 | Case | `01-observed-path`, Games Studio fixture `555566667777` |
 | Finding | `path.opened` - Tools intern to administrator, seven hops |

@@ -9954,3 +9954,125 @@ body::after { display: none; }
   .handoff-evidence th,
   .handoff-evidence td { padding: 7px 6px; }
 }
+/* ---------------------------------------------------------- pipeline runner */
+.path-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+.path-kicker {
+  color: var(--accent);
+  font: 500 8.5px/1 var(--mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.path-toolbar-actions { display: flex; align-items: center; gap: 10px; }
+.path-run-status { color: var(--muted); font: 500 9px/1.2 var(--mono); letter-spacing: .04em; }
+.path-run-meter {
+  height: 2px;
+  margin-top: 8px;
+  background: var(--line-soft);
+  overflow: hidden;
+}
+.path-run-meter i {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--coral), var(--sun-2), var(--sun-3));
+  transition: width .45s var(--ease);
+}
+.path-toolbar + .path-run-meter + .path { margin-top: 16px; }
+.path.is-running::after {
+  animation-duration: 2.2s;
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--sun-2) 24%, transparent), 0 0 22px color-mix(in srgb, var(--sun-2) 70%, transparent);
+}
+.path.is-complete::after { opacity: .22; }
+
+/* ------------------------------------------------------------ build replay */
+.terminal-bar-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.terminal-bar-actions .mini { margin-left: 0; }
+.cmd { flex-wrap: wrap; }
+.cmd-out {
+  display: none;
+  flex-basis: 100%;
+  margin-top: 6px;
+  padding-left: 16px;
+  color: #8fa39b;
+  font: 500 9.5px/1.45 var(--mono);
+}
+.cmd.is-active { background: linear-gradient(90deg, rgba(248,143,34,.12), transparent 74%); }
+.cmd.is-active .cmd-out,
+.cmd.is-done .cmd-out { display: block; animation: cmd-out .3s var(--ease) both; }
+.cmd.is-done .cmd-out { color: #a9c0b7; }
+.cmd.is-done code { color: #c9d8d2; }
+.terminal-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border-top: 1px solid #1c2c33;
+  background: #081116;
+  color: #7f948e;
+  font: 500 8.5px/1.4 var(--mono);
+  letter-spacing: .04em;
+}
+.terminal.is-complete .terminal-foot { color: var(--sun-3); }
+@keyframes cmd-out {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ------------------------------------------------------- validation replay */
+.validation-replay-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 12px;
+}
+.validation-replay-status { color: var(--muted); font: 500 9px/1.2 var(--mono); letter-spacing: .04em; }
+#validationMatrix.is-replaying .validation-cell {
+  animation: validation-cell-scan .55s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 14ms);
+}
+@keyframes validation-cell-scan {
+  0% { transform: scale(.65); opacity: .15; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* --------------------------------------------------------- handoff pulse */
+.handoff-stop { position: relative; }
+.handoff-stop.is-active::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 1px solid var(--sun-2);
+  border-radius: 2px;
+  animation: handoff-ping 1.5s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes handoff-ping {
+  0% { opacity: .65; transform: scale(.98); }
+  80%, 100% { opacity: 0; transform: scale(1.1); }
+}
+
+@media (max-width: 720px) {
+  .path-toolbar { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .path-run-status { font-size: 8.5px; }
+  .terminal-bar-actions { gap: 4px; }
+  .terminal-foot { flex-direction: column; gap: 2px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .path-run-meter i,
+  .cmd.is-active .cmd-out,
+  .cmd.is-done .cmd-out,
+  #validationMatrix.is-replaying .validation-cell,
+  .handoff-stop.is-active::after { transition: none; animation: none; }
+}
+@media (max-width: 520px) {
+  .path-step .path-bottom { flex-wrap: wrap; min-width: 0; }
+  .path-step .path-artifact { white-space: normal; overflow-wrap: anywhere; }
+}

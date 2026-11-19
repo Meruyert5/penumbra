@@ -35,6 +35,8 @@ without reading the source code.
 **Thesis:** Find every route from a low-privilege AWS principal to administrator,
 prove which ones are real, and sever them.
 
+**Repository:** <https://github.com/Meruyert5/apsis>
+
 | Module | State | Deliverable |
 |---|---|---|
 | IAM graph | Done | Users, roles, policies, and every route to administrator |

@@ -5,7 +5,7 @@ documentation, never imported code.
 
 | Handoff | Source | Status | Contents |
 | --- | --- | --- | --- |
-| [`apsis/`](apsis/) | Apsis (`https://github.com/<owner>/apsis`, link pending) | Delivered | `penumbra.alert/v1`, `penumbra.evidence/v1`, the observed-path case, guardrails and before/after snapshots |
+| [`apsis/`](apsis/) | [Apsis](https://github.com/Meruyert5/apsis) | Delivered | `penumbra.alert/v1`, `penumbra.evidence/v1`, the observed-path case, guardrails and before/after snapshots |
 | [`network/`](network/) | Network threat hunting (`https://github.com/<owner>/network-threat-hunting`, link pending) | Planned | Capture plan and acceptance checklist; no capture or evidence yet |
 
 The boundary is the contract:

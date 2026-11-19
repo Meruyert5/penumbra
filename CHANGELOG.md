@@ -9,6 +9,8 @@
   fabricated flows.
 - Exercised CLOUD-003 with a CloudTrail tampering scenario, so all three cloud
   detections fire; the corpus is now 9,224 events and 34 attack scenarios.
+- Added recorded players for the five-stage pipeline, the seven-command build,
+  and the 50-rule validation sweep, with step controls and reduced-motion states.
 - Received the final Apsis observed-path handoff, marked Apsis and Penumbra
   complete in the portfolio roadmap, and added the completed modules to the
   vinyl roadmap.

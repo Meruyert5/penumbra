@@ -213,6 +213,11 @@ switch is instant, the chain does not autoplay, and the scope draws once.
   highlights that row, and shows the minimum cut and guardrails. **Trace the
   route** walks the hops; reduced motion jumps to the final state. The network
   source shows planned stages and zero observed events, never fabricated flows.
+- **Recorded players.** The pipeline strip runs its five stages with a progress
+  line and stage detail. The build terminal replays the seven commands with the
+  recorded outputs. The validation matrix replays its 50-rule scan. Each player
+  stops on the final state under reduced motion, so the information is never
+  locked behind an animation.
 
 ## Accessibility
 

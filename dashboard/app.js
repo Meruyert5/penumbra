@@ -237,7 +237,7 @@
       const status = String(rule.status || "no_match").replace(/_/g, "-");
       const statusLabel = String(rule.status || "no_match").replace(/_/g, " ");
       return '<span class="validation-cell is-' + esc(status) + '" role="button" tabindex="0" data-index="' + index +
-        '" title="' + esc(rule.title) + " - " + esc(rule.reason) + '" aria-label="' +
+        '" style="--i:' + index + '" title="' + esc(rule.title) + " - " + esc(rule.reason) + '" aria-label="' +
         esc(rule.title + ": " + statusLabel + ". " + rule.reason) + '"></span>';
     }).join("");
     const cellReadout = $("#validationCellReadout");
@@ -262,6 +262,24 @@
     const noMatch = rules.filter((rule) => rule.status === "no_match").length;
     $("#validationCount").textContent = matched + " matched / " + falseNegative + " missed / " +
       noMatch + " no match / " + notEvaluable + " not evaluable";
+    const validationReplay = $("#validationReplay");
+    const validationReplayStatus = $("#validationReplayStatus");
+    if (validationReplay) {
+      validationReplay.addEventListener("click", () => {
+        const matrix = $("#validationMatrix");
+        matrix.classList.remove("is-replaying");
+        void matrix.offsetWidth;
+        matrix.classList.add("is-replaying");
+        if (validationReplayStatus) validationReplayStatus.textContent = "scanning " + rules.length + " rules...";
+        window.setTimeout(() => {
+          matrix.classList.remove("is-replaying");
+          if (validationReplayStatus) {
+            validationReplayStatus.textContent = matched + " matched / " + falseNegative + " missed / " +
+              noMatch + " no match";
+          }
+        }, 1500);
+      });
+    }
 
     $("#validationSamples").innerHTML = (validation.samples || []).map((sample) => (
       '<div class="validation-sample"><div class="validation-sample-head"><span>' + esc(sample.name) +
@@ -954,7 +972,8 @@
       renderStats(source);
       renderStep(0);
       noteEl.innerHTML = source.observed
-        ? "Contract validated against the copied schemas. Source repository link pending; full data: " +
+        ? "Contract validated against the copied schemas. Source: " +
+          '<a href="https://github.com/Meruyert5/apsis" target="_blank" rel="noreferrer">Apsis repository</a>; data: ' +
           '<a href="https://github.com/Meruyert5/penumbra/tree/main/integrations/apsis" target="_blank" rel="noreferrer">integrations/apsis</a>.'
         : "Nothing here is observed. The plan and acceptance checklist are in " +
           '<a href="https://github.com/Meruyert5/penumbra/tree/main/integrations/network" target="_blank" rel="noreferrer">integrations/network</a>; the roadmap marks the project planned.';
@@ -2313,11 +2332,88 @@
       (step.artifact ? '<code class="pd-artifact">' + esc(step.artifact) + "</code>" : "");
   }
   renderPathDetail(0);
+  const pathStrip = $("#pathStrip");
+  const pathPlay = $("#pathPlay");
+  const pathRunStatus = $("#pathRunStatus");
+  const pathRunFill = $("#pathRunFill");
+  let pathTimer = null;
+  let pathIndex = 0;
+
+  function stopPathRun(complete) {
+    if (pathTimer) {
+      window.clearInterval(pathTimer);
+      pathTimer = null;
+    }
+    pathStrip.classList.remove("is-running");
+    if (complete) pathStrip.classList.add("is-complete");
+    if (pathPlay) {
+      pathPlay.textContent = "run the pipeline";
+      pathPlay.setAttribute("aria-pressed", "false");
+    }
+  }
+
+  function setPathProgress(index) {
+    if (!pathRunStatus || !pathRunFill) return;
+    const total = Math.max(1, pipeline.length);
+    pathRunFill.style.width = Math.round(((index + 1) / total) * 100) + "%";
+    pathRunStatus.textContent = (index + 1) + " / " + total + " · " + pipeline[index].label;
+  }
+
+  function playPath() {
+    if (!pipeline.length) return;
+    if (pathTimer) {
+      stopPathRun(false);
+      return;
+    }
+    pathStrip.classList.remove("is-complete");
+    pathStrip.classList.add("is-running");
+    if (pathPlay) {
+      pathPlay.textContent = "pause pipeline";
+      pathPlay.setAttribute("aria-pressed", "true");
+    }
+    if (reduce) {
+      renderPathDetail(pipeline.length - 1);
+      setPathProgress(pipeline.length - 1);
+      stopPathRun(true);
+      if (pathRunStatus) pathRunStatus.textContent = "complete / " + pipeline.length + " artifacts";
+      return;
+    }
+    pathIndex = 0;
+    renderPathDetail(0);
+    setPathProgress(0);
+    pathTimer = window.setInterval(() => {
+      pathIndex += 1;
+      if (pathIndex >= pipeline.length) {
+        stopPathRun(true);
+        if (pathRunStatus) pathRunStatus.textContent = "complete / " + pipeline.length + " artifacts";
+        return;
+      }
+      renderPathDetail(pathIndex);
+      setPathProgress(pathIndex);
+    }, 1050);
+  }
+
   $("#pathStrip").addEventListener("click", (event) => {
     const step = event.target.closest(".path-step");
-    if (step) renderPathDetail(Number(step.dataset.index));
+    if (!step) return;
+    stopPathRun(false);
+    const index = Number(step.dataset.index);
+    renderPathDetail(index);
+    setPathProgress(index);
   });
-  const pathStrip = $("#pathStrip");
+  $("#pathStrip").addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+    const steps = $$("#pathStrip .path-step");
+    const current = steps.indexOf(document.activeElement);
+    if (current < 0) return;
+    event.preventDefault();
+    const next = (current + (event.key === "ArrowRight" ? 1 : -1) + steps.length) % steps.length;
+    stopPathRun(false);
+    steps[next].focus();
+    renderPathDetail(next);
+    setPathProgress(next);
+  });
+  if (pathPlay) pathPlay.addEventListener("click", playPath);
   function updatePathSignalWidth() {
     pathStrip.style.setProperty("--path-w", pathStrip.clientWidth + "px");
   }
@@ -3331,27 +3427,113 @@
     "docker compose up -d",
     "python -m pipeline.ingest --reset",
     "python -m pipeline.detect --hours 24 --end 2026-11-11T12:30:00Z",
+    "python -m pipeline.replay --source otrf.json --file windows --label malicious",
     "python -m pipeline.report"
   ].join("\n");
   $("#copyAll").addEventListener("click", () => {
-    copyText(reproduceCommands).then(() => toast("six commands copied")).catch(() => toast("copy failed"));
+    copyText(reproduceCommands).then(() => toast("seven commands copied")).catch(() => toast("copy failed"));
   });
+
+  /* ---------------------------------------------------------- build replay */
+  const buildCommands = $$(".cmd");
+  const buildPlay = $("#buildPlay");
+  const buildStatus = $("#buildStatus");
+  const buildLabels = ["labgen", "compile", "elastic", "ingest", "detect", "replay", "report"];
+  const buildOutputs = [
+    "Wrote 9,224 synthetic events: windows 2,182 / linux 2,122 / web 2,116 / cloud 1,385 / network 1,419",
+    "Compiled 50 Sigma rules to EQL and KQL; coverage 45/45 priority techniques",
+    "Elasticsearch 8.15.3 and Kibana 8.15.3 ready on the lab network",
+    "Indexed 9,224 events across five indices",
+    "Evaluated 50 rules; 50 detections and 9 correlation alerts",
+    "Replayed 1,381 real events across five indices and 16 labelled windows",
+    "Built the dashboard: 50 detections, 9 correlations, 4 case reports"
+  ];
+  buildCommands.forEach((cmd, index) => {
+    if (cmd.querySelector(".cmd-out")) return;
+    const output = document.createElement("span");
+    output.className = "cmd-out";
+    output.textContent = buildOutputs[index] || "";
+    cmd.appendChild(output);
+  });
+  let buildTimer = null;
+  let buildIndex = 0;
+
+  function stopBuild(complete) {
+    if (buildTimer) {
+      window.clearInterval(buildTimer);
+      buildTimer = null;
+    }
+    const terminal = $(".terminal");
+    if (terminal) terminal.classList.toggle("is-complete", Boolean(complete));
+    if (buildPlay) {
+      buildPlay.textContent = "replay build";
+      buildPlay.setAttribute("aria-pressed", "false");
+    }
+  }
+
+  function markBuild(index) {
+    buildCommands.forEach((cmd, position) => {
+      cmd.classList.toggle("is-active", position === index);
+      cmd.classList.toggle("is-done", position < index);
+    });
+    if (buildStatus) {
+      buildStatus.textContent = "step " + (index + 1) + " / " + buildCommands.length + " · " + (buildLabels[index] || "command");
+    }
+  }
+
+  function playBuild() {
+    if (!buildCommands.length) return;
+    if (buildTimer) {
+      stopBuild(false);
+      if (buildStatus) buildStatus.textContent = "paused / " + (buildIndex + 1) + " of " + buildCommands.length;
+      return;
+    }
+    buildCommands.forEach((cmd) => cmd.classList.remove("is-active", "is-done"));
+    const terminal = $(".terminal");
+    if (terminal) terminal.classList.remove("is-complete");
+    if (buildPlay) {
+      buildPlay.textContent = "pause build";
+      buildPlay.setAttribute("aria-pressed", "true");
+    }
+    if (reduce) {
+      buildCommands.forEach((cmd) => cmd.classList.add("is-done"));
+      if (buildStatus) buildStatus.textContent = "complete / 9,224 events / 50 rules";
+      stopBuild(true);
+      return;
+    }
+    buildIndex = 0;
+    markBuild(0);
+    buildTimer = window.setInterval(() => {
+      buildIndex += 1;
+      if (buildIndex >= buildCommands.length) {
+        buildCommands.forEach((cmd) => {
+          cmd.classList.remove("is-active");
+          cmd.classList.add("is-done");
+        });
+        if (buildStatus) buildStatus.textContent = "complete / 9,224 events / 50 rules";
+        stopBuild(true);
+        return;
+      }
+      markBuild(buildIndex);
+    }, 900);
+  }
+  if (buildPlay) buildPlay.addEventListener("click", playBuild);
 
   /* ------------------------------------------------------------------ tour */
   const steps = [
     { target: "#cover .ticket", title: "A run you can inspect", body: "This is the output of one deterministic run: 9,224 events, a 50-rule Sigma library, and eight correlation specs. The ticket is the receipt." },
     { target: "#scopePlate", title: "Read the light curve", body: "The light curve counts matched events across the full day. Several hours carry bursts; the shadow bands between them are part of the shape. A rule that fires on everything cannot discriminate." },
-    { target: "#pathStrip", title: "Follow the chain", body: "Sigma compiles to Elasticsearch EQL and KQL. Detection executes the queries, correlation adds volume logic, and triage turns matches into a queue with evidence." },
+    { target: "#pathStrip", title: "Follow the chain", body: "Sigma compiles to Elasticsearch EQL and KQL. Detection executes the queries, correlation adds volume logic, and triage turns matches into a queue with evidence. Press run the pipeline to step through the five recorded stages and their artifacts." },
     { target: "#responsePanel", title: "Watch the response", body: "The flow turns 50 alerts into 27 incidents and 78 recommended actions. Choose an incident to see its alerts and dry-run playbook. No EDR, cloud, or ticketing API is called." },
     { target: "#ledger .chapter-head", title: "Enter the Umbra", body: "Umbra is the working console. The queue, the evidence inspector, the host lanes, and the coincidence strip all read from the same detection run." },
     { target: "#ledgerPanel", title: "Work the queue", body: "Filter by severity, host, or technique. Select a detection to keep its events and exact EQL beside the queue. J and K move; Enter selects." },
     { target: "#wfLaneList", title: "Read the field", body: "Every mark is a detection against the 24-hour window, one lane per host. The coincidence strip below adds the volume conditions that a single event cannot carry." },
     { target: "#huntsPanel", title: "Hunt past the queue", body: "The radar holds four hypothesis-driven hunts. Select a node to see the query, evidence, verdict, and the detection change the hunt recommends." },
     { target: "#matrix", title: "Read the corona", body: "The corona ring only counts priority techniques. All 45 are closed in this run; the gaps view stays available as a regression check." },
-    { target: "#validationPanel", title: "Check the evidence", body: "The matrix carries all 50 rules. Focus or click a tile to read its status; the table below gives per-rule TP, FP, FN, precision, recall, and alert volume against real labelled windows." },
+    { target: "#validationPanel", title: "Check the evidence", body: "The matrix carries all 50 rules. Focus or click a tile to read its status; press replay the scan to re-run the sweep; the table below gives per-rule TP, FP, FN, precision, recall, and alert volume against real labelled windows." },
     { target: "#caseGrid", title: "Read the investigations", body: "Each case follows the same structure: summary, timeline, evidence, analysis, verdict, containment, and the detection improvement that came out of it." },
     { target: "#irPanel", title: "Close the loop", body: "The timeline scrubs the observed window: drag it, or use the arrow keys. The markers light as the readout crosses them; play runs the whole close-out." },
-    { target: "#reproduce .terminal", title: "Repeat the orbit", body: "Generation is seeded. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." },
+    { target: "#reproduce .terminal", title: "Repeat the orbit", body: "Generation is seeded. Press replay build to walk the seven recorded commands and their outputs. The same commands produce the same events, the same alerts, and this same page. Swap the logsource map when you connect real telemetry." },
     { target: "#cloudPanel", title: "Hand off to Apsis", body: "The bridge shows the three CloudTrail detections Penumbra hands to Apsis. Select a detection to see the query and the response hand-off." },
     { target: "#handoffPanel", title: "Receive the handoff", body: "Penumbra reads the same alert and evidence contracts from Apsis and the network lab. Apsis is delivered: trace seven observed edges, the two-permission cut, and the guardrails. Network hunting is planned until its first capture." },
     { target: "#roadmapPanel", title: "Read the next record", body: "The A-side holds two complete projects and the next orbit. Select a track label to see its thesis, module states, and what done means. Apsis and Penumbra are complete; network hunting is next." }
@@ -3509,6 +3691,9 @@
     { group: "Filter", label: "Medium detections", hint: number(severity.medium || 0), run: () => { setLevel("medium"); goTo("#ledger"); } },
     { group: "Filter", label: "Low detections", hint: number(severity.low || 0), run: () => { setLevel("low"); goTo("#ledger"); } },
     { group: "View", label: state.gaps ? "Show all techniques" : "Show gaps only", hint: "coverage", run: () => { toggleGaps(); goTo("#coverage"); } },
+    { group: "View", label: "Run the recorded pipeline", hint: "five stages", run: () => { goTo("#pathStrip"); const button = $("#pathPlay"); if (button) button.click(); } },
+    { group: "View", label: "Replay the recorded build", hint: "seven commands", run: () => { goTo("#reproduce"); const button = $("#buildPlay"); if (button) button.click(); } },
+    { group: "View", label: "Replay the validation scan", hint: "50 rules", run: () => { goTo("#validationPanel"); const button = $("#validationReplay"); if (button) button.click(); } },
     { group: "View", label: "Export filtered queue as CSV", hint: "download", run: exportRowsCsv },
     { group: "View", label: "Focus the watch floor", hint: "fullscreen", run: toggleLedgerFocus },
     { group: "View", label: "Switch theme", hint: "paper / night", run: toggleTheme },
